@@ -12,3 +12,10 @@ This is a standard PHP extension:
     sudo make install
     # Add extension=rdkafka.so to your php.ini:
     echo extension=rdkafka.so|sudo tee -a /path/to/php.ini
+
+## Documentation
+
+See [examples](https://github.com/arnaud-lb/php-rdkafka/tree/master/examples)
+    
+Also see the output of `php --re rdkafka`, and librdkafka's [rdkafka.h](https://github.com/edenhill/librdkafka/blob/master/src/rdkafka.h)
+
