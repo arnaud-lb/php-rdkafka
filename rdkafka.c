@@ -74,6 +74,7 @@ static zend_class_entry * ce_kafka;
 static zend_class_entry * ce_kafka_conf;
 static zend_class_entry * ce_kafka_consumer;
 static zend_class_entry * ce_kafka_consumer_topic;
+static zend_class_entry * ce_kafka_exception;
 static zend_class_entry * ce_kafka_message;
 static zend_class_entry * ce_kafka_producer;
 static zend_class_entry * ce_kafka_producer_topic;
@@ -351,7 +352,7 @@ PHP_METHOD(RdKafka__Conf, __construct)
 }
 /* }}} */
 
-/* {{{ proto int RfKafka\Conf::dump()
+/* {{{ proto array RfKafka\Conf::dump()
    Dump the configuration properties and values of `conf` to an array */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_conf_dump, 0, 0, 0)
@@ -394,7 +395,7 @@ PHP_METHOD(RdKafka__Conf, dump)
 }
 /* }}} */
 
-/* {{{ proto int rd_kafka_conf_set(RdKafka\Conf $conf, string $name, string $value[, string &$errstr])
+/* {{{ proto void RdKafka\Conf::set(RdKafka\Conf $conf, string $name, string $value[, string &$errstr])
    Sets a configuration property. */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_conf_set, 0, 0, 3)
@@ -445,7 +446,16 @@ PHP_METHOD(RdKafka__Conf, set)
         efree(errstr);
     }
 
-    RETURN_LONG(ret);
+    switch (ret) {
+        case RD_KAFKA_CONF_UNKNOWN:
+            zend_throw_exception(ce_kafka_exception, "Unknown configuration name", RD_KAFKA_CONF_UNKNOWN);
+            break;
+        case RD_KAFKA_CONF_INVALID:
+            zend_throw_exception(ce_kafka_exception, "Unknown configuration value", RD_KAFKA_CONF_INVALID);
+            break;
+        case RD_KAFKA_CONF_OK:
+            break;
+    }
 }
 /* }}} */
 
@@ -456,7 +466,7 @@ static const zend_function_entry kafka_conf_fe[] = {
     PHP_FE_END
 };
 
-/* {{{ proto RdKafka\ConsumerTopic::consumeQueueStart(int $partition, int $offset, RdKafka\Queue $queue)
+/* {{{ proto void RdKafka\ConsumerTopic::consumeQueueStart(int $partition, int $offset, RdKafka\Queue $queue)
  * Same as consumeStart(), but re-routes incoming messages to the provided queue */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_consume_queue_start, 0, 0, 3)
@@ -472,6 +482,8 @@ PHP_METHOD(RdKafka__ConsumerTopic, consumeQueueStart)
     kafka_queue_object *queue_intern;
     long partition;
     long offset;
+    int ret;
+    rd_kafka_resp_err_t err;
 
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "llO", &partition, &offset, &zrkqu, ce_kafka_queue) == FAILURE) {
         return;
@@ -492,11 +504,16 @@ PHP_METHOD(RdKafka__ConsumerTopic, consumeQueueStart)
         return;
     }
 
-    RETURN_LONG(rd_kafka_consume_start_queue(intern->rkt, partition, offset, queue_intern->rkqu));
+    ret = rd_kafka_consume_start_queue(intern->rkt, partition, offset, queue_intern->rkqu);
+
+    if (ret == -1) {
+        err = rd_kafka_errno2err(errno);
+        zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err);
+    }
 }
 /* }}} */
 
-/* {{{ proto int RdKafka\ConsumerTopic::consumeStart(int partition, int offset)
+/* {{{ proto void RdKafka\ConsumerTopic::consumeStart(int partition, int offset)
    Start consuming messages */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_consume_start, 0, 0, 2)
@@ -509,6 +526,8 @@ PHP_METHOD(RdKafka__ConsumerTopic, consumeStart)
     kafka_topic_object *intern;
     long partition;
     long offset;
+    int ret;
+    rd_kafka_resp_err_t err;
 
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ll", &partition, &offset) == FAILURE) {
         return;
@@ -524,11 +543,16 @@ PHP_METHOD(RdKafka__ConsumerTopic, consumeStart)
         return;
     }
 
-    RETURN_LONG(rd_kafka_consume_start(intern->rkt, partition, offset));
+    ret = rd_kafka_consume_start(intern->rkt, partition, offset);
+
+    if (ret == -1) {
+        err = rd_kafka_errno2err(errno);
+        zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err);
+    }
 }
 /* }}} */
 
-/* {{{ proto int RdKafka\ConsumerTopic::consumeStop(int partition)
+/* {{{ proto void RdKafka\ConsumerTopic::consumeStop(int partition)
    Stop consuming messages */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_consume_stop, 0, 0, 1)
@@ -539,6 +563,8 @@ PHP_METHOD(RdKafka__ConsumerTopic, consumeStop)
 {
     kafka_topic_object *intern;
     long partition;
+    int ret;
+    rd_kafka_resp_err_t err;
 
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &partition) == FAILURE) {
         return;
@@ -554,11 +580,16 @@ PHP_METHOD(RdKafka__ConsumerTopic, consumeStop)
         return;
     }
 
-    RETURN_LONG(rd_kafka_consume_stop(intern->rkt, partition));
+    ret = rd_kafka_consume_stop(intern->rkt, partition);
+
+    if (ret == -1) {
+        err = rd_kafka_errno2err(errno);
+        zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err);
+    }
 }
 /* }}} */
 
-/* {{{ proto int RdKafka\ConsumerTopic::consume(int $partition, int timeout_ms)
+/* {{{ proto RdKafka\Message RdKafka\ConsumerTopic::consume(int $partition, int timeout_ms)
    Consume a single message from partition */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_consume, 0, 0, 2)
@@ -572,6 +603,7 @@ PHP_METHOD(RdKafka__ConsumerTopic, consume)
     long partition;
     long timeout_ms;
     rd_kafka_message_t *message;
+    rd_kafka_resp_err_t err;
 
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ll", &partition, &timeout_ms) == FAILURE) {
         return;
@@ -590,6 +622,11 @@ PHP_METHOD(RdKafka__ConsumerTopic, consume)
     message = rd_kafka_consume(intern->rkt, partition, timeout_ms);
 
     if (!message) {
+        err = rd_kafka_errno2err(errno);
+        if (err == RD_KAFKA_RESP_ERR__TIMED_OUT) {
+            return;
+        }
+        zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err);
         return;
     }
 
@@ -898,7 +935,7 @@ static const zend_function_entry kafka_message_fe[] = {
     PHP_FE_END
 };
 
-/* {{{ proto RdKafka\ProducerTopic::produce(int partition, int msgflags, string payload, string key)
+/* {{{ proto void RdKafka\ProducerTopic::produce(int partition, int msgflags, string payload, string key)
    Produce and send a single message to broker. */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_produce, 0, 0, 3)
@@ -916,7 +953,8 @@ PHP_METHOD(RdKafka__ProducerTopic, produce)
     int payload_len;
     char *key = NULL;
     int key_len = 0;
-
+    int ret;
+    rd_kafka_resp_err_t err;
     kafka_topic_object *intern;
 
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "lls|s", &partition, &msgflags, &payload, &payload_len, &key, &key_len) == FAILURE) {
@@ -935,7 +973,12 @@ PHP_METHOD(RdKafka__ProducerTopic, produce)
 
     intern = get_kafka_topic_object(this_ptr);
 
-    RETURN_LONG(rd_kafka_produce(intern->rkt, partition, msgflags | RD_KAFKA_MSG_F_COPY, payload, payload_len, key, key_len, NULL));
+    ret = rd_kafka_produce(intern->rkt, partition, msgflags | RD_KAFKA_MSG_F_COPY, payload, payload_len, key, key_len, NULL);
+
+    if (ret == -1) {
+        err = rd_kafka_errno2err(errno);
+        zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err);
+    }
 }
 /* }}} */
 
@@ -988,6 +1031,7 @@ PHP_METHOD(RdKafka__Queue, consume)
     kafka_queue_object *intern;
     long timeout_ms;
     rd_kafka_message_t *message;
+    rd_kafka_resp_err_t err;
 
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &timeout_ms) == FAILURE) {
         return;
@@ -1001,6 +1045,11 @@ PHP_METHOD(RdKafka__Queue, consume)
     message = rd_kafka_consume_queue(intern->rkqu, timeout_ms);
 
     if (!message) {
+        err = rd_kafka_errno2err(errno);
+        if (err == RD_KAFKA_RESP_ERR__TIMED_OUT) {
+            return;
+        }
+        zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err);
         return;
     }
 
@@ -1222,6 +1271,9 @@ PHP_MINIT_FUNCTION(rdkafka)
     INIT_NS_CLASS_ENTRY(ce, "RdKafka", "Queue", kafka_queue_fe);
     ce_kafka_queue = zend_register_internal_class(&ce TSRMLS_CC);
     ce_kafka_queue->create_object = kafka_queue_new;
+
+    INIT_NS_CLASS_ENTRY(ce, "RdKafka", "Exception", NULL);
+    ce_kafka_exception = zend_register_internal_class_ex(&ce, zend_exception_get_default(TSRMLS_C), NULL TSRMLS_CC);
 
     return SUCCESS;
 }
