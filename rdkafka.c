@@ -113,7 +113,7 @@ static void kafka_init(zval *this_ptr, rd_kafka_type_t type, zval *zconf, zval *
     if (zconf) {
         conf_intern = get_kafka_conf_object(zconf);
         if (conf_intern) {
-            conf = conf_intern->u.conf;
+            conf = rd_kafka_conf_dup(conf_intern->u.conf);
         }
     }
 
