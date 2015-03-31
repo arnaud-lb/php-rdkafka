@@ -606,6 +606,7 @@ PHP_METHOD(RdKafka__Kafka, setLogLevel)
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_new_topic, 0, 0, 1)
     ZEND_ARG_INFO(0, topic_name)
+    ZEND_ARG_INFO(0, topic_conf)
 ZEND_END_ARG_INFO()
 
 PHP_METHOD(RdKafka__Kafka, newTopic)
@@ -616,8 +617,11 @@ PHP_METHOD(RdKafka__Kafka, newTopic)
     kafka_object *intern;
     kafka_topic_object *topic_intern;
     zend_class_entry *topic_type;
+    zval *zconf = NULL;
+    rd_kafka_topic_conf_t *conf = NULL;
+    kafka_conf_object *conf_intern;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &topic, &topic_len) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s|O", &topic, &topic_len, &zconf, ce_kafka_topic_conf) == FAILURE) {
         return;
     }
 
@@ -626,7 +630,14 @@ PHP_METHOD(RdKafka__Kafka, newTopic)
         return;
     }
 
-    rkt = rd_kafka_topic_new(intern->rk, topic, NULL);
+    if (zconf) {
+        conf_intern = get_kafka_conf_object(zconf);
+        if (conf_intern) {
+            conf = rd_kafka_topic_conf_dup(conf_intern->u.topic_conf);
+        }
+    }
+
+    rkt = rd_kafka_topic_new(intern->rk, topic, conf);
 
     if (!rkt) {
         return;
