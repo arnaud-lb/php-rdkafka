@@ -219,7 +219,9 @@ static void kafka_topic_free(void *object TSRMLS_DC) /* {{{ */
     if (intern->rkt) {
         rd_kafka_topic_destroy(intern->rkt);
     }
-    zval_ptr_dtor(&intern->zrk);
+    if (intern->zrk) {
+        zval_ptr_dtor(&intern->zrk);
+    }
 
     zend_object_std_dtor(&intern->std TSRMLS_CC);
 
@@ -248,7 +250,7 @@ static kafka_topic_object * get_kafka_topic_object(zval *zrkt)
     kafka_topic_object *orkt = (kafka_topic_object*)zend_object_store_get_object(zrkt);
 
     if (!orkt->rkt) {
-        zend_throw_exception_ex(NULL, 0 TSRMLS_CC, "RdKafka\\TopicConf::__construct() has not been called");
+        zend_throw_exception_ex(NULL, 0 TSRMLS_CC, "RdKafka\\Topic::__construct() has not been called");
         return NULL;
     }
 
