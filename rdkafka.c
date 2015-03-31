@@ -906,6 +906,33 @@ PHP_FUNCTION(rd_kafka_errno2err)
 }
 /* }}} */
 
+/* {{{ proto int rd_kafka_thread_cnt()
+ * Retrieve the current number of threads in use by librdkafka.
+ */
+PHP_FUNCTION(rd_kafka_thread_cnt)
+{
+    if (zend_parse_parameters_none() == FAILURE) {
+        return;
+    }
+
+    RETURN_LONG(rd_kafka_thread_cnt());
+}
+/* }}} */
+
+/* {{{ proto int rd_kafka_offset_tail(int $cnt)
+ * Start consuming `$cnt` messages from topic's current `.._END` offset.
+ */
+PHP_FUNCTION(rd_kafka_offset_tail)
+{
+    long cnt;
+
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &cnt) == FAILURE) {
+        return;
+    }
+
+    RETURN_LONG(RD_KAFKA_OFFSET_TAIL(cnt));
+}
+/* }}} */
 
 #define COPY_CONSTANT(name) \
     REGISTER_LONG_CONSTANT(#name, name, CONST_CS | CONST_PERSISTENT)
@@ -1063,6 +1090,12 @@ ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_errno, 0, 0, 0)
     ZEND_ARG_INFO(0, errnox)
 ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_thread_cnt, 0, 0, 0)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_offset_tail, 0, 0, 1)
+ZEND_END_ARG_INFO()
 /* }}} */
 
 /* {{{ rdkafka_functions[]
@@ -1071,6 +1104,8 @@ const zend_function_entry rdkafka_functions[] = {
     PHP_FE(rd_kafka_err2str,    arginfo_kafka_err2str)
     PHP_FE(rd_kafka_errno2err,  arginfo_kafka_errno2err)
     PHP_FE(rd_kafka_errno,      arginfo_kafka_errno)
+    PHP_FE(rd_kafka_offset_tail,arginfo_kafka_offset_tail)
+    PHP_FE(rd_kafka_thread_cnt, arginfo_kafka_thread_cnt)
     PHP_FE_END    /* Must be the last line in rdkafka_functions[] */
 };
 /* }}} */
