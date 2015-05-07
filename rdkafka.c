@@ -731,8 +731,6 @@ PHP_METHOD(RdKafka__Kafka, setLogLevel)
    Returns a RdKafka\Queue object */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_new_queue, 0, 0, 0)
-    ZEND_ARG_INFO(0, topic_name)
-    ZEND_ARG_INFO(0, topic_conf)
 ZEND_END_ARG_INFO()
 
 PHP_METHOD(RdKafka__Kafka, newQueue)
