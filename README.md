@@ -2,6 +2,18 @@
 
 PHP-rdkafka builds on top of [librdkafka](https://github.com/edenhill/librdkafka) to provide a working PHP client for [Kafka](https://kafka.apache.org/) 0.8 (and potentially old versions supported by librdkafka).
 
+## Table of Contents
+
+1. [Installation](#installation)
+2. [Examples](#examples)
+3. [Usage](#usage)
+   * [Producing](#producing)
+   * [Consuming](#consuming)
+   * [Consuming form multiple topics / partitions](#consuming-from-multiple-topics--partitions)
+4. [API](#api)
+
+
+
 ## Installation
 
 This is a standard PHP extension:
@@ -166,7 +178,7 @@ $topic->consumeStart(0, RD_KAFKA_OFFSET_STORED);
 
 ## API
 
-#### RdKafka\Producer
+### RdKafka\Producer
 
 ``` php
 $producer = new RdKafka\Producer(RdKafka\Conf $conf = null);
@@ -221,6 +233,52 @@ $producer->poll(int $timeout_ms);
 ```
 
 Polls the Producer handle for events.
+
+### RdKafka\Consumer
+
+``` php
+$consumer = new RdKafka\Consumer(RdKafka\Conf $conf = null);
+```
+
+Creates a new Kafka consumer and starts its operation.
+
+``$conf`` is an optional ``RdKafka\Conf`` instance that will
+be used instead of the default configuration.
+The ``$conf`` object is copied, and changing ``$conf`` after that as no effect
+on the producer.
+See ``RdKafka\Conf`` for more information.
+
+#### Consumer::addBrokers()
+
+See RdKafka::addBrokers()
+
+#### Consumer::setLogLevel()
+
+See RdKafka::setLogLevel()
+
+#### Consumer::newQueue()
+
+``` php
+$queue = $consumer->newQueue();
+```
+
+Returns a RdKafka\Queue instance.
+
+#### Consumer::newTopic()
+
+``` php
+$topic = $consumer->newTopic(string $topic, RdKafka\TopicConf $conf);
+```
+
+Creates a new topic handle for topic named ``$topic``.
+
+``$conf`` is an optional configuration for the topic that will be used instead
+of the default topic configuration.
+The ``$conf`` object is copied by this function, and changing ``$conf`` after
+that has no effect on the topic.
+See ``RdKafka\TopicConf`` for more information.
+
+Returns a new ``RdKafka\ConsumerTopic`` instance.
 
 ### RdKafka
 
@@ -296,59 +354,13 @@ Sets a configuration property.
 
 Throws a ``RdKafka\Exception`` on error.
 
-#### RdKafka\TopicConf
+### RdKafka\TopicConf
 
 ``` php
 $conf = new RdKafka\TopicConf();
 ```
 
 Creates a new topic configuration. See ``RdKafka\Conf``.
-
-### RdKafka\Consumer
-
-``` php
-$consumer = new RdKafka\Consumer(RdKafka\Conf $conf = null);
-```
-
-Creates a new Kafka consumer and starts its operation.
-
-``$conf`` is an optional ``RdKafka\Conf`` instance that will
-be used instead of the default configuration.
-The ``$conf`` object is copied, and changing ``$conf`` after that as no effect
-on the producer.
-See ``RdKafka\Conf`` for more information.
-
-#### Consumer::addBrokers()
-
-See RdKafka::addBrokers()
-
-#### Consumer::setLogLevel()
-
-See RdKafka::setLogLevel()
-
-#### Consumer::newQueue()
-
-``` php
-$queue = $consumer->newQueue();
-```
-
-Returns a RdKafka\Queue instance.
-
-#### Consumer::newTopic()
-
-``` php
-$topic = $consumer->newTopic(string $topic, RdKafka\TopicConf $conf);
-```
-
-Creates a new topic handle for topic named ``$topic``.
-
-``$conf`` is an optional configuration for the topic that will be used instead
-of the default topic configuration.
-The ``$conf`` object is copied by this function, and changing ``$conf`` after
-that has no effect on the topic.
-See ``RdKafka\TopicConf`` for more information.
-
-Returns a new ``RdKafka\ConsumerTopic`` instance.
 
 ### RdKafka\ConsumerTopic
 
@@ -411,7 +423,7 @@ same topic and partition.
 
 Throws a ``RdKafka\Exception`` on error.
 
-#### TopicConsumer::consume()
+#### ConsumerTopic::consume()
 
 ``` php
 $message = $topic->consume(int $partition, int $timeout_ms);
@@ -432,7 +444,7 @@ NOTE: ``..->err`` == RD_KAFKA_RESP_ERR__PARTITION_EOF' signals that the end
       considered an error. The application should handle this case
       (e.g., ignore).
 
-#### RdKafka\ProducerTopic
+### RdKafka\ProducerTopic
 
 New ProducerTopic instances can be created by calling
 ``RdKafka\Producer::newTopic()``.
@@ -529,7 +541,3 @@ See ``RdKafka\ConsumeTopic::consume()``
 ### RdKafka\Exception
 
 Exceptions thrown by php-rdkafka are of this type.
-
-
-
-
