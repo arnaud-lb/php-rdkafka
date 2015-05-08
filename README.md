@@ -48,11 +48,13 @@ PHP-rdkafka builds on top of [librdkafka](https://github.com/edenhill/librdkafka
      * [Queue::consume()](#queueconsume)
    * [RdKafka\Exception](#rdkafkaexception)
    * [Functions](#functions)
-     * [rd_kafka_err2str](#rdkafkaerr2str)
-     * [rd_kafka_errno2err](#rdkafkaerrno2err)
-     * [rd_kafka_errno](#rdkafkaerrno)
-     * [rd_kafka_offset_tail](#rdkafkaoffsettail)
+     * [rd_kafka_err2str](#rd_kafka_err2str)
+     * [rd_kafka_errno2err](#rd_kafka_errno2err)
+     * [rd_kafka_errno](#rd_kafka_errno)
+     * [rd_kafka_offset_tail](#rd_kafka_offset_tail)
    * [Constants](#constants)
+5. [Credits](#credits)
+6. [License](#license)
 
 ## Installation
 
@@ -724,3 +726,13 @@ end internal error codes
 #### RD_KAFKA_RESP_ERR_MSG_SIZE_TOO_LARGE
 #### RD_KAFKA_RESP_ERR_STALE_CTRL_EPOCH
 #### RD_KAFKA_RESP_ERR_OFFSET_METADATA_TOO_LARGE
+
+## Credits
+
+Documentation copied from [librdkafka.h](https://github.com/edenhill/librdkafka/blob/master/src/rdkafka.h).
+
+Authors: see [contributors](https://github.com/arnaud-lb/php-rdkafka/graphs/contributors).
+
+## License
+
+php-rdkafka is released under the [MIT](https://github.com/arnaud-lb/php-rdkafka/blob/master/LICENSE) license.
