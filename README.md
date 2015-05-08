@@ -47,6 +47,12 @@ PHP-rdkafka builds on top of [librdkafka](https://github.com/edenhill/librdkafka
    * [RdKafka\Queue](#rdkafkaqueue)
      * [Queue::consume()](#queueconsume)
    * [RdKafka\Exception](#rdkafkaexception)
+   * [Functions](#functions)
+     * [rd_kafka_err2str](#rdkafkaerr2str)
+     * [rd_kafka_errno2err](#rdkafkaerrno2err)
+     * [rd_kafka_errno](#rdkafkaerrno)
+     * [rd_kafka_offset_tail](#rdkafkaoffsettail)
+   * [Constants](#constants)
 
 ## Installation
 
@@ -570,3 +576,151 @@ See [``RdKafka\ConsumerTopic::consume()``](#consumertopicconsume)
 ### RdKafka\Exception
 
 Exceptions thrown by php-rdkafka are of this type.
+
+### Functions
+
+#### rd_kafka_err2str()
+
+Returns a human readable representation of a kafka error
+
+#### rd_kafka_errno2err()
+
+Converts `errno` to a `rd_kafka_resp_err_t` error code
+
+#### rd_kafka_errno()
+
+Returns `errno`
+
+#### rd_kafka_offset_tail()
+
+``` php
+$offset = rd_kafka_offset_tail($cnt);
+```
+
+Returns a special offset to start consuming ``$cnt`` messages from topic's current ``.._END`` offset.
+That is, if current end offset is 12345 and ``$cnt`` is 200, it will start consuming from offset 12345-200 = 12145.
+
+### Constants
+
+#### RD_KAFKA_OFFSET_BEGINNING
+
+Start consuming from beginning of kafka partition queue: oldest msg
+
+#### RD_KAFKA_OFFSET_END
+
+Start consuming from end of kafka partition queue: next msg
+
+#### RD_KAFKA_OFFSET_STORED
+
+Start consuming from offset retrieved from offset store
+
+#### RD_KAFKA_PARTITION_UA
+
+Unassigned partition.
+
+The unassigned partition is used by the producer API for messages
+that should be partitioned using the configured or default partitioner.
+
+#### RD_KAFKA_VERSION
+
+librdkafka version
+
+Interpreted as hex MM.mm.rr.xx:
+
+ * MM = Major
+ * mm = minor
+ * rr = revision
+ * xx = currently unused
+
+I.e.: 0x00080100 = 0.8.1
+
+#### RD_KAFKA_RESP_ERR__BEGIN
+
+begin internal error codes
+
+#### RD_KAFKA_RESP_ERR__BAD_MSG
+
+Received message is incorrect
+
+#### RD_KAFKA_RESP_ERR__BAD_COMPRESSION
+
+Bad/unknown compression
+
+#### RD_KAFKA_RESP_ERR__DESTROY
+
+Broker is going away
+
+#### RD_KAFKA_RESP_ERR__FAIL
+
+Generic failure
+
+#### RD_KAFKA_RESP_ERR__TRANSPORT
+
+Broker transport error
+
+#### RD_KAFKA_RESP_ERR__CRIT_SYS_RESOURCE
+
+Critical system resource failure
+
+#### RD_KAFKA_RESP_ERR__RESOLVE
+
+Failed to resolve broker
+
+#### RD_KAFKA_RESP_ERR__MSG_TIMED_OUT
+
+Produced message timed out
+
+#### RD_KAFKA_RESP_ERR__PARTITION_EOF
+
+Reached the end of the topic+partition queue on the broker. Not really an error.
+
+#### RD_KAFKA_RESP_ERR__UNKNOWN_PARTITION
+
+Permanent: Partition does not exist in cluster.
+
+#### RD_KAFKA_RESP_ERR__FS
+
+File or filesystem error
+
+#### RD_KAFKA_RESP_ERR__UNKNOWN_TOPIC
+
+Permanent: Topic does not exist in cluster.
+
+#### RD_KAFKA_RESP_ERR__ALL_BROKERS_DOWN
+
+All broker connections are down.
+
+#### RD_KAFKA_RESP_ERR__INVALID_ARG
+
+Invalid argument, or invalid configuration
+
+#### RD_KAFKA_RESP_ERR__TIMED_OUT
+
+Operation timed out
+
+#### RD_KAFKA_RESP_ERR__QUEUE_FULL
+
+Queue is full
+
+#### RD_KAFKA_RESP_ERR__ISR_INSUFF
+
+ISR count < required.acks
+
+#### RD_KAFKA_RESP_ERR__END
+
+end internal error codes
+
+#### RD_KAFKA_RESP_ERR_UNKNOWN
+#### RD_KAFKA_RESP_ERR_NO_ERROR
+#### RD_KAFKA_RESP_ERR_OFFSET_OUT_OF_RANGE
+#### RD_KAFKA_RESP_ERR_INVALID_MSG
+#### RD_KAFKA_RESP_ERR_UNKNOWN_TOPIC_OR_PART
+#### RD_KAFKA_RESP_ERR_INVALID_MSG_SIZE
+#### RD_KAFKA_RESP_ERR_LEADER_NOT_AVAILABLE
+#### RD_KAFKA_RESP_ERR_NOT_LEADER_FOR_PARTITION
+#### RD_KAFKA_RESP_ERR_REQUEST_TIMED_OUT
+#### RD_KAFKA_RESP_ERR_BROKER_NOT_AVAILABLE
+#### RD_KAFKA_RESP_ERR_REPLICA_NOT_AVAILABLE
+#### RD_KAFKA_RESP_ERR_MSG_SIZE_TOO_LARGE
+#### RD_KAFKA_RESP_ERR_STALE_CTRL_EPOCH
+#### RD_KAFKA_RESP_ERR_OFFSET_METADATA_TOO_LARGE
