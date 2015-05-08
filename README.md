@@ -11,8 +11,42 @@ PHP-rdkafka builds on top of [librdkafka](https://github.com/edenhill/librdkafka
    * [Consuming](#consuming)
    * [Consuming form multiple topics / partitions](#consuming-from-multiple-topics--partitions)
 4. [API](#api)
-
-
+   * [RdKafka\Consumer](#rdkafkaconsumer)
+     * [Consumer::addBrokers()](#consumeraddbrokers)
+     * [Consumer::setLogLevel()](#consumersetloglevel)
+     * [Consumer::newQueue()](#consumernewqueue)
+     * [Consumer::newTopic()](#consumernewtopic)
+   * [RdKafka\Producer](#rdkafkaproducer)
+     * [Producer::addBrokers()](#produceraddbrokers)
+     * [Producer::setLogLevel()](#producersetloglevel)
+     * [Producer::newTopic()](#producernewtopic)
+     * [Producer::outqLen()](#produceroutqlen)
+     * [Producer::poll()](#producerpoll)
+   * [RdKafka](#rdkafka)
+     * [RdKafka::addBrokers()](#rdkafkaaddbrokers)
+     * [RdKafka::setLogLevel()](#rdkafkasetloglevel)
+   * [RdKafka\Conf](#rdkafkaconf)
+     * [Conf::dump()](#confdump)
+     * [Conf::set()](#confset)
+   * [RdKafka\TopicConf](#rdkafkatopicconf)
+   * [RdKafka\ConsumerTopic](#rdkafkaconsumertopic)
+     * [ConsumerTopic::consumeStart()](#consumertopicconsumestart)
+     * [ConsumerTopic::consumeStop()](#consumertopicconsumestop)
+     * [ConsumerTopic::consumeQueueStart()](#consumertopicconsumequeuestart)
+     * [ConsumerTopic::consume()](#consumertopicconsume)
+   * [RdKafka\ProducerTopic](#rdkafkaproducertopic)
+     * [ProducerTopic::produce()](#producertopicproduce)
+   * [RdKafka\Message](#rdkafkamessage)
+     * [Message::$err](#messageerr)
+     * [Message::$topic_name](#messagetopic_name)
+     * [Message::$partition](#messagepartition)
+     * [Message::$payload](#messagepayload)
+     * [Message::$key](#messagekey)
+     * [Message::$offset](#messageoffset)
+     * [Message::errstr()](#messageerrstr)
+   * [RdKafka\Queue](#rdkafkaqueue)
+     * [Queue::consume()](#queueconsume)
+   * [RdKafka\Exception](#rdkafkaexception)
 
 ## Installation
 
@@ -186,19 +220,19 @@ $producer = new RdKafka\Producer(RdKafka\Conf $conf = null);
 
 Creates a new Kafka producer and starts its operation.
 
-``$conf`` is an optional ``RdKafka\Conf`` instance that will
+``$conf`` is an optional [``RdKafka\Conf``](#rdkafkaconf) instance that will
 be used instead of the default configuration.
 The ``$conf`` object is copied, and changing ``$conf`` after that as no effect
 on the producer.
-See ``RdKafka\Conf`` for more information.
+See  [``RdKafka\Conf``](#rdkafkaconf) for more information.
 
 #### Producer::addBrokers()
 
-See RdKafka::addBrokers()
+See [RdKafka::addBrokers()](#rdkafkaaddbrokers)
 
 #### Producer::setLogLevel()
 
-See RdKafka::setLogLevel()
+See [RdKafka::setLogLevel()](#rdkafkasetloglevel)
 
 #### Producer::newTopic()
 
@@ -212,10 +246,9 @@ Creates a new topic handle for topic named ``$topic``.
 of the default topic configuration.
 The ``$conf`` object is copied by this function, and changing ``$conf`` after
 that has no effect on the topic.
-See ``RdKafka\TopicConf`` for more information.
+See [``RdKafka\TopicConf``](#rdkafkatopicconf) for more information.
 
-Returns a new ``RdKafka\ProducerTopic`` instance, or NULL on error
-(see ``rd_kafka_errno()``).
+Returns a new [``RdKafka\ProducerTopic``](#rdkafkatopicconf) instance.
 
 #### Producer::outqLen()
 
@@ -242,19 +275,19 @@ $consumer = new RdKafka\Consumer(RdKafka\Conf $conf = null);
 
 Creates a new Kafka consumer and starts its operation.
 
-``$conf`` is an optional ``RdKafka\Conf`` instance that will
+``$conf`` is an optional [``RdKafka\Conf``](#rdkafkaconf) instance that will
 be used instead of the default configuration.
 The ``$conf`` object is copied, and changing ``$conf`` after that as no effect
 on the producer.
-See ``RdKafka\Conf`` for more information.
+See [``RdKafka\Conf``](#rdkafkaconf) for more information.
 
 #### Consumer::addBrokers()
 
-See RdKafka::addBrokers()
+See [RdKafka::addBrokers()](#rdkafkaaddbrokers)
 
 #### Consumer::setLogLevel()
 
-See RdKafka::setLogLevel()
+See [RdKafka::setLogLevel()](#rdkafkasetloglevel)
 
 #### Consumer::newQueue()
 
@@ -262,7 +295,7 @@ See RdKafka::setLogLevel()
 $queue = $consumer->newQueue();
 ```
 
-Returns a RdKafka\Queue instance.
+Returns a [RdKafka\Queue](#rdkafkaqueue) instance.
 
 #### Consumer::newTopic()
 
@@ -276,13 +309,13 @@ Creates a new topic handle for topic named ``$topic``.
 of the default topic configuration.
 The ``$conf`` object is copied by this function, and changing ``$conf`` after
 that has no effect on the topic.
-See ``RdKafka\TopicConf`` for more information.
+See [``RdKafka\TopicConf``](#rdkafkatopicconf) for more information.
 
-Returns a new ``RdKafka\ConsumerTopic`` instance.
+Returns a new [``RdKafka\ConsumerTopic``](#rdkafkaconsumertopic) instance.
 
 ### RdKafka
 
-RdKafka is the base class for ``RdKafka\Producer`` and ``RdKafka\Consumer``.
+RdKafka is the base class for [``RdKafka\Producer``](#rdkafkaproducer) and [``RdKafka\Consumer``](#rdkafkaconsumer).
 
 #### RdKafka::addBrokers()
 
@@ -360,12 +393,12 @@ Throws a ``RdKafka\Exception`` on error.
 $conf = new RdKafka\TopicConf();
 ```
 
-Creates a new topic configuration. See ``RdKafka\Conf``.
+Creates a new topic configuration. See [``RdKafka\Conf``](#rdkafkaconf).
 
 ### RdKafka\ConsumerTopic
 
 New ConsumerTopic instances can be created by calling
-``RdKafka\Consumer::newTopic()``.
+[``RdKafka\Consumer::newTopic()``](#consumernewtopic).
 
 #### ConsumerTopic::consumeStart()
 
@@ -384,7 +417,7 @@ from the broker until the threshold is reached.
 
 The application shall use the ``consume()`` method
 to consume messages from the local queue, each kafka message being
-represented as a ``RdKafka\Message`` object.
+represented as a [``RdKafka\Message``](#rdkafkamessage) object.
 
 ``consumeStart()``must not be called multiple times for the same
 topic and partition without stopping consumption first with
@@ -411,7 +444,7 @@ $topic->consumeQueueStart(int $partition, int $offset, RdKafka\Queue $queue);
 
 Same as ``consumeStart()`` but re-routes incoming messages to
 the provided queue ``$queue``.
-The application must use one of the ``RdKafka\Queue::consume*()`` functions
+The application must use one of the [``RdKafka\Queue::consume*()``](#queueconsume) functions
 to receive fetched messages.
 
 ``consumeQueueStart()`` must not be called multiple times for the
@@ -432,14 +465,14 @@ $message = $topic->consume(int $partition, int $timeout_ms);
 Consume a single message from ``$partition``.
 
 ``$timeout_ms`` is maximum amount of time to wait for a message to be received.
-Consumer must have been previously started with ``consumeStart()``.
+Consumer must have been previously started with [``consumeStart()``](#consumetopicconsumestart).
 
 Returns NULL on timeout.
 
 Throws a ``RdKafka\Exception`` on error.
 
-NOTE: The returned message's ``..->err`` must be checked for errors.
-NOTE: ``..->err`` == RD_KAFKA_RESP_ERR__PARTITION_EOF' signals that the end
+NOTE: The returned message's [``..->err``](#messageerr) must be checked for errors.
+NOTE: [``..->err``](#messageerr) == RD_KAFKA_RESP_ERR__PARTITION_EOF' signals that the end
       of the partition has been reached, which should typically not be
       considered an error. The application should handle this case
       (e.g., ignore).
@@ -447,7 +480,7 @@ NOTE: ``..->err`` == RD_KAFKA_RESP_ERR__PARTITION_EOF' signals that the end
 ### RdKafka\ProducerTopic
 
 New ProducerTopic instances can be created by calling
-``RdKafka\Producer::newTopic()``.
+[``RdKafka\Producer::newTopic()``](#producernewtopic).
 
 #### ProducerTopic::produce()
 
@@ -480,14 +513,14 @@ A Kafka message as returned by the consuming methods.
 
 This object has two purposes:
 
- * provide the application with a consumed message. (``->err`` == 0)
- * report per-topic+partition consumer errors (``->err`` != 0)
+ * provide the application with a consumed message. ([``->err``](#messageerr) == 0)
+ * report per-topic+partition consumer errors ([``->err``](#messageerr) != 0)
 
-The application must check ``err`` to decide what action to take.
+The application must check [``err``](#messageerr) to decide what action to take.
 
 #### Message::$err
 
-Non-zero for error signaling. Use ``errstr()`` for a string representation.
+Non-zero for error signaling. Use [``errstr()``](#messageerrstr) for a string representation.
 
 #### Message::$topic_name
 
@@ -520,15 +553,15 @@ When err != 0, returns the string representation of the error.
 ### RdKafka\Queue
 
 New Queue instances can be created by calling
-``RdKafka\Consumer::newQueue()``.
+[``RdKafka\Consumer::newQueue()``](#consumernewqueue).
 
 Message queues allows the application to re-route consumed messages
 from multiple topic+partitions into one single queue point.
 This queue point, containing messages from a number of topic+partitions,
-may then be served by a single ``consume()`` call,
+may then be served by a single [``consume()``](#queueconsume) call,
 rather than one per topic+partition combination.
 
-See ``RdKafka\ConsumerTopic::consumeQueueStart()``, ``RdKafka\Queue::consume()``.
+See [``RdKafka\ConsumerTopic::consumeQueueStart()``](#consumetopicconsumequeuestart), [``RdKafka\Queue::consume()``](#queueconsume).
 
 #### Queue::consume()
 
@@ -536,7 +569,7 @@ See ``RdKafka\ConsumerTopic::consumeQueueStart()``, ``RdKafka\Queue::consume()``
 $message = $queue->consume(int $timeout_ms);
 ```
 
-See ``RdKafka\ConsumeTopic::consume()``
+See [``RdKafka\ConsumerTopic::consume()``](#consumertopicconsume)
 
 ### RdKafka\Exception
 
