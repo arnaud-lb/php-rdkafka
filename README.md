@@ -174,11 +174,11 @@ Adding topars to the queue:
 <?php
 
 $topic1 = $rk->newTopic("topic1");
-$queue->consumeQueueStart(0, RD_KAFKA_OFFSET_BEGINNING, $queue);
-$queue->consumeQueueStart(1, RD_KAFKA_OFFSET_BEGINNING, $queue);
+$topic1->consumeQueueStart(0, RD_KAFKA_OFFSET_BEGINNING, $queue);
+$topic1->consumeQueueStart(1, RD_KAFKA_OFFSET_BEGINNING, $queue);
 
 $topic2 = $rk->newTopic("topic2");
-$queue->consumeQueueStart(0, RD_KAFKA_OFFSET_BEGINNING, $queue);
+$topic2->consumeQueueStart(0, RD_KAFKA_OFFSET_BEGINNING, $queue);
 ```
 
 Next, retrieve the consumed messages from the queue:
