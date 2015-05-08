@@ -144,3 +144,23 @@ while (true) {
 }
 ```
 
+### Using stored offsets
+
+librdkafka can store offsets in a local file, or on the broker. The default is local file, and as soon as you start using ``RD_KAFKA_OFFSET_STORED`` as consuming offset, rdkafka starts to store the offset.
+
+By default, the file is created in the current directory, with a named based on the topic and the partition. The directory can be changed by setting the ``offset.store.path`` [configuration property](https://github.com/edenhill/librdkafka/blob/master/CONFIGURATION.md).
+
+Other interesting properties are: ``offset.store.sync.interval.ms``, ``offset.store.method``, ``auto.commit.interval.ms``, ``auto.commit.enable``, ``offset.store.method``, ``group.id``.
+
+``` php
+<?php
+
+$topicConf = new RdKafka\TopicConf();
+$topicConf->set("auto.commit.interval.ms", 1e3);
+$topicConf->set("offset.store.sync.interval.ms", 60e3);
+
+$topic = $rk->newTopic("test", $topicConf);
+
+$topic->consumeStart(0, RD_KAFKA_OFFSET_STORED);
+```
+
