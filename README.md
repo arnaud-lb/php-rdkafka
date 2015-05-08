@@ -240,15 +240,13 @@ See [RdKafka::setLogLevel()](#rdkafkasetloglevel)
 $topic = $producer->newTopic(string $topic, RdKafka\TopicConf $conf);
 ```
 
-Creates a new topic handle for topic named ``$topic``.
+Creates a new [``RdKafka\ProducerTopic``](#rdkafkatopicconf) instance for topic named ``$topic``.
 
 ``$conf`` is an optional configuration for the topic that will be used instead
 of the default topic configuration.
 The ``$conf`` object is copied by this function, and changing ``$conf`` after
 that has no effect on the topic.
 See [``RdKafka\TopicConf``](#rdkafkatopicconf) for more information.
-
-Returns a new [``RdKafka\ProducerTopic``](#rdkafkatopicconf) instance.
 
 #### Producer::outqLen()
 
@@ -303,15 +301,13 @@ Returns a [RdKafka\Queue](#rdkafkaqueue) instance.
 $topic = $consumer->newTopic(string $topic, RdKafka\TopicConf $conf);
 ```
 
-Creates a new topic handle for topic named ``$topic``.
+Creates a new [``RdKafka\ConsumerTopic``](#rdkafkaconsumertopic) for topic named ``$topic``.
 
 ``$conf`` is an optional configuration for the topic that will be used instead
 of the default topic configuration.
 The ``$conf`` object is copied by this function, and changing ``$conf`` after
 that has no effect on the topic.
 See [``RdKafka\TopicConf``](#rdkafkatopicconf) for more information.
-
-Returns a new [``RdKafka\ConsumerTopic``](#rdkafkaconsumertopic) instance.
 
 ### RdKafka
 
@@ -415,7 +411,7 @@ rdkafka will attempt to keep ``queued.min.messages`` (config property)
 messages in the local queue by repeatedly fetching batches of messages
 from the broker until the threshold is reached.
 
-The application shall use the ``consume()`` method
+The application shall use the [``consume()``](#consumertopicconsume) method
 to consume messages from the local queue, each kafka message being
 represented as a [``RdKafka\Message``](#rdkafkamessage) object.
 
@@ -471,8 +467,8 @@ Returns NULL on timeout.
 
 Throws a ``RdKafka\Exception`` on error.
 
-NOTE: The returned message's [``..->err``](#messageerr) must be checked for errors.
-NOTE: [``..->err``](#messageerr) == RD_KAFKA_RESP_ERR__PARTITION_EOF' signals that the end
+NOTE: The returned message's [``..->err``](#messageerr) must be checked for errors.  
+NOTE: [``..->err``](#messageerr) == ``RD_KAFKA_RESP_ERR__PARTITION_EOF`` signals that the end
       of the partition has been reached, which should typically not be
       considered an error. The application should handle this case
       (e.g., ignore).
