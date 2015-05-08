@@ -237,7 +237,7 @@ See [RdKafka::setLogLevel()](#rdkafkasetloglevel)
 #### Producer::newTopic()
 
 ``` php
-$topic = $producer->newTopic(string $topic, RdKafka\TopicConf $conf);
+$topic = $producer->newTopic(string $topic, RdKafka\TopicConf $conf = null);
 ```
 
 Creates a new [``RdKafka\ProducerTopic``](#rdkafkatopicconf) instance for topic named ``$topic``.
@@ -298,7 +298,7 @@ Returns a [RdKafka\Queue](#rdkafkaqueue) instance.
 #### Consumer::newTopic()
 
 ``` php
-$topic = $consumer->newTopic(string $topic, RdKafka\TopicConf $conf);
+$topic = $consumer->newTopic(string $topic, RdKafka\TopicConf $conf = null);
 ```
 
 Creates a new [``RdKafka\ConsumerTopic``](#rdkafkaconsumertopic) for topic named ``$topic``.
