@@ -42,5 +42,5 @@ if test "$PHP_RDKAFKA" != "no"; then
   
   PHP_SUBST(RDKAFKA_SHARED_LIBADD)
 
-  PHP_NEW_EXTENSION(rdkafka, rdkafka.c, $ext_shared)
+  PHP_NEW_EXTENSION(rdkafka, rdkafka.c metadata.c metadata_broker.c metadata_topic.c metadata_partition.c metadata_iterator.c, $ext_shared)
 fi

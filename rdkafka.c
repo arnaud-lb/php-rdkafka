@@ -29,6 +29,7 @@
 #include "librdkafka/rdkafka.h"
 #include "Zend/zend_exceptions.h"
 #include "ext/spl/spl_exceptions.h"
+#include "metadata.h"
 
 typedef struct _kafka_object {
     zend_object     std;
@@ -67,14 +68,14 @@ static const zend_function_entry empty_function_entries[] = {
     PHP_FE_END
 };
 
-static zend_object_handlers kafka_object_handlers;
+zend_object_handlers kafka_object_handlers;
 static zend_object_handlers kafka_topic_object_handlers;
 
 static zend_class_entry * ce_kafka;
 static zend_class_entry * ce_kafka_conf;
 static zend_class_entry * ce_kafka_consumer;
 static zend_class_entry * ce_kafka_consumer_topic;
-static zend_class_entry * ce_kafka_exception;
+zend_class_entry * ce_kafka_exception;
 static zend_class_entry * ce_kafka_message;
 static zend_class_entry * ce_kafka_producer;
 static zend_class_entry * ce_kafka_producer_topic;
@@ -702,6 +703,50 @@ PHP_METHOD(RdKafka__Kafka, addBrokers)
 }
 /* }}} */
 
+/* {{{ proto RdKafka\Metadata::metadata(bool all_topics, RdKafka\Topic only_topic, int timeout_ms)
+   Request Metadata from broker */
+ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_metadata, 0, 0, 1)
+    ZEND_ARG_INFO(0, all_topics)
+    ZEND_ARG_INFO(0, only_topic)
+    ZEND_ARG_INFO(0, timeout_ms)
+ZEND_END_ARG_INFO()
+
+PHP_METHOD(RdKafka__Kafka, metadata)
+{
+    zend_bool all_topics;
+    zval *only_zrkt;
+    long timeout_ms;
+    rd_kafka_resp_err_t err;
+    kafka_object *intern;
+    const rd_kafka_metadata_t *metadata;
+    kafka_topic_object *only_orkt = NULL;
+
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "bO!l", &all_topics, &only_zrkt, ce_kafka_topic, &timeout_ms) == FAILURE) {
+        return;
+    }
+
+    intern = get_kafka_object(this_ptr);
+    if (!intern) {
+        return;
+    }
+
+    if (only_zrkt) {
+        only_orkt = get_kafka_topic_object(only_zrkt);
+        if (!only_orkt) {
+            return;
+        }
+    }
+
+    err = rd_kafka_metadata(intern->rk, all_topics, only_orkt ? only_orkt->rkt : NULL, &metadata, timeout_ms);
+
+    if (err != RD_KAFKA_RESP_ERR_NO_ERROR) {
+        zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err);
+    }
+
+    kafka_metadata_init(return_value, metadata);
+}
+/* }}} */
+
 /* {{{ proto void RdKafka\Kafka::setLogLevel(int level)
    Specifies the maximum logging level produced by internal kafka logging and debugging */
 
@@ -883,6 +928,7 @@ PHP_METHOD(RdKafka__Kafka, poll)
 
 static const zend_function_entry kafka_fe[] = {
     PHP_ME(RdKafka__Kafka, addBrokers, arginfo_kafka_add_brokers, ZEND_ACC_PUBLIC)
+    PHP_ME(RdKafka__Kafka, metadata, arginfo_kafka_metadata, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__Kafka, setLogLevel, arginfo_kafka_set_log_level, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__Kafka, newQueue, arginfo_kafka_new_queue, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__Kafka, newTopic, arginfo_kafka_new_topic, ZEND_ACC_PUBLIC)
@@ -1272,6 +1318,8 @@ PHP_MINIT_FUNCTION(rdkafka)
 
     INIT_NS_CLASS_ENTRY(ce, "RdKafka", "Exception", NULL);
     ce_kafka_exception = zend_register_internal_class_ex(&ce, zend_exception_get_default(TSRMLS_C), NULL TSRMLS_CC);
+
+    kafka_metadata_minit();
 
     return SUCCESS;
 }
