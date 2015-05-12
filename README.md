@@ -24,7 +24,7 @@ The API ressembles as much as possible to librdkafka's.
    * [RdKafka\Producer](#rdkafkaproducer)
      * [Producer::addBrokers()](#produceraddbrokers)
      * [Producer::setLogLevel()](#producersetloglevel)
-     * [Consumer::metadata()](#consumermetadata)
+     * [Producer::metadata()](#producermetadata)
      * [Producer::newTopic()](#producernewtopic)
      * [Producer::outqLen()](#produceroutqlen)
      * [Producer::poll()](#producerpoll)
