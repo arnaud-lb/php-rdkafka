@@ -50,10 +50,25 @@ PHP-rdkafka builds on top of [librdkafka](https://github.com/edenhill/librdkafka
    * [RdKafka\Queue](#rdkafkaqueue)
      * [Queue::consume()](#queueconsume)
    * [RdKafka\Exception](#rdkafkaexception)
-   * [RdKafka\Metadata](#rdkafkametadata)
+   * [RdKafka\Metadata](#rdkafkametadata-1)
+     * [Metadata::getOrigBrokerId()](#metadatagetorigbrokerid)
+     * [Metadata::getOrigBrokerName()](#metadatagetorigbrokerid)
+     * [Metadata::getBrokers()](#metadatagetbrokers)
+     * [Metadata::getTopics()](#metadatagettopics)
    * [RdKafka\Metadata\Topic](#rdkafkametadatatopic)
+     * [Topic::getTopic()](#topicgettopic)
+     * [Topic::getErr()](#topicgeterr)
+     * [Topic::getPartitions()](#topicgetpartitions)
    * [RdKafka\Metadata\Broker](#rdkafkametadatabroker)
+     * [Broker::getId()](#brokergetid)
+     * [Broker::getHost()](#brokergethost)
+     * [Broker::getPort()](#brokergetport)
    * [RdKafka\Metadata\Partition](#rdkafkametadatapartition)
+     * [Partition::getId](#partitiongetid)
+     * [Partition::getErr](#partitiongeterr)
+     * [Partition::getLeader](#partitiongetleader)
+     * [Partition::getReplicas](#partitiongetreplicas)
+     * [Partition::getIsrs](#partitiongetisrs)
    * [RdKafka\Metadata\Iterator](#rdkafkametadataiterator)
    * [Functions](#functions)
      * [rd_kafka_err2str](#rd_kafka_err2str)
@@ -392,7 +407,7 @@ Request Metadata from broker.
  * only_rkt   - only request info about this topic
  * timeout_ms - maximum response time before failing.
 
-Returns a [`RdKafka\Metadata`](#rdkafkametadata)
+Returns a [`RdKafka\Metadata`](#rdkafkametadata-1)
 
 ### RdKafka\Conf
 
