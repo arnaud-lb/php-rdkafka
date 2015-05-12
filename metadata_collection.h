@@ -16,7 +16,7 @@
   +----------------------------------------------------------------------+
 */
 
-typedef void (*kafka_metadata_iterator_ctor_t)(zval *renurn_value, zval *zmetadata, const void *object TSRMLS_DC);
+typedef void (*kafka_metadata_collection_ctor_t)(zval *renurn_value, zval *zmetadata, const void *object TSRMLS_DC);
 
-void kafka_metadata_iterator_minit();
-void kafka_metadata_iterator_init(zval *return_value, zval *zmetadata, const void * items, size_t item_cnt, size_t item_size, kafka_metadata_iterator_ctor_t ctor);
+void kafka_metadata_collection_minit();
+void kafka_metadata_collection_init(zval *return_value, zval *zmetadata, const void * items, size_t item_cnt, size_t item_size, kafka_metadata_collection_ctor_t ctor);

@@ -25,17 +25,17 @@
 #include "librdkafka/rdkafka.h"
 #include "ext/spl/spl_iterators.h"
 #include "Zend/zend_interfaces.h"
-#include "metadata_iterator.h"
+#include "metadata_collection.h"
 #include "Zend/zend_exceptions.h"
 
 typedef struct _object_intern {
-    zend_object                     std;
-    zval                            zmetadata;
-    const void                      *items;
-    size_t                          item_cnt;
-    size_t                          item_size;
-    size_t                          position;
-    kafka_metadata_iterator_ctor_t  ctor;
+    zend_object                      std;
+    zval                             zmetadata;
+    const void                       *items;
+    size_t                           item_cnt;
+    size_t                           item_size;
+    size_t                           position;
+    kafka_metadata_collection_ctor_t ctor;
 } object_intern;
 
 static zend_class_entry *ce;
@@ -75,20 +75,20 @@ static object_intern * get_object(zval *zmti)
     object_intern *omti = (object_intern*)zend_object_store_get_object(zmti);
 
     if (!omti->items) {
-        zend_throw_exception_ex(NULL, 0 TSRMLS_CC, "RdKafka\\Metadata\\Iterator::__construct() has not been called");
+        zend_throw_exception_ex(NULL, 0 TSRMLS_CC, "RdKafka\\Metadata\\Collection::__construct() has not been called");
         return NULL;
     }
 
     return omti;
 }
 
-/* {{{ proto int RdKafka\Metadata\Iterator::count()
+/* {{{ proto int RdKafka\Metadata\Collection::count()
    */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_metadata_count, 0, 0, 0)
 ZEND_END_ARG_INFO()
 
-PHP_METHOD(RdKafka__Metadata__Iterator, count)
+PHP_METHOD(RdKafka__Metadata__Collection, count)
 {
     object_intern *intern;
 
@@ -105,13 +105,13 @@ PHP_METHOD(RdKafka__Metadata__Iterator, count)
 }
 /* }}} */
 
-/* {{{ proto int RdKafka\Metadata\Iterator::rewind()
+/* {{{ proto int RdKafka\Metadata\Collection::rewind()
    */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_metadata_rewind, 0, 0, 0)
 ZEND_END_ARG_INFO()
 
-PHP_METHOD(RdKafka__Metadata__Iterator, rewind)
+PHP_METHOD(RdKafka__Metadata__Collection, rewind)
 {
     object_intern *intern;
 
@@ -128,13 +128,13 @@ PHP_METHOD(RdKafka__Metadata__Iterator, rewind)
 }
 /* }}} */
 
-/* {{{ proto int RdKafka\Metadata\Iterator::current()
+/* {{{ proto int RdKafka\Metadata\Collection::current()
    */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_metadata_current, 0, 0, 0)
 ZEND_END_ARG_INFO()
 
-PHP_METHOD(RdKafka__Metadata__Iterator, current)
+PHP_METHOD(RdKafka__Metadata__Collection, current)
 {
     object_intern *intern;
 
@@ -156,13 +156,13 @@ PHP_METHOD(RdKafka__Metadata__Iterator, current)
 }
 /* }}} */
 
-/* {{{ proto int RdKafka\Metadata\Iterator::key()
+/* {{{ proto int RdKafka\Metadata\Collection::key()
    */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_metadata_key, 0, 0, 0)
 ZEND_END_ARG_INFO()
 
-PHP_METHOD(RdKafka__Metadata__Iterator, key)
+PHP_METHOD(RdKafka__Metadata__Collection, key)
 {
     object_intern *intern;
 
@@ -184,13 +184,13 @@ PHP_METHOD(RdKafka__Metadata__Iterator, key)
 }
 /* }}} */
 
-/* {{{ proto int RdKafka\Metadata\Iterator::next()
+/* {{{ proto int RdKafka\Metadata\Collection::next()
    */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_metadata_next, 0, 0, 0)
 ZEND_END_ARG_INFO()
 
-PHP_METHOD(RdKafka__Metadata__Iterator, next)
+PHP_METHOD(RdKafka__Metadata__Collection, next)
 {
     object_intern *intern;
 
@@ -207,13 +207,13 @@ PHP_METHOD(RdKafka__Metadata__Iterator, next)
 }
 /* }}} */
 
-/* {{{ proto int RdKafka\Metadata\Iterator::valid()
+/* {{{ proto int RdKafka\Metadata\Collection::valid()
    */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_metadata_valid, 0, 0, 0)
 ZEND_END_ARG_INFO()
 
-PHP_METHOD(RdKafka__Metadata__Iterator, valid)
+PHP_METHOD(RdKafka__Metadata__Collection, valid)
 {
     object_intern *intern;
 
@@ -231,26 +231,26 @@ PHP_METHOD(RdKafka__Metadata__Iterator, valid)
 /* }}} */
 
 static const zend_function_entry fe[] = {
-    PHP_ME(RdKafka__Metadata__Iterator, count, arginfo_kafka_metadata_count, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__Metadata__Iterator, current, arginfo_kafka_metadata_current, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__Metadata__Iterator, key, arginfo_kafka_metadata_key, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__Metadata__Iterator, next, arginfo_kafka_metadata_next, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__Metadata__Iterator, rewind, arginfo_kafka_metadata_rewind, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__Metadata__Iterator, valid, arginfo_kafka_metadata_valid, ZEND_ACC_PUBLIC)
+    PHP_ME(RdKafka__Metadata__Collection, count, arginfo_kafka_metadata_count, ZEND_ACC_PUBLIC)
+    PHP_ME(RdKafka__Metadata__Collection, current, arginfo_kafka_metadata_current, ZEND_ACC_PUBLIC)
+    PHP_ME(RdKafka__Metadata__Collection, key, arginfo_kafka_metadata_key, ZEND_ACC_PUBLIC)
+    PHP_ME(RdKafka__Metadata__Collection, next, arginfo_kafka_metadata_next, ZEND_ACC_PUBLIC)
+    PHP_ME(RdKafka__Metadata__Collection, rewind, arginfo_kafka_metadata_rewind, ZEND_ACC_PUBLIC)
+    PHP_ME(RdKafka__Metadata__Collection, valid, arginfo_kafka_metadata_valid, ZEND_ACC_PUBLIC)
     PHP_FE_END
 };
 
-void kafka_metadata_iterator_minit()
+void kafka_metadata_collection_minit()
 {
     zend_class_entry tmpce;
 
-    INIT_NS_CLASS_ENTRY(tmpce, "RdKafka\\Metadata", "Iterator", fe);
+    INIT_NS_CLASS_ENTRY(tmpce, "RdKafka\\Metadata", "Collection", fe);
     ce = zend_register_internal_class(&tmpce TSRMLS_CC);
     ce->create_object = create_object;
     zend_class_implements(ce TSRMLS_CC, 2, spl_ce_Countable, spl_ce_Iterator);
 }
 
-void kafka_metadata_iterator_init(zval *return_value, zval *zmetadata, const void * items, size_t item_cnt, size_t item_size, kafka_metadata_iterator_ctor_t ctor)
+void kafka_metadata_collection_init(zval *return_value, zval *zmetadata, const void * items, size_t item_cnt, size_t item_size, kafka_metadata_collection_ctor_t ctor)
 {
     object_intern *intern;
 

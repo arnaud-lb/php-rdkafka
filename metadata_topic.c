@@ -26,7 +26,7 @@
 #include "ext/spl/spl_iterators.h"
 #include "Zend/zend_interfaces.h"
 #include "metadata_partition.h"
-#include "metadata_iterator.h"
+#include "metadata_collection.h"
 #include "Zend/zend_exceptions.h"
 
 typedef struct _object_intern {
@@ -174,13 +174,14 @@ PHP_METHOD(RdKafka__Metadata__Topic, getPartitions)
         return;
     }
 
-    kafka_metadata_iterator_init(return_value, this_ptr, intern->metadata_topic->partitions, intern->metadata_topic->partition_cnt, sizeof(*intern->metadata_topic->partitions), kafka_metadata_partition_ctor);
+    kafka_metadata_collection_init(return_value, this_ptr, intern->metadata_topic->partitions, intern->metadata_topic->partition_cnt, sizeof(*intern->metadata_topic->partitions), kafka_metadata_partition_ctor);
 }
 /* }}} */
 
 static const zend_function_entry fe[] = {
     PHP_ME(RdKafka__Metadata__Topic, getTopic, arginfo_kafka_metadata_get_topic, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__Metadata__Topic, getPartitions, arginfo_kafka_metadata_get_partitions, ZEND_ACC_PUBLIC)
+    PHP_ME(RdKafka__Metadata__Topic, getErr, arginfo_kafka_metadata_get_err, ZEND_ACC_PUBLIC)
     PHP_FE_END
 };
 

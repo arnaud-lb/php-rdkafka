@@ -23,7 +23,7 @@
 #include "php.h"
 #include "php_rdkafka.h"
 #include "librdkafka/rdkafka.h"
-#include "metadata_iterator.h"
+#include "metadata_collection.h"
 #include "metadata_topic.h"
 #include "metadata_broker.h"
 #include "metadata_partition.h"
@@ -154,7 +154,7 @@ PHP_METHOD(RdKafka__Metadata, getOrigBrokerName)
 }
 /* }}} */
 
-/* {{{ proto MetadataTopicIterator RdKafka\Metadata::getBrokers()
+/* {{{ proto RdKafka\Metadata\Collection RdKafka\Metadata::getBrokers()
    Topics */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_metadata_get_brokers, 0, 0, 0)
@@ -173,11 +173,11 @@ PHP_METHOD(RdKafka__Metadata, getBrokers)
         return;
     }
 
-    kafka_metadata_iterator_init(return_value, this_ptr, intern->metadata->brokers, intern->metadata->broker_cnt, sizeof(*intern->metadata->brokers), kafka_metadata_broker_ctor);
+    kafka_metadata_collection_init(return_value, this_ptr, intern->metadata->brokers, intern->metadata->broker_cnt, sizeof(*intern->metadata->brokers), kafka_metadata_broker_ctor);
 }
 /* }}} */
 
-/* {{{ proto MetadataTopicIterator RdKafka\Metadata::getTopics()
+/* {{{ proto RdKafka\Metadata\Collection RdKafka\Metadata::getTopics()
    Topics */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_metadata_get_topics, 0, 0, 0)
@@ -196,7 +196,7 @@ PHP_METHOD(RdKafka__Metadata, getTopics)
         return;
     }
 
-    kafka_metadata_iterator_init(return_value, this_ptr, intern->metadata->topics, intern->metadata->topic_cnt, sizeof(*intern->metadata->topics), kafka_metadata_topic_ctor);
+    kafka_metadata_collection_init(return_value, this_ptr, intern->metadata->topics, intern->metadata->topic_cnt, sizeof(*intern->metadata->topics), kafka_metadata_topic_ctor);
 }
 /* }}} */
 
@@ -219,7 +219,7 @@ void kafka_metadata_minit()
     kafka_metadata_topic_minit();
     kafka_metadata_broker_minit();
     kafka_metadata_partition_minit();
-    kafka_metadata_iterator_minit();
+    kafka_metadata_collection_minit();
 }
 
 void kafka_metadata_init(zval *return_value, const rd_kafka_metadata_t *metadata)
