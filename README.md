@@ -73,7 +73,7 @@ The API ressembles as much as possible to librdkafka's.
      * [Partition::getLeader()](#partitiongetleader)
      * [Partition::getReplicas()](#partitiongetreplicas)
      * [Partition::getIsrs()](#partitiongetisrs)
-   * [RdKafka\Metadata\Iterator](#rdkafkametadataiterator)
+   * [RdKafka\Metadata\Collection](#rdkafkametadatacollection)
    * [Functions](#functions)
      * [rd_kafka_err2str](#rd_kafka_err2str)
      * [rd_kafka_errno2err](#rd_kafka_errno2err)
@@ -677,7 +677,7 @@ foreach ($topics as $topic) {
 }
 ```
 
-Returns a [`RdKafka\Metadata\Iterator`](#rdkafkametadataiterator) of [`RdKafka\Metadata\Topic`](#rdkafkametadatatopic).
+Returns a [`RdKafka\Metadata\Collection`](#rdkafkametadataiterator) of [`RdKafka\Metadata\Topic`](#rdkafkametadatatopic).
 
 ### RdKafka\Metadata\Broker
 
@@ -743,7 +743,7 @@ foreach ($partitions as $partition) {
 }
 ```
 
-Returns a [`RdKafka\Metadata\Iterator`](#rdkafkametadataiterator) of [`RdKafka\Metadata\Partition`](#rdkafkametadatapartition).
+Returns a [`RdKafka\Metadata\Collection`](#rdkafkametadatacollection) of [`RdKafka\Metadata\Partition`](#rdkafkametadatapartition).
 
 ### RdKafka\Metadata\Partition
 
@@ -787,7 +787,7 @@ foreach ($replicas as $replica) {
 }
 ```
 
-Returns a [`RdKafka\Metadata\Iterator`](#rdkafkametadataiterator) of replica broker ids for this partition.
+Returns a [`RdKafka\Metadata\Collection`](#rdkafkametadatacollection) of replica broker ids for this partition.
 
 #### Partition::getIsrs()
 
@@ -801,11 +801,11 @@ foreach ($replicas as $replica) {
 }
 ```
 
-Returns a [`RdKafka\Metadata\Iterator`](#rdkafkametadataiterator) of In-Sync-Replica broker ids for this partition.
+Returns a [`RdKafka\Metadata\Collection`](#rdkafkametadatacollection) of In-Sync-Replica broker ids for this partition.
 
-### RdKafka\Metadata\Iterator
+### RdKafka\Metadata\Collection
 
-`RdKafka\Metadata\Iterator` implements [`Iterator`](https://php.net/manual/en/class.iterator.php) (can be used in `foreach`), and [`Countable`](https://php.net/manual/en/class.countable.php) (can be used in `count()`).
+`RdKafka\Metadata\Collection` implements [`Iterator`](https://php.net/manual/en/class.iterator.php) (can be used in `foreach`), and [`Countable`](https://php.net/manual/en/class.countable.php) (can be used in `count()`).
 
 ### Functions
 
