@@ -14,17 +14,20 @@ PHP-rdkafka builds on top of [librdkafka](https://github.com/edenhill/librdkafka
    * [RdKafka\Consumer](#rdkafkaconsumer)
      * [Consumer::addBrokers()](#consumeraddbrokers)
      * [Consumer::setLogLevel()](#consumersetloglevel)
+     * [Consumer::metadata()](#consumermetadata)
      * [Consumer::newQueue()](#consumernewqueue)
      * [Consumer::newTopic()](#consumernewtopic)
    * [RdKafka\Producer](#rdkafkaproducer)
      * [Producer::addBrokers()](#produceraddbrokers)
      * [Producer::setLogLevel()](#producersetloglevel)
+     * [Consumer::metadata()](#consumermetadata)
      * [Producer::newTopic()](#producernewtopic)
      * [Producer::outqLen()](#produceroutqlen)
      * [Producer::poll()](#producerpoll)
    * [RdKafka](#rdkafka)
      * [RdKafka::addBrokers()](#rdkafkaaddbrokers)
      * [RdKafka::setLogLevel()](#rdkafkasetloglevel)
+     * [RdKafka::metadata()](#rdkafkametadata)
    * [RdKafka\Conf](#rdkafkaconf)
      * [Conf::dump()](#confdump)
      * [Conf::set()](#confset)
@@ -47,6 +50,11 @@ PHP-rdkafka builds on top of [librdkafka](https://github.com/edenhill/librdkafka
    * [RdKafka\Queue](#rdkafkaqueue)
      * [Queue::consume()](#queueconsume)
    * [RdKafka\Exception](#rdkafkaexception)
+   * [RdKafka\Metadata](#rdkafkametadata)
+   * [RdKafka\Metadata\Topic](#rdkafkametadatatopic)
+   * [RdKafka\Metadata\Broker](#rdkafkametadatabroker)
+   * [RdKafka\Metadata\Partition](#rdkafkametadatapartition)
+   * [RdKafka\Metadata\Iterator](#rdkafkametadataiterator)
    * [Functions](#functions)
      * [rd_kafka_err2str](#rd_kafka_err2str)
      * [rd_kafka_errno2err](#rd_kafka_errno2err)
@@ -242,6 +250,10 @@ See [RdKafka::addBrokers()](#rdkafkaaddbrokers)
 
 See [RdKafka::setLogLevel()](#rdkafkasetloglevel)
 
+#### Producer::metadata()
+
+See [RdKafka::metadata()](#rdkafkametadata)
+
 #### Producer::newTopic()
 
 ``` php
@@ -294,6 +306,10 @@ See [RdKafka::addBrokers()](#rdkafkaaddbrokers)
 #### Consumer::setLogLevel()
 
 See [RdKafka::setLogLevel()](#rdkafkasetloglevel)
+
+#### Consumer::metadata()
+
+See [RdKafka::metadata()](#rdkafkametadata)
 
 #### Consumer::newQueue()
 
@@ -362,6 +378,21 @@ adjusted to ``LOG_DEBUG``.
 
 Valid values for ``$level`` are any of the syslog ``LOG_*`` priorities:
 https://php.net/manual/en/function.syslog.php
+
+#### RdKafka::metadata()
+
+```
+$metadata = $rk->metadata(bool $all_topics, RdKafka\Topic $only_topic = null, int $timeout_ms);
+```
+
+Request Metadata from broker.
+
+ * all_topics - if true: request info about all topics in cluster,
+             if false: only request info about locally known topics.
+ * only_rkt   - only request info about this topic
+ * timeout_ms - maximum response time before failing.
+
+Returns a [`RdKafka\Metadata`](#rdkafkametadata)
 
 ### RdKafka\Conf
 
@@ -578,6 +609,184 @@ See [``RdKafka\ConsumerTopic::consume()``](#consumertopicconsume)
 ### RdKafka\Exception
 
 Exceptions thrown by php-rdkafka are of this type.
+
+### RdKafka\Metadata
+
+Metadata container.
+
+See [``RdKafka::metadata()``](#rdkafkametadata).
+
+#### Metadata::getOrigBrokerId()
+
+``` php
+$id = $metadata->getOrigBrokerId();
+```
+
+Returns the broker originating this metadata.
+
+#### Metadata::getOrigBrokerName()
+
+``` php
+$name = $metadata->getOrigBrokerName();
+```
+
+Returns the name of originating broker.
+
+#### Metadata::getBrokers()
+
+``` php
+$brokers = metadata->getBrokers();
+
+printf("There are %d brokers", count($brokers));
+
+foreach ($brokers as $broker) {
+    ...
+}
+```
+
+Returns a [`RdKafka\Metadata\Iterator`](#rdkafkametadataiterator) of [`RdKafka\Metadata\Broker`](#rdkafkametadatabroker).
+
+#### Metadata::getTopics()
+
+``` php
+$topics = $metadata->getTopics();
+
+printf("There are %d topics", count($topics));
+
+foreach ($topics as $topic) {
+    ...
+}
+```
+
+Returns a [`RdKafka\Metadata\Iterator`](#rdkafkametadataiterator) of [`RdKafka\Metadata\Topic`](#rdkafkametadatatopic).
+
+### RdKafka\Metadata\Broker
+
+Metadata: Broker information.
+
+See [``Metadata::getBrokers()``](#metadatagetbrokers).
+
+#### Broker::getId()
+
+``` php
+$id = $broker->getId();
+```
+
+Returns the broker id.
+
+#### Broker::getHost()
+
+``` php
+$host = $broker->getHost();
+```
+
+Returns the broker hostname.
+
+#### Broker::getPort()
+
+``` php
+$port = $broker->getPort();
+```
+
+Returns the broker port.
+
+### RdKafka\Metadata\Topic
+
+Metadata: Topic information.
+
+See [``Metadata::getTopics()``](#metadatagettopics).
+
+#### Topic::getTopic()
+
+``` php
+$name = $topic->getTopic();
+```
+
+Returns the topic name.
+
+#### Topic::getErr()
+
+``` php
+$name = $topic->getErr();
+```
+
+Returns the topic error reported by broker.
+
+#### Topic::getPartitions()
+
+``` php
+$topics = $topic->getPartitions();
+
+printf("There are %d partitions", count($partitions));
+
+foreach ($partitions as $partition) {
+    ...
+}
+```
+
+Returns a [`RdKafka\Metadata\Iterator`](#rdkafkametadataiterator) of [`RdKafka\Metadata\Partition`](#rdkafkametadatapartition).
+
+### RdKafka\Metadata\Partition
+
+Metadata: Partition information.
+
+See [``Topic::getPartitions()``](#topicgetpartitions).
+
+#### Partition::getId()
+
+``` php
+$id = $partition->getId();
+```
+
+Returns the partition id.
+
+#### Partition::getErr()
+
+``` php
+$err = $partition->getErr();
+```
+
+Returns the partition error reported by broker.
+
+#### Partition::getLeader()
+
+``` php
+$leader = $partition->getLeader();
+```
+
+Returns the leader broker id.
+
+#### Partition::getReplicas()
+
+``` php
+$replicas = $partitions->getReplicas();
+
+printf("There are %d replicas", count($replicas));
+
+foreach ($replicas as $replica) {
+    ...
+}
+```
+
+Returns a [`RdKafka\Metadata\Iterator`](#rdkafkametadataiterator) of replica broker ids for this partition.
+
+#### Partition::getIsrs()
+
+``` php
+$replicas = $partitions->getIsrs();
+
+printf("There are %d In-Sync-Replicas", count($replicas));
+
+foreach ($replicas as $replica) {
+    ...
+}
+```
+
+Returns a [`RdKafka\Metadata\Iterator`](#rdkafkametadataiterator) of In-Sync-Replica broker ids for this partition.
+
+### RdKafka\Metadata\Iterator
+
+`RdKafka\Metadata\Iterator` implements [`Iterator`](https://php.net/manual/en/class.iterator.php) (can be used in `foreach`), and [`Countable`](https://php.net/manual/en/class.countable.php) (can be used in `count()`).
 
 ### Functions
 
