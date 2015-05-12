@@ -663,7 +663,7 @@ foreach ($brokers as $broker) {
 }
 ```
 
-Returns a [`RdKafka\Metadata\Iterator`](#rdkafkametadataiterator) of [`RdKafka\Metadata\Broker`](#rdkafkametadatabroker).
+Returns a [`RdKafka\Metadata\Collection`](#rdkafkametadatacollection) of [`RdKafka\Metadata\Broker`](#rdkafkametadatabroker).
 
 #### Metadata::getTopics()
 
@@ -677,7 +677,7 @@ foreach ($topics as $topic) {
 }
 ```
 
-Returns a [`RdKafka\Metadata\Collection`](#rdkafkametadataiterator) of [`RdKafka\Metadata\Topic`](#rdkafkametadatatopic).
+Returns a [`RdKafka\Metadata\Collection`](#rdkafkametadatacollection) of [`RdKafka\Metadata\Topic`](#rdkafkametadatatopic).
 
 ### RdKafka\Metadata\Broker
 
