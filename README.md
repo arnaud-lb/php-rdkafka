@@ -1,6 +1,10 @@
 # php-rdkafka
 
-PHP-rdkafka builds on top of [librdkafka](https://github.com/edenhill/librdkafka) to provide a working PHP client for [Kafka](https://kafka.apache.org/) 0.8 (and potentially old versions supported by librdkafka).
+PHP-rdkafka is a thin [librdkafka](https://github.com/edenhill/librdkafka) binding to providing a working PHP [Kafka](https://kafka.apache.org/) 0.8 client.
+
+It supports the *consumer*, *producer*, and *metadata* APIs.
+
+The API ressembles as much as possible to librdkafka's.
 
 ## Table of Contents
 
