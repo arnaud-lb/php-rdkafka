@@ -9,6 +9,8 @@ The API ressembles as much as possible to librdkafka's.
 ## Table of Contents
 
 1. [Installation](#installation)
+   * [Using PECL](#usingpecl)
+   * [From source](#fromsource)
 2. [Examples](#examples)
 3. [Usage](#usage)
    * [Producing](#producing)
@@ -85,7 +87,11 @@ The API ressembles as much as possible to librdkafka's.
 
 ## Installation
 
-This is a standard PHP extension:
+### Using PECL
+
+    sudo pecl install channel://pecl.php.net/rdkafka-alpha
+
+### From source
 
     phpize
     ./configure

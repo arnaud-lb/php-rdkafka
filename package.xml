@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package version="2.1" xmlns="http://pear.php.net/dtd/package-2.1" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0     http://pear.php.net/dtd/tasks-1.0.xsd     http://pear.php.net/dtd/package-2.1     http://pear.php.net/dtd/package-2.1.xsd">
+ <name>rdkafka</name>
+ <channel>pecl.php.net</channel>
+ <summary>Kafka client based on librdkafka</summary>
+ <description>This extension is a librdkafka binding providing a working client for Kafka 0.8.</description>
+ <lead>
+  <name>Arnaud Le Blanc</name>
+  <user>lbarnaud</user>
+  <email>arnaud.lb@gmail.com</email>
+  <active>yes</active>
+ </lead>
+ <date>2015-05-13</date>
+ <time>16:26:12</time>
+ <version>
+  <release>0.0.2</release>
+  <api>0.1.0</api>
+ </version>
+ <stability>
+  <release>alpha</release>
+  <api>alpha</api>
+ </stability>
+ <license uri="http://opensource.org/licenses/mit-license.php">MIT License</license>
+ <notes>Fixed package
+</notes>
+ <contents>
+  <dir name="/">
+   <dir name="examples">
+    <file role="doc" name="consumer.php"/>
+    <file role="doc" name="producer.php"/>
+   </dir>
+   <file role="src" name="config.m4"/>
+   <file role="src" name="config.w32"/>
+   <file role="src" name="metadata.c"/>
+   <file role="src" name="metadata.h"/>
+   <file role="src" name="metadata_broker.c"/>
+   <file role="src" name="metadata_broker.h"/>
+   <file role="src" name="metadata_collection.c"/>
+   <file role="src" name="metadata_collection.h"/>
+   <file role="src" name="metadata_partition.c"/>
+   <file role="src" name="metadata_partition.h"/>
+   <file role="src" name="metadata_topic.c"/>
+   <file role="src" name="metadata_topic.h"/>
+   <file role="src" name="php_rdkafka.h"/>
+   <file role="src" name="rdkafka.c"/>
+  </dir>
+ </contents>
+ <dependencies>
+  <required>
+   <php>
+    <min>5.4.0</min>
+   </php>
+   <pearinstaller>
+    <min>1.4.8</min>
+   </pearinstaller>
+  </required>
+ </dependencies>
+ <providesextension>rdkafka</providesextension>
+ <extsrcrelease/>
+</package>
