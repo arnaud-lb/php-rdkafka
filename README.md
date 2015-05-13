@@ -9,8 +9,8 @@ The API ressembles as much as possible to librdkafka's.
 ## Table of Contents
 
 1. [Installation](#installation)
-   * [Using PECL](#usingpecl)
-   * [From source](#fromsource)
+   * [Using PECL](#using-pecl)
+   * [From source](#from-source)
 2. [Examples](#examples)
 3. [Usage](#usage)
    * [Producing](#producing)
