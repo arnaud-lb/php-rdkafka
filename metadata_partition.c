@@ -59,7 +59,7 @@ static zend_object_value create_object(zend_class_entry *class_type TSRMLS_DC) /
     object_intern *intern;
 
     intern = ecalloc(1, sizeof(*intern));
-    zend_object_std_init(&intern->std, class_type);
+    zend_object_std_init(&intern->std, class_type TSRMLS_CC);
     object_properties_init(&intern->std, class_type);
 
     retval.handle = zend_objects_store_put(&intern->std, (zend_objects_store_dtor_t) zend_objects_destroy_object, free_object, NULL TSRMLS_CC);
@@ -73,9 +73,9 @@ static zend_object_value create_object(zend_class_entry *class_type TSRMLS_DC) /
 }
 /* }}} */
 
-static object_intern * get_object(zval *zmt)
+static object_intern * get_object(zval *zmt TSRMLS_DC)
 {
-    object_intern *omt = (object_intern*)zend_object_store_get_object(zmt);
+    object_intern *omt = (object_intern*)zend_object_store_get_object(zmt TSRMLS_CC);
 
     if (!omt->metadata_partition) {
         zend_throw_exception_ex(NULL, 0 TSRMLS_CC, "RdKafka\\Metadata\\Partition::__construct() has not been called");
@@ -94,7 +94,7 @@ static HashTable *get_debug_info(zval *object, int *is_temp TSRMLS_DC) /* {{{ */
 
     array_init(&ary);
 
-    intern = get_object(object);
+    intern = get_object(object TSRMLS_CC);
     if (!intern) {
         return Z_ARRVAL(ary);
     }
@@ -123,7 +123,7 @@ PHP_METHOD(RdKafka__Metadata__Partition, getId)
         return;
     }
 
-    intern = get_object(this_ptr);
+    intern = get_object(this_ptr TSRMLS_CC);
     if (!intern) {
         return;
     }
@@ -146,7 +146,7 @@ PHP_METHOD(RdKafka__Metadata__Partition, getErr)
         return;
     }
 
-    intern = get_object(this_ptr);
+    intern = get_object(this_ptr TSRMLS_CC);
     if (!intern) {
         return;
     }
@@ -169,7 +169,7 @@ PHP_METHOD(RdKafka__Metadata__Partition, getLeader)
         return;
     }
 
-    intern = get_object(this_ptr);
+    intern = get_object(this_ptr TSRMLS_CC);
     if (!intern) {
         return;
     }
@@ -178,7 +178,7 @@ PHP_METHOD(RdKafka__Metadata__Partition, getLeader)
 }
 /* }}} */
 
-void int32_ctor(zval *return_value, zval *zmetadata, const void *data) {
+void int32_ctor(zval *return_value, zval *zmetadata, const void *data TSRMLS_DC) {
     ZVAL_LONG(return_value, *(int32_t*)data);
 }
 
@@ -196,12 +196,12 @@ PHP_METHOD(RdKafka__Metadata__Partition, getReplicas)
         return;
     }
 
-    intern = get_object(this_ptr);
+    intern = get_object(this_ptr TSRMLS_CC);
     if (!intern) {
         return;
     }
 
-    kafka_metadata_collection_init(return_value, this_ptr, intern->metadata_partition->replicas, intern->metadata_partition->replica_cnt, sizeof(*intern->metadata_partition->replicas), int32_ctor);
+    kafka_metadata_collection_init(return_value, this_ptr, intern->metadata_partition->replicas, intern->metadata_partition->replica_cnt, sizeof(*intern->metadata_partition->replicas), int32_ctor TSRMLS_CC);
 }
 /* }}} */
 
@@ -219,12 +219,12 @@ PHP_METHOD(RdKafka__Metadata__Partition, getIsrs)
         return;
     }
 
-    intern = get_object(this_ptr);
+    intern = get_object(this_ptr TSRMLS_CC);
     if (!intern) {
         return;
     }
 
-    kafka_metadata_collection_init(return_value, this_ptr, intern->metadata_partition->isrs, intern->metadata_partition->isr_cnt, sizeof(*intern->metadata_partition->isrs), int32_ctor);
+    kafka_metadata_collection_init(return_value, this_ptr, intern->metadata_partition->isrs, intern->metadata_partition->isr_cnt, sizeof(*intern->metadata_partition->isrs), int32_ctor TSRMLS_CC);
 }
 /* }}} */
 
@@ -237,7 +237,7 @@ static const zend_function_entry fe[] = {
     PHP_FE_END
 };
 
-void kafka_metadata_partition_minit()
+void kafka_metadata_partition_minit(TSRMLS_D)
 {
     zend_class_entry tmpce;
 
@@ -246,7 +246,7 @@ void kafka_metadata_partition_minit()
     ce->create_object = create_object;
 }
 
-void kafka_metadata_partition_ctor(zval *return_value, zval *zmetadata, const void *data)
+void kafka_metadata_partition_ctor(zval *return_value, zval *zmetadata, const void *data TSRMLS_DC)
 {
     rd_kafka_metadata_partition_t *metadata_partition = (rd_kafka_metadata_partition_t*)data;
     object_intern *intern;

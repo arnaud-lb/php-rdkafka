@@ -58,7 +58,7 @@ static zend_object_value create_object(zend_class_entry *class_type TSRMLS_DC) /
     object_intern *intern;
 
     intern = ecalloc(1, sizeof(*intern));
-    zend_object_std_init(&intern->std, class_type);
+    zend_object_std_init(&intern->std, class_type TSRMLS_CC);
     object_properties_init(&intern->std, class_type);
 
     retval.handle = zend_objects_store_put(&intern->std, (zend_objects_store_dtor_t) zend_objects_destroy_object, free_object, NULL TSRMLS_CC);
@@ -72,9 +72,9 @@ static zend_object_value create_object(zend_class_entry *class_type TSRMLS_DC) /
 }
 /* }}} */
 
-static object_intern * get_object(zval *zmt)
+static object_intern * get_object(zval *zmt TSRMLS_DC)
 {
-    object_intern *omt = (object_intern*)zend_object_store_get_object(zmt);
+    object_intern *omt = (object_intern*)zend_object_store_get_object(zmt TSRMLS_CC);
 
     if (!omt->metadata_broker) {
         zend_throw_exception_ex(NULL, 0 TSRMLS_CC, "RdKafka\\Metadata\\Broker::__construct() has not been called");
@@ -93,7 +93,7 @@ static HashTable *get_debug_info(zval *object, int *is_temp TSRMLS_DC) /* {{{ */
 
     array_init(&ary);
 
-    intern = get_object(object);
+    intern = get_object(object TSRMLS_CC);
     if (!intern) {
         return Z_ARRVAL(ary);
     }
@@ -120,7 +120,7 @@ PHP_METHOD(RdKafka__Metadata__Broker, getId)
         return;
     }
 
-    intern = get_object(this_ptr);
+    intern = get_object(this_ptr TSRMLS_CC);
     if (!intern) {
         return;
     }
@@ -143,7 +143,7 @@ PHP_METHOD(RdKafka__Metadata__Broker, getHost)
         return;
     }
 
-    intern = get_object(this_ptr);
+    intern = get_object(this_ptr TSRMLS_CC);
     if (!intern) {
         return;
     }
@@ -166,7 +166,7 @@ PHP_METHOD(RdKafka__Metadata__Broker, getPort)
         return;
     }
 
-    intern = get_object(this_ptr);
+    intern = get_object(this_ptr TSRMLS_CC);
     if (!intern) {
         return;
     }
@@ -182,7 +182,7 @@ static const zend_function_entry fe[] = {
     PHP_FE_END
 };
 
-void kafka_metadata_broker_minit()
+void kafka_metadata_broker_minit(TSRMLS_D)
 {
     zend_class_entry tmpce;
 
@@ -191,7 +191,7 @@ void kafka_metadata_broker_minit()
     ce->create_object = create_object;
 }
 
-void kafka_metadata_broker_ctor(zval *return_value, zval *zmetadata, const void *data)
+void kafka_metadata_broker_ctor(zval *return_value, zval *zmetadata, const void *data TSRMLS_DC)
 {
     rd_kafka_metadata_broker_t *metadata_broker = (rd_kafka_metadata_broker_t*)data;
     object_intern *intern;
