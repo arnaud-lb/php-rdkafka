@@ -382,6 +382,8 @@ PHP_METHOD(RdKafka__Conf, dump)
         case KAFKA_TOPIC_CONF:
             dump = rd_kafka_topic_conf_dump(intern->u.topic_conf, &cntp);
             break;
+        default:
+            return;
     }
 
     array_init(return_value);
@@ -413,7 +415,7 @@ PHP_METHOD(RdKafka__Conf, set)
     int value_len;
     zval *zerrstr = NULL;
     kafka_conf_object *intern;
-    rd_kafka_conf_res_t ret;
+    rd_kafka_conf_res_t ret = 0;
     char *errstr;
 
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ss|Z", &name, &name_len, &value, &value_len, &zerrstr) == FAILURE) {
@@ -861,6 +863,8 @@ PHP_METHOD(RdKafka__Kafka, newTopic)
         case RD_KAFKA_PRODUCER:
             topic_type = ce_kafka_producer_topic;
             break;
+        default:
+            return;
     }
 
     if (object_init_ex(return_value, topic_type) != SUCCESS) {
