@@ -29,6 +29,9 @@
     <file role="doc" name="consumer.php"/>
     <file role="doc" name="producer.php"/>
    </dir>
+   <file role="doc" name="CREDITS"/>
+   <file role="doc" name="LICENSE"/>
+   <file role="doc" name="README.md"/>
    <file role="src" name="config.m4"/>
    <file role="src" name="config.w32"/>
    <file role="src" name="metadata.c"/>
