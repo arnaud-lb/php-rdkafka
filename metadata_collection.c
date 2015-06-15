@@ -38,7 +38,10 @@ typedef struct _object_intern {
     kafka_metadata_collection_ctor_t ctor;
 } object_intern;
 
+static HashTable *get_debug_info(zval *object, int *is_temp TSRMLS_DC);
+
 static zend_class_entry *ce;
+static zend_object_handlers handlers;
 
 static void free_object(void *object TSRMLS_DC) /* {{{ */
 {
@@ -64,7 +67,7 @@ static zend_object_value create_object(zend_class_entry *class_type TSRMLS_DC) /
     object_properties_init(&intern->std, class_type);
 
     retval.handle = zend_objects_store_put(&intern->std, (zend_objects_store_dtor_t) zend_objects_destroy_object, free_object, NULL TSRMLS_CC);
-    retval.handlers = &kafka_object_handlers;
+    retval.handlers = &handlers;
 
     return retval;
 }
@@ -81,6 +84,32 @@ static object_intern * get_object(zval *zmti TSRMLS_DC)
 
     return omti;
 }
+
+static HashTable *get_debug_info(zval *object, int *is_temp TSRMLS_DC) /* {{{ */
+{
+    zval ary;
+    object_intern *intern;
+    int i;
+    zval *item;
+
+    *is_temp = 1;
+
+    array_init(&ary);
+
+    intern = get_object(object TSRMLS_CC);
+    if (!intern) {
+        return Z_ARRVAL(ary);
+    }
+    
+    for (i = 0; i < intern->item_cnt; i++) {
+        ALLOC_INIT_ZVAL(item);
+        intern->ctor(item, &intern->zmetadata, intern->items + i * intern->item_size TSRMLS_CC);
+        add_next_index_zval(&ary, item);
+    }
+
+    return Z_ARRVAL(ary);
+}
+/* }}} */
 
 /* {{{ proto int RdKafka\Metadata\Collection::count()
    */
@@ -248,6 +277,9 @@ void kafka_metadata_collection_minit(TSRMLS_D)
     ce = zend_register_internal_class(&tmpce TSRMLS_CC);
     ce->create_object = create_object;
     zend_class_implements(ce TSRMLS_CC, 2, spl_ce_Countable, spl_ce_Iterator);
+
+    memcpy(&handlers, &kafka_object_handlers, sizeof(handlers));
+    handlers.get_debug_info = get_debug_info;
 }
 
 void kafka_metadata_collection_init(zval *return_value, zval *zmetadata, const void * items, size_t item_cnt, size_t item_size, kafka_metadata_collection_ctor_t ctor TSRMLS_DC)

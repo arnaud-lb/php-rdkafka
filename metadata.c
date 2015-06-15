@@ -39,6 +39,16 @@ static HashTable *get_debug_info(zval *object, int *is_temp TSRMLS_DC);
 static zend_class_entry * ce;
 static zend_object_handlers handlers;
 
+static void brokers_collection(zval *return_value, zval *parent, object_intern *intern TSRMLS_DC) { /* {{{ */
+    kafka_metadata_collection_init(return_value, parent, intern->metadata->brokers, intern->metadata->broker_cnt, sizeof(*intern->metadata->brokers), kafka_metadata_broker_ctor TSRMLS_CC);
+}
+/* }}} */
+
+static void topics_collection(zval *return_value, zval *parent, object_intern *intern TSRMLS_DC) { /* {{{ */
+    kafka_metadata_collection_init(return_value, parent, intern->metadata->topics, intern->metadata->topic_cnt, sizeof(*intern->metadata->topics), kafka_metadata_topic_ctor TSRMLS_CC);
+}
+/* }}} */
+
 static void kafka_metadata_free(void *object TSRMLS_DC) /* {{{ */
 {
     object_intern *intern = (object_intern*)object;
@@ -85,6 +95,8 @@ static HashTable *get_debug_info(zval *object, int *is_temp TSRMLS_DC) /* {{{ */
 {
     zval ary;
     object_intern *intern;
+    zval *brokers;
+    zval *topics;
 
     *is_temp = 1;
 
@@ -95,8 +107,14 @@ static HashTable *get_debug_info(zval *object, int *is_temp TSRMLS_DC) /* {{{ */
         return Z_ARRVAL(ary);
     }
 
-    add_assoc_long(&ary, "broker_cnt", intern->metadata->broker_cnt);
-    add_assoc_long(&ary, "topic_cnt", intern->metadata->topic_cnt);
+    ALLOC_INIT_ZVAL(brokers);
+    brokers_collection(brokers, object, intern TSRMLS_CC);
+    add_assoc_zval(&ary, "brokers", brokers);
+
+    ALLOC_INIT_ZVAL(topics);
+    topics_collection(topics, object, intern TSRMLS_CC);
+    add_assoc_zval(&ary, "topics", topics);
+
     add_assoc_long(&ary, "orig_broker_id", intern->metadata->orig_broker_id);
     add_assoc_string(&ary, "orig_broker_name", intern->metadata->orig_broker_name, 1);
 
@@ -169,7 +187,7 @@ PHP_METHOD(RdKafka__Metadata, getBrokers)
         return;
     }
 
-    kafka_metadata_collection_init(return_value, this_ptr, intern->metadata->brokers, intern->metadata->broker_cnt, sizeof(*intern->metadata->brokers), kafka_metadata_broker_ctor TSRMLS_CC);
+    brokers_collection(return_value, this_ptr, intern TSRMLS_CC);
 }
 /* }}} */
 
@@ -192,7 +210,7 @@ PHP_METHOD(RdKafka__Metadata, getTopics)
         return;
     }
 
-    kafka_metadata_collection_init(return_value, this_ptr, intern->metadata->topics, intern->metadata->topic_cnt, sizeof(*intern->metadata->topics), kafka_metadata_topic_ctor TSRMLS_CC);
+    topics_collection(return_value, this_ptr, intern TSRMLS_CC);
 }
 /* }}} */
 

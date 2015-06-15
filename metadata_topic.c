@@ -40,6 +40,11 @@ static HashTable *get_debug_info(zval *object, int *is_temp TSRMLS_DC);
 static zend_class_entry * ce;
 static zend_object_handlers handlers;
 
+static void partitions_collection(zval *return_value, zval *parent, object_intern *intern TSRMLS_DC) { /* {{{ */
+    kafka_metadata_collection_init(return_value, parent, intern->metadata_topic->partitions, intern->metadata_topic->partition_cnt, sizeof(*intern->metadata_topic->partitions), kafka_metadata_partition_ctor TSRMLS_CC);
+}
+/* }}} */
+
 static void free_object(void *object TSRMLS_DC) /* {{{ */
 {
     object_intern *intern = (object_intern*)object;
@@ -86,6 +91,7 @@ static HashTable *get_debug_info(zval *object, int *is_temp TSRMLS_DC) /* {{{ */
 {
     zval ary;
     object_intern *intern;
+    zval *partitions;
 
     *is_temp = 1;
 
@@ -97,7 +103,11 @@ static HashTable *get_debug_info(zval *object, int *is_temp TSRMLS_DC) /* {{{ */
     }
 
     add_assoc_string(&ary, "topic", intern->metadata_topic->topic, 1);
-    add_assoc_long(&ary, "partition_cnt", intern->metadata_topic->partition_cnt);
+
+    ALLOC_INIT_ZVAL(partitions);
+    partitions_collection(partitions, object, intern TSRMLS_CC);
+    add_assoc_zval(&ary, "partitions", partitions);
+
     add_assoc_long(&ary, "err", intern->metadata_topic->err);
 
     return Z_ARRVAL(ary);
@@ -170,7 +180,7 @@ PHP_METHOD(RdKafka__Metadata__Topic, getPartitions)
         return;
     }
 
-    kafka_metadata_collection_init(return_value, this_ptr, intern->metadata_topic->partitions, intern->metadata_topic->partition_cnt, sizeof(*intern->metadata_topic->partitions), kafka_metadata_partition_ctor TSRMLS_CC);
+    partitions_collection(return_value, this_ptr, intern TSRMLS_CC);
 }
 /* }}} */
 
