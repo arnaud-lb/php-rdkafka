@@ -37,7 +37,7 @@ typedef struct _object_intern {
 static HashTable *get_debug_info(zval *object, int *is_temp TSRMLS_DC);
 
 static zend_class_entry * ce;
-zend_object_handlers handlers;
+static zend_object_handlers handlers;
 
 static void kafka_metadata_free(void *object TSRMLS_DC) /* {{{ */
 {
@@ -63,10 +63,6 @@ static zend_object_value kafka_metadata_new(zend_class_entry *class_type TSRMLS_
     object_properties_init(&intern->std, class_type);
 
     retval.handle = zend_objects_store_put(&intern->std, (zend_objects_store_dtor_t) zend_objects_destroy_object, kafka_metadata_free, NULL TSRMLS_CC);
-
-    memcpy(&handlers, &kafka_object_handlers, sizeof(handlers));
-    handlers.get_debug_info = get_debug_info;
-
     retval.handlers = &handlers;
 
     return retval;
@@ -215,6 +211,9 @@ void kafka_metadata_minit(TSRMLS_D)
     INIT_NS_CLASS_ENTRY(tmpce, "RdKafka", "Metadata", kafka_metadata_fe);
     ce = zend_register_internal_class(&tmpce TSRMLS_CC);
     ce->create_object = kafka_metadata_new;
+
+    memcpy(&handlers, &kafka_object_handlers, sizeof(handlers));
+    handlers.get_debug_info = get_debug_info;
 
     kafka_metadata_topic_minit(TSRMLS_C);
     kafka_metadata_broker_minit(TSRMLS_C);
