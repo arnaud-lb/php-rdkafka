@@ -325,6 +325,7 @@ ZEND_END_ARG_INFO()
 PHP_METHOD(RdKafka, __construct)
 {
     zend_throw_exception(NULL, "Private constructor", 0 TSRMLS_CC);
+    return;
 }
 /* }}} */
 
@@ -452,10 +453,10 @@ PHP_METHOD(RdKafka__Conf, set)
     switch (ret) {
         case RD_KAFKA_CONF_UNKNOWN:
             zend_throw_exception(ce_kafka_exception, "Unknown configuration name", RD_KAFKA_CONF_UNKNOWN TSRMLS_CC);
-            break;
+            return;
         case RD_KAFKA_CONF_INVALID:
             zend_throw_exception(ce_kafka_exception, "Unknown configuration value", RD_KAFKA_CONF_INVALID TSRMLS_CC);
-            break;
+            return;
         case RD_KAFKA_CONF_OK:
             break;
     }
@@ -512,6 +513,7 @@ PHP_METHOD(RdKafka__ConsumerTopic, consumeQueueStart)
     if (ret == -1) {
         err = rd_kafka_errno2err(errno);
         zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err TSRMLS_CC);
+        return;
     }
 }
 /* }}} */
@@ -551,6 +553,7 @@ PHP_METHOD(RdKafka__ConsumerTopic, consumeStart)
     if (ret == -1) {
         err = rd_kafka_errno2err(errno);
         zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err TSRMLS_CC);
+        return;
     }
 }
 /* }}} */
@@ -588,6 +591,7 @@ PHP_METHOD(RdKafka__ConsumerTopic, consumeStop)
     if (ret == -1) {
         err = rd_kafka_errno2err(errno);
         zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err TSRMLS_CC);
+        return;
     }
 }
 /* }}} */
@@ -743,6 +747,7 @@ PHP_METHOD(RdKafka__Kafka, metadata)
 
     if (err != RD_KAFKA_RESP_ERR_NO_ERROR) {
         zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err TSRMLS_CC);
+        return;
     }
 
     kafka_metadata_init(return_value, metadata TSRMLS_CC);
@@ -1026,6 +1031,7 @@ PHP_METHOD(RdKafka__ProducerTopic, produce)
     if (ret == -1) {
         err = rd_kafka_errno2err(errno);
         zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err TSRMLS_CC);
+        return;
     }
 }
 /* }}} */
