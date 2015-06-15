@@ -62,7 +62,7 @@ typedef struct _kafka_topic_object {
     zval                *zrk;
 } kafka_topic_object;
 
-static kafka_conf_object * get_kafka_conf_object(zval *zconf);
+static kafka_conf_object * get_kafka_conf_object(zval *zconf TSRMLS_DC);
 
 static const zend_function_entry empty_function_entries[] = {
     PHP_FE_END
@@ -100,7 +100,7 @@ static void kafka_free(void *object TSRMLS_DC) /* {{{ */
 }
 /* }}} */
 
-static void kafka_init(zval *this_ptr, rd_kafka_type_t type, zval *zconf, zval *zerrstr) /* {{{ */
+static void kafka_init(zval *this_ptr, rd_kafka_type_t type, zval *zconf, zval *zerrstr TSRMLS_DC) /* {{{ */
 {
     char *errstr;
     rd_kafka_t *rk;
@@ -114,7 +114,7 @@ static void kafka_init(zval *this_ptr, rd_kafka_type_t type, zval *zconf, zval *
     }
 
     if (zconf) {
-        conf_intern = get_kafka_conf_object(zconf);
+        conf_intern = get_kafka_conf_object(zconf TSRMLS_CC);
         if (conf_intern) {
             conf = rd_kafka_conf_dup(conf_intern->u.conf);
         }
@@ -142,7 +142,7 @@ static zend_object_value kafka_new(zend_class_entry *class_type TSRMLS_DC) /* {{
     kafka_object *intern;
 
     intern = ecalloc(1, sizeof(*intern));
-    zend_object_std_init(&intern->std, class_type);
+    zend_object_std_init(&intern->std, class_type TSRMLS_CC);
     object_properties_init(&intern->std, class_type);
 
     retval.handle = zend_objects_store_put(&intern->std, (zend_objects_store_dtor_t) zend_objects_destroy_object, kafka_free, NULL TSRMLS_CC);
@@ -152,12 +152,12 @@ static zend_object_value kafka_new(zend_class_entry *class_type TSRMLS_DC) /* {{
 }
 /* }}} */
 
-static kafka_object * get_kafka_object(zval *zrk)
+static kafka_object * get_kafka_object(zval *zrk TSRMLS_DC)
 {
-    kafka_object *ork = (kafka_object*)zend_object_store_get_object(zrk);
+    kafka_object *ork = (kafka_object*)zend_object_store_get_object(zrk TSRMLS_CC);
 
     if (!ork->rk) {
-        zend_throw_exception_ex(NULL, 0 TSRMLS_CC, "RdKafka\\Kafka::__construct() has not been called");
+        zend_throw_exception_ex(NULL, 0 TSRMLS_CC, "RdKafka\\Kafka::__construct() has not been called" TSRMLS_CC);
         return NULL;
     }
 
@@ -193,7 +193,7 @@ static zend_object_value kafka_conf_new(zend_class_entry *class_type TSRMLS_DC) 
     kafka_conf_object *intern;
 
     intern = ecalloc(1, sizeof(*intern));
-    zend_object_std_init(&intern->std, class_type);
+    zend_object_std_init(&intern->std, class_type TSRMLS_CC);
     object_properties_init(&intern->std, class_type);
 
     retval.handle = zend_objects_store_put(&intern->std, (zend_objects_store_dtor_t) zend_objects_destroy_object, kafka_conf_free, NULL TSRMLS_CC);
@@ -203,12 +203,12 @@ static zend_object_value kafka_conf_new(zend_class_entry *class_type TSRMLS_DC) 
 }
 /* }}} */
 
-static kafka_conf_object * get_kafka_conf_object(zval *zconf)
+static kafka_conf_object * get_kafka_conf_object(zval *zconf TSRMLS_DC)
 {
-    kafka_conf_object *oconf = (kafka_conf_object*)zend_object_store_get_object(zconf);
+    kafka_conf_object *oconf = (kafka_conf_object*)zend_object_store_get_object(zconf TSRMLS_CC);
 
     if (!oconf->type) {
-        zend_throw_exception_ex(NULL, 0 TSRMLS_CC, "RdKafka\\Conf::__construct() has not been called");
+        zend_throw_exception_ex(NULL, 0 TSRMLS_CC, "RdKafka\\Conf::__construct() has not been called" TSRMLS_CC);
         return NULL;
     }
 
@@ -235,7 +235,7 @@ static zend_object_value kafka_queue_new(zend_class_entry *class_type TSRMLS_DC)
     kafka_queue_object *intern;
 
     intern = ecalloc(1, sizeof(*intern));
-    zend_object_std_init(&intern->std, class_type);
+    zend_object_std_init(&intern->std, class_type TSRMLS_CC);
     object_properties_init(&intern->std, class_type);
 
     retval.handle = zend_objects_store_put(&intern->std, (zend_objects_store_dtor_t) zend_objects_destroy_object, kafka_queue_free, NULL TSRMLS_CC);
@@ -245,12 +245,12 @@ static zend_object_value kafka_queue_new(zend_class_entry *class_type TSRMLS_DC)
 }
 /* }}} */
 
-static kafka_queue_object * get_kafka_queue_object(zval *zrkqu)
+static kafka_queue_object * get_kafka_queue_object(zval *zrkqu TSRMLS_DC)
 {
-    kafka_queue_object *orkqu = (kafka_queue_object*)zend_object_store_get_object(zrkqu);
+    kafka_queue_object *orkqu = (kafka_queue_object*)zend_object_store_get_object(zrkqu TSRMLS_CC);
 
     if (!orkqu->rkqu) {
-        zend_throw_exception_ex(NULL, 0 TSRMLS_CC, "RdKafka\\Queue::__construct() has not been called");
+        zend_throw_exception_ex(NULL, 0 TSRMLS_CC, "RdKafka\\Queue::__construct() has not been called" TSRMLS_CC);
         return NULL;
     }
 
@@ -280,7 +280,7 @@ static zend_object_value kafka_topic_new(zend_class_entry *class_type TSRMLS_DC)
     kafka_topic_object *intern;
 
     intern = ecalloc(1, sizeof(*intern));
-    zend_object_std_init(&intern->std, class_type);
+    zend_object_std_init(&intern->std, class_type TSRMLS_CC);
     object_properties_init(&intern->std, class_type);
 
     retval.handle = zend_objects_store_put(&intern->std, (zend_objects_store_dtor_t) zend_objects_destroy_object, kafka_topic_free, NULL TSRMLS_CC);
@@ -290,32 +290,32 @@ static zend_object_value kafka_topic_new(zend_class_entry *class_type TSRMLS_DC)
 }
 /* }}} */
 
-static kafka_topic_object * get_kafka_topic_object(zval *zrkt)
+static kafka_topic_object * get_kafka_topic_object(zval *zrkt TSRMLS_DC)
 {
-    kafka_topic_object *orkt = (kafka_topic_object*)zend_object_store_get_object(zrkt);
+    kafka_topic_object *orkt = (kafka_topic_object*)zend_object_store_get_object(zrkt TSRMLS_CC);
 
     if (!orkt->rkt) {
-        zend_throw_exception_ex(NULL, 0 TSRMLS_CC, "RdKafka\\Topic::__construct() has not been called");
+        zend_throw_exception_ex(NULL, 0 TSRMLS_CC, "RdKafka\\Topic::__construct() has not been called" TSRMLS_CC);
         return NULL;
     }
 
     return orkt;
 }
 
-static void new_message(zval *return_value, rd_kafka_message_t *message)
+static void new_message(zval *return_value, rd_kafka_message_t *message TSRMLS_DC)
 {
     object_init_ex(return_value, ce_kafka_message);
 
-    zend_update_property_long(NULL, return_value, ZEND_STRL("err"), message->err);
-    zend_update_property_string(NULL, return_value, ZEND_STRL("topic_name"), rd_kafka_topic_name(message->rkt));
-    zend_update_property_long(NULL, return_value, ZEND_STRL("partition"), message->partition);
+    zend_update_property_long(NULL, return_value, ZEND_STRL("err"), message->err TSRMLS_CC);
+    zend_update_property_string(NULL, return_value, ZEND_STRL("topic_name"), rd_kafka_topic_name(message->rkt) TSRMLS_CC);
+    zend_update_property_long(NULL, return_value, ZEND_STRL("partition"), message->partition TSRMLS_CC);
     if (message->payload) {
-        zend_update_property_stringl(NULL, return_value, ZEND_STRL("payload"), message->payload, message->len);
+        zend_update_property_stringl(NULL, return_value, ZEND_STRL("payload"), message->payload, message->len TSRMLS_CC);
     }
     if (message->key) {
-        zend_update_property_stringl(NULL, return_value, ZEND_STRL("key"), message->key, message->key_len);
+        zend_update_property_stringl(NULL, return_value, ZEND_STRL("key"), message->key, message->key_len TSRMLS_CC);
     }
-    zend_update_property_long(NULL, return_value, ZEND_STRL("offset"), message->offset);
+    zend_update_property_long(NULL, return_value, ZEND_STRL("offset"), message->offset TSRMLS_CC);
 }
 
 /* {{{ private constructor */
@@ -324,7 +324,7 @@ ZEND_END_ARG_INFO()
 
 PHP_METHOD(RdKafka, __construct)
 {
-    zend_throw_exception(NULL, "Private constructor", 0);
+    zend_throw_exception(NULL, "Private constructor", 0 TSRMLS_CC);
 }
 /* }}} */
 
@@ -370,7 +370,7 @@ PHP_METHOD(RdKafka__Conf, dump)
         return;
     }
 
-    intern = get_kafka_conf_object(this_ptr);
+    intern = get_kafka_conf_object(this_ptr TSRMLS_CC);
     if (!intern) {
         return;
     }
@@ -382,6 +382,8 @@ PHP_METHOD(RdKafka__Conf, dump)
         case KAFKA_TOPIC_CONF:
             dump = rd_kafka_topic_conf_dump(intern->u.topic_conf, &cntp);
             break;
+        default:
+            return;
     }
 
     array_init(return_value);
@@ -413,14 +415,14 @@ PHP_METHOD(RdKafka__Conf, set)
     int value_len;
     zval *zerrstr = NULL;
     kafka_conf_object *intern;
-    rd_kafka_conf_res_t ret;
+    rd_kafka_conf_res_t ret = 0;
     char *errstr;
 
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ss|Z", &name, &name_len, &value, &value_len, &zerrstr) == FAILURE) {
         return;
     }
 
-    intern = get_kafka_conf_object(this_ptr);
+    intern = get_kafka_conf_object(this_ptr TSRMLS_CC);
     if (!intern) {
         return;
     }
@@ -449,10 +451,10 @@ PHP_METHOD(RdKafka__Conf, set)
 
     switch (ret) {
         case RD_KAFKA_CONF_UNKNOWN:
-            zend_throw_exception(ce_kafka_exception, "Unknown configuration name", RD_KAFKA_CONF_UNKNOWN);
+            zend_throw_exception(ce_kafka_exception, "Unknown configuration name", RD_KAFKA_CONF_UNKNOWN TSRMLS_CC);
             break;
         case RD_KAFKA_CONF_INVALID:
-            zend_throw_exception(ce_kafka_exception, "Unknown configuration value", RD_KAFKA_CONF_INVALID);
+            zend_throw_exception(ce_kafka_exception, "Unknown configuration value", RD_KAFKA_CONF_INVALID TSRMLS_CC);
             break;
         case RD_KAFKA_CONF_OK:
             break;
@@ -491,16 +493,16 @@ PHP_METHOD(RdKafka__ConsumerTopic, consumeQueueStart)
     }
 
     if (partition != RD_KAFKA_PARTITION_UA && (partition < 0 || partition > 0x7FFFFFFF)) {
-        zend_throw_exception_ex(spl_ce_InvalidArgumentException, 0 TSRMLS_CC, "Out of range value '%ld' for $partition", partition);
+        zend_throw_exception_ex(spl_ce_InvalidArgumentException, 0 TSRMLS_CC, "Out of range value '%ld' for $partition", partition TSRMLS_CC);
         return;
     }
 
-    intern = get_kafka_topic_object(this_ptr);
+    intern = get_kafka_topic_object(this_ptr TSRMLS_CC);
     if (!intern) {
         return;
     }
 
-    queue_intern = get_kafka_queue_object(zrkqu);
+    queue_intern = get_kafka_queue_object(zrkqu TSRMLS_CC);
     if (!queue_intern) {
         return;
     }
@@ -509,7 +511,7 @@ PHP_METHOD(RdKafka__ConsumerTopic, consumeQueueStart)
 
     if (ret == -1) {
         err = rd_kafka_errno2err(errno);
-        zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err);
+        zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err TSRMLS_CC);
     }
 }
 /* }}} */
@@ -535,11 +537,11 @@ PHP_METHOD(RdKafka__ConsumerTopic, consumeStart)
     }
 
     if (partition != RD_KAFKA_PARTITION_UA && (partition < 0 || partition > 0x7FFFFFFF)) {
-        zend_throw_exception_ex(spl_ce_InvalidArgumentException, 0 TSRMLS_CC, "Out of range value '%ld' for $partition", partition);
+        zend_throw_exception_ex(spl_ce_InvalidArgumentException, 0 TSRMLS_CC, "Out of range value '%ld' for $partition", partition TSRMLS_CC);
         return;
     }
 
-    intern = get_kafka_topic_object(this_ptr);
+    intern = get_kafka_topic_object(this_ptr TSRMLS_CC);
     if (!intern) {
         return;
     }
@@ -548,7 +550,7 @@ PHP_METHOD(RdKafka__ConsumerTopic, consumeStart)
 
     if (ret == -1) {
         err = rd_kafka_errno2err(errno);
-        zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err);
+        zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err TSRMLS_CC);
     }
 }
 /* }}} */
@@ -572,11 +574,11 @@ PHP_METHOD(RdKafka__ConsumerTopic, consumeStop)
     }
 
     if (partition != RD_KAFKA_PARTITION_UA && (partition < 0 || partition > 0x7FFFFFFF)) {
-        zend_throw_exception_ex(spl_ce_InvalidArgumentException, 0 TSRMLS_CC, "Out of range value '%ld' for $partition", partition);
+        zend_throw_exception_ex(spl_ce_InvalidArgumentException, 0 TSRMLS_CC, "Out of range value '%ld' for $partition", partition TSRMLS_CC);
         return;
     }
 
-    intern = get_kafka_topic_object(this_ptr);
+    intern = get_kafka_topic_object(this_ptr TSRMLS_CC);
     if (!intern) {
         return;
     }
@@ -585,7 +587,7 @@ PHP_METHOD(RdKafka__ConsumerTopic, consumeStop)
 
     if (ret == -1) {
         err = rd_kafka_errno2err(errno);
-        zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err);
+        zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err TSRMLS_CC);
     }
 }
 /* }}} */
@@ -611,11 +613,11 @@ PHP_METHOD(RdKafka__ConsumerTopic, consume)
     }
 
     if (partition != RD_KAFKA_PARTITION_UA && (partition < 0 || partition > 0x7FFFFFFF)) {
-        zend_throw_exception_ex(spl_ce_InvalidArgumentException, 0 TSRMLS_CC, "Out of range value '%ld' for $partition", partition);
+        zend_throw_exception_ex(spl_ce_InvalidArgumentException, 0 TSRMLS_CC, "Out of range value '%ld' for $partition", partition TSRMLS_CC);
         return;
     }
 
-    intern = get_kafka_topic_object(this_ptr);
+    intern = get_kafka_topic_object(this_ptr TSRMLS_CC);
     if (!intern) {
         return;
     }
@@ -627,11 +629,11 @@ PHP_METHOD(RdKafka__ConsumerTopic, consume)
         if (err == RD_KAFKA_RESP_ERR__TIMED_OUT) {
             return;
         }
-        zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err);
+        zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err TSRMLS_CC);
         return;
     }
 
-    new_message(return_value, message);
+    new_message(return_value, message TSRMLS_CC);
 
     rd_kafka_message_destroy(message);
 }
@@ -666,7 +668,7 @@ PHP_METHOD(RdKafka__Consumer, __construct)
         return;
     }
 
-    kafka_init(this_ptr, RD_KAFKA_CONSUMER, zconf, zerrstr);
+    kafka_init(this_ptr, RD_KAFKA_CONSUMER, zconf, zerrstr TSRMLS_CC);
 
     zend_restore_error_handling(&error_handling TSRMLS_CC);
 }
@@ -694,7 +696,7 @@ PHP_METHOD(RdKafka__Kafka, addBrokers)
         return;
     }
 
-    intern = get_kafka_object(this_ptr);
+    intern = get_kafka_object(this_ptr TSRMLS_CC);
     if (!intern) {
         return;
     }
@@ -725,13 +727,13 @@ PHP_METHOD(RdKafka__Kafka, metadata)
         return;
     }
 
-    intern = get_kafka_object(this_ptr);
+    intern = get_kafka_object(this_ptr TSRMLS_CC);
     if (!intern) {
         return;
     }
 
     if (only_zrkt) {
-        only_orkt = get_kafka_topic_object(only_zrkt);
+        only_orkt = get_kafka_topic_object(only_zrkt TSRMLS_CC);
         if (!only_orkt) {
             return;
         }
@@ -740,10 +742,10 @@ PHP_METHOD(RdKafka__Kafka, metadata)
     err = rd_kafka_metadata(intern->rk, all_topics, only_orkt ? only_orkt->rkt : NULL, &metadata, timeout_ms);
 
     if (err != RD_KAFKA_RESP_ERR_NO_ERROR) {
-        zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err);
+        zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err TSRMLS_CC);
     }
 
-    kafka_metadata_init(return_value, metadata);
+    kafka_metadata_init(return_value, metadata TSRMLS_CC);
 }
 /* }}} */
 
@@ -763,7 +765,7 @@ PHP_METHOD(RdKafka__Kafka, setLogLevel)
         return;
     }
 
-    intern = get_kafka_object(this_ptr);
+    intern = get_kafka_object(this_ptr TSRMLS_CC);
     if (!intern) {
         return;
     }
@@ -788,7 +790,7 @@ PHP_METHOD(RdKafka__Kafka, newQueue)
         return;
     }
 
-    intern = get_kafka_object(this_ptr);
+    intern = get_kafka_object(this_ptr TSRMLS_CC);
     if (!intern) {
         return;
     }
@@ -836,13 +838,13 @@ PHP_METHOD(RdKafka__Kafka, newTopic)
         return;
     }
 
-    intern = get_kafka_object(this_ptr);
+    intern = get_kafka_object(this_ptr TSRMLS_CC);
     if (!intern) {
         return;
     }
 
     if (zconf) {
-        conf_intern = get_kafka_conf_object(zconf);
+        conf_intern = get_kafka_conf_object(zconf TSRMLS_CC);
         if (conf_intern) {
             conf = rd_kafka_topic_conf_dup(conf_intern->u.topic_conf);
         }
@@ -861,6 +863,8 @@ PHP_METHOD(RdKafka__Kafka, newTopic)
         case RD_KAFKA_PRODUCER:
             topic_type = ce_kafka_producer_topic;
             break;
+        default:
+            return;
     }
 
     if (object_init_ex(return_value, topic_type) != SUCCESS) {
@@ -892,7 +896,7 @@ PHP_METHOD(RdKafka__Kafka, outqLen)
         return;
     }
 
-    intern = get_kafka_object(this_ptr);
+    intern = get_kafka_object(this_ptr TSRMLS_CC);
     if (!intern) {
         return;
     }
@@ -917,7 +921,7 @@ PHP_METHOD(RdKafka__Kafka, poll)
         return;
     }
 
-    intern = get_kafka_object(this_ptr);
+    intern = get_kafka_object(this_ptr TSRMLS_CC);
     if (!intern) {
         return;
     }
@@ -1006,22 +1010,22 @@ PHP_METHOD(RdKafka__ProducerTopic, produce)
     }
 
     if (partition != RD_KAFKA_PARTITION_UA && (partition < 0 || partition > 0x7FFFFFFF)) {
-        zend_throw_exception_ex(spl_ce_InvalidArgumentException, 0 TSRMLS_CC, "Out of range value '%ld' for $partition", partition);
+        zend_throw_exception_ex(spl_ce_InvalidArgumentException, 0 TSRMLS_CC, "Out of range value '%ld' for $partition", partition TSRMLS_CC);
         return;
     }
 
     if (msgflags != 0) {
-        zend_throw_exception_ex(spl_ce_InvalidArgumentException, 0 TSRMLS_CC, "Invalid value '%ld' for $msgflags", msgflags);
+        zend_throw_exception_ex(spl_ce_InvalidArgumentException, 0 TSRMLS_CC, "Invalid value '%ld' for $msgflags", msgflags TSRMLS_CC);
         return;
     }
 
-    intern = get_kafka_topic_object(this_ptr);
+    intern = get_kafka_topic_object(this_ptr TSRMLS_CC);
 
     ret = rd_kafka_produce(intern->rkt, partition, msgflags | RD_KAFKA_MSG_F_COPY, payload, payload_len, key, key_len, NULL);
 
     if (ret == -1) {
         err = rd_kafka_errno2err(errno);
-        zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err);
+        zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err TSRMLS_CC);
     }
 }
 /* }}} */
@@ -1052,7 +1056,7 @@ PHP_METHOD(RdKafka__Producer, __construct)
         return;
     }
 
-    kafka_init(this_ptr, RD_KAFKA_PRODUCER, zconf, zerrstr);
+    kafka_init(this_ptr, RD_KAFKA_PRODUCER, zconf, zerrstr TSRMLS_CC);
 
     zend_restore_error_handling(&error_handling TSRMLS_CC);
 }
@@ -1081,7 +1085,7 @@ PHP_METHOD(RdKafka__Queue, consume)
         return;
     }
 
-    intern = get_kafka_queue_object(this_ptr);
+    intern = get_kafka_queue_object(this_ptr TSRMLS_CC);
     if (!intern) {
         return;
     }
@@ -1093,11 +1097,11 @@ PHP_METHOD(RdKafka__Queue, consume)
         if (err == RD_KAFKA_RESP_ERR__TIMED_OUT) {
             return;
         }
-        zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err);
+        zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err TSRMLS_CC);
         return;
     }
 
-    new_message(return_value, message);
+    new_message(return_value, message TSRMLS_CC);
 
     rd_kafka_message_destroy(message);
 }
@@ -1305,12 +1309,12 @@ PHP_MINIT_FUNCTION(rdkafka)
     INIT_NS_CLASS_ENTRY(ce, "RdKafka", "Message", kafka_message_fe);
     ce_kafka_message = zend_register_internal_class(&ce TSRMLS_CC);
 
-    zend_declare_property_null(ce_kafka_message, ZEND_STRL("err"), ZEND_ACC_PUBLIC);
-    zend_declare_property_null(ce_kafka_message, ZEND_STRL("topic_name"), ZEND_ACC_PUBLIC);
-    zend_declare_property_null(ce_kafka_message, ZEND_STRL("partition"), ZEND_ACC_PUBLIC);
-    zend_declare_property_null(ce_kafka_message, ZEND_STRL("payload"), ZEND_ACC_PUBLIC);
-    zend_declare_property_null(ce_kafka_message, ZEND_STRL("key"), ZEND_ACC_PUBLIC);
-    zend_declare_property_null(ce_kafka_message, ZEND_STRL("offset"), ZEND_ACC_PUBLIC);
+    zend_declare_property_null(ce_kafka_message, ZEND_STRL("err"), ZEND_ACC_PUBLIC TSRMLS_CC);
+    zend_declare_property_null(ce_kafka_message, ZEND_STRL("topic_name"), ZEND_ACC_PUBLIC TSRMLS_CC);
+    zend_declare_property_null(ce_kafka_message, ZEND_STRL("partition"), ZEND_ACC_PUBLIC TSRMLS_CC);
+    zend_declare_property_null(ce_kafka_message, ZEND_STRL("payload"), ZEND_ACC_PUBLIC TSRMLS_CC);
+    zend_declare_property_null(ce_kafka_message, ZEND_STRL("key"), ZEND_ACC_PUBLIC TSRMLS_CC);
+    zend_declare_property_null(ce_kafka_message, ZEND_STRL("offset"), ZEND_ACC_PUBLIC TSRMLS_CC);
 
     INIT_NS_CLASS_ENTRY(ce, "RdKafka", "Queue", kafka_queue_fe);
     ce_kafka_queue = zend_register_internal_class(&ce TSRMLS_CC);
@@ -1319,7 +1323,7 @@ PHP_MINIT_FUNCTION(rdkafka)
     INIT_NS_CLASS_ENTRY(ce, "RdKafka", "Exception", NULL);
     ce_kafka_exception = zend_register_internal_class_ex(&ce, zend_exception_get_default(TSRMLS_C), NULL TSRMLS_CC);
 
-    kafka_metadata_minit();
+    kafka_metadata_minit(TSRMLS_C);
 
     return SUCCESS;
 }

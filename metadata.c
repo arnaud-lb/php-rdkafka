@@ -59,7 +59,7 @@ static zend_object_value kafka_metadata_new(zend_class_entry *class_type TSRMLS_
     object_intern *intern;
 
     intern = ecalloc(1, sizeof(*intern));
-    zend_object_std_init(&intern->std, class_type);
+    zend_object_std_init(&intern->std, class_type TSRMLS_CC);
     object_properties_init(&intern->std, class_type);
 
     retval.handle = zend_objects_store_put(&intern->std, (zend_objects_store_dtor_t) zend_objects_destroy_object, kafka_metadata_free, NULL TSRMLS_CC);
@@ -73,9 +73,9 @@ static zend_object_value kafka_metadata_new(zend_class_entry *class_type TSRMLS_
 }
 /* }}} */
 
-object_intern * get_object(zval *zmetadata)
+static object_intern * get_object(zval *zmetadata TSRMLS_DC)
 {
-    object_intern *ometadata = (object_intern*)zend_object_store_get_object(zmetadata);
+    object_intern *ometadata = (object_intern*)zend_object_store_get_object(zmetadata TSRMLS_CC);
 
     if (!ometadata->metadata) {
         zend_throw_exception_ex(NULL, 0 TSRMLS_CC, "RdKafka\\Metadata::__construct() has not been called");
@@ -94,7 +94,7 @@ static HashTable *get_debug_info(zval *object, int *is_temp TSRMLS_DC) /* {{{ */
 
     array_init(&ary);
 
-    intern = get_object(object);
+    intern = get_object(object TSRMLS_CC);
     if (!intern) {
         return Z_ARRVAL(ary);
     }
@@ -122,7 +122,7 @@ PHP_METHOD(RdKafka__Metadata, getOrigBrokerId)
         return;
     }
 
-    intern = get_object(this_ptr);
+    intern = get_object(this_ptr TSRMLS_CC);
     if (!intern) {
         return;
     }
@@ -145,7 +145,7 @@ PHP_METHOD(RdKafka__Metadata, getOrigBrokerName)
         return;
     }
 
-    intern = get_object(this_ptr);
+    intern = get_object(this_ptr TSRMLS_CC);
     if (!intern) {
         return;
     }
@@ -168,12 +168,12 @@ PHP_METHOD(RdKafka__Metadata, getBrokers)
         return;
     }
 
-    intern = get_object(this_ptr);
+    intern = get_object(this_ptr TSRMLS_CC);
     if (!intern) {
         return;
     }
 
-    kafka_metadata_collection_init(return_value, this_ptr, intern->metadata->brokers, intern->metadata->broker_cnt, sizeof(*intern->metadata->brokers), kafka_metadata_broker_ctor);
+    kafka_metadata_collection_init(return_value, this_ptr, intern->metadata->brokers, intern->metadata->broker_cnt, sizeof(*intern->metadata->brokers), kafka_metadata_broker_ctor TSRMLS_CC);
 }
 /* }}} */
 
@@ -191,12 +191,12 @@ PHP_METHOD(RdKafka__Metadata, getTopics)
         return;
     }
 
-    intern = get_object(this_ptr);
+    intern = get_object(this_ptr TSRMLS_CC);
     if (!intern) {
         return;
     }
 
-    kafka_metadata_collection_init(return_value, this_ptr, intern->metadata->topics, intern->metadata->topic_cnt, sizeof(*intern->metadata->topics), kafka_metadata_topic_ctor);
+    kafka_metadata_collection_init(return_value, this_ptr, intern->metadata->topics, intern->metadata->topic_cnt, sizeof(*intern->metadata->topics), kafka_metadata_topic_ctor TSRMLS_CC);
 }
 /* }}} */
 
@@ -208,7 +208,7 @@ static const zend_function_entry kafka_metadata_fe[] = {
     PHP_FE_END
 };
 
-void kafka_metadata_minit()
+void kafka_metadata_minit(TSRMLS_D)
 {
     zend_class_entry tmpce;
 
@@ -216,13 +216,13 @@ void kafka_metadata_minit()
     ce = zend_register_internal_class(&tmpce TSRMLS_CC);
     ce->create_object = kafka_metadata_new;
 
-    kafka_metadata_topic_minit();
-    kafka_metadata_broker_minit();
-    kafka_metadata_partition_minit();
-    kafka_metadata_collection_minit();
+    kafka_metadata_topic_minit(TSRMLS_C);
+    kafka_metadata_broker_minit(TSRMLS_C);
+    kafka_metadata_partition_minit(TSRMLS_C);
+    kafka_metadata_collection_minit(TSRMLS_C);
 }
 
-void kafka_metadata_init(zval *return_value, const rd_kafka_metadata_t *metadata)
+void kafka_metadata_init(zval *return_value, const rd_kafka_metadata_t *metadata TSRMLS_DC)
 {
     object_intern *intern;
 

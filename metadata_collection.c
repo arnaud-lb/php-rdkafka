@@ -60,7 +60,7 @@ static zend_object_value create_object(zend_class_entry *class_type TSRMLS_DC) /
     object_intern *intern;
 
     intern = ecalloc(1, sizeof(*intern));
-    zend_object_std_init(&intern->std, class_type);
+    zend_object_std_init(&intern->std, class_type TSRMLS_CC);
     object_properties_init(&intern->std, class_type);
 
     retval.handle = zend_objects_store_put(&intern->std, (zend_objects_store_dtor_t) zend_objects_destroy_object, free_object, NULL TSRMLS_CC);
@@ -70,12 +70,12 @@ static zend_object_value create_object(zend_class_entry *class_type TSRMLS_DC) /
 }
 /* }}} */
 
-static object_intern * get_object(zval *zmti)
+static object_intern * get_object(zval *zmti TSRMLS_DC)
 {
-    object_intern *omti = (object_intern*)zend_object_store_get_object(zmti);
+    object_intern *omti = (object_intern*)zend_object_store_get_object(zmti TSRMLS_CC);
 
     if (!omti->items) {
-        zend_throw_exception_ex(NULL, 0 TSRMLS_CC, "RdKafka\\Metadata\\Collection::__construct() has not been called");
+        zend_throw_exception_ex(NULL, 0 TSRMLS_CC, "RdKafka\\Metadata\\Collection::__construct() has not been called" TSRMLS_CC);
         return NULL;
     }
 
@@ -96,7 +96,7 @@ PHP_METHOD(RdKafka__Metadata__Collection, count)
         return;
     }
 
-    intern = get_object(this_ptr);
+    intern = get_object(this_ptr TSRMLS_CC);
     if (!intern) {
         return;
     }
@@ -119,7 +119,7 @@ PHP_METHOD(RdKafka__Metadata__Collection, rewind)
         return;
     }
 
-    intern = get_object(this_ptr);
+    intern = get_object(this_ptr TSRMLS_CC);
     if (!intern) {
         return;
     }
@@ -142,17 +142,17 @@ PHP_METHOD(RdKafka__Metadata__Collection, current)
         return;
     }
 
-    intern = get_object(this_ptr);
+    intern = get_object(this_ptr TSRMLS_CC);
     if (!intern) {
         return;
     }
 
     if (intern->position >= intern->item_cnt) {
-        zend_throw_exception(ce_kafka_exception, "Called current() on invalid iterator", 0);
+        zend_throw_exception(ce_kafka_exception, "Called current() on invalid iterator", 0 TSRMLS_CC);
         return;
     }
 
-    intern->ctor(return_value, &intern->zmetadata, intern->items + intern->position * intern->item_size);
+    intern->ctor(return_value, &intern->zmetadata, intern->items + intern->position * intern->item_size TSRMLS_CC);
 }
 /* }}} */
 
@@ -170,13 +170,13 @@ PHP_METHOD(RdKafka__Metadata__Collection, key)
         return;
     }
 
-    intern = get_object(this_ptr);
+    intern = get_object(this_ptr TSRMLS_CC);
     if (!intern) {
         return;
     }
 
     if (intern->position >= intern->item_cnt) {
-        zend_throw_exception(ce_kafka_exception, "Called key() on invalid iterator", 0);
+        zend_throw_exception(ce_kafka_exception, "Called key() on invalid iterator", 0 TSRMLS_CC);
         return;
     }
 
@@ -198,7 +198,7 @@ PHP_METHOD(RdKafka__Metadata__Collection, next)
         return;
     }
 
-    intern = get_object(this_ptr);
+    intern = get_object(this_ptr TSRMLS_CC);
     if (!intern) {
         return;
     }
@@ -221,7 +221,7 @@ PHP_METHOD(RdKafka__Metadata__Collection, valid)
         return;
     }
 
-    intern = get_object(this_ptr);
+    intern = get_object(this_ptr TSRMLS_CC);
     if (!intern) {
         return;
     }
@@ -240,7 +240,7 @@ static const zend_function_entry fe[] = {
     PHP_FE_END
 };
 
-void kafka_metadata_collection_minit()
+void kafka_metadata_collection_minit(TSRMLS_D)
 {
     zend_class_entry tmpce;
 
@@ -250,7 +250,7 @@ void kafka_metadata_collection_minit()
     zend_class_implements(ce TSRMLS_CC, 2, spl_ce_Countable, spl_ce_Iterator);
 }
 
-void kafka_metadata_collection_init(zval *return_value, zval *zmetadata, const void * items, size_t item_cnt, size_t item_size, kafka_metadata_collection_ctor_t ctor)
+void kafka_metadata_collection_init(zval *return_value, zval *zmetadata, const void * items, size_t item_cnt, size_t item_size, kafka_metadata_collection_ctor_t ctor TSRMLS_DC)
 {
     object_intern *intern;
 
