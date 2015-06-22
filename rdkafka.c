@@ -1147,6 +1147,33 @@ static const zend_function_entry kafka_topic_conf_fe[] = {
     PHP_FE_END
 };
 
+/* {{{ proto string RdKafka\Topic::getName() */
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_topic_get_name, 0, 0, 0)
+ZEND_END_ARG_INFO()
+
+PHP_METHOD(RdKafka__Topic, getName)
+{
+    kafka_topic_object *intern;
+
+    if (zend_parse_parameters_none() == FAILURE) {
+        return;
+    }
+
+    intern = get_kafka_topic_object(this_ptr TSRMLS_CC);
+    if (!intern) {
+        return;
+    }
+
+    RETURN_STRING(rd_kafka_topic_name(intern->rkt), 1);
+}
+/* }}} */
+
+static const zend_function_entry kafka_topic_fe[] = {
+    PHP_ME(RdKafka__Topic, getName, arginfo_kafka_topic_get_name, ZEND_ACC_PUBLIC)
+    PHP_FE_END
+};
+
 /* {{{ proto string rd_kafka_err2str(int $err)
  * Returns a human readable representation of a kafka error.
  */
@@ -1301,7 +1328,7 @@ PHP_MINIT_FUNCTION(rdkafka)
     ce_kafka_topic_conf = zend_register_internal_class(&ce TSRMLS_CC);
     ce_kafka_topic_conf->create_object = kafka_conf_new;
 
-    INIT_NS_CLASS_ENTRY(ce, "RdKafka", "Topic", empty_function_entries);
+    INIT_NS_CLASS_ENTRY(ce, "RdKafka", "Topic", kafka_topic_fe);
     ce_kafka_topic = zend_register_internal_class(&ce TSRMLS_CC);
     ce_kafka_topic->ce_flags = ZEND_ACC_EXPLICIT_ABSTRACT_CLASS;
     ce_kafka_topic->create_object = kafka_topic_new;
