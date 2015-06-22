@@ -643,12 +643,45 @@ PHP_METHOD(RdKafka__ConsumerTopic, consume)
 }
 /* }}} */
 
+/* {{{ proto void RdKafka\ConsumerTopic::offsetStore(int partition, int offset) */
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_offset_store, 0, 0, 2)
+    ZEND_ARG_INFO(0, partition)
+    ZEND_ARG_INFO(0, offset)
+ZEND_END_ARG_INFO()
+
+PHP_METHOD(RdKafka__ConsumerTopic, offsetStore)
+{
+    kafka_topic_object *intern;
+    long partition;
+    long offset;
+    rd_kafka_resp_err_t err;
+
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ll", &partition, &offset) == FAILURE) {
+        return;
+    }
+
+    intern = get_kafka_topic_object(this_ptr TSRMLS_CC);
+    if (!intern) {
+        return;
+    }
+
+    err = rd_kafka_offset_store(intern->rkt, partition, offset);
+
+    if (err != RD_KAFKA_RESP_ERR_NO_ERROR) {
+        zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err TSRMLS_CC);
+        return;
+    }
+}
+/* }}} */
+
 static const zend_function_entry kafka_consumer_topic_fe[] = {
     PHP_ME(RdKafka, __construct, arginfo_kafka___private_construct, ZEND_ACC_PRIVATE)
     PHP_ME(RdKafka__ConsumerTopic, consumeQueueStart, arginfo_kafka_consume_queue_start, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__ConsumerTopic, consumeStart, arginfo_kafka_consume_start, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__ConsumerTopic, consumeStop, arginfo_kafka_consume_stop, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__ConsumerTopic, consume, arginfo_kafka_consume, ZEND_ACC_PUBLIC)
+    PHP_ME(RdKafka__ConsumerTopic, offsetStore, arginfo_kafka_offset_store, ZEND_ACC_PUBLIC)
     PHP_FE_END
 };
 
