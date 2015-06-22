@@ -38,12 +38,17 @@ The API ressembles as much as possible to librdkafka's.
      * [Conf::dump()](#confdump)
      * [Conf::set()](#confset)
    * [RdKafka\TopicConf](#rdkafkatopicconf)
+   * [RdKafka\Topic](#rdkafkatopic)
+     * [Topic::getName()](#topicgetname)
    * [RdKafka\ConsumerTopic](#rdkafkaconsumertopic)
      * [ConsumerTopic::consumeStart()](#consumertopicconsumestart)
      * [ConsumerTopic::consumeStop()](#consumertopicconsumestop)
      * [ConsumerTopic::consumeQueueStart()](#consumertopicconsumequeuestart)
      * [ConsumerTopic::consume()](#consumertopicconsume)
+     * [ConsumerTopic::getName()](#consumertopicgetname)]
+     * [ConsumerTopic::offsetStore()](#consumertopicoffsetstore)
    * [RdKafka\ProducerTopic](#rdkafkaproducertopic)
+     * [ConsumerTopic::getName()](#producertopicgetname)]
      * [ProducerTopic::produce()](#producertopicproduce)
    * [RdKafka\Message](#rdkafkamessage)
      * [Message::$err](#messageerr)
@@ -455,6 +460,18 @@ $conf = new RdKafka\TopicConf();
 
 Creates a new topic configuration. See [``RdKafka\Conf``](#rdkafkaconf).
 
+### RdKafka\Topic
+
+RdKafka\Topic is the base class for [``RdKafka\ConsumerTopic``](#rdkafkaconsumertopic) and [``RdKafka\ProducerTopic``](#rdkafkaproducertopic).
+
+#### Topic::getName()
+
+``` php
+$name = $topic->getName();
+```
+
+Returns the topic name.
+
 ### RdKafka\ConsumerTopic
 
 New ConsumerTopic instances can be created by calling
@@ -537,10 +554,32 @@ NOTE: [``..->err``](#messageerr) == ``RD_KAFKA_RESP_ERR__PARTITION_EOF`` signals
       considered an error. The application should handle this case
       (e.g., ignore).
 
+### ConsumerTopic::getName()
+
+See [Topic::getName()](#topicgetname)
+
+### ConsumerTopic::offsetStore()
+
+``` php
+$topic->offsetStore($message->partition, $message->offset+1);
+```
+
+Store offset ``offset`` for topic ``rkt`` partition ``partition``.  The
+offset will be commited (written) to the offset store according to
+``auto.commit.interval.ms``.
+
+NOTE: ``auto.commit.enable`` must be set to ``"false"`` when using this API.
+
+Throws a ``RdKafka\Exception`` on error.
+
 ### RdKafka\ProducerTopic
 
 New ProducerTopic instances can be created by calling
 [``RdKafka\Producer::newTopic()``](#producernewtopic).
+
+### ProducerTopic::getName()
+
+See [Topic::getName()](#topicgetname)
 
 #### ProducerTopic::produce()
 
