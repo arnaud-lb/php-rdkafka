@@ -38,6 +38,7 @@ The API ressembles as much as possible to librdkafka's.
      * [Conf::dump()](#confdump)
      * [Conf::set()](#confset)
    * [RdKafka\TopicConf](#rdkafkatopicconf)
+     * [TopicConf::setPartitioner()](#topicconfsetpartitioner)
    * [RdKafka\Topic](#rdkafkatopic)
      * [Topic::getName()](#topicgetname)
    * [RdKafka\ConsumerTopic](#rdkafkaconsumertopic)
@@ -459,6 +460,13 @@ $conf = new RdKafka\TopicConf();
 ```
 
 Creates a new topic configuration. See [``RdKafka\Conf``](#rdkafkaconf).
+
+#### TopicConf::setPartitioner()
+
+Set partitioner callback.
+
+Allowed values are [``RD_KAFKA_MSG_PARTITIONER_RANDOM``](#rd_kafka_msg_partitioner_random),
+[``RD_KAFKA_MSG_PARTITIONER_CONSISTENT``](#rd_kafka_msg_partitioner_consistent).
 
 ### RdKafka\Topic
 
@@ -999,6 +1007,22 @@ end internal error codes
 #### RD_KAFKA_RESP_ERR_MSG_SIZE_TOO_LARGE
 #### RD_KAFKA_RESP_ERR_STALE_CTRL_EPOCH
 #### RD_KAFKA_RESP_ERR_OFFSET_METADATA_TOO_LARGE
+
+#### RD_KAFKA_MSG_PARTITIONER_RANDOM
+
+Random partitioner.
+
+This is the default partitioner.
+
+Returns a random partition between 0 and the number of partitions minus 1.
+
+#### RD_KAFKA_MSG_PARTITIONER_CONSISTENT
+
+Consistent partitioner.
+
+Uses consistent hashing to map identical keys onto identical partitions.
+
+Returns a partition between 0 and number of partitions minus 1 based on the crc value of the key.
 
 ## Credits
 

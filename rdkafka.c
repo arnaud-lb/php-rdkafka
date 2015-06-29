@@ -31,6 +31,11 @@
 #include "ext/spl/spl_exceptions.h"
 #include "metadata.h"
 
+enum {
+        MSG_PARTITIONER_RANDOM = 2,
+        MSG_PARTITIONER_CONSISTENT = 3
+};
+
 typedef struct _kafka_object {
     zend_object     std;
     rd_kafka_type_t type;
@@ -1173,10 +1178,49 @@ PHP_METHOD(RdKafka__TopicConf, __construct)
 }
 /* }}} */
 
+/* {{{ proto RdKafka\TopicConf::setPartitioner() */
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_topic_conf_set_partitioner, 0, 0, 1)
+    ZEND_ARG_INFO(0, partitioner)
+ZEND_END_ARG_INFO()
+
+PHP_METHOD(RdKafka__TopicConf, setPartitioner)
+{
+    kafka_conf_object *intern;
+    long id;
+    int32_t (*partitioner) (const rd_kafka_topic_t * rkt, const void * keydata, size_t keylen, int32_t partition_cnt, void * rkt_opaque, void * msg_opaque);
+
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &id) == FAILURE) {
+        return;
+    }
+
+    intern = get_kafka_conf_object(this_ptr TSRMLS_CC);
+    if (!intern) {
+        return;
+    }
+
+    switch (id) {
+        case MSG_PARTITIONER_RANDOM:
+            partitioner = rd_kafka_msg_partitioner_random;
+            break;
+        case MSG_PARTITIONER_CONSISTENT:
+            partitioner = rd_kafka_msg_partitioner_consistent;
+            break;
+        default:
+            zend_throw_exception_ex(NULL, 0 TSRMLS_CC, "Invalid partitioner" TSRMLS_CC);
+            return;
+    }
+
+    rd_kafka_topic_conf_set_partitioner_cb(intern->u.topic_conf, partitioner);
+}
+/* }}} */
+
+/* }}} */
 static const zend_function_entry kafka_topic_conf_fe[] = {
     PHP_ME(RdKafka__TopicConf, __construct, arginfo_kafka_conf___construct, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__Conf, dump, arginfo_kafka_conf_dump, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__Conf, set, arginfo_kafka_conf_dump, ZEND_ACC_PUBLIC)
+    PHP_ME(RdKafka__TopicConf, setPartitioner, arginfo_kafka_topic_conf_set_partitioner, ZEND_ACC_PUBLIC)
     PHP_FE_END
 };
 
@@ -1333,6 +1377,9 @@ PHP_MINIT_FUNCTION(rdkafka)
     COPY_CONSTANT(RD_KAFKA_CONF_UNKNOWN);
     COPY_CONSTANT(RD_KAFKA_CONF_INVALID);
     COPY_CONSTANT(RD_KAFKA_CONF_OK);
+
+    REGISTER_LONG_CONSTANT("RD_KAFKA_MSG_PARTITIONER_RANDOM", MSG_PARTITIONER_RANDOM, CONST_CS | CONST_PERSISTENT);
+    REGISTER_LONG_CONSTANT("RD_KAFKA_MSG_PARTITIONER_CONSISTENT", MSG_PARTITIONER_CONSISTENT, CONST_CS | CONST_PERSISTENT);
 
     zend_class_entry ce;
 
