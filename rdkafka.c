@@ -54,6 +54,10 @@ typedef struct _kafka_conf_object {
         rd_kafka_conf_t         *conf;
         rd_kafka_topic_conf_t   *topic_conf;
     } u;
+    struct {
+        zend_fcall_info fci;
+        zend_fcall_info_cache fcc;
+    } error_cb;
 } kafka_conf_object;
 
 typedef struct _kafka_queue_object {
@@ -178,6 +182,9 @@ static void kafka_conf_free(void *object TSRMLS_DC) /* {{{ */
             if (intern->u.conf) {
                 rd_kafka_conf_destroy(intern->u.conf);
             }
+            if (intern->error_cb.fci.function_name) {
+                zval_ptr_dtor(&intern->error_cb.fci.function_name);
+            }
             break;
         case KAFKA_TOPIC_CONF:
             if (intern->u.topic_conf) {
@@ -218,6 +225,41 @@ static kafka_conf_object * get_kafka_conf_object(zval *zconf TSRMLS_DC)
     }
 
     return oconf;
+}
+
+static void kafka_conf_error_cb(rd_kafka_t *rk, int err, const char *reason, void *opaque)
+{
+    kafka_conf_object *intern = (kafka_conf_object*) opaque;
+    zval *retval;
+    zval **args[2];
+    zval *zerr;
+    zval *zreason;
+    TSRMLS_FETCH();
+
+    if (!intern->error_cb.fci.function_name) {
+        return;
+    }
+
+    ALLOC_INIT_ZVAL(zerr);
+    ZVAL_LONG(zerr, err);
+
+    ALLOC_INIT_ZVAL(zreason);
+    ZVAL_STRING(zreason, reason, 1);
+
+    args[0] = &zerr;
+    args[1] = &zreason;
+
+    intern->error_cb.fci.retval_ptr_ptr = &retval;
+    intern->error_cb.fci.params = args;
+    intern->error_cb.fci.param_count = 2;
+
+    zend_call_function(&intern->error_cb.fci, &intern->error_cb.fcc TSRMLS_CC);
+
+    if (retval) {
+        zval_ptr_dtor(&retval);
+    }
+    zval_ptr_dtor(&zerr);
+    zval_ptr_dtor(&zreason);
 }
 
 static void kafka_queue_free(void *object TSRMLS_DC) /* {{{ */
@@ -355,6 +397,8 @@ PHP_METHOD(RdKafka__Conf, __construct)
     intern->type = KAFKA_CONF;
     intern->u.conf = rd_kafka_conf_new();
 
+    rd_kafka_conf_set_opaque(intern->u.conf, intern);
+
     zend_restore_error_handling(&error_handling TSRMLS_CC);
 }
 /* }}} */
@@ -468,10 +512,46 @@ PHP_METHOD(RdKafka__Conf, set)
 }
 /* }}} */
 
+/* {{{ proto void RdKafka\Conf::setErrorCb(mixed $callback)
+   Sets the error callback */
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_conf_set_error_cb, 0, 0, 1)
+    ZEND_ARG_INFO(0, callback)
+ZEND_END_ARG_INFO()
+
+PHP_METHOD(RdKafka__Conf, setErrorCb)
+{
+    zend_fcall_info fci;
+    zend_fcall_info_cache fcc;
+    kafka_conf_object *intern;
+
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "f", &fci, &fcc) == FAILURE) {
+        return;
+    }
+
+    intern = get_kafka_conf_object(this_ptr TSRMLS_CC);
+    if (!intern) {
+        return;
+    }
+
+    Z_ADDREF_P(fci.function_name);
+
+    if (intern->error_cb.fci.function_name) {
+        zval_ptr_dtor(&intern->error_cb.fci.function_name);
+    }
+
+    intern->error_cb.fci = fci;
+    intern->error_cb.fcc = fcc;
+
+    rd_kafka_conf_set_error_cb(intern->u.conf, kafka_conf_error_cb);
+}
+/* }}} */
+
 static const zend_function_entry kafka_conf_fe[] = {
     PHP_ME(RdKafka__Conf, __construct, arginfo_kafka_conf___construct, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__Conf, dump, arginfo_kafka_conf_dump, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__Conf, set, arginfo_kafka_conf_dump, ZEND_ACC_PUBLIC)
+    PHP_ME(RdKafka__Conf, set, arginfo_kafka_conf_set, ZEND_ACC_PUBLIC)
+    PHP_ME(RdKafka__Conf, setErrorCb, arginfo_kafka_conf_set_error_cb, ZEND_ACC_PUBLIC)
     PHP_FE_END
 };
 
