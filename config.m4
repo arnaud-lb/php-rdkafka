@@ -39,6 +39,12 @@ if test "$PHP_RDKAFKA" != "no"; then
   ],[
     -L$RDKAFKA_DIR/$PHP_LIBDIR -lm
   ])
+
+  AC_CHECK_LIB($LIBNAME,[rd_kafka_msg_partitioner_consistent],[
+    AC_DEFINE(HAVE_RD_KAFKA_MSG_PARTIIONER_CONSISTENT,1,[ ])
+  ],[
+    AC_MSG_WARN([no rd_kafka_msg_partitioner_consistent, the consistent partitioner will not be available])
+  ])
   
   PHP_SUBST(RDKAFKA_SHARED_LIBADD)
 

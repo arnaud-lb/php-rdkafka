@@ -32,8 +32,10 @@
 #include "metadata.h"
 
 enum {
-        MSG_PARTITIONER_RANDOM = 2,
-        MSG_PARTITIONER_CONSISTENT = 3
+        MSG_PARTITIONER_RANDOM = 2
+#ifdef HAVE_RD_KAFKA_MSG_PARTIIONER_CONSISTENT
+        , MSG_PARTITIONER_CONSISTENT = 3
+#endif
 };
 
 typedef struct _kafka_object {
@@ -1283,9 +1285,11 @@ PHP_METHOD(RdKafka__TopicConf, setPartitioner)
         case MSG_PARTITIONER_RANDOM:
             partitioner = rd_kafka_msg_partitioner_random;
             break;
+#ifdef HAVE_RD_KAFKA_MSG_PARTIIONER_CONSISTENT
         case MSG_PARTITIONER_CONSISTENT:
             partitioner = rd_kafka_msg_partitioner_consistent;
             break;
+#endif
         default:
             zend_throw_exception_ex(NULL, 0 TSRMLS_CC, "Invalid partitioner" TSRMLS_CC);
             return;
@@ -1459,7 +1463,9 @@ PHP_MINIT_FUNCTION(rdkafka)
     COPY_CONSTANT(RD_KAFKA_CONF_OK);
 
     REGISTER_LONG_CONSTANT("RD_KAFKA_MSG_PARTITIONER_RANDOM", MSG_PARTITIONER_RANDOM, CONST_CS | CONST_PERSISTENT);
+#ifdef HAVE_RD_KAFKA_MSG_PARTIIONER_CONSISTENT
     REGISTER_LONG_CONSTANT("RD_KAFKA_MSG_PARTITIONER_CONSISTENT", MSG_PARTITIONER_CONSISTENT, CONST_CS | CONST_PERSISTENT);
+#endif
 
     zend_class_entry ce;
 
