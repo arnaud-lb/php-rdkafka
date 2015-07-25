@@ -465,23 +465,17 @@ PHP_METHOD(RdKafka__Conf, set)
     int name_len;
     char *value;
     int value_len;
-    zval *zerrstr = NULL;
     kafka_conf_object *intern;
     rd_kafka_conf_res_t ret = 0;
     char *errstr;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ss|Z", &name, &name_len, &value, &value_len, &zerrstr) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ss|Z", &name, &name_len, &value, &value_len) == FAILURE) {
         return;
     }
 
     intern = get_kafka_conf_object(this_ptr TSRMLS_CC);
     if (!intern) {
         return;
-    }
-
-    if (zerrstr) {
-        zval_dtor(zerrstr);
-        ZVAL_NULL(zerrstr);
     }
 
     errstr = ecalloc(1, 512);
@@ -495,20 +489,15 @@ PHP_METHOD(RdKafka__Conf, set)
             break;
     }
 
-    if (errstr[0] && zerrstr) {
-        ZVAL_STRING(zerrstr, errstr, 0);
-    } else {
-        efree(errstr);
-    }
-
     switch (ret) {
         case RD_KAFKA_CONF_UNKNOWN:
-            zend_throw_exception(ce_kafka_exception, "Unknown configuration name", RD_KAFKA_CONF_UNKNOWN TSRMLS_CC);
+            zend_throw_exception(ce_kafka_exception, errstr, RD_KAFKA_CONF_UNKNOWN TSRMLS_CC);
             return;
         case RD_KAFKA_CONF_INVALID:
-            zend_throw_exception(ce_kafka_exception, "Unknown configuration value", RD_KAFKA_CONF_INVALID TSRMLS_CC);
+            zend_throw_exception(ce_kafka_exception, errstr, RD_KAFKA_CONF_INVALID TSRMLS_CC);
             return;
         case RD_KAFKA_CONF_OK:
+            efree(errstr);
             break;
     }
 }
