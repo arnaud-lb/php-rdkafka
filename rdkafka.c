@@ -467,9 +467,9 @@ PHP_METHOD(RdKafka__Conf, set)
     int value_len;
     kafka_conf_object *intern;
     rd_kafka_conf_res_t ret = 0;
-    char *errstr;
+    char errstr[512];
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ss|Z", &name, &name_len, &value, &value_len) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ss", &name, &name_len, &value, &value_len) == FAILURE) {
         return;
     }
 
@@ -478,14 +478,14 @@ PHP_METHOD(RdKafka__Conf, set)
         return;
     }
 
-    errstr = ecalloc(1, 512);
+    errstr[0] = '\0';
 
     switch (intern->type) {
         case KAFKA_CONF:
-            ret = rd_kafka_conf_set(intern->u.conf, name, value, errstr, 512);
+            ret = rd_kafka_conf_set(intern->u.conf, name, value, errstr, sizeof(errstr));
             break;
         case KAFKA_TOPIC_CONF:
-            ret = rd_kafka_topic_conf_set(intern->u.topic_conf, name, value, errstr, 512);
+            ret = rd_kafka_topic_conf_set(intern->u.topic_conf, name, value, errstr, sizeof(errstr));
             break;
     }
 
@@ -497,7 +497,6 @@ PHP_METHOD(RdKafka__Conf, set)
             zend_throw_exception(ce_kafka_exception, errstr, RD_KAFKA_CONF_INVALID TSRMLS_CC);
             return;
         case RD_KAFKA_CONF_OK:
-            efree(errstr);
             break;
     }
 }
