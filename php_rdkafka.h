@@ -21,6 +21,10 @@
 #ifndef PHP_RDKAFKA_H
 #define PHP_RDKAFKA_H
 
+#ifndef PHP_FE_END
+#define PHP_FE_END { NULL, NULL, NULL, 0, 0 }
+#endif
+
 extern zend_module_entry rdkafka_module_entry;
 #define phpext_rdkafka_ptr &rdkafka_module_entry
 
