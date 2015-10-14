@@ -38,6 +38,12 @@ enum {
 #endif
 };
 
+enum {
+    LOG_PRINT = 100
+    , LOG_SYSLOG = 101
+    , LOG_SYSLOG_PRINT = 102
+};
+
 typedef struct _kafka_object {
     zend_object     std;
     rd_kafka_type_t type;
@@ -262,6 +268,11 @@ static void kafka_conf_error_cb(rd_kafka_t *rk, int err, const char *reason, voi
     }
     zval_ptr_dtor(&zerr);
     zval_ptr_dtor(&zreason);
+}
+
+static void kafka_log_syslog_print(const rd_kafka_t *rk, int level, const char *fac, const char *buf) {
+    rd_kafka_log_print(rk, level, fac, buf);
+    rd_kafka_log_syslog(rk, level, fac, buf);
 }
 
 static void kafka_queue_free(void *object TSRMLS_DC) /* {{{ */
@@ -1043,6 +1054,47 @@ PHP_METHOD(RdKafka__Kafka, poll)
 }
 /* }}} */
 
+/* {{{ proto void RdKafka::setLogger(mixed $logger)
+   Sets the log callback */
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_set_logger, 0, 0, 1)
+    ZEND_ARG_INFO(0, logger)
+ZEND_END_ARG_INFO()
+
+PHP_METHOD(RdKafka__Kafka, setLogger)
+{
+    kafka_object *intern;
+    long id;
+    void (*logger) (const rd_kafka_t * rk, int level, const char *fac, const char *buf);
+
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &id) == FAILURE) {
+        return;
+    }
+
+    intern = get_kafka_object(this_ptr TSRMLS_CC);
+    if (!intern) {
+        return;
+    }
+
+    switch (id) {
+        case LOG_PRINT:
+            logger = rd_kafka_log_print;
+            break;
+        case LOG_SYSLOG:
+            logger = rd_kafka_log_syslog;
+            break;
+        case LOG_SYSLOG_PRINT:
+            logger = kafka_log_syslog_print;
+            break;
+        default:
+            zend_throw_exception_ex(NULL, 0 TSRMLS_CC, "Invalid logger" TSRMLS_CC);
+            return;
+    }
+
+    rd_kafka_set_logger(intern->rk, logger);
+}
+/* }}} */
+
 static const zend_function_entry kafka_fe[] = {
     PHP_ME(RdKafka__Kafka, addBrokers, arginfo_kafka_add_brokers, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__Kafka, metadata, arginfo_kafka_metadata, ZEND_ACC_PUBLIC)
@@ -1051,6 +1103,7 @@ static const zend_function_entry kafka_fe[] = {
     PHP_ME(RdKafka__Kafka, newTopic, arginfo_kafka_new_topic, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__Kafka, outqLen, arginfo_kafka_outq_len, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__Kafka, poll, arginfo_kafka_poll, ZEND_ACC_PUBLIC)
+    PHP_ME(RdKafka__Kafka, setLogger, arginfo_kafka_set_logger, ZEND_ACC_PUBLIC)
     PHP_FE_END
 };
 
@@ -1455,6 +1508,9 @@ PHP_MINIT_FUNCTION(rdkafka)
     REGISTER_LONG_CONSTANT("RD_KAFKA_MSG_PARTITIONER_CONSISTENT", MSG_PARTITIONER_CONSISTENT, CONST_CS | CONST_PERSISTENT);
 #endif
 
+    REGISTER_LONG_CONSTANT("RD_KAFKA_LOG_PRINT", LOG_PRINT, CONST_CS | CONST_PERSISTENT);
+    REGISTER_LONG_CONSTANT("RD_KAFKA_LOG_SYSLOG", LOG_SYSLOG, CONST_CS | CONST_PERSISTENT);
+    REGISTER_LONG_CONSTANT("RD_KAFKA_LOG_SYSLOG_PRINT", LOG_SYSLOG_PRINT, CONST_CS | CONST_PERSISTENT);
     zend_class_entry ce;
 
     memcpy(&kafka_object_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
