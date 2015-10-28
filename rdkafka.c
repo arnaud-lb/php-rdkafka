@@ -117,18 +117,13 @@ static void kafka_free(void *object TSRMLS_DC) /* {{{ */
 }
 /* }}} */
 
-static void kafka_init(zval *this_ptr, rd_kafka_type_t type, zval *zconf, zval *zerrstr TSRMLS_DC) /* {{{ */
+static void kafka_init(zval *this_ptr, rd_kafka_type_t type, zval *zconf TSRMLS_DC) /* {{{ */
 {
-    char *errstr;
+    char errstr[512];
     rd_kafka_t *rk;
     kafka_object *intern;
     kafka_conf_object *conf_intern;
     rd_kafka_conf_t *conf = NULL;
-
-    if (zerrstr) {
-        zval_dtor(zerrstr);
-        ZVAL_NULL(zerrstr);
-    }
 
     if (zconf) {
         conf_intern = get_kafka_conf_object(zconf TSRMLS_CC);
@@ -137,14 +132,11 @@ static void kafka_init(zval *this_ptr, rd_kafka_type_t type, zval *zconf, zval *
         }
     }
 
-    errstr = ecalloc(1, 512);
+    rk = rd_kafka_new(type, conf, errstr, sizeof(errstr));
 
-    rk = rd_kafka_new(type, conf, errstr, 512);
-
-    if (errstr[0] && zerrstr) {
-        ZVAL_STRING(zerrstr, errstr, 0);
-    } else {
-        efree(errstr);
+    if (rk == NULL) {
+        zend_throw_exception(ce_kafka_exception, errstr, 0 TSRMLS_CC);
+        return;
     }
 
     intern = (kafka_object*)zend_object_store_get_object(this_ptr TSRMLS_CC);
@@ -781,17 +773,16 @@ ZEND_END_ARG_INFO()
 PHP_METHOD(RdKafka__Consumer, __construct)
 {
     zval *zconf = NULL;
-    zval *zerrstr = NULL;
     zend_error_handling error_handling;
 
     zend_replace_error_handling(EH_THROW, spl_ce_InvalidArgumentException, &error_handling TSRMLS_CC);
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|Oz", &zconf, ce_kafka_conf, &zerrstr) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|O", &zconf, ce_kafka_conf) == FAILURE) {
         zend_restore_error_handling(&error_handling TSRMLS_CC);
         return;
     }
 
-    kafka_init(this_ptr, RD_KAFKA_CONSUMER, zconf, zerrstr TSRMLS_CC);
+    kafka_init(this_ptr, RD_KAFKA_CONSUMER, zconf TSRMLS_CC);
 
     zend_restore_error_handling(&error_handling TSRMLS_CC);
 }
@@ -1213,17 +1204,16 @@ ZEND_END_ARG_INFO()
 PHP_METHOD(RdKafka__Producer, __construct)
 {
     zval *zconf = NULL;
-    zval *zerrstr = NULL;
     zend_error_handling error_handling;
 
     zend_replace_error_handling(EH_THROW, spl_ce_InvalidArgumentException, &error_handling TSRMLS_CC);
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|Oz", &zconf, ce_kafka_conf, &zerrstr) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|O", &zconf, ce_kafka_conf) == FAILURE) {
         zend_restore_error_handling(&error_handling TSRMLS_CC);
         return;
     }
 
-    kafka_init(this_ptr, RD_KAFKA_PRODUCER, zconf, zerrstr TSRMLS_CC);
+    kafka_init(this_ptr, RD_KAFKA_PRODUCER, zconf TSRMLS_CC);
 
     zend_restore_error_handling(&error_handling TSRMLS_CC);
 }
