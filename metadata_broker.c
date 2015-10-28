@@ -22,15 +22,16 @@
 
 #include "php.h"
 #include "php_rdkafka.h"
+#include "php_rdkafka_priv.h"
 #include "librdkafka/rdkafka.h"
 #include "ext/spl/spl_iterators.h"
 #include "Zend/zend_interfaces.h"
 #include "Zend/zend_exceptions.h"
 
 typedef struct _object_intern {
-    zend_object                     std;
     zval                            zmetadata;
     const rd_kafka_metadata_broker_t *metadata_broker;
+    zend_object                     std;
 } object_intern;
 
 static HashTable *get_debug_info(zval *object, int *is_temp TSRMLS_DC);
@@ -38,39 +39,35 @@ static HashTable *get_debug_info(zval *object, int *is_temp TSRMLS_DC);
 static zend_class_entry * ce;
 static zend_object_handlers handlers;
 
-static void free_object(void *object TSRMLS_DC) /* {{{ */
+static void free_object(zend_object *object TSRMLS_DC) /* {{{ */
 {
-    object_intern *intern = (object_intern*)object;
+    object_intern *intern = get_custom_object(object_intern, object);
 
     if (intern->metadata_broker) {
         zval_dtor(&intern->zmetadata);
     }
 
     zend_object_std_dtor(&intern->std TSRMLS_CC);
-
-    efree(intern);
 }
 /* }}} */
 
-static zend_object_value create_object(zend_class_entry *class_type TSRMLS_DC) /* {{{ */
+static zend_object * create_object(zend_class_entry *class_type TSRMLS_DC) /* {{{ */
 {
-    zend_object_value retval;
     object_intern *intern;
 
-    intern = ecalloc(1, sizeof(*intern));
+    intern = alloc_object(intern, class_type);
     zend_object_std_init(&intern->std, class_type TSRMLS_CC);
     object_properties_init(&intern->std, class_type);
 
-    retval.handle = zend_objects_store_put(&intern->std, (zend_objects_store_dtor_t) zend_objects_destroy_object, free_object, NULL TSRMLS_CC);
-    retval.handlers = &handlers;
+    intern->std.handlers = &handlers;
 
-    return retval;
+    return &intern->std;
 }
 /* }}} */
 
 static object_intern * get_object(zval *zmt TSRMLS_DC)
 {
-    object_intern *omt = (object_intern*)zend_object_store_get_object(zmt TSRMLS_CC);
+    object_intern *omt = get_custom_object_zval(object_intern, zmt);
 
     if (!omt->metadata_broker) {
         zend_throw_exception_ex(NULL, 0 TSRMLS_CC, "RdKafka\\Metadata\\Broker::__construct() has not been called");
@@ -95,7 +92,7 @@ static HashTable *get_debug_info(zval *object, int *is_temp TSRMLS_DC) /* {{{ */
     }
 
     add_assoc_long(&ary, "id", intern->metadata_broker->id);
-    add_assoc_string(&ary, "host", intern->metadata_broker->host, 1);
+    add_assoc_string(&ary, "host", intern->metadata_broker->host);
     add_assoc_long(&ary, "port", intern->metadata_broker->port);
 
     return Z_ARRVAL(ary);
@@ -116,7 +113,7 @@ PHP_METHOD(RdKafka__Metadata__Broker, getId)
         return;
     }
 
-    intern = get_object(this_ptr TSRMLS_CC);
+    intern = get_object(getThis() TSRMLS_CC);
     if (!intern) {
         return;
     }
@@ -139,12 +136,12 @@ PHP_METHOD(RdKafka__Metadata__Broker, getHost)
         return;
     }
 
-    intern = get_object(this_ptr TSRMLS_CC);
+    intern = get_object(getThis() TSRMLS_CC);
     if (!intern) {
         return;
     }
 
-    RETURN_STRING(intern->metadata_broker->host, 1);
+    RETURN_STRING(intern->metadata_broker->host);
 }
 /* }}} */
 
@@ -162,7 +159,7 @@ PHP_METHOD(RdKafka__Metadata__Broker, getPort)
         return;
     }
 
-    intern = get_object(this_ptr TSRMLS_CC);
+    intern = get_object(getThis() TSRMLS_CC);
     if (!intern) {
         return;
     }
@@ -188,6 +185,8 @@ void kafka_metadata_broker_minit(TSRMLS_D)
 
     memcpy(&handlers, &kafka_object_handlers, sizeof(handlers));
     handlers.get_debug_info = get_debug_info;
+    handlers.free_obj = free_object;
+    handlers.offset = XtOffsetOf(object_intern, std);
 }
 
 void kafka_metadata_broker_ctor(zval *return_value, zval *zmetadata, const void *data TSRMLS_DC)
@@ -199,7 +198,7 @@ void kafka_metadata_broker_ctor(zval *return_value, zval *zmetadata, const void 
         return;
     }
 
-    intern = (object_intern*)zend_object_store_get_object(return_value TSRMLS_CC);
+    intern = get_custom_object_zval(object_intern, return_value);
     if (!intern) {
         return;
     }
