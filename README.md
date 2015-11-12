@@ -1,6 +1,6 @@
 # php-rdkafka
 
-PHP-rdkafka is a thin [librdkafka](https://github.com/edenhill/librdkafka) binding to providing a working PHP [Kafka](https://kafka.apache.org/) 0.8 client.
+PHP-rdkafka is a thin [librdkafka](https://github.com/edenhill/librdkafka) binding to providing a working PHP 5 / PHP 7 [Kafka](https://kafka.apache.org/) 0.8 client.
 
 It supports the *consumer*, *producer*, and *metadata* APIs.
 
@@ -9,6 +9,7 @@ The API ressembles as much as possible to librdkafka's.
 ## Table of Contents
 
 1. [Installation](#installation)
+   * [PHP 5 / PHP 7](#php-5--php-7)
    * [Using PECL](#using-pecl)
    * [From source](#from-source)
 2. [Examples](#examples)
@@ -93,11 +94,19 @@ The API ressembles as much as possible to librdkafka's.
 
 ## Installation
 
+### PHP 5 / PHP 7
+
+    php-rdkafka is compatible with PHP 5 (master branch, PECL release); and has an experimental [PHP 7 branch](https://github.com/arnaud-lb/php-rdkafka/tree/php7)
+
 ### Using PECL
+
+For PHP version 7, installation from source should be preferred.
 
     sudo pecl install channel://pecl.php.net/rdkafka-alpha
 
 ### From source
+
+For PHP version 7, make sure to use the php7 branch.
 
     phpize
     ./configure
