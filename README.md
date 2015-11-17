@@ -21,6 +21,7 @@ The API ressembles as much as possible to librdkafka's.
    * [Interesting configuration parameters](#interesting-configuration-parameters)
      * [queued.max.messages.kbytes](#queuedmaxmessageskbytes)
      * [topic.metadata.refresh.sparse and topic.metadata.refresh.interval.ms](#topicmetadatarefreshsparse-and-topicmetadatarefreshintervalms)
+     * [internal.termination.signal](#internalterminationsignal)
 4. [API](#api)
    * [RdKafka\Consumer](#rdkafkaconsumer)
      * [Consumer::addBrokers()](#consumeraddbrokers)
@@ -283,6 +284,20 @@ Each consumer and procuder instance will fetch topics metadata at an interval de
 librdkafka fetches the metadata for all topics of the cluster by default. Setting ``topic.metadata.refresh.sparse`` to the string ``"true"`` makes sure that librdkafka fetches only he knows.
 
 Setting ``topic.metadata.refresh.sparse`` to ``"true"``, and ``topic.metadata.refresh.interval.ms`` to 600 seconds (plus some jitter) can reduce the bandwidth a lot, depending on the number of consumers and topics.
+
+### internal.termination.signal
+
+This setting allows librdkafka threads to terminate as soon as librdkafka is done with them. This effectively allows your PHP processes / requests to terminate quickly.
+
+When enabling this, you have to mask the signal like this:
+
+``` php
+<?php
+// once
+pcntl_sigprocmask(SIG_BLOCK, array(SIGIO));
+// any time
+$conf->set('internal.termination.signal', SIGIO);
+```
 
 ## API
 
