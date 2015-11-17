@@ -101,7 +101,7 @@ The API ressembles as much as possible to librdkafka's.
 
 ### PHP 5 / PHP 7
 
-    php-rdkafka is compatible with PHP 5 (master branch, PECL release); and has an experimental [PHP 7 branch](https://github.com/arnaud-lb/php-rdkafka/tree/php7)
+php-rdkafka is compatible with PHP 5 (master branch, PECL release); and has an experimental [PHP 7 branch](https://github.com/arnaud-lb/php-rdkafka/tree/php7)
 
 ### Using PECL
 
