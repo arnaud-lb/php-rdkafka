@@ -266,6 +266,20 @@ $topic = $rk->newTopic("test", $topicConf);
 $topic->consumeStart(0, RD_KAFKA_OFFSET_STORED);
 ```
 
+### Interesting configuration parameters
+
+#### queued.max.messages.kbytes
+
+librdkafka will buffer up to 1GB of messages for each consumed partition by default. You can lower memory usage by reducing the value of the ``queued.max.messages.kbytes`` parameter on your consumers.
+
+### topic.metadata.refresh.sparse and topic.metadata.refresh.interval.ms
+
+Each consumer and procuder instance will fetch topics metadata at an interval defined by the ``topic.metadata.refresh.interval.ms`` parameter. Depending on your librdkafka version, the parameter defaults to 10 seconds, or 600 seconds.
+
+librdkafka fetches the metadata for all topics of the cluster by default. Setting ``topic.metadata.refresh.sparse`` to the string ``"true"`` makes sure that librdkafka fetches only he knows.
+
+Setting ``topic.metadata.refresh.sparse`` to ``"true"``, and ``topic.metadata.refresh.interval.ms`` to 600 seconds (plus some jitter) can reduce the bandwidth a lot, depending on the number of consumers and topics.
+
 ## API
 
 ### RdKafka\Producer
