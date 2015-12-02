@@ -1,5 +1,7 @@
 #!/bin/sh
+
 set -xe
+
 git clone --depth 1 --branch 0.8.6 https://github.com/edenhill/librdkafka.git
 (
     cd librdkafka
@@ -8,7 +10,16 @@ git clone --depth 1 --branch 0.8.6 https://github.com/edenhill/librdkafka.git
     sudo make install
 )
 sudo ldconfig
+
+sudo apt-get update
+sudo apt-get install -qq valgrind
+
+echo "extension = $(pwd)/modules/rdkafka.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+phpenv config-rm xdebug.ini
+
 phpize
 ./configure
 make
-make test
+
+PHP=$(which php)
+REPORT_EXIT_STATUS=1 TEST_PHP_EXECUTABLE="$PHP" "$PHP" run-tests.php -q -m --show-diff
