@@ -1,6 +1,6 @@
 # php-rdkafka
 
-PHP-rdkafka is a thin [librdkafka](https://github.com/edenhill/librdkafka) binding to providing a working PHP [Kafka](https://kafka.apache.org/) 0.8 client.
+PHP-rdkafka is a thin [librdkafka](https://github.com/edenhill/librdkafka) binding to providing a working PHP 5 / PHP 7 [Kafka](https://kafka.apache.org/) 0.8 client.
 
 It supports the *consumer*, *producer*, and *metadata* APIs.
 
@@ -9,6 +9,7 @@ The API ressembles as much as possible to librdkafka's.
 ## Table of Contents
 
 1. [Installation](#installation)
+   * [PHP 5 / PHP 7](#php-5--php-7)
    * [Using PECL](#using-pecl)
    * [From source](#from-source)
 2. [Examples](#examples)
@@ -16,6 +17,11 @@ The API ressembles as much as possible to librdkafka's.
    * [Producing](#producing)
    * [Consuming](#consuming)
    * [Consuming form multiple topics / partitions](#consuming-from-multiple-topics--partitions)
+   * [Using stored offsets](#using-stored-offsets)
+   * [Interesting configuration parameters](#interesting-configuration-parameters)
+     * [queued.max.messages.kbytes](#queuedmaxmessageskbytes)
+     * [topic.metadata.refresh.sparse and topic.metadata.refresh.interval.ms](#topicmetadatarefreshsparse-and-topicmetadatarefreshintervalms)
+     * [internal.termination.signal](#internalterminationsignal)
 4. [API](#api)
    * [RdKafka\Consumer](#rdkafkaconsumer)
      * [Consumer::addBrokers()](#consumeraddbrokers)
@@ -93,11 +99,19 @@ The API ressembles as much as possible to librdkafka's.
 
 ## Installation
 
+### PHP 5 / PHP 7
+
+php-rdkafka is compatible with PHP 5 (master branch, PECL release); and has an experimental [PHP 7 branch](https://github.com/arnaud-lb/php-rdkafka/tree/php7)
+
 ### Using PECL
+
+For PHP version 7, installation from source should be preferred.
 
     sudo pecl install channel://pecl.php.net/rdkafka-alpha
 
 ### From source
+
+For PHP version 7, make sure to use the php7 branch.
 
     phpize
     ./configure
@@ -255,6 +269,34 @@ $topicConf->set("offset.store.sync.interval.ms", 60e3);
 $topic = $rk->newTopic("test", $topicConf);
 
 $topic->consumeStart(0, RD_KAFKA_OFFSET_STORED);
+```
+
+### Interesting configuration parameters
+
+#### queued.max.messages.kbytes
+
+librdkafka will buffer up to 1GB of messages for each consumed partition by default. You can lower memory usage by reducing the value of the ``queued.max.messages.kbytes`` parameter on your consumers.
+
+### topic.metadata.refresh.sparse and topic.metadata.refresh.interval.ms
+
+Each consumer and procuder instance will fetch topics metadata at an interval defined by the ``topic.metadata.refresh.interval.ms`` parameter. Depending on your librdkafka version, the parameter defaults to 10 seconds, or 600 seconds.
+
+librdkafka fetches the metadata for all topics of the cluster by default. Setting ``topic.metadata.refresh.sparse`` to the string ``"true"`` makes sure that librdkafka fetches only the topics he uses.
+
+Setting ``topic.metadata.refresh.sparse`` to ``"true"``, and ``topic.metadata.refresh.interval.ms`` to 600 seconds (plus some jitter) can reduce the bandwidth a lot, depending on the number of consumers and topics.
+
+### internal.termination.signal
+
+This setting allows librdkafka threads to terminate as soon as librdkafka is done with them. This effectively allows your PHP processes / requests to terminate quickly.
+
+When enabling this, you have to mask the signal like this:
+
+``` php
+<?php
+// once
+pcntl_sigprocmask(SIG_BLOCK, array(SIGIO));
+// any time
+$conf->set('internal.termination.signal', SIGIO);
 ```
 
 ## API
