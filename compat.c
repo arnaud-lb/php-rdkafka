@@ -16,44 +16,18 @@
   +----------------------------------------------------------------------+
 */
 
-/* $Id$ */
-
-#ifndef PHP_RDKAFKA_H
-#define PHP_RDKAFKA_H
-
-#include "compat.h"
-
-#ifndef PHP_FE_END
-#define PHP_FE_END { NULL, NULL, NULL, 0, 0 }
+#ifdef HAVE_CONFIG_H
+#include "config.h"
 #endif
 
-extern zend_module_entry rdkafka_module_entry;
-#define phpext_rdkafka_ptr &rdkafka_module_entry
+#include "php.h"
+#include "php_ini.h"
 
-#define PHP_RDKAFKA_VERSION "0.0.2" /* Replace with version number for your extension */
-
-extern zend_object_handlers kafka_object_handlers;
-extern zend_class_entry * ce_kafka_exception;
-
-#ifdef PHP_WIN32
-#	define PHP_RDKAFKA_API __declspec(dllexport)
-#elif defined(__GNUC__) && __GNUC__ >= 4
-#	define PHP_RDKAFKA_API __attribute__ ((visibility("default")))
-#else
-#	define PHP_RDKAFKA_API
+#if PHP_MAJOR_VERSION == 5 && PHP_MINOR_VERSION < 4
+void rdkafka_object_properties_init_53(zend_object *object, zend_class_entry *class_type) /* {{{ */
+{
+    zval * tmp;
+    zend_hash_copy(object->properties, &class_type->default_properties, (copy_ctor_func_t) zval_add_ref, (void *) &tmp, sizeof(zval *));
+}
+/* }}} */
 #endif
-
-#ifdef ZTS
-#include "TSRM.h"
-#endif
-
-#endif	/* PHP_RDKAFKA_H */
-
-/*
- * Local variables:
- * tab-width: 4
- * c-basic-offset: 4
- * End:
- * vim600: noet sw=4 ts=4 fdm=marker
- * vim<600: noet sw=4 ts=4
- */

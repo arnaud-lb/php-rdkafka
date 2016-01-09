@@ -11,6 +11,7 @@ The API ressembles as much as possible to librdkafka's.
 ## Table of Contents
 
 1. [Installation](#installation)
+   * [Dependencies](#dependencies)
    * [PHP 5 / PHP 7](#php-5--php-7)
    * [Using PECL](#using-pecl)
    * [From source](#from-source)
@@ -100,6 +101,10 @@ The API ressembles as much as possible to librdkafka's.
 6. [License](#license)
 
 ## Installation
+
+### Dependencies
+
+php-rdkafka depends on the stable version of [librdkafka](https://github.com/edenhill/librdkafka/releases)
 
 ### PHP 5 / PHP 7
 
