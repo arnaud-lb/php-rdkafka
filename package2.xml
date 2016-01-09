@@ -10,19 +10,22 @@
   <email>arnaud.lb@gmail.com</email>
   <active>yes</active>
  </lead>
- <date>2015-05-13</date>
- <time>16:26:12</time>
+ <date>2016-01-09</date>
+ <time>14:00:00</time>
  <version>
-  <release>0.0.2</release>
-  <api>0.1.0</api>
+  <release>0.9.0</release>
+  <api>0.9.0</api>
  </version>
  <stability>
-  <release>alpha</release>
-  <api>alpha</api>
+  <release>beta</release>
+  <api>beta</api>
  </stability>
  <license uri="http://opensource.org/licenses/mit-license.php">MIT License</license>
- <notes>Fixed package
-</notes>
+ <notes>
+  * Metadata API
+  * Consistent partitioner
+  * Fix ZTS build
+ </notes>
  <contents>
   <dir name="/">
    <dir name="examples">
@@ -32,6 +35,8 @@
    <file role="doc" name="CREDITS"/>
    <file role="doc" name="LICENSE"/>
    <file role="doc" name="README.md"/>
+   <file role="src" name="compat.c"/>
+   <file role="src" name="compat.h"/>
    <file role="src" name="config.m4"/>
    <file role="src" name="config.w32"/>
    <file role="src" name="metadata.c"/>
@@ -60,4 +65,19 @@
  </dependencies>
  <providesextension>rdkafka</providesextension>
  <extsrcrelease/>
+ <changelog>
+  <release>
+   <date>2015-05-13</date>
+   <time>16:26:12</time>
+   <version>
+    <release>0.0.2</release>
+    <api>0.1.0</api>
+   </version>
+   <stability>
+    <release>alpha</release>
+    <api>alpha</api>
+   </stability>
+   <notes>Fixed package</notes>
+  </release>
+ </changelog>
 </package>
