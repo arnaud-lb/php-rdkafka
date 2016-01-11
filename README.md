@@ -1,5 +1,7 @@
 # php-rdkafka
 
+[![Join the chat at https://gitter.im/arnaud-lb/php-rdkafka](https://badges.gitter.im/arnaud-lb/php-rdkafka.svg)](https://gitter.im/arnaud-lb/php-rdkafka?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 [![Build Status](https://travis-ci.org/arnaud-lb/php-rdkafka.svg)](https://travis-ci.org/arnaud-lb/php-rdkafka)
 
 PHP-rdkafka is a thin [librdkafka](https://github.com/edenhill/librdkafka) binding to providing a working PHP 5 / PHP 7 [Kafka](https://kafka.apache.org/) 0.8 / 0.9 client.
