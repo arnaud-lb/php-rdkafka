@@ -16,6 +16,7 @@ The API ressembles as much as possible to librdkafka's.
    * [Dependencies](#dependencies)
    * [PHP 5 / PHP 7](#php-5--php-7)
    * [Using PECL](#using-pecl)
+   * [OSX / Homebrew](#osx--homebrew)
    * [From source](#from-source)
 2. [Examples](#examples)
 3. [Usage](#usage)
@@ -118,10 +119,23 @@ For PHP version 7, installation from source should be preferred.
 
     sudo pecl install channel://pecl.php.net/rdkafka-alpha
 
+### OSX / Homebrew
+
+    brew tap homebrew/dupes
+    brew tap homebrew/versions
+    brew tap homebrew/homebrew-php
+    brew install homebrew/php/php70-rdkafka
+
+`php70-rdkafka` is the rdkafka package for PHP 7.0. Replace `70` by 53, 54, 55, or 56 for PHP version 5.3, 5.4, 5.5, or 5.6, respectively.
+
 ### From source
 
 For PHP version 7, make sure to use the php7 branch.
 
+    git clone https://github.com/arnaud-lb/php-rdkafka.git
+    cd php-rdkafka
+    # for php7 only:
+    # git checkout php7
     phpize
     ./configure
     make
