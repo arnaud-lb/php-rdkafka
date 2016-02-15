@@ -28,9 +28,37 @@
 #include "Zend/zend_exceptions.h"
 #include "ext/spl/spl_exceptions.h"
 #include "conf.h"
+#include "topic_partition.h"
 
 zend_class_entry * ce_kafka_conf;
 zend_class_entry * ce_kafka_topic_conf;
+
+static void kafka_conf_callback_dtor(kafka_conf_callback *cb TSRMLS_DC) /* {{{ */
+{
+    if (cb->fci.function_name) {
+        zval_ptr_dtor(&cb->fci.function_name);
+    }
+} /* }}} */
+
+void kafka_conf_callbacks_dtor(kafka_conf_callbacks *cbs TSRMLS_DC) /* {{{ */
+{
+    kafka_conf_callback_dtor(&cbs->error TSRMLS_CC);
+    kafka_conf_callback_dtor(&cbs->rebalance TSRMLS_CC);
+} /* }}} */
+
+static void kafka_conf_callback_copy(kafka_conf_callback *to, kafka_conf_callback *from TSRMLS_DC) /* {{{ */
+{
+    *to = *from;
+    if (to->fci.function_name) {
+        Z_ADDREF_P(to->fci.function_name);
+    }
+} /* }}} */
+
+void kafka_conf_callbacks_copy(kafka_conf_callbacks *to, kafka_conf_callbacks *from TSRMLS_DC) /* {{{ */
+{
+    kafka_conf_callback_copy(&to->error, &from->error TSRMLS_CC);
+    kafka_conf_callback_copy(&to->rebalance, &from->rebalance TSRMLS_CC);
+} /* }}} */
 
 static void kafka_conf_free(void *object TSRMLS_DC) /* {{{ */
 {
@@ -41,9 +69,7 @@ static void kafka_conf_free(void *object TSRMLS_DC) /* {{{ */
             if (intern->u.conf) {
                 rd_kafka_conf_destroy(intern->u.conf);
             }
-            if (intern->error_cb.fci.function_name) {
-                zval_ptr_dtor(&intern->error_cb.fci.function_name);
-            }
+            kafka_conf_callbacks_dtor(&intern->cbs TSRMLS_CC);
             break;
         case KAFKA_TOPIC_CONF:
             if (intern->u.topic_conf) {
@@ -88,16 +114,24 @@ kafka_conf_object * get_kafka_conf_object(zval *zconf TSRMLS_DC)
 
 static void kafka_conf_error_cb(rd_kafka_t *rk, int err, const char *reason, void *opaque)
 {
-    kafka_conf_object *intern = (kafka_conf_object*) opaque;
+    kafka_conf_callbacks *cbs = (kafka_conf_callbacks*) opaque;
     zval *retval;
-    zval **args[2];
+    zval **args[3];
+    zval *zrk;
     zval *zerr;
     zval *zreason;
     TSRMLS_FETCH();
 
-    if (!intern->error_cb.fci.function_name) {
+    if (!opaque) {
         return;
     }
+
+    if (!cbs->error.fci.function_name) {
+        return;
+    }
+
+    ALLOC_INIT_ZVAL(zrk);
+    ZVAL_ZVAL(zrk, &cbs->rk, 1, 0);
 
     ALLOC_INIT_ZVAL(zerr);
     ZVAL_LONG(zerr, err);
@@ -105,20 +139,67 @@ static void kafka_conf_error_cb(rd_kafka_t *rk, int err, const char *reason, voi
     ALLOC_INIT_ZVAL(zreason);
     ZVAL_STRING(zreason, reason, 1);
 
+    args[0] = &zrk;
     args[0] = &zerr;
     args[1] = &zreason;
 
-    intern->error_cb.fci.retval_ptr_ptr = &retval;
-    intern->error_cb.fci.params = args;
-    intern->error_cb.fci.param_count = 2;
+    cbs->error.fci.retval_ptr_ptr = &retval;
+    cbs->error.fci.params = args;
+    cbs->error.fci.param_count = 3;
 
-    zend_call_function(&intern->error_cb.fci, &intern->error_cb.fcc TSRMLS_CC);
+    zend_call_function(&cbs->error.fci, &cbs->error.fcc TSRMLS_CC);
 
     if (retval) {
         zval_ptr_dtor(&retval);
     }
+    zval_ptr_dtor(&zrk);
     zval_ptr_dtor(&zerr);
     zval_ptr_dtor(&zreason);
+}
+
+static void kafka_conf_rebalance_cb(rd_kafka_t *rk, rd_kafka_resp_err_t err, rd_kafka_topic_partition_list_t *partitions, void *opaque)
+{
+    kafka_conf_callbacks *cbs = (kafka_conf_callbacks*) opaque;
+    zval *retval;
+    zval **args[3];
+    zval *zrk;
+    zval *zerr;
+    zval *zpartitions;
+    TSRMLS_FETCH();
+
+    if (!opaque) {
+        return;
+    }
+
+    if (!cbs->rebalance.fci.function_name) {
+        return;
+    }
+
+    ALLOC_INIT_ZVAL(zrk);
+    ZVAL_ZVAL(zrk, &cbs->rk, 1, 0);
+
+    ALLOC_INIT_ZVAL(zerr);
+    ZVAL_LONG(zerr, err);
+
+    ALLOC_INIT_ZVAL(zpartitions);
+    kafka_topic_partition_list_to_array(zpartitions, partitions TSRMLS_CC);
+
+    args[0] = &zrk;
+    args[1] = &zerr;
+    args[2] = &zpartitions;
+
+    cbs->rebalance.fci.retval_ptr_ptr = &retval;
+    cbs->rebalance.fci.params = args;
+    cbs->rebalance.fci.param_count = 3;
+
+    zend_call_function(&cbs->rebalance.fci, &cbs->rebalance.fcc TSRMLS_CC);
+
+    if (retval) {
+        zval_ptr_dtor(&retval);
+    }
+    zval_ptr_dtor(&zrk);
+    zval_ptr_dtor(&zerr);
+    zval_ptr_dtor(&zpartitions);
 }
 
 /* {{{ proto RdKafka\Conf::__construct() */
@@ -141,8 +222,6 @@ PHP_METHOD(RdKafka__Conf, __construct)
     intern = (kafka_conf_object*)zend_object_store_get_object(this_ptr TSRMLS_CC);
     intern->type = KAFKA_CONF;
     intern->u.conf = rd_kafka_conf_new();
-
-    rd_kafka_conf_set_opaque(intern->u.conf, intern);
 
     zend_restore_error_handling(&error_handling TSRMLS_CC);
 }
@@ -268,16 +347,52 @@ PHP_METHOD(RdKafka__Conf, setErrorCb)
 
     Z_ADDREF_P(fci.function_name);
 
-    if (intern->error_cb.fci.function_name) {
-        zval_ptr_dtor(&intern->error_cb.fci.function_name);
+    if (intern->cbs.error.fci.function_name) {
+        zval_ptr_dtor(&intern->cbs.error.fci.function_name);
     }
 
-    intern->error_cb.fci = fci;
-    intern->error_cb.fcc = fcc;
+    intern->cbs.error.fci = fci;
+    intern->cbs.error.fcc = fcc;
 
     rd_kafka_conf_set_error_cb(intern->u.conf, kafka_conf_error_cb);
 }
 /* }}} */
+
+/* {{{ proto void RdKafka\Conf::setRebalanceCb(mixed $callback)
+   Set rebalance callback for use with coordinated consumer group balancing */
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_conf_set_rebalance_cb, 0, 0, 1)
+    ZEND_ARG_INFO(0, callback)
+ZEND_END_ARG_INFO()
+
+PHP_METHOD(RdKafka__Conf, setRebalanceCb)
+{
+    zend_fcall_info fci;
+    zend_fcall_info_cache fcc;
+    kafka_conf_object *intern;
+
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "f", &fci, &fcc) == FAILURE) {
+        return;
+    }
+
+    intern = get_kafka_conf_object(this_ptr TSRMLS_CC);
+    if (!intern) {
+        return;
+    }
+
+    Z_ADDREF_P(fci.function_name);
+
+    if (intern->cbs.rebalance.fci.function_name) {
+        zval_ptr_dtor(&intern->cbs.rebalance.fci.function_name);
+    }
+
+    intern->cbs.rebalance.fci = fci;
+    intern->cbs.rebalance.fcc = fcc;
+
+    rd_kafka_conf_set_rebalance_cb(intern->u.conf, kafka_conf_rebalance_cb);
+}
+/* }}} */
+
 
 /* {{{ proto RdKafka\TopicConf::__construct() */
 PHP_METHOD(RdKafka__TopicConf, __construct)
@@ -352,6 +467,7 @@ static const zend_function_entry kafka_conf_fe[] = {
     PHP_ME(RdKafka__Conf, dump, arginfo_kafka_conf_dump, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__Conf, set, arginfo_kafka_conf_set, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__Conf, setErrorCb, arginfo_kafka_conf_set_error_cb, ZEND_ACC_PUBLIC)
+    PHP_ME(RdKafka__Conf, setRebalanceCb, arginfo_kafka_conf_set_rebalance_cb, ZEND_ACC_PUBLIC)
     PHP_FE_END
 };
 

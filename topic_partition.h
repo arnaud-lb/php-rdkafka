@@ -16,16 +16,27 @@
   +----------------------------------------------------------------------+
 */
 
-typedef struct _kafka_topic_object {
-    zend_object         std;
-    rd_kafka_topic_t    *rkt;
-    zval                *zrk;
-} kafka_topic_object;
+#ifdef HAVE_NEW_KAFKA_CONSUMER
 
-void kafka_topic_minit(TSRMLS_D);
-kafka_topic_object * get_kafka_topic_object(zval *zrkt TSRMLS_DC);
+typedef struct _kafka_topic_partition_intern {
+    zend_object std;
+    char        *topic;
+    int32_t     partition;
+    int64_t     offset;
+} kafka_topic_partition_intern;
 
-extern zend_class_entry * ce_kafka_consumer_topic;
-extern zend_class_entry * ce_kafka_kafka_consumer_topic;
-extern zend_class_entry * ce_kafka_producer_topic;
-extern zend_class_entry * ce_kafka_topic;
+void kafka_metadata_topic_partition_minit(TSRMLS_D);
+
+kafka_topic_partition_intern * get_topic_partition_object(zval *z TSRMLS_DC);
+void kafka_topic_partition_init(zval *z, char *topic, int32_t partition, int64_t offset TSRMLS_DC);
+
+void kafka_topic_partition_list_to_array(zval *return_value, rd_kafka_topic_partition_list_t *list TSRMLS_DC);
+rd_kafka_topic_partition_list_t * array_arg_to_kafka_topic_partition_list(int argnum, HashTable *ary TSRMLS_DC);
+
+extern zend_class_entry * ce_kafka_topic_partition;
+
+#else /* HAVE_NEW_KAFKA_CONSUMER */
+
+static inline void kafka_metadata_topic_partition_minit(TSRMLS_D) { }
+
+#endif /* HAVE_NEW_KAFKA_CONSUMER */

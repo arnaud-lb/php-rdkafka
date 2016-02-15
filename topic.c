@@ -33,6 +33,7 @@
 
 static zend_object_handlers object_handlers;
 zend_class_entry * ce_kafka_consumer_topic;
+zend_class_entry * ce_kafka_kafka_consumer_topic;
 zend_class_entry * ce_kafka_producer_topic;
 zend_class_entry * ce_kafka_topic;
 
@@ -299,6 +300,12 @@ static const zend_function_entry kafka_consumer_topic_fe[] = {
     PHP_FE_END
 };
 
+static const zend_function_entry kafka_kafka_consumer_topic_fe[] = {
+    PHP_ME(RdKafka, __construct, arginfo_kafka___private_construct, ZEND_ACC_PRIVATE)
+    PHP_ME(RdKafka__ConsumerTopic, offsetStore, arginfo_kafka_offset_store, ZEND_ACC_PUBLIC)
+    PHP_FE_END
+};
+
 /* {{{ proto void RdKafka\ProducerTopic::produce(int $partition, int $msgflags, string $payload[, string $key])
    Produce and send a single message to broker. */
 
@@ -394,6 +401,9 @@ void kafka_topic_minit(TSRMLS_D) { /* {{{ */
 
     INIT_NS_CLASS_ENTRY(ce, "RdKafka", "ConsumerTopic", kafka_consumer_topic_fe);
     ce_kafka_consumer_topic = zend_register_internal_class_ex(&ce, ce_kafka_topic, NULL TSRMLS_CC);
+
+    INIT_NS_CLASS_ENTRY(ce, "RdKafka", "KafkaConsumerTopic", kafka_kafka_consumer_topic_fe);
+    ce_kafka_kafka_consumer_topic = zend_register_internal_class_ex(&ce, ce_kafka_topic, NULL TSRMLS_CC);
 
     INIT_NS_CLASS_ENTRY(ce, "RdKafka", "ProducerTopic", kafka_producer_topic_fe);
     ce_kafka_producer_topic = zend_register_internal_class_ex(&ce, ce_kafka_topic, NULL TSRMLS_CC);

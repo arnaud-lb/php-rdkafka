@@ -21,6 +21,7 @@
 #ifndef PHP_RDKAFKA_H
 #define PHP_RDKAFKA_H
 
+#include "librdkafka/rdkafka.h"
 #include "compat.h"
 
 #ifndef PHP_FE_END

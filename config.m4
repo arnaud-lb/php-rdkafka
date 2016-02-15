@@ -27,6 +27,8 @@ if test "$PHP_RDKAFKA" != "no"; then
 
   PHP_ADD_INCLUDE($RDKAFKA_DIR/include)
 
+  SOURCES="rdkafka.c metadata.c metadata_broker.c metadata_topic.c metadata_partition.c metadata_collection.c compat.c conf.c topic.c queue.c message.c"
+
   LIBNAME=rdkafka
   LIBSYMBOL=rd_kafka_new
 
@@ -45,8 +47,15 @@ if test "$PHP_RDKAFKA" != "no"; then
   ],[
     AC_MSG_WARN([no rd_kafka_msg_partitioner_consistent, the consistent partitioner will not be available])
   ])
-  
+
+  AC_CHECK_LIB($LIBNAME,[rd_kafka_subscribe],[
+    AC_DEFINE(HAVE_NEW_KAFKA_CONSUMER,1,[ ])
+    SOURCES="$SOURCES kafka_consumer.c topic_partition.c"
+  ],[
+    AC_MSG_WARN([no rd_kafka_subscribe, new KafkaConsumer will not be available])
+  ])
+
   PHP_SUBST(RDKAFKA_SHARED_LIBADD)
 
-  PHP_NEW_EXTENSION(rdkafka, rdkafka.c metadata.c metadata_broker.c metadata_topic.c metadata_partition.c metadata_collection.c compat.c conf.c topic.c queue.c message.c, $ext_shared)
+  PHP_NEW_EXTENSION(rdkafka, $SOURCES, $ext_shared)
 fi

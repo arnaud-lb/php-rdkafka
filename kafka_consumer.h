@@ -16,16 +16,12 @@
   +----------------------------------------------------------------------+
 */
 
-typedef struct _kafka_topic_object {
-    zend_object         std;
-    rd_kafka_topic_t    *rkt;
-    zval                *zrk;
-} kafka_topic_object;
+#ifdef HAVE_NEW_KAFKA_CONSUMER
 
-void kafka_topic_minit(TSRMLS_D);
-kafka_topic_object * get_kafka_topic_object(zval *zrkt TSRMLS_DC);
+void kafka_kafka_consumer_minit(TSRMLS_D);
 
-extern zend_class_entry * ce_kafka_consumer_topic;
-extern zend_class_entry * ce_kafka_kafka_consumer_topic;
-extern zend_class_entry * ce_kafka_producer_topic;
-extern zend_class_entry * ce_kafka_topic;
+#else /* HAVE_NEW_KAFKA_CONSUMER */
+
+static inline void kafka_kafka_consumer_minit(TSRMLS_D) { }
+
+#endif /* HAVE_NEW_KAFKA_CONSUMER */
