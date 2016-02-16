@@ -123,7 +123,7 @@ static const zend_function_entry kafka_queue_fe[] = {
     PHP_FE_END
 };
 
-void kafka_queue_minit(TSRMLS_C) { /* {{{ */
+void kafka_queue_minit(TSRMLS_D) { /* {{{ */
 
     zend_class_entry ce;
 
