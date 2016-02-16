@@ -31,6 +31,9 @@
 #include "ext/spl/spl_exceptions.h"
 #include "metadata.h"
 #include "conf.h"
+#include "topic.h"
+#include "queue.h"
+#include "message.h"
 
 enum {
     LOG_PRINT = 100
@@ -44,33 +47,16 @@ typedef struct _kafka_object {
     rd_kafka_t      *rk;
 } kafka_object;
 
-typedef struct _kafka_queue_object {
-    zend_object         std;
-    rd_kafka_queue_t    *rkqu;
-} kafka_queue_object;
-
-typedef struct _kafka_topic_object {
-    zend_object         std;
-    rd_kafka_topic_t    *rkt;
-    zval                *zrk;
-} kafka_topic_object;
-
 static const zend_function_entry empty_function_entries[] = {
     PHP_FE_END
 };
 
 zend_object_handlers kafka_object_handlers;
-static zend_object_handlers kafka_topic_object_handlers;
 
 static zend_class_entry * ce_kafka;
 static zend_class_entry * ce_kafka_consumer;
-static zend_class_entry * ce_kafka_consumer_topic;
 zend_class_entry * ce_kafka_exception;
-static zend_class_entry * ce_kafka_message;
 static zend_class_entry * ce_kafka_producer;
-static zend_class_entry * ce_kafka_producer_topic;
-static zend_class_entry * ce_kafka_queue;
-static zend_class_entry * ce_kafka_topic;
 
 static void kafka_free(void *object TSRMLS_DC) /* {{{ */
 {
@@ -150,109 +136,6 @@ static void kafka_log_syslog_print(const rd_kafka_t *rk, int level, const char *
     rd_kafka_log_syslog(rk, level, fac, buf);
 }
 
-static void kafka_queue_free(void *object TSRMLS_DC) /* {{{ */
-{
-    kafka_queue_object *intern = (kafka_queue_object*)object;
-
-    if (intern->rkqu) {
-        rd_kafka_queue_destroy(intern->rkqu);
-    }
-
-    zend_object_std_dtor(&intern->std TSRMLS_CC);
-
-    efree(intern);
-}
-/* }}} */
-
-static zend_object_value kafka_queue_new(zend_class_entry *class_type TSRMLS_DC) /* {{{ */
-{
-    zend_object_value retval;
-    kafka_queue_object *intern;
-
-    intern = ecalloc(1, sizeof(*intern));
-    zend_object_std_init(&intern->std, class_type TSRMLS_CC);
-    object_properties_init(&intern->std, class_type);
-
-    retval.handle = zend_objects_store_put(&intern->std, (zend_objects_store_dtor_t) zend_objects_destroy_object, kafka_queue_free, NULL TSRMLS_CC);
-    retval.handlers = &kafka_object_handlers;
-
-    return retval;
-}
-/* }}} */
-
-static kafka_queue_object * get_kafka_queue_object(zval *zrkqu TSRMLS_DC)
-{
-    kafka_queue_object *orkqu = (kafka_queue_object*)zend_object_store_get_object(zrkqu TSRMLS_CC);
-
-    if (!orkqu->rkqu) {
-        zend_throw_exception_ex(NULL, 0 TSRMLS_CC, "RdKafka\\Queue::__construct() has not been called" TSRMLS_CC);
-        return NULL;
-    }
-
-    return orkqu;
-}
-
-static void kafka_topic_free(void *object TSRMLS_DC) /* {{{ */
-{
-    kafka_topic_object *intern = (kafka_topic_object*)object;
-
-    if (intern->rkt) {
-        rd_kafka_topic_destroy(intern->rkt);
-    }
-    if (intern->zrk) {
-        zval_ptr_dtor(&intern->zrk);
-    }
-
-    zend_object_std_dtor(&intern->std TSRMLS_CC);
-
-    efree(intern);
-}
-/* }}} */
-
-static zend_object_value kafka_topic_new(zend_class_entry *class_type TSRMLS_DC) /* {{{ */
-{
-    zend_object_value retval;
-    kafka_topic_object *intern;
-
-    intern = ecalloc(1, sizeof(*intern));
-    zend_object_std_init(&intern->std, class_type TSRMLS_CC);
-    object_properties_init(&intern->std, class_type);
-
-    retval.handle = zend_objects_store_put(&intern->std, (zend_objects_store_dtor_t) zend_objects_destroy_object, kafka_topic_free, NULL TSRMLS_CC);
-    retval.handlers = &kafka_topic_object_handlers;
-
-    return retval;
-}
-/* }}} */
-
-static kafka_topic_object * get_kafka_topic_object(zval *zrkt TSRMLS_DC)
-{
-    kafka_topic_object *orkt = (kafka_topic_object*)zend_object_store_get_object(zrkt TSRMLS_CC);
-
-    if (!orkt->rkt) {
-        zend_throw_exception_ex(NULL, 0 TSRMLS_CC, "RdKafka\\Topic::__construct() has not been called" TSRMLS_CC);
-        return NULL;
-    }
-
-    return orkt;
-}
-
-static void new_message(zval *return_value, rd_kafka_message_t *message TSRMLS_DC)
-{
-    object_init_ex(return_value, ce_kafka_message);
-
-    zend_update_property_long(NULL, return_value, ZEND_STRL("err"), message->err TSRMLS_CC);
-    zend_update_property_string(NULL, return_value, ZEND_STRL("topic_name"), rd_kafka_topic_name(message->rkt) TSRMLS_CC);
-    zend_update_property_long(NULL, return_value, ZEND_STRL("partition"), message->partition TSRMLS_CC);
-    if (message->payload) {
-        zend_update_property_stringl(NULL, return_value, ZEND_STRL("payload"), message->payload, message->len TSRMLS_CC);
-    }
-    if (message->key) {
-        zend_update_property_stringl(NULL, return_value, ZEND_STRL("key"), message->key, message->key_len TSRMLS_CC);
-    }
-    zend_update_property_long(NULL, return_value, ZEND_STRL("offset"), message->offset TSRMLS_CC);
-}
-
 /* {{{ private constructor */
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka___private_construct, 0, 0, 0)
 ZEND_END_ARG_INFO()
@@ -263,221 +146,6 @@ PHP_METHOD(RdKafka, __construct)
     return;
 }
 /* }}} */
-
-/* {{{ proto void RdKafka\ConsumerTopic::consumeQueueStart(int $partition, int $offset, RdKafka\Queue $queue)
- * Same as consumeStart(), but re-routes incoming messages to the provided queue */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_consume_queue_start, 0, 0, 3)
-    ZEND_ARG_INFO(0, partition)
-    ZEND_ARG_INFO(0, offset)
-    ZEND_ARG_INFO(0, queue)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__ConsumerTopic, consumeQueueStart)
-{
-    zval *zrkqu;
-    kafka_topic_object *intern;
-    kafka_queue_object *queue_intern;
-    long partition;
-    long offset;
-    int ret;
-    rd_kafka_resp_err_t err;
-
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "llO", &partition, &offset, &zrkqu, ce_kafka_queue) == FAILURE) {
-        return;
-    }
-
-    if (partition != RD_KAFKA_PARTITION_UA && (partition < 0 || partition > 0x7FFFFFFF)) {
-        zend_throw_exception_ex(spl_ce_InvalidArgumentException, 0 TSRMLS_CC, "Out of range value '%ld' for $partition", partition TSRMLS_CC);
-        return;
-    }
-
-    intern = get_kafka_topic_object(this_ptr TSRMLS_CC);
-    if (!intern) {
-        return;
-    }
-
-    queue_intern = get_kafka_queue_object(zrkqu TSRMLS_CC);
-    if (!queue_intern) {
-        return;
-    }
-
-    ret = rd_kafka_consume_start_queue(intern->rkt, partition, offset, queue_intern->rkqu);
-
-    if (ret == -1) {
-        err = rd_kafka_errno2err(errno);
-        zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err TSRMLS_CC);
-        return;
-    }
-}
-/* }}} */
-
-/* {{{ proto void RdKafka\ConsumerTopic::consumeStart(int partition, int offset)
-   Start consuming messages */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_consume_start, 0, 0, 2)
-    ZEND_ARG_INFO(0, partition)
-    ZEND_ARG_INFO(0, offset)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__ConsumerTopic, consumeStart)
-{
-    kafka_topic_object *intern;
-    long partition;
-    long offset;
-    int ret;
-    rd_kafka_resp_err_t err;
-
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ll", &partition, &offset) == FAILURE) {
-        return;
-    }
-
-    if (partition != RD_KAFKA_PARTITION_UA && (partition < 0 || partition > 0x7FFFFFFF)) {
-        zend_throw_exception_ex(spl_ce_InvalidArgumentException, 0 TSRMLS_CC, "Out of range value '%ld' for $partition", partition TSRMLS_CC);
-        return;
-    }
-
-    intern = get_kafka_topic_object(this_ptr TSRMLS_CC);
-    if (!intern) {
-        return;
-    }
-
-    ret = rd_kafka_consume_start(intern->rkt, partition, offset);
-
-    if (ret == -1) {
-        err = rd_kafka_errno2err(errno);
-        zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err TSRMLS_CC);
-        return;
-    }
-}
-/* }}} */
-
-/* {{{ proto void RdKafka\ConsumerTopic::consumeStop(int partition)
-   Stop consuming messages */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_consume_stop, 0, 0, 1)
-    ZEND_ARG_INFO(0, partition)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__ConsumerTopic, consumeStop)
-{
-    kafka_topic_object *intern;
-    long partition;
-    int ret;
-    rd_kafka_resp_err_t err;
-
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &partition) == FAILURE) {
-        return;
-    }
-
-    if (partition != RD_KAFKA_PARTITION_UA && (partition < 0 || partition > 0x7FFFFFFF)) {
-        zend_throw_exception_ex(spl_ce_InvalidArgumentException, 0 TSRMLS_CC, "Out of range value '%ld' for $partition", partition TSRMLS_CC);
-        return;
-    }
-
-    intern = get_kafka_topic_object(this_ptr TSRMLS_CC);
-    if (!intern) {
-        return;
-    }
-
-    ret = rd_kafka_consume_stop(intern->rkt, partition);
-
-    if (ret == -1) {
-        err = rd_kafka_errno2err(errno);
-        zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err TSRMLS_CC);
-        return;
-    }
-}
-/* }}} */
-
-/* {{{ proto RdKafka\Message RdKafka\ConsumerTopic::consume(int $partition, int timeout_ms)
-   Consume a single message from partition */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_consume, 0, 0, 2)
-    ZEND_ARG_INFO(0, partition)
-    ZEND_ARG_INFO(0, timeout_ms)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__ConsumerTopic, consume)
-{
-    kafka_topic_object *intern;
-    long partition;
-    long timeout_ms;
-    rd_kafka_message_t *message;
-    rd_kafka_resp_err_t err;
-
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ll", &partition, &timeout_ms) == FAILURE) {
-        return;
-    }
-
-    if (partition != RD_KAFKA_PARTITION_UA && (partition < 0 || partition > 0x7FFFFFFF)) {
-        zend_throw_exception_ex(spl_ce_InvalidArgumentException, 0 TSRMLS_CC, "Out of range value '%ld' for $partition", partition TSRMLS_CC);
-        return;
-    }
-
-    intern = get_kafka_topic_object(this_ptr TSRMLS_CC);
-    if (!intern) {
-        return;
-    }
-
-    message = rd_kafka_consume(intern->rkt, partition, timeout_ms);
-
-    if (!message) {
-        err = rd_kafka_errno2err(errno);
-        if (err == RD_KAFKA_RESP_ERR__TIMED_OUT) {
-            return;
-        }
-        zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err TSRMLS_CC);
-        return;
-    }
-
-    new_message(return_value, message TSRMLS_CC);
-
-    rd_kafka_message_destroy(message);
-}
-/* }}} */
-
-/* {{{ proto void RdKafka\ConsumerTopic::offsetStore(int partition, int offset) */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_offset_store, 0, 0, 2)
-    ZEND_ARG_INFO(0, partition)
-    ZEND_ARG_INFO(0, offset)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__ConsumerTopic, offsetStore)
-{
-    kafka_topic_object *intern;
-    long partition;
-    long offset;
-    rd_kafka_resp_err_t err;
-
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ll", &partition, &offset) == FAILURE) {
-        return;
-    }
-
-    intern = get_kafka_topic_object(this_ptr TSRMLS_CC);
-    if (!intern) {
-        return;
-    }
-
-    err = rd_kafka_offset_store(intern->rkt, partition, offset);
-
-    if (err != RD_KAFKA_RESP_ERR_NO_ERROR) {
-        zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err TSRMLS_CC);
-        return;
-    }
-}
-/* }}} */
-
-static const zend_function_entry kafka_consumer_topic_fe[] = {
-    PHP_ME(RdKafka, __construct, arginfo_kafka___private_construct, ZEND_ACC_PRIVATE)
-    PHP_ME(RdKafka__ConsumerTopic, consumeQueueStart, arginfo_kafka_consume_queue_start, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__ConsumerTopic, consumeStart, arginfo_kafka_consume_start, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__ConsumerTopic, consumeStop, arginfo_kafka_consume_stop, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__ConsumerTopic, consume, arginfo_kafka_consume, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__ConsumerTopic, offsetStore, arginfo_kafka_offset_store, ZEND_ACC_PUBLIC)
-    PHP_FE_END
-};
 
 /* {{{ proto RdKafka\Consumer::__construct([RdKafka\Conf $conf[, string &$errstr]]) */
 
@@ -814,102 +482,6 @@ static const zend_function_entry kafka_fe[] = {
     PHP_FE_END
 };
 
-/* {{{ proto string RdKafka\Message::errstr()
- *  Returns the error string for an errored KrKafka\Message or NULL if there was no error.
- */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_message_errstr, 0, 0, 0)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__Message, errstr)
-{
-    zval *zerr;
-    zval *zpayload;
-    const char *errstr;
-
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "") == FAILURE) {
-        return;
-    }
-
-    zerr = zend_read_property(NULL, this_ptr, ZEND_STRL("err"), 0 TSRMLS_CC);
-
-    if (!zerr || Z_TYPE_P(zerr) != IS_LONG) {
-        return;
-    }
-
-    zpayload = zend_read_property(NULL, this_ptr, ZEND_STRL("payload"), 0 TSRMLS_CC);
-
-    if (zpayload && Z_TYPE_P(zpayload) == IS_STRING) {
-        RETURN_ZVAL(zpayload, 1, 0);
-    }
-
-    errstr = rd_kafka_err2str(Z_LVAL_P(zerr));
-
-    if (errstr) {
-        RETURN_STRING(errstr, 1);
-    }
-}
-/* }}} */
-
-static const zend_function_entry kafka_message_fe[] = {
-    PHP_ME(RdKafka__Message, errstr, arginfo_kafka_message_errstr, ZEND_ACC_PUBLIC)
-    PHP_FE_END
-};
-
-/* {{{ proto void RdKafka\ProducerTopic::produce(int partition, int msgflags, string payload, string key)
-   Produce and send a single message to broker. */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_produce, 0, 0, 3)
-    ZEND_ARG_INFO(0, partition)
-    ZEND_ARG_INFO(0, msgflags)
-    ZEND_ARG_INFO(0, payload)
-    ZEND_ARG_INFO(0, key)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__ProducerTopic, produce)
-{
-    long partition;
-    long msgflags;
-    char *payload;
-    int payload_len;
-    char *key = NULL;
-    int key_len = 0;
-    int ret;
-    rd_kafka_resp_err_t err;
-    kafka_topic_object *intern;
-
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "lls|s", &partition, &msgflags, &payload, &payload_len, &key, &key_len) == FAILURE) {
-        return;
-    }
-
-    if (partition != RD_KAFKA_PARTITION_UA && (partition < 0 || partition > 0x7FFFFFFF)) {
-        zend_throw_exception_ex(spl_ce_InvalidArgumentException, 0 TSRMLS_CC, "Out of range value '%ld' for $partition", partition TSRMLS_CC);
-        return;
-    }
-
-    if (msgflags != 0) {
-        zend_throw_exception_ex(spl_ce_InvalidArgumentException, 0 TSRMLS_CC, "Invalid value '%ld' for $msgflags", msgflags TSRMLS_CC);
-        return;
-    }
-
-    intern = get_kafka_topic_object(this_ptr TSRMLS_CC);
-
-    ret = rd_kafka_produce(intern->rkt, partition, msgflags | RD_KAFKA_MSG_F_COPY, payload, payload_len, key, key_len, NULL);
-
-    if (ret == -1) {
-        err = rd_kafka_errno2err(errno);
-        zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err TSRMLS_CC);
-        return;
-    }
-}
-/* }}} */
-
-static const zend_function_entry kafka_producer_topic_fe[] = {
-    PHP_ME(RdKafka, __construct, arginfo_kafka___private_construct, ZEND_ACC_PRIVATE)
-    PHP_ME(RdKafka__ProducerTopic, produce, arginfo_kafka_produce, ZEND_ACC_PUBLIC)
-    PHP_FE_END
-};
-
 /* {{{ proto RdKafka\Producer::__construct([RdKafka\Conf $conf[, string &$errstr]]) */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_producer___construct, 0, 0, 0)
@@ -937,79 +509,6 @@ PHP_METHOD(RdKafka__Producer, __construct)
 
 static const zend_function_entry kafka_producer_fe[] = {
     PHP_ME(RdKafka__Producer, __construct, arginfo_kafka_producer___construct, ZEND_ACC_PUBLIC)
-    PHP_FE_END
-};
-
-/* {{{ proto int RdKafka\Queue::consume(int timeout_ms)
-   Consume a single message */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_queue_consume, 0, 0, 1)
-    ZEND_ARG_INFO(0, timeout_ms)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__Queue, consume)
-{
-    kafka_queue_object *intern;
-    long timeout_ms;
-    rd_kafka_message_t *message;
-    rd_kafka_resp_err_t err;
-
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &timeout_ms) == FAILURE) {
-        return;
-    }
-
-    intern = get_kafka_queue_object(this_ptr TSRMLS_CC);
-    if (!intern) {
-        return;
-    }
-
-    message = rd_kafka_consume_queue(intern->rkqu, timeout_ms);
-
-    if (!message) {
-        err = rd_kafka_errno2err(errno);
-        if (err == RD_KAFKA_RESP_ERR__TIMED_OUT) {
-            return;
-        }
-        zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err TSRMLS_CC);
-        return;
-    }
-
-    new_message(return_value, message TSRMLS_CC);
-
-    rd_kafka_message_destroy(message);
-}
-/* }}} */
-
-static const zend_function_entry kafka_queue_fe[] = {
-    PHP_ME(RdKafka, __construct, arginfo_kafka___private_construct, ZEND_ACC_PRIVATE)
-    PHP_ME(RdKafka__Queue, consume, arginfo_kafka_queue_consume, ZEND_ACC_PUBLIC)
-    PHP_FE_END
-};
-
-/* {{{ proto string RdKafka\Topic::getName() */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_topic_get_name, 0, 0, 0)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__Topic, getName)
-{
-    kafka_topic_object *intern;
-
-    if (zend_parse_parameters_none() == FAILURE) {
-        return;
-    }
-
-    intern = get_kafka_topic_object(this_ptr TSRMLS_CC);
-    if (!intern) {
-        return;
-    }
-
-    RETURN_STRING(rd_kafka_topic_name(intern->rkt), 1);
-}
-/* }}} */
-
-static const zend_function_entry kafka_topic_fe[] = {
-    PHP_ME(RdKafka__Topic, getName, arginfo_kafka_topic_get_name, ZEND_ACC_PUBLIC)
     PHP_FE_END
 };
 
@@ -1153,9 +652,6 @@ PHP_MINIT_FUNCTION(rdkafka)
     memcpy(&kafka_object_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
     kafka_object_handlers.clone_obj = NULL;
 
-    memcpy(&kafka_topic_object_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
-    kafka_topic_object_handlers.clone_obj = NULL;
-
     INIT_CLASS_ENTRY(ce, "RdKafka", kafka_fe);
     ce_kafka = zend_register_internal_class(&ce TSRMLS_CC);
     ce_kafka->ce_flags |= ZEND_ACC_EXPLICIT_ABSTRACT_CLASS;
@@ -1167,36 +663,14 @@ PHP_MINIT_FUNCTION(rdkafka)
     INIT_NS_CLASS_ENTRY(ce, "RdKafka", "Producer", kafka_producer_fe);
     ce_kafka_producer = zend_register_internal_class_ex(&ce, ce_kafka, NULL TSRMLS_CC);
 
-    INIT_NS_CLASS_ENTRY(ce, "RdKafka", "Topic", kafka_topic_fe);
-    ce_kafka_topic = zend_register_internal_class(&ce TSRMLS_CC);
-    ce_kafka_topic->ce_flags = ZEND_ACC_EXPLICIT_ABSTRACT_CLASS;
-    ce_kafka_topic->create_object = kafka_topic_new;
-
-    INIT_NS_CLASS_ENTRY(ce, "RdKafka", "ConsumerTopic", kafka_consumer_topic_fe);
-    ce_kafka_consumer_topic = zend_register_internal_class_ex(&ce, ce_kafka_topic, NULL TSRMLS_CC);
-
-    INIT_NS_CLASS_ENTRY(ce, "RdKafka", "ProducerTopic", kafka_producer_topic_fe);
-    ce_kafka_producer_topic = zend_register_internal_class_ex(&ce, ce_kafka_topic, NULL TSRMLS_CC);
-
-    INIT_NS_CLASS_ENTRY(ce, "RdKafka", "Message", kafka_message_fe);
-    ce_kafka_message = zend_register_internal_class(&ce TSRMLS_CC);
-
-    zend_declare_property_null(ce_kafka_message, ZEND_STRL("err"), ZEND_ACC_PUBLIC TSRMLS_CC);
-    zend_declare_property_null(ce_kafka_message, ZEND_STRL("topic_name"), ZEND_ACC_PUBLIC TSRMLS_CC);
-    zend_declare_property_null(ce_kafka_message, ZEND_STRL("partition"), ZEND_ACC_PUBLIC TSRMLS_CC);
-    zend_declare_property_null(ce_kafka_message, ZEND_STRL("payload"), ZEND_ACC_PUBLIC TSRMLS_CC);
-    zend_declare_property_null(ce_kafka_message, ZEND_STRL("key"), ZEND_ACC_PUBLIC TSRMLS_CC);
-    zend_declare_property_null(ce_kafka_message, ZEND_STRL("offset"), ZEND_ACC_PUBLIC TSRMLS_CC);
-
-    INIT_NS_CLASS_ENTRY(ce, "RdKafka", "Queue", kafka_queue_fe);
-    ce_kafka_queue = zend_register_internal_class(&ce TSRMLS_CC);
-    ce_kafka_queue->create_object = kafka_queue_new;
-
     INIT_NS_CLASS_ENTRY(ce, "RdKafka", "Exception", NULL);
     ce_kafka_exception = zend_register_internal_class_ex(&ce, zend_exception_get_default(TSRMLS_C), NULL TSRMLS_CC);
 
     kafka_conf_minit(TSRMLS_C);
+    kafka_message_minit(TSRMLS_C);
     kafka_metadata_minit(TSRMLS_C);
+    kafka_queue_minit(TSRMLS_C);
+    kafka_topic_minit(TSRMLS_C);
 
     return SUCCESS;
 }
