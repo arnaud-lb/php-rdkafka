@@ -1,0 +1,48 @@
+/*
+  +----------------------------------------------------------------------+
+  | PHP Version 5                                                        |
+  +----------------------------------------------------------------------+
+  | Copyright (c) 2016 Arnaud Le Blanc                                   |
+  +----------------------------------------------------------------------+
+  | This source file is subject to version 3.01 of the PHP license,      |
+  | that is bundled with this package in the file LICENSE, and is        |
+  | available through the world-wide-web at the following url:           |
+  | http://www.php.net/license/3_01.txt                                  |
+  | If you did not receive a copy of the PHP license and are unable to   |
+  | obtain it through the world-wide-web, please send a note to          |
+  | license@php.net so we can mail you a copy immediately.               |
+  +----------------------------------------------------------------------+
+  | Author: Arnaud Le Blanc <arnaud.lb@gmail.com>                        |
+  +----------------------------------------------------------------------+
+*/
+
+enum {
+        MSG_PARTITIONER_RANDOM = 2
+#ifdef HAVE_RD_KAFKA_MSG_PARTIIONER_CONSISTENT
+        , MSG_PARTITIONER_CONSISTENT = 3
+#endif
+};
+
+typedef enum {
+    KAFKA_CONF = 1,
+    KAFKA_TOPIC_CONF
+} kafka_conf_type;
+
+typedef struct _kafka_conf_object {
+    zend_object     std;
+    kafka_conf_type type;
+    union {
+        rd_kafka_conf_t         *conf;
+        rd_kafka_topic_conf_t   *topic_conf;
+    } u;
+    struct {
+        zend_fcall_info fci;
+        zend_fcall_info_cache fcc;
+    } error_cb;
+} kafka_conf_object;
+
+kafka_conf_object * get_kafka_conf_object(zval *zconf TSRMLS_DC);
+void kafka_conf_minit(TSRMLS_D);
+
+extern zend_class_entry * ce_kafka_conf;
+extern zend_class_entry * ce_kafka_topic_conf;
