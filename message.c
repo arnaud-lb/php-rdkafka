@@ -35,7 +35,9 @@ void kafka_message_new(zval *return_value, rd_kafka_message_t *message TSRMLS_DC
     object_init_ex(return_value, ce_kafka_message);
 
     zend_update_property_long(NULL, return_value, ZEND_STRL("err"), message->err TSRMLS_CC);
-    zend_update_property_string(NULL, return_value, ZEND_STRL("topic_name"), rd_kafka_topic_name(message->rkt) TSRMLS_CC);
+    if (message->rkt) {
+        zend_update_property_string(NULL, return_value, ZEND_STRL("topic_name"), rd_kafka_topic_name(message->rkt) TSRMLS_CC);
+    }
     zend_update_property_long(NULL, return_value, ZEND_STRL("partition"), message->partition TSRMLS_CC);
     if (message->payload) {
         zend_update_property_stringl(NULL, return_value, ZEND_STRL("payload"), message->payload, message->len TSRMLS_CC);
