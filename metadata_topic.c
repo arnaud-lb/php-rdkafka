@@ -137,8 +137,8 @@ PHP_METHOD(RdKafka__Metadata__Topic, getTopic)
 }
 /* }}} */
 
-/* {{{ proto string RdKafka\MetadataTopic::getErr()
-   Topic name */
+/* {{{ proto int RdKafka\MetadataTopic::getErr()
+   Error */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_metadata_get_err, 0, 0, 0)
 ZEND_END_ARG_INFO()
@@ -161,7 +161,7 @@ PHP_METHOD(RdKafka__Metadata__Topic, getErr)
 /* }}} */
 
 
-/* {{{ proto string RdKafka\Metadata\Topic::getPartitions()
+/* {{{ proto RdKafka\Metadata\Collection RdKafka\Metadata\Topic::getPartitions()
    Partitions */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_metadata_get_partitions, 0, 0, 0)

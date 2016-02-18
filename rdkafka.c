@@ -147,11 +147,10 @@ PHP_METHOD(RdKafka, __construct)
 }
 /* }}} */
 
-/* {{{ proto RdKafka\Consumer::__construct([RdKafka\Conf $conf[, string &$errstr]]) */
+/* {{{ proto RdKafka\Consumer::__construct([RdKafka\Conf $conf]) */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_consumer___construct, 0, 0, 0)
     ZEND_ARG_INFO(0, conf)
-    ZEND_ARG_INFO(1, errstr)
 ZEND_END_ARG_INFO()
 
 PHP_METHOD(RdKafka__Consumer, __construct)
@@ -203,7 +202,7 @@ PHP_METHOD(RdKafka__Kafka, addBrokers)
 }
 /* }}} */
 
-/* {{{ proto RdKafka\Metadata::metadata(bool all_topics, RdKafka\Topic only_topic, int timeout_ms)
+/* {{{ proto RdKafka\Metadata::metadata(bool $all_topics, RdKafka\Topic $only_topic, int $timeout_ms)
    Request Metadata from broker */
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_metadata, 0, 0, 1)
     ZEND_ARG_INFO(0, all_topics)
@@ -248,7 +247,7 @@ PHP_METHOD(RdKafka__Kafka, metadata)
 }
 /* }}} */
 
-/* {{{ proto void RdKafka\Kafka::setLogLevel(int level)
+/* {{{ proto void RdKafka\Kafka::setLogLevel(int $level)
    Specifies the maximum logging level produced by internal kafka logging and debugging */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_set_log_level, 0, 0, 1)
@@ -273,7 +272,7 @@ PHP_METHOD(RdKafka__Kafka, setLogLevel)
 }
 /* }}} */
 
-/* {{{ proto RdKafka\Topic RdKafka\Kafka::newQueue()
+/* {{{ proto RdKafka\Queue RdKafka\Kafka::newQueue()
    Returns a RdKafka\Queue object */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_new_queue, 0, 0, 0)
@@ -404,7 +403,7 @@ PHP_METHOD(RdKafka__Kafka, outqLen)
 }
 /* }}} */
 
-/* {{{ proto int RdKafka\Kafka::poll()
+/* {{{ proto int RdKafka\Kafka::poll(int $timeout_ms)
    Polls the provided kafka handle for events */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_poll, 0, 0, 1)
@@ -482,11 +481,10 @@ static const zend_function_entry kafka_fe[] = {
     PHP_FE_END
 };
 
-/* {{{ proto RdKafka\Producer::__construct([RdKafka\Conf $conf[, string &$errstr]]) */
+/* {{{ proto RdKafka\Producer::__construct([RdKafka\Conf $conf]) */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_producer___construct, 0, 0, 0)
     ZEND_ARG_INFO(0, conf)
-    ZEND_ARG_INFO(1, errstr)
 ZEND_END_ARG_INFO()
 
 PHP_METHOD(RdKafka__Producer, __construct)

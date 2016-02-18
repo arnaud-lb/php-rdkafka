@@ -122,7 +122,7 @@ static HashTable *get_debug_info(zval *object, int *is_temp TSRMLS_DC) /* {{{ */
 }
 /* }}} */
 
-/* {{{ proto int RdKafka\Metadata::getOrigBrokerId()
+/* {{{ proto long RdKafka\Metadata::getOrigBrokerId()
    Broker originating this metadata */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_metadata_get_orig_broker_id, 0, 0, 0)

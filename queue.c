@@ -74,7 +74,7 @@ kafka_queue_object * get_kafka_queue_object(zval *zrkqu TSRMLS_DC)
     return orkqu;
 }
 
-/* {{{ proto int RdKafka\Queue::consume(int timeout_ms)
+/* {{{ proto RdKafka\Message RdKafka\Queue::consume(int timeout_ms)
    Consume a single message */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_queue_consume, 0, 0, 1)
