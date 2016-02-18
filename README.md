@@ -130,12 +130,10 @@ For PHP version 7, installation from source should be preferred.
 
 ### From source
 
-For PHP version 7, make sure to use the php7 branch.
+Source can be downloaded from a [stable release](https://github.com/arnaud-lb/php-rdkafka/releases) (recommended). Alternatively, clone the master or php7 branches for php5 or php7, respectively.
 
-    git clone https://github.com/arnaud-lb/php-rdkafka.git
-    cd php-rdkafka
-    # for php7 only:
-    # git checkout php7
+The extension can be compiled and installed like this:
+
     phpize
     ./configure
     make
