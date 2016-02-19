@@ -70,7 +70,7 @@ static zend_object_value kafka_conf_new(zend_class_entry *class_type TSRMLS_DC) 
     retval.handle = zend_objects_store_put(&intern->std, (zend_objects_store_dtor_t) zend_objects_destroy_object, kafka_conf_free, NULL TSRMLS_CC);
     retval.handlers = &kafka_object_handlers;
 
-    return retval;    
+    return retval;
 }
 /* }}} */
 
@@ -196,10 +196,9 @@ PHP_METHOD(RdKafka__Conf, dump)
 /* {{{ proto void RdKafka\Conf::set(RdKafka\Conf $conf, string $name, string $value[, string &$errstr])
    Sets a configuration property. */
 
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_conf_set, 0, 0, 3)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_conf_set, 0, 0, 2)
     ZEND_ARG_INFO(0, name)
     ZEND_ARG_INFO(0, value)
-    ZEND_ARG_INFO(0, errstr)
 ZEND_END_ARG_INFO()
 
 PHP_METHOD(RdKafka__Conf, set)
