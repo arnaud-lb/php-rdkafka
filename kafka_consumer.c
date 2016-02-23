@@ -324,6 +324,7 @@ PHP_METHOD(RdKafka__KafkaConsumer, getSubscription)
     rd_kafka_resp_err_t err;
     rd_kafka_topic_partition_list_t *topics;
     object_intern *intern;
+    int i;
 
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "") == FAILURE) {
         return;
@@ -341,7 +342,12 @@ PHP_METHOD(RdKafka__KafkaConsumer, getSubscription)
         return;
     }
 
-    kafka_topic_partition_list_to_array(return_value, topics TSRMLS_CC);
+    array_init_size(return_value, topics->cnt);
+
+    for (i = 0; i < topics->cnt; i++) {
+        add_next_index_string(return_value, topics->elems[i].topic, 1);
+    }
+
     rd_kafka_topic_partition_list_destroy(topics);
 }
 /* }}} */
