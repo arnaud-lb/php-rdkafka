@@ -511,17 +511,33 @@ static const zend_function_entry kafka_producer_fe[] = {
 #define COPY_CONSTANT(name) \
     REGISTER_LONG_CONSTANT(#name, name, CONST_CS | CONST_PERSISTENT)
 
-/* {{{ PHP_MINIT_FUNCTION
- */
-PHP_MINIT_FUNCTION(rdkafka)
+void register_err_constants(INIT_FUNC_ARGS) /* {{{ */
 {
-    COPY_CONSTANT(RD_KAFKA_CONSUMER);
-    COPY_CONSTANT(RD_KAFKA_OFFSET_BEGINNING);
-    COPY_CONSTANT(RD_KAFKA_OFFSET_END);
-    COPY_CONSTANT(RD_KAFKA_OFFSET_STORED);
-    COPY_CONSTANT(RD_KAFKA_PARTITION_UA);
-    COPY_CONSTANT(RD_KAFKA_PRODUCER);
-    COPY_CONSTANT(RD_KAFKA_VERSION);
+#ifdef HAVE_RD_KAFKA_GET_ERR_DESCS
+    const struct rd_kafka_err_desc *errdescs;
+    size_t cnt;
+    size_t i;
+    char buf[128];
+
+    rd_kafka_get_err_descs(&errdescs, &cnt);
+
+    for (i = 0; i < cnt; i++) {
+        const struct rd_kafka_err_desc *desc = &errdescs[i];
+        int len;
+
+        if (!desc->name) {
+            continue;
+        }
+
+        len = snprintf(buf, sizeof(buf), "RD_KAFKA_RESP_ERR_%s", desc->name);
+        if (len >= sizeof(buf)) {
+            len = sizeof(buf)-1;
+        }
+
+        zend_register_long_constant(buf, len+1, desc->code, CONST_CS | CONST_PERSISTENT, module_number TSRMLS_CC);
+    }
+
+#else /* HAVE_RD_KAFKA_GET_ERR_DESCS */
 
     COPY_CONSTANT(RD_KAFKA_RESP_ERR__BEGIN);
     COPY_CONSTANT(RD_KAFKA_RESP_ERR__BAD_MSG);
@@ -556,6 +572,22 @@ PHP_MINIT_FUNCTION(rdkafka)
     COPY_CONSTANT(RD_KAFKA_RESP_ERR_MSG_SIZE_TOO_LARGE);
     COPY_CONSTANT(RD_KAFKA_RESP_ERR_STALE_CTRL_EPOCH);
     COPY_CONSTANT(RD_KAFKA_RESP_ERR_OFFSET_METADATA_TOO_LARGE);
+#endif /* HAVE_RD_KAFKA_GET_ERR_DESCS */
+} /* }}} */
+
+/* {{{ PHP_MINIT_FUNCTION
+ */
+PHP_MINIT_FUNCTION(rdkafka)
+{
+    COPY_CONSTANT(RD_KAFKA_CONSUMER);
+    COPY_CONSTANT(RD_KAFKA_OFFSET_BEGINNING);
+    COPY_CONSTANT(RD_KAFKA_OFFSET_END);
+    COPY_CONSTANT(RD_KAFKA_OFFSET_STORED);
+    COPY_CONSTANT(RD_KAFKA_PARTITION_UA);
+    COPY_CONSTANT(RD_KAFKA_PRODUCER);
+    COPY_CONSTANT(RD_KAFKA_VERSION);
+
+    register_err_constants(INIT_FUNC_ARGS_PASSTHRU);
 
     COPY_CONSTANT(RD_KAFKA_CONF_UNKNOWN);
     COPY_CONSTANT(RD_KAFKA_CONF_INVALID);
