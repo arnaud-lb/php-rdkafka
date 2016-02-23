@@ -45,7 +45,13 @@ if test "$PHP_RDKAFKA" != "no"; then
   ],[
     AC_MSG_WARN([no rd_kafka_msg_partitioner_consistent, the consistent partitioner will not be available])
   ])
-  
+
+  AC_CHECK_LIB($LIBNAME,[rd_kafka_get_err_descs],[
+    AC_DEFINE(HAVE_RD_KAFKA_GET_ERR_DESCS,1,[ ])
+  ],[
+    AC_MSG_WARN([no rd_kafka_get_err_descs, the rd_kafka_get_err_descs function will not be available])
+  ])
+
   PHP_SUBST(RDKAFKA_SHARED_LIBADD)
 
   PHP_NEW_EXTENSION(rdkafka, rdkafka.c metadata.c metadata_broker.c metadata_topic.c metadata_partition.c metadata_collection.c compat.c conf.c topic.c queue.c message.c fun.c, $ext_shared)
