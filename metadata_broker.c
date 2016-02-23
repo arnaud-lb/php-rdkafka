@@ -99,7 +99,7 @@ static HashTable *get_debug_info(zval *object, int *is_temp TSRMLS_DC) /* {{{ */
 }
 /* }}} */
 
-/* {{{ proto string RdKafka\Metadata\Broker::getId()
+/* {{{ proto int RdKafka\Metadata\Broker::getId()
    Broker id */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_metadata_get_id, 0, 0, 0)
@@ -145,7 +145,7 @@ PHP_METHOD(RdKafka__Metadata__Broker, getHost)
 }
 /* }}} */
 
-/* {{{ proto string RdKafka\Metadata\Broker::getPort()
+/* {{{ proto int RdKafka\Metadata\Broker::getPort()
    Broker port */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_metadata_get_port, 0, 0, 0)

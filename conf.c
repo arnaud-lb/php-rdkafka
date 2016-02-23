@@ -183,13 +183,12 @@ PHP_METHOD(RdKafka__Conf, dump)
 }
 /* }}} */
 
-/* {{{ proto void RdKafka\Conf::set(RdKafka\Conf $conf, string $name, string $value[, string &$errstr])
+/* {{{ proto void RdKafka\Conf::set(RdKafka\Conf $conf, string $name, string $value)
    Sets a configuration property. */
 
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_conf_set, 0, 0, 3)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_conf_set, 0, 0, 2)
     ZEND_ARG_INFO(0, name)
     ZEND_ARG_INFO(0, value)
-    ZEND_ARG_INFO(0, errstr)
 ZEND_END_ARG_INFO()
 
 PHP_METHOD(RdKafka__Conf, set)
@@ -235,7 +234,7 @@ PHP_METHOD(RdKafka__Conf, set)
 }
 /* }}} */
 
-/* {{{ proto void RdKafka\Conf::setErrorCb(mixed $callback)
+/* {{{ proto void RdKafka\Conf::setErrorCb(callable $callback)
    Sets the error callback */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_conf_set_error_cb, 0, 0, 1)
@@ -293,7 +292,7 @@ PHP_METHOD(RdKafka__TopicConf, __construct)
 }
 /* }}} */
 
-/* {{{ proto RdKafka\TopicConf::setPartitioner() */
+/* {{{ proto RdKafka\TopicConf::setPartitioner(int $partitioner) */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_topic_conf_set_partitioner, 0, 0, 1)
     ZEND_ARG_INFO(0, partitioner)

@@ -130,7 +130,7 @@ PHP_METHOD(RdKafka__Metadata__Collection, count)
 }
 /* }}} */
 
-/* {{{ proto int RdKafka\Metadata\Collection::rewind()
+/* {{{ proto void RdKafka\Metadata\Collection::rewind()
    */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_metadata_rewind, 0, 0, 0)
@@ -153,7 +153,7 @@ PHP_METHOD(RdKafka__Metadata__Collection, rewind)
 }
 /* }}} */
 
-/* {{{ proto int RdKafka\Metadata\Collection::current()
+/* {{{ proto mixed RdKafka\Metadata\Collection::current()
    */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_metadata_current, 0, 0, 0)
@@ -181,7 +181,7 @@ PHP_METHOD(RdKafka__Metadata__Collection, current)
 }
 /* }}} */
 
-/* {{{ proto int RdKafka\Metadata\Collection::key()
+/* {{{ proto mixed RdKafka\Metadata\Collection::key()
    */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_metadata_key, 0, 0, 0)
@@ -209,7 +209,7 @@ PHP_METHOD(RdKafka__Metadata__Collection, key)
 }
 /* }}} */
 
-/* {{{ proto int RdKafka\Metadata\Collection::next()
+/* {{{ proto void RdKafka\Metadata\Collection::next()
    */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_metadata_next, 0, 0, 0)
@@ -232,7 +232,7 @@ PHP_METHOD(RdKafka__Metadata__Collection, next)
 }
 /* }}} */
 
-/* {{{ proto int RdKafka\Metadata\Collection::valid()
+/* {{{ proto bool RdKafka\Metadata\Collection::valid()
    */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_metadata_valid, 0, 0, 0)

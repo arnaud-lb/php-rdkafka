@@ -175,7 +175,7 @@ void int32_ctor(zval *return_value, zval *zmetadata, const void *data TSRMLS_DC)
     ZVAL_LONG(return_value, *(int32_t*)data);
 }
 
-/* {{{ proto int RdKafka\Metadata\Partition::getReplicas()
+/* {{{ proto array RdKafka\Metadata\Partition::getReplicas()
    Replica broker ids */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_metadata_get_replicas, 0, 0, 0)
@@ -198,7 +198,7 @@ PHP_METHOD(RdKafka__Metadata__Partition, getReplicas)
 }
 /* }}} */
 
-/* {{{ proto int RdKafka\Metadata\Partition::getIsrs()
+/* {{{ proto array RdKafka\Metadata\Partition::getIsrs()
    In-Sync-Replica broker ids */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_metadata_get_isrs, 0, 0, 0)

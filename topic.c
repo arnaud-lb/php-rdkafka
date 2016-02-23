@@ -294,7 +294,7 @@ static const zend_function_entry kafka_consumer_topic_fe[] = {
     PHP_FE_END
 };
 
-/* {{{ proto void RdKafka\ProducerTopic::produce(int partition, int msgflags, string payload, string key)
+/* {{{ proto void RdKafka\ProducerTopic::produce(int $partition, int $msgflags, string $payload[, string $key])
    Produce and send a single message to broker. */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_produce, 0, 0, 3)
