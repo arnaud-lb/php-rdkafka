@@ -34,8 +34,7 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_err2str, 0, 0, 1)
     ZEND_ARG_INFO(0, err)
 ZEND_END_ARG_INFO()
 
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_errno2err, 0, 0, 1)
-    ZEND_ARG_INFO(0, errnox)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_errno2err, 0, 0, 0)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_errno, 0, 0, 0)
@@ -46,6 +45,7 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_thread_cnt, 0, 0, 0)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_offset_tail, 0, 0, 1)
+    ZEND_ARG_INFO(0, cnt)
 ZEND_END_ARG_INFO()
 /* }}} */
 
