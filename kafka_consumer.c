@@ -204,7 +204,7 @@ PHP_METHOD(RdKafka__KafkaConsumer, assign)
     rd_kafka_resp_err_t err;
     object_intern *intern;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|h", &htopars) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|h!", &htopars) == FAILURE) {
         return;
     }
 
@@ -425,7 +425,7 @@ static void consumer_commit(int async, INTERNAL_FUNCTION_PARAMETERS) /* {{{ */
     rd_kafka_topic_partition_list_t *offsets;
     rd_kafka_resp_err_t err;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "z", &zarg) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|z", &zarg) == FAILURE) {
         return;
     }
 
@@ -594,7 +594,7 @@ PHP_METHOD(RdKafka__KafkaConsumer, newTopic)
     rd_kafka_topic_conf_t *conf = NULL;
     kafka_conf_object *conf_intern;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s|O", &topic, &topic_len, &zconf, ce_kafka_topic_conf) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s|O!", &topic, &topic_len, &zconf, ce_kafka_topic_conf) == FAILURE) {
         return;
     }
 
