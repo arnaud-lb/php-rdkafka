@@ -159,6 +159,7 @@ static void kafka_conf_error_cb(rd_kafka_t *rk, int err, const char *reason, voi
 
 static void kafka_conf_rebalance_cb(rd_kafka_t *rk, rd_kafka_resp_err_t err, rd_kafka_topic_partition_list_t *partitions, void *opaque)
 {
+#ifdef HAVE_NEW_KAFKA_CONSUMER
     kafka_conf_callbacks *cbs = (kafka_conf_callbacks*) opaque;
     zval *retval;
     zval **args[3];
@@ -200,6 +201,7 @@ static void kafka_conf_rebalance_cb(rd_kafka_t *rk, rd_kafka_resp_err_t err, rd_
     zval_ptr_dtor(&zrk);
     zval_ptr_dtor(&zerr);
     zval_ptr_dtor(&zpartitions);
+#endif /* HAVE_NEW_KAFKA_CONSUMER */
 }
 
 /* {{{ proto RdKafka\Conf::__construct() */
