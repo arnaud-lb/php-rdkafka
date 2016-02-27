@@ -27,7 +27,7 @@ if test "$PHP_RDKAFKA" != "no"; then
 
   PHP_ADD_INCLUDE($RDKAFKA_DIR/include)
 
-  SOURCES="rdkafka.c metadata.c metadata_broker.c metadata_topic.c metadata_partition.c metadata_collection.c compat.c conf.c topic.c queue.c message.c"
+  SOURCES="rdkafka.c metadata.c metadata_broker.c metadata_topic.c metadata_partition.c metadata_collection.c compat.c conf.c topic.c queue.c message.c fun.c"
 
   LIBNAME=rdkafka
   LIBSYMBOL=rd_kafka_new
@@ -46,6 +46,12 @@ if test "$PHP_RDKAFKA" != "no"; then
     AC_DEFINE(HAVE_RD_KAFKA_MSG_PARTIIONER_CONSISTENT,1,[ ])
   ],[
     AC_MSG_WARN([no rd_kafka_msg_partitioner_consistent, the consistent partitioner will not be available])
+  ])
+
+  AC_CHECK_LIB($LIBNAME,[rd_kafka_get_err_descs],[
+    AC_DEFINE(HAVE_RD_KAFKA_GET_ERR_DESCS,1,[ ])
+  ],[
+    AC_MSG_WARN([no rd_kafka_get_err_descs, the rd_kafka_get_err_descs function will not be available])
   ])
 
   AC_CHECK_LIB($LIBNAME,[rd_kafka_subscribe],[

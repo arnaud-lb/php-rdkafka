@@ -96,7 +96,7 @@ static zend_object_value kafka_conf_new(zend_class_entry *class_type TSRMLS_DC) 
     retval.handle = zend_objects_store_put(&intern->std, (zend_objects_store_dtor_t) zend_objects_destroy_object, kafka_conf_free, NULL TSRMLS_CC);
     retval.handlers = &kafka_object_handlers;
 
-    return retval;    
+    return retval;
 }
 /* }}} */
 
