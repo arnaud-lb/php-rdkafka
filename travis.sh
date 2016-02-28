@@ -2,7 +2,7 @@
 
 set -xe
 
-git clone --depth 1 --branch 0.8.6 https://github.com/edenhill/librdkafka.git
+git clone --depth 1 --branch "$LIBRDKAFKA_VERSION" https://github.com/edenhill/librdkafka.git
 (
     cd librdkafka
     ./configure
