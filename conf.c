@@ -157,9 +157,9 @@ static void kafka_conf_error_cb(rd_kafka_t *rk, int err, const char *reason, voi
     zval_ptr_dtor(&zreason);
 }
 
+#ifdef HAVE_NEW_KAFKA_CONSUMER
 static void kafka_conf_rebalance_cb(rd_kafka_t *rk, rd_kafka_resp_err_t err, rd_kafka_topic_partition_list_t *partitions, void *opaque)
 {
-#ifdef HAVE_NEW_KAFKA_CONSUMER
     kafka_conf_callbacks *cbs = (kafka_conf_callbacks*) opaque;
     zval *retval;
     zval **args[3];
@@ -201,8 +201,8 @@ static void kafka_conf_rebalance_cb(rd_kafka_t *rk, rd_kafka_resp_err_t err, rd_
     zval_ptr_dtor(&zrk);
     zval_ptr_dtor(&zerr);
     zval_ptr_dtor(&zpartitions);
-#endif /* HAVE_NEW_KAFKA_CONSUMER */
 }
+#endif /* HAVE_NEW_KAFKA_CONSUMER */
 
 /* {{{ proto RdKafka\Conf::__construct() */
 
@@ -360,6 +360,7 @@ PHP_METHOD(RdKafka__Conf, setErrorCb)
 }
 /* }}} */
 
+#ifdef HAVE_NEW_KAFKA_CONSUMER
 /* {{{ proto void RdKafka\Conf::setRebalanceCb(mixed $callback)
    Set rebalance callback for use with coordinated consumer group balancing */
 
@@ -394,7 +395,7 @@ PHP_METHOD(RdKafka__Conf, setRebalanceCb)
     rd_kafka_conf_set_rebalance_cb(intern->u.conf, kafka_conf_rebalance_cb);
 }
 /* }}} */
-
+#endif /* HAVE_NEW_KAFKA_CONSUMER */
 
 /* {{{ proto RdKafka\TopicConf::__construct() */
 PHP_METHOD(RdKafka__TopicConf, __construct)
@@ -469,7 +470,9 @@ static const zend_function_entry kafka_conf_fe[] = {
     PHP_ME(RdKafka__Conf, dump, arginfo_kafka_conf_dump, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__Conf, set, arginfo_kafka_conf_set, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__Conf, setErrorCb, arginfo_kafka_conf_set_error_cb, ZEND_ACC_PUBLIC)
+#ifdef HAVE_NEW_KAFKA_CONSUMER
     PHP_ME(RdKafka__Conf, setRebalanceCb, arginfo_kafka_conf_set_rebalance_cb, ZEND_ACC_PUBLIC)
+#endif /* HAVE_NEW_KAFKA_CONSUMER */
     PHP_FE_END
 };
 
