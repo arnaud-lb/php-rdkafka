@@ -21,3 +21,13 @@ void rdkafka_object_properties_init_53(zend_object *object, zend_class_entry *cl
 #define object_properties_init rdkafka_object_properties_init_53
 #endif
 
+#if PHP_MAJOR_VERSION == 5 && PHP_MINOR_VERSION < 6
+#   define KAFKA_ZVAL_ZVAL(z, zv, copy, dtor) do {  \
+        zval * ___z = (z);                          \
+        zval * ___zv = (zv);                        \
+        ZVAL_ZVAL(___z, ___zv, copy, dtor);         \
+    } while (0)
+#else
+#   define KAFKA_ZVAL_ZVAL ZVAL_ZVAL
+#endif
+

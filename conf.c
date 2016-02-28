@@ -131,7 +131,7 @@ static void kafka_conf_error_cb(rd_kafka_t *rk, int err, const char *reason, voi
     }
 
     ALLOC_INIT_ZVAL(zrk);
-    ZVAL_ZVAL(zrk, &cbs->rk, 1, 0);
+    KAFKA_ZVAL_ZVAL(zrk, &cbs->rk, 1, 0);
 
     ALLOC_INIT_ZVAL(zerr);
     ZVAL_LONG(zerr, err);
@@ -177,7 +177,7 @@ static void kafka_conf_rebalance_cb(rd_kafka_t *rk, rd_kafka_resp_err_t err, rd_
     }
 
     ALLOC_INIT_ZVAL(zrk);
-    ZVAL_ZVAL(zrk, &cbs->rk, 1, 0);
+    KAFKA_ZVAL_ZVAL(zrk, &cbs->rk, 1, 0);
 
     ALLOC_INIT_ZVAL(zerr);
     ZVAL_LONG(zerr, err);
