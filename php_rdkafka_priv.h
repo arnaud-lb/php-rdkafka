@@ -2,7 +2,7 @@
   +----------------------------------------------------------------------+
   | PHP Version 5                                                        |
   +----------------------------------------------------------------------+
-  | Copyright (c) 1997-2015 The PHP Group                                |
+  | Copyright (c) 2016 Arnaud Le Blanc                                   |
   +----------------------------------------------------------------------+
   | This source file is subject to version 3.01 of the PHP license,      |
   | that is bundled with this package in the file LICENSE, and is        |
@@ -34,6 +34,5 @@ static inline zend_object * is_zend_object(zend_object * object) {
 
 #define get_custom_object(type, object) \
     ((type*)((char *)is_zend_object(object) - XtOffsetOf(type, std)))
-
 
 #endif /* PHP_RDKAFKA_PRIV_H */
