@@ -1,0 +1,73 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+ <head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title>Set log level</title>
+<link media="all" rel="stylesheet" type="text/css" href="styles/d41d8cd98f00b204e9800998ecf8427e-theme-base.css" />
+<link media="all" rel="stylesheet" type="text/css" href="styles/d41d8cd98f00b204e9800998ecf8427e-theme-medium.css" />
+<link media="all" rel="stylesheet" type="text/css" href="styles/d41d8cd98f00b204e9800998ecf8427e-style.css" />
+
+ </head>
+ <body><div class="manualnavbar" style="text-align: center;">
+ <div class="prev" style="text-align: left; float: left;"><a href="rdkafka.poll.html">RdKafka::poll</a></div>
+ <div class="next" style="text-align: right; float: right;"><a href="class.rdkafka-consumer.html">RdKafka\Consumer</a></div>
+ <div class="up"><a href="class.rdkafka.html">RdKafka</a></div>
+ <div class="home"><a href="index.html">PHP Manual</a></div>
+</div><hr /><div id="rdkafka.setloglevel" class="refentry">
+ <div class="refnamediv">
+  <h1 class="refname">RdKafka::setLogLevel</h1>
+  <p class="verinfo">(PECL rdkafka &gt;= 0.9.1)</p><p class="refpurpose"><span class="refname">RdKafka::setLogLevel</span> &mdash; <span class="dc-title">Set log level</span></p>
+
+ </div>
+
+ <div class="refsect1 description" id="refsect1-rdkafka.setloglevel-description">
+  <h3 class="title">Description</h3>
+  <div class="methodsynopsis dc-description">
+   <span class="modifier">public</span> <span class="type"><span class="type void">void</span></span> <span class="methodname"><strong>RdKafka::setLogLevel</strong></span>
+    ( <span class="methodparam"><span class="type">integer</span> <code class="parameter">$level</code></span>
+   )</div>
+
+  <p class="para rdfs-comment">
+   Specifies the maximum logging level produced by internal kafka logging and debugging.
+  </p>
+  <p class="para">
+   If the <code class="code">&quot;debug&quot;</code> configuration property is set, the level is automatically adjusted to <strong><code>LOG_DEGUG</code></strong>.
+  </p>
+ </div>
+
+
+ <div class="refsect1 parameters" id="refsect1-rdkafka.setloglevel-parameters">
+  <h3 class="title">Parameters</h3>
+  <dl>
+
+   
+    <dt>
+<code class="parameter">level</code> (<span class="type"><a href="language.types.integer.html" class="type integer">integer</a></span>)</dt>
+
+    <dd>
+
+     <p class="para">
+      Log level. Can take any <strong><code>LOG_*</code></strong> constant (see the syslog function).
+     </p>
+    </dd>
+
+   
+  </dl>
+
+ </div>
+
+
+ <div class="refsect1 returnvalues" id="refsect1-rdkafka.setloglevel-returnvalues">
+  <h3 class="title">Return Values</h3>
+  <p class="para">
+   Returns no value.
+  </p>
+ </div>
+
+
+</div><hr /><div class="manualnavbar" style="text-align: center;">
+ <div class="prev" style="text-align: left; float: left;"><a href="rdkafka.poll.html">RdKafka::poll</a></div>
+ <div class="next" style="text-align: right; float: right;"><a href="class.rdkafka-consumer.html">RdKafka\Consumer</a></div>
+ <div class="up"><a href="class.rdkafka.html">RdKafka</a></div>
+ <div class="home"><a href="index.html">PHP Manual</a></div>
+</div></body></html>

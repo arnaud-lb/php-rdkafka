@@ -1,0 +1,119 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+ <head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title>Request Metadata from broker</title>
+<link media="all" rel="stylesheet" type="text/css" href="styles/d41d8cd98f00b204e9800998ecf8427e-theme-base.css" />
+<link media="all" rel="stylesheet" type="text/css" href="styles/d41d8cd98f00b204e9800998ecf8427e-theme-medium.css" />
+<link media="all" rel="stylesheet" type="text/css" href="styles/d41d8cd98f00b204e9800998ecf8427e-style.css" />
+
+ </head>
+ <body><div class="manualnavbar" style="text-align: center;">
+ <div class="prev" style="text-align: left; float: left;"><a href="rdkafka.addbrokers.html">RdKafka::addBrokers</a></div>
+ <div class="next" style="text-align: right; float: right;"><a href="rdkafka.getoutqlen.html">RdKafka::getOutQLen</a></div>
+ <div class="up"><a href="class.rdkafka.html">RdKafka</a></div>
+ <div class="home"><a href="index.html">PHP Manual</a></div>
+</div><hr /><div id="rdkafka.getmetadata" class="refentry">
+ <div class="refnamediv">
+  <h1 class="refname">RdKafka::getMetadata</h1>
+  <p class="verinfo">(PECL rdkafka &gt;= master)</p><p class="refpurpose"><span class="refname">RdKafka::getMetadata</span> &mdash; <span class="dc-title">Request Metadata from broker</span></p>
+
+ </div>
+
+ <div class="refsect1 description" id="refsect1-rdkafka.getmetadata-description">
+  <h3 class="title">Description</h3>
+  <div class="methodsynopsis dc-description">
+   <span class="modifier">public</span> <a href="class.rdkafka-metadata.html" class="classname">RdKafka\Metadata</a> <span class="methodname"><strong>RdKafka::getMetadata</strong></span>
+    ( <span class="methodparam"><span class="type">bool</span> <code class="parameter">$all_topics</code></span>
+   , <span class="methodparam"><a href="class.rdkafka-topic.html" class="classname">RdKafka\Topic</a> <code class="parameter">$only_topic</code><span class="initializer"> = <strong><code>NULL</code></strong></span></span>
+   , <span class="methodparam"><span class="type">int</span> <code class="parameter">$timeout_ms</code></span>
+   )</div>
+
+  <p class="para rdfs-comment">
+   Request Metadata from broker
+  </p>
+ </div>
+
+
+ <div class="refsect1 parameters" id="refsect1-rdkafka.getmetadata-parameters">
+  <h3 class="title">Parameters</h3>
+  <dl>
+
+   
+    <dt>
+<code class="parameter">all_topics</code> (<span class="type"><a href="language.types.boolean.html" class="type bool">bool</a></span>)</dt>
+
+    <dd>
+
+     <p class="para">
+      When <strong><code>TRUE</code></strong>, request info about all topics in cluster. Else, only request info about locally known topics.
+     </p>
+    </dd>
+
+   
+   
+    <dt>
+<code class="parameter">only_topic</code> (<strong class="classname">RdKafkaTopic</strong>)</dt>
+
+    <dd>
+
+     <p class="para">
+      When non-null, only request info about this topic
+     </p>
+    </dd>
+
+   
+   
+    <dt>
+<code class="parameter">timeout_ms</code> (<span class="type"><a href="language.types.integer.html" class="type int">int</a></span>)</dt>
+
+    <dd>
+
+     <p class="para">
+      Timeout (milliseconds)
+     </p>
+    </dd>
+
+   
+  </dl>
+
+ </div>
+
+
+ <div class="refsect1 returnvalues" id="refsect1-rdkafka.getmetadata-returnvalues">
+  <h3 class="title">Return Values</h3>
+  <p class="para">
+   Returns a <a href="class.rdkafka-metadata.html" class="classname">RdKafka\Metadata</a> instance
+  </p>
+ </div>
+
+
+ <div class="refsect1 examples" id="refsect1-rdkafka.getmetadata-examples">
+  <h3 class="title">Examples</h3>
+  <div class="example" id="example-11">
+   <p><strong>Example #1 <span class="function"><strong>RdKafka::getMetadata()</strong></span> example</strong></p>
+   <div class="example-contents">
+<div class="phpcode"><code><span style="color: #000000">
+<span style="color: #0000BB">&lt;?php<br />$all&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$kafka</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">metadata</span><span style="color: #007700">(</span><span style="color: #0000BB">true</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">NULL</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">60e3</span><span style="color: #007700">);<br /><br /></span><span style="color: #0000BB">$local&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$kafka</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">metadata</span><span style="color: #007700">(</span><span style="color: #0000BB">false</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">NULL</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">60e3</span><span style="color: #007700">);<br /><br /></span><span style="color: #0000BB">$topic&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$kafka</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">newTopic</span><span style="color: #007700">(</span><span style="color: #DD0000">"myTopic"</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">$one&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$kafka</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">metadata</span><span style="color: #007700">(</span><span style="color: #0000BB">true</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">$topic</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">60e3</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">?&gt;</span>
+</span>
+</code></div>
+   </div>
+
+  </div>
+ </div>
+
+
+ <div class="refsect1 errors" id="refsect1-rdkafka.getmetadata-errors">
+  <h3 class="title">Errors/Exceptions</h3>
+  <ul class="simplelist">
+   <li class="member">Throws <a href="class.rdkafka-exception.html" class="classname">RdKafka\Exception</a> on errors.</li>
+  </ul>
+ </div>
+
+
+</div><hr /><div class="manualnavbar" style="text-align: center;">
+ <div class="prev" style="text-align: left; float: left;"><a href="rdkafka.addbrokers.html">RdKafka::addBrokers</a></div>
+ <div class="next" style="text-align: right; float: right;"><a href="rdkafka.getoutqlen.html">RdKafka::getOutQLen</a></div>
+ <div class="up"><a href="class.rdkafka.html">RdKafka</a></div>
+ <div class="home"><a href="index.html">PHP Manual</a></div>
+</div></body></html>

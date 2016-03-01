@@ -1,0 +1,177 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+ <head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title>The RdKafka\Message class</title>
+<link media="all" rel="stylesheet" type="text/css" href="styles/d41d8cd98f00b204e9800998ecf8427e-theme-base.css" />
+<link media="all" rel="stylesheet" type="text/css" href="styles/d41d8cd98f00b204e9800998ecf8427e-theme-medium.css" />
+<link media="all" rel="stylesheet" type="text/css" href="styles/d41d8cd98f00b204e9800998ecf8427e-style.css" />
+
+ </head>
+ <body><div class="manualnavbar" style="text-align: center;">
+ <div class="prev" style="text-align: left; float: left;"><a href="rdkafka-queue.consume.html">RdKafka\Queue::consume</a></div>
+ <div class="next" style="text-align: right; float: right;"><a href="rdkafka-message.errstr.html">RdKafka\Message::errstr</a></div>
+ <div class="up"><a href="book.rdkafka.html">Rdkafka</a></div>
+ <div class="home"><a href="index.html">PHP Manual</a></div>
+</div><hr /><div id="class.rdkafka-message" class="reference">
+
+ <h1 class="title">The RdKafka\Message class</h1>
+ 
+
+ <div class="partintro"><p class="verinfo">(PECL rdkafka &gt;= 0.9.1)</p>
+
+
+  <div class="section" id="rdkafka-message.intro">
+   <h2 class="title">Introduction</h2>
+   <p class="para">
+    This object represents either a single consumed or produced message, or an event ($err is set).
+   </p>
+   <p class="para">
+    An application must check RdKafka\Message::err to see if the object is a proper message (error is <strong><code>RD_KAFKA_RESP_ERR_NO_ERROR</code></strong>) or an error event.
+   </p>
+  </div>
+
+
+  <div class="section" id="rdkafka-message.synopsis">
+   <h2 class="title">Class synopsis</h2>
+
+
+   <div class="classsynopsis">
+    <div class="ooclass"></div>
+
+
+    <div class="classsynopsisinfo">
+     <span class="ooclass">
+      <strong class="classname">RdKafka\Message</strong>
+     </span>
+     {</div>
+
+    <div class="classsynopsisinfo classsynopsisinfo_comment">/* Properties */</div>
+    <div class="fieldsynopsis">
+     <span class="modifier">public</span>
+      <var class="varname"><a href="class.rdkafka-message.html#rdkafka-message.props.err">$<var class="varname">err</var></a></var>
+    ;</div>
+
+    <div class="fieldsynopsis">
+     <span class="modifier">public</span>
+      <var class="varname"><a href="class.rdkafka-message.html#rdkafka-message.props.topic-name">$<var class="varname">topic_name</var></a></var>
+    ;</div>
+
+    <div class="fieldsynopsis">
+     <span class="modifier">public</span>
+      <var class="varname"><a href="class.rdkafka-message.html#rdkafka-message.props.partition">$<var class="varname">partition</var></a></var>
+    ;</div>
+
+    <div class="fieldsynopsis">
+     <span class="modifier">public</span>
+      <var class="varname"><a href="class.rdkafka-message.html#rdkafka-message.props.payload">$<var class="varname">payload</var></a></var>
+    ;</div>
+
+    <div class="fieldsynopsis">
+     <span class="modifier">public</span>
+      <var class="varname"><a href="class.rdkafka-message.html#rdkafka-message.props.key">$<var class="varname">key</var></a></var>
+    ;</div>
+
+    <div class="fieldsynopsis">
+     <span class="modifier">public</span>
+      <var class="varname"><a href="class.rdkafka-message.html#rdkafka-message.props.offset">$<var class="varname">offset</var></a></var>
+    ;</div>
+
+
+    
+    <div class="classsynopsisinfo classsynopsisinfo_comment">/* Methods */</div>
+    <div class="methodsynopsis dc-description">
+   <span class="modifier">public</span> <span class="type">string</span> <span class="methodname"><a href="rdkafka-message.errstr.html" class="methodname">errstr</a></span>
+    ( <span class="methodparam">void</span>
+   )</div>
+
+   }</div>
+
+
+  </div>
+
+  
+
+  <div class="section" id="rdkafka-message.props">
+   <h2 class="title">Properties</h2>
+   <dl>
+
+    
+     <dt id="rdkafka-message.props.err"><var class="varname"><var class="varname">err</var></var></dt>
+
+     <dd>
+
+      <p class="para">Error code (<span class="type"><a href="language.types.integer.html" class="type integer">integer</a></span>)</p>
+     </dd>
+
+    
+    
+     <dt id="rdkafka-message.props.topic-name"><var class="varname"><var class="varname">topic_name</var></var></dt>
+
+     <dd>
+
+      <p class="para">Topic name (<span class="type"><a href="language.types.string.html" class="type string">string</a></span>)</p>
+     </dd>
+
+    
+    
+     <dt id="rdkafka-message.props.partition"><var class="varname"><var class="varname">partition</var></var></dt>
+
+     <dd>
+
+      <p class="para">Partition (<span class="type"><a href="language.types.integer.html" class="type integer">integer</a></span>)</p>
+     </dd>
+
+    
+    
+     <dt id="rdkafka-message.props.payload"><var class="varname"><var class="varname">payload</var></var></dt>
+
+     <dd>
+
+      <p class="para">Payload (<span class="type"><a href="language.types.string.html" class="type string">string</a></span>)</p>
+     </dd>
+
+    
+    
+     <dt id="rdkafka-message.props.key"><var class="varname"><var class="varname">key</var></var></dt>
+
+     <dd>
+
+      <p class="para">Key (<span class="type"><a href="language.types.string.html" class="type string">string</a></span>)</p>
+     </dd>
+
+    
+    
+     <dt id="rdkafka-message.props.offset"><var class="varname"><var class="varname">offset</var></var></dt>
+
+     <dd>
+
+      <p class="para">Offset (<span class="type"><a href="language.types.integer.html" class="type integer">integer</a></span>)</p>
+     </dd>
+
+    
+   </dl>
+
+  </div>
+
+
+
+ </div>
+
+ 
+
+
+
+
+
+
+
+
+<h2>Table of Contents</h2><ul class="chunklist chunklist_reference"><li><a href="rdkafka-message.errstr.html">RdKafka\Message::errstr</a> — Get the error as string</li></ul>
+</div>
+<hr /><div class="manualnavbar" style="text-align: center;">
+ <div class="prev" style="text-align: left; float: left;"><a href="rdkafka-queue.consume.html">RdKafka\Queue::consume</a></div>
+ <div class="next" style="text-align: right; float: right;"><a href="rdkafka-message.errstr.html">RdKafka\Message::errstr</a></div>
+ <div class="up"><a href="book.rdkafka.html">Rdkafka</a></div>
+ <div class="home"><a href="index.html">PHP Manual</a></div>
+</div></body></html>

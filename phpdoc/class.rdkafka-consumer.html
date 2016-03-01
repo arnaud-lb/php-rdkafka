@@ -1,0 +1,123 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+ <head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title>The RdKafka\Consumer class</title>
+<link media="all" rel="stylesheet" type="text/css" href="styles/d41d8cd98f00b204e9800998ecf8427e-theme-base.css" />
+<link media="all" rel="stylesheet" type="text/css" href="styles/d41d8cd98f00b204e9800998ecf8427e-theme-medium.css" />
+<link media="all" rel="stylesheet" type="text/css" href="styles/d41d8cd98f00b204e9800998ecf8427e-style.css" />
+
+ </head>
+ <body><div class="manualnavbar" style="text-align: center;">
+ <div class="prev" style="text-align: left; float: left;"><a href="rdkafka.setloglevel.html">RdKafka::setLogLevel</a></div>
+ <div class="next" style="text-align: right; float: right;"><a href="rdkafka-consumer.construct.html">RdKafka\Consumer::__construct</a></div>
+ <div class="up"><a href="book.rdkafka.html">Rdkafka</a></div>
+ <div class="home"><a href="index.html">PHP Manual</a></div>
+</div><hr /><div id="class.rdkafka-consumer" class="reference">
+
+ <h1 class="title">The RdKafka\Consumer class</h1>
+ 
+
+ <div class="partintro"><p class="verinfo">(PECL rdkafka &gt;= 0.9.1)</p>
+
+
+  <div class="section" id="rdkafka-consumer.intro">
+   <h2 class="title">Introduction</h2>
+   <p class="para">
+    This is the low-level Kafka consumer. It can be used with Kafka &gt;= 0.8.
+   </p>
+  </div>
+
+
+  <div class="section" id="rdkafka-consumer.synopsis">
+   <h2 class="title">Class synopsis</h2>
+
+
+   <div class="classsynopsis">
+    <div class="ooclass"></div>
+
+
+    <div class="classsynopsisinfo">
+     <span class="ooclass">
+      <strong class="classname">RdKafka\Consumer</strong>
+     </span>
+     
+     <span class="ooclass">
+      <span class="modifier">extends</span>
+      <a href="class.rdkafka.html" class="classname">RdKafka</a>
+     </span>
+     {</div>
+
+    
+    <div class="classsynopsisinfo classsynopsisinfo_comment">/* Methods */</div>
+    
+    
+    <div class="classsynopsisinfo classsynopsisinfo_comment">/* Inherited methods */</div>
+    <div class="methodsynopsis dc-description">
+   <span class="modifier">public</span> <span class="type">integer</span> <span class="methodname"><a href="rdkafka.addbrokers.html" class="methodname">RdKafka::addBrokers</a></span>
+    ( <span class="methodparam"><span class="type">string</span> <code class="parameter">$broker_list</code></span>
+   )</div>
+<div class="methodsynopsis dc-description">
+   <span class="modifier">public</span> <a href="class.rdkafka-metadata.html" class="classname">RdKafka\Metadata</a> <span class="methodname"><a href="rdkafka.getmetadata.html" class="methodname">RdKafka::getMetadata</a></span>
+    ( <span class="methodparam"><span class="type">bool</span> <code class="parameter">$all_topics</code></span>
+   , <span class="methodparam"><a href="class.rdkafka-topic.html" class="classname">RdKafka\Topic</a> <code class="parameter">$only_topic</code><span class="initializer"> = <strong><code>NULL</code></strong></span></span>
+   , <span class="methodparam"><span class="type">int</span> <code class="parameter">$timeout_ms</code></span>
+   )</div>
+<div class="methodsynopsis dc-description">
+   <span class="modifier">public</span> <span class="type">integer</span> <span class="methodname"><a href="rdkafka.getoutqlen.html" class="methodname">RdKafka::getOutQLen</a></span>
+    ( <span class="methodparam">void</span>
+   )</div>
+<div class="methodsynopsis dc-description">
+   <span class="modifier">public</span> <a href="class.rdkafka-queue.html" class="classname">RdKafka\Queue</a> <span class="methodname"><a href="rdkafka.newqueue.html" class="methodname">RdKafka::newQueue</a></span>
+    ( <span class="methodparam">void</span>
+   )</div>
+<div class="methodsynopsis dc-description">
+   <span class="modifier">public</span> <a href="class.rdkafka-topic.html" class="classname">RdKafka\Topic</a> <span class="methodname"><a href="rdkafka.newtopic.html" class="methodname">RdKafka::newTopic</a></span>
+    ( <span class="methodparam"><span class="type">string</span> <code class="parameter">$topic_name</code></span>
+   [, <span class="methodparam"><a href="class.rdkafka-topicconf.html" class="classname">RdKafka\TopicConf</a>  <code class="parameter">$topic_conf</code><span class="initializer"> = <strong><code>NULL</code></strong></span></span>
+  ] )</div>
+<div class="methodsynopsis dc-description">
+   <span class="modifier">public</span> <span class="type">void</span> <span class="methodname"><a href="rdkafka.poll.html" class="methodname">RdKafka::poll</a></span>
+    ( <span class="methodparam"><span class="type">integer</span> <code class="parameter">$timeout_ms</code></span>
+   )</div>
+<div class="methodsynopsis dc-description">
+   <span class="modifier">public</span> <span class="type">void</span> <span class="methodname"><a href="rdkafka.setloglevel.html" class="methodname">RdKafka::setLogLevel</a></span>
+    ( <span class="methodparam"><span class="type">integer</span> <code class="parameter">$level</code></span>
+   )</div>
+
+
+   }</div>
+
+
+  </div>
+
+  <div class="refsect1 seealso" id="refsect1-class.rdkafka-consumer-seealso">
+   <h3 class="title">See Also</h3>
+   <p class="para">
+    <ul class="simplelist">
+     <li class="member"><a href="class.rdkafka-kafkaconsumer.html" class="classname">RdKafka\KafkaConsumer</a></li>
+    </ul>
+   </p>
+  </div>
+
+
+
+ </div>
+
+ 
+
+
+
+
+
+
+
+
+<h2>Table of Contents</h2><ul class="chunklist chunklist_reference"><li><a href="rdkafka-consumer.construct.html">RdKafka\Consumer::__construct</a> — Constructor</li></ul>
+</div>
+<hr /><div class="manualnavbar" style="text-align: center;">
+ <div class="prev" style="text-align: left; float: left;"><a href="rdkafka.setloglevel.html">RdKafka::setLogLevel</a></div>
+ <div class="next" style="text-align: right; float: right;"><a href="rdkafka-consumer.construct.html">RdKafka\Consumer::__construct</a></div>
+ <div class="up"><a href="book.rdkafka.html">Rdkafka</a></div>
+ <div class="home"><a href="index.html">PHP Manual</a></div>
+</div></body></html>

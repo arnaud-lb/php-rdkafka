@@ -1,0 +1,97 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+ <head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title>Pipe a partition to a queue</title>
+<link media="all" rel="stylesheet" type="text/css" href="styles/d41d8cd98f00b204e9800998ecf8427e-theme-base.css" />
+<link media="all" rel="stylesheet" type="text/css" href="styles/d41d8cd98f00b204e9800998ecf8427e-theme-medium.css" />
+<link media="all" rel="stylesheet" type="text/css" href="styles/d41d8cd98f00b204e9800998ecf8427e-style.css" />
+
+ </head>
+ <body><div class="manualnavbar" style="text-align: center;">
+ <div class="prev" style="text-align: left; float: left;"><a href="rdkafka-consumertopic.consume.html">RdKafka\ConsumerTopic::consume</a></div>
+ <div class="next" style="text-align: right; float: right;"><a href="rdkafka-consumertopic.consumestart.html">RdKafka\ConsumerTopic::consumeStart</a></div>
+ <div class="up"><a href="class.rdkafka-consumertopic.html">RdKafka\ConsumerTopic</a></div>
+ <div class="home"><a href="index.html">PHP Manual</a></div>
+</div><hr /><div id="rdkafka-consumertopic.consumequeuestart" class="refentry">
+ <div class="refnamediv">
+  <h1 class="refname">RdKafka\ConsumerTopic::consumeQueueStart</h1>
+  <p class="verinfo">(PECL rdkafka &gt;= 0.9.1)</p><p class="refpurpose"><span class="refname">RdKafka\ConsumerTopic::consumeQueueStart</span> &mdash; <span class="dc-title">Pipe a partition to a queue</span></p>
+
+ </div>
+
+ <div class="refsect1 description" id="refsect1-rdkafka-consumertopic.consumequeuestart-description">
+  <h3 class="title">Description</h3>
+  <div class="methodsynopsis dc-description">
+   <span class="modifier">public</span> <span class="type"><span class="type void">void</span></span> <span class="methodname"><strong>RdKafka\ConsumerTopic::consumeQueueStart</strong></span>
+    ( <span class="methodparam"><span class="type">integer</span> <code class="parameter">$partition</code></span>
+   , <span class="methodparam"><span class="type">integer</span> <code class="parameter">$offset</code></span>
+   , <span class="methodparam"><a href="class.rdkafka-queue.html" class="classname">RdKafka\Queue</a>  <code class="parameter">$queue</code></span>
+   )</div>
+
+  <p class="para rdfs-comment">
+   Same as <span class="function"><a href="rdkafka-consumertopic.consumestart.html" class="function">RdKafka\ConsumerTopic::consumeStart()</a></span> but re-routes incoming messages to the provided queue <code class="parameter">queue</code>. The application must use one of the <a href="class.rdkafka-queue.html" class="classname">RdKafka\Queue</a>::consume*() functions to receive fetched messages.
+  </p>
+
+ </div>
+
+
+ <div class="refsect1 parameters" id="refsect1-rdkafka-consumertopic.consumequeuestart-parameters">
+  <h3 class="title">Parameters</h3>
+  <dl>
+
+   
+    <dt>
+<code class="parameter">partition</code> (<span class="type"><a href="language.types.integer.html" class="type integer">integer</a></span>)</dt>
+
+    <dd>
+
+     <p class="para">
+      Partition ID
+     </p>
+    </dd>
+
+   
+   
+    <dt>
+<code class="parameter">offset</code> (<span class="type"><a href="language.types.integer.html" class="type integer">integer</a></span>)</dt>
+
+    <dd>
+
+     <p class="para">
+      Offset
+     </p>
+    </dd>
+
+   
+   
+    <dt>
+<code class="parameter">queue</code> (<a href="class.rdkafka-queue.html" class="classname">RdKafka\Queue</a>)</dt>
+
+    <dd>
+
+     <p class="para">
+      A <a href="class.rdkafka-queue.html" class="classname">RdKafka\Queue</a> instance
+     </p>
+    </dd>
+
+   
+  </dl>
+
+ </div>
+
+
+ <div class="refsect1 returnvalues" id="refsect1-rdkafka-consumertopic.consumequeuestart-returnvalues">
+  <h3 class="title">Return Values</h3>
+  <p class="para">
+   Returns no value.
+  </p>
+ </div>
+
+
+</div><hr /><div class="manualnavbar" style="text-align: center;">
+ <div class="prev" style="text-align: left; float: left;"><a href="rdkafka-consumertopic.consume.html">RdKafka\ConsumerTopic::consume</a></div>
+ <div class="next" style="text-align: right; float: right;"><a href="rdkafka-consumertopic.consumestart.html">RdKafka\ConsumerTopic::consumeStart</a></div>
+ <div class="up"><a href="class.rdkafka-consumertopic.html">RdKafka\ConsumerTopic</a></div>
+ <div class="home"><a href="index.html">PHP Manual</a></div>
+</div></body></html>

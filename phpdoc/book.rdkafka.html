@@ -1,0 +1,181 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+ <head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title>Rdkafka</title>
+<link media="all" rel="stylesheet" type="text/css" href="styles/d41d8cd98f00b204e9800998ecf8427e-theme-base.css" />
+<link media="all" rel="stylesheet" type="text/css" href="styles/d41d8cd98f00b204e9800998ecf8427e-theme-medium.css" />
+<link media="all" rel="stylesheet" type="text/css" href="styles/d41d8cd98f00b204e9800998ecf8427e-style.css" />
+
+ </head>
+ <body><div class="manualnavbar" style="text-align: center;">
+ <div class="prev" style="text-align: left; float: left;"><a href="index.html">PHP Manual (Partial)</a></div>
+ <div class="next" style="text-align: right; float: right;"><a href="rdkafka.setup.html">Installing/Configuring</a></div>
+ <div class="up"><a href="index.html">PHP Manual (Partial)</a></div>
+ <div class="home"><a href="index.html">PHP Manual</a></div>
+</div><hr /><div id="book.rdkafka" class="book">
+ <h1 class="title">Rdkafka</h1>
+ 
+
+ <div class="info">
+  <div class="abstract">
+   <p class="simpara">
+    The RdKafka extension provides a Kafka client for PHP, supporting Kafka 0.8 and higher. It supports the high level <a href="class.rdkafka-kafkaconsumer.html" class="link">KafkaConsumer</a>, low level <a href="class.rdkafka-consumer.html" class="link">Consumer</a> and <a href="class.rdkafka-producer.html" class="link">Producer</a>, and the <a href="class.rdkafka-metadata.html" class="link">Metadata</a> API.
+   </p>
+  </div>
+ </div>
+
+ 
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+<ul class="chunklist chunklist_book"><li><a href="rdkafka.setup.html">Installing/Configuring</a><ul class="chunklist chunklist_book chunklist_children"><li><a href="rdkafka.requirements.html">Requirements</a></li><li><a href="rdkafka.installation.html">Installation</a></li></ul></li><li><a href="rdkafka.examples.html">Examples</a></li><li><a href="ref.rdkafka.html">Rdkafka Functions</a><ul class="chunklist chunklist_book chunklist_children"><li><a href="function.rd-kafka-err2str.html">rd_kafka_err2str</a> — Convert a rdkafka error code to a string</li><li><a href="function.rd-kafka-errno2err.html">rd_kafka_errno2err</a> — Convert the system errno to a kafka error code</li><li><a href="function.rd-kafka-errno.html">rd_kafka_errno</a> — Get the system errno</li><li><a href="function.rd-kafka-offset-tail.html">rd_kafka_offset_tail</a> — Kafka offset relative to tail</li></ul></li><li><a href="class.rdkafka-kafkaconsumer.html">RdKafka\KafkaConsumer</a> — The RdKafka\KafkaConsumer class<ul class="chunklist chunklist_book chunklist_children"><li><a href="rdkafka-kafkaconsumer.assign.html">RdKafka\KafkaConsumer::assign</a> — Update the assignment set</li><li><a href="rdkafka-kafkaconsumer.commit.html">RdKafka\KafkaConsumer::commit</a> — Commit offsets</li><li><a href="rdkafka-kafkaconsumer.commitasync.html">RdKafka\KafkaConsumer::commitAsync</a> — Commit offsets asynchronously</li><li><a href="rdkafka-kafkaconsumer.construct.html">RdKafka\KafkaConsumer::__construct</a> — Constructor</li><li><a href="rdkafka-kafkaconsumer.consume.html">RdKafka\KafkaConsumer::consume</a> — Consume message and triggers callbacks</li><li><a href="rdkafka-kafkaconsumer.getassignment.html">RdKafka\KafkaConsumer::getAssignment</a> — Returns the current partition assignment</li><li><a href="rdkafka-kafkaconsumer.getmetadata.html">RdKafka\KafkaConsumer::getMetadata</a> — Request Metadata from broker</li><li><a href="rdkafka-kafkaconsumer.getsubscription.html">RdKafka\KafkaConsumer::getSubscription</a> — Return the current subscription</li><li><a href="rdkafka-kafkaconsumer.subscribe.html">RdKafka\KafkaConsumer::subscribe</a> — Update the subscription set</li><li><a href="rdkafka-kafkaconsumer.unsubscribe.html">RdKafka\KafkaConsumer::unsubscribe</a> — Unsubscribe from the current subscription set</li></ul></li><li><a href="class.rdkafka-kafkaconsumertopic.html">RdKafka\KafkaConsumerTopic</a> — The RdKafka\KafkaConsumerTopic class<ul class="chunklist chunklist_book chunklist_children"><li><a href="rdkafka-kafkaconsumertopic.offsetstore.html">RdKafka\KafkaConsumerTopic::offsetStore</a> — Store offset</li></ul></li><li><a href="class.rdkafka.html">RdKafka</a> — The RdKafka class<ul class="chunklist chunklist_book chunklist_children"><li><a href="rdkafka.addbrokers.html">RdKafka::addBrokers</a> — Add brokers</li><li><a href="rdkafka.getmetadata.html">RdKafka::getMetadata</a> — Request Metadata from broker</li><li><a href="rdkafka.getoutqlen.html">RdKafka::getOutQLen</a> — Get the out queue length</li><li><a href="rdkafka.newqueue.html">RdKafka::newQueue</a> — Create a new message queue instance</li><li><a href="rdkafka.newtopic.html">RdKafka::newTopic</a> — Create a new topic instance</li><li><a href="rdkafka.poll.html">RdKafka::poll</a> — Poll for events</li><li><a href="rdkafka.setloglevel.html">RdKafka::setLogLevel</a> — Set log level</li></ul></li><li><a href="class.rdkafka-consumer.html">RdKafka\Consumer</a> — The RdKafka\Consumer class<ul class="chunklist chunklist_book chunklist_children"><li><a href="rdkafka-consumer.construct.html">RdKafka\Consumer::__construct</a> — Constructor</li></ul></li><li><a href="class.rdkafka-producer.html">RdKafka\Producer</a> — The RdKafka\Producer class<ul class="chunklist chunklist_book chunklist_children"><li><a href="rdkafka-producer.construct.html">RdKafka\Producer::__construct</a> — Constructor</li></ul></li><li><a href="class.rdkafka-topic.html">RdKafka\Topic</a> — The RdKafka\Topic class<ul class="chunklist chunklist_book chunklist_children"><li><a href="rdkafka-topic.getname.html">RdKafka\Topic::getName</a> — Get topic name</li></ul></li><li><a href="class.rdkafka-consumertopic.html">RdKafka\ConsumerTopic</a> — The RdKafka\ConsumerTopic class<ul class="chunklist chunklist_book chunklist_children"><li><a href="rdkafka-consumertopic.consume.html">RdKafka\ConsumerTopic::consume</a> — Consume a single message from a partition</li><li><a href="rdkafka-consumertopic.consumequeuestart.html">RdKafka\ConsumerTopic::consumeQueueStart</a> — Pipe a partition to a queue</li><li><a href="rdkafka-consumertopic.consumestart.html">RdKafka\ConsumerTopic::consumeStart</a> — Start consuming messages from a partition</li><li><a href="rdkafka-consumertopic.consumestop.html">RdKafka\ConsumerTopic::consumeStop</a> — Stop consuming messages from partition</li><li><a href="rdkafka-consumertopic.offsetstore.html">RdKafka\ConsumerTopic::offsetStore</a> — Store offset</li></ul></li><li><a href="class.rdkafka-producertopic.html">RdKafka\ProducerTopic</a> — The RdKafka\ProducerTopic class<ul class="chunklist chunklist_book chunklist_children"><li><a href="rdkafka-producertopic.produce.html">RdKafka\ProducerTopic::produce</a> — Produce and send a single message</li></ul></li><li><a href="class.rdkafka-queue.html">RdKafka\Queue</a> — The RdKafka\Queue class<ul class="chunklist chunklist_book chunklist_children"><li><a href="rdkafka-queue.consume.html">RdKafka\Queue::consume</a> — Consume a single message</li></ul></li><li><a href="class.rdkafka-message.html">RdKafka\Message</a> — The RdKafka\Message class<ul class="chunklist chunklist_book chunklist_children"><li><a href="rdkafka-message.errstr.html">RdKafka\Message::errstr</a> — Get the error as string</li></ul></li><li><a href="class.rdkafka-conf.html">RdKafka\Conf</a> — The RdKafka\Conf class<ul class="chunklist chunklist_book chunklist_children"><li><a href="rdkafka-conf.dump.html">RdKafka\Conf::dump</a> — Dump the configuration</li><li><a href="rdkafka-conf.set.html">RdKafka\Conf::set</a> — Set configuration</li><li><a href="rdkafka-conf.setdefaulttopicconf.html">RdKafka\Conf::setDefaultTopicConf</a> — Set default topic configuration</li><li><a href="rdkafka-conf.seterrorcb.html">RdKafka\Conf::setErrorCb</a> — Set error callback</li><li><a href="rdkafka-conf.setrebalancecb.html">RdKafka\Conf::setRebalanceCb</a> — Set rebalance callback</li></ul></li><li><a href="class.rdkafka-topicconf.html">RdKafka\TopicConf</a> — The RdKafka\TopicConf class<ul class="chunklist chunklist_book chunklist_children"><li><a href="rdkafka-topicconf.dump.html">RdKafka\TopicConf::dump</a> — Dump the configuration</li><li><a href="rdkafka-topicconf.set.html">RdKafka\TopicConf::set</a> — Set configuration</li><li><a href="rdkafka-topicconf.setpartitioner.html">RdKafka\TopicConf::setPartitioner</a> — Set partitioner</li></ul></li><li><a href="class.rdkafka-exception.html">RdKafka\Exception</a> — The RdKafka\Exception class</li><li><a href="class.rdkafka-topicpartition.html">RdKafka\TopicPartition</a> — The RdKafka\TopicPartition class<ul class="chunklist chunklist_book chunklist_children"><li><a href="rdkafka-topicpartition.construct.html">RdKafka\TopicPartition::__construct</a> — Constructor</li><li><a href="rdkafka-topicpartition.getoffset.html">RdKafka\TopicPartition::getOffset</a> — Get the offset</li><li><a href="rdkafka-topicpartition.getpartition.html">RdKafka\TopicPartition::getPartition</a> — Get the partition ID</li><li><a href="rdkafka-topicpartition.gettopic.html">RdKafka\TopicPartition::getTopic</a> — Get the topic name</li><li><a href="rdkafka-topicpartition.setoffset.html">RdKafka\TopicPartition::setOffset</a> — Set the offset</li><li><a href="rdkafka-topicpartition.setpartition.html">RdKafka\TopicPartition::setPartition</a> — Set the partition ID</li><li><a href="rdkafka-topicpartition.settopic.html">RdKafka\TopicPartition::setTopic</a> — Set the topic name</li></ul></li><li><a href="class.rdkafka-metadata.html">RdKafka\Metadata</a> — The RdKafka\Metadata class<ul class="chunklist chunklist_book chunklist_children"><li><a href="rdkafka-metadata.getbrokers.html">RdKafka\Metadata::getBrokers</a> — Get broker list</li><li><a href="rdkafka-metadata.getorigbrokerid.html">RdKafka\Metadata::getOrigBrokerId</a> — Get the broker id originating this metadata</li><li><a href="rdkafka-metadata.getorigbrokername.html">RdKafka\Metadata::getOrigBrokerName</a> — Get the broker name originating this metadata</li><li><a href="rdkafka-metadata.gettopics.html">RdKafka\Metadata::getTopics</a> — Get the topic list</li></ul></li><li><a href="class.rdkafka-metadata-collection.html">RdKafka\Metadata\Collection</a> — The RdKafka\Metadata\Collection class<ul class="chunklist chunklist_book chunklist_children"><li><a href="rdkafka-metadata-collection.count.html">RdKafka\Metadata\Collection::count</a> — Count elements</li><li><a href="rdkafka-metadata-collection.current.html">RdKafka\Metadata\Collection::current</a> — Gets the current value</li><li><a href="rdkafka-metadata-collection.key.html">RdKafka\Metadata\Collection::key</a> — Get the current key</li><li><a href="rdkafka-metadata-collection.next.html">RdKafka\Metadata\Collection::next</a> — Moves to the next element</li><li><a href="rdkafka-metadata-collection.rewind.html">RdKafka\Metadata\Collection::rewind</a> — Rewinds the Iterator</li><li><a href="rdkafka-metadata-collection.valid.html">RdKafka\Metadata\Collection::valid</a> — Checks if current position is valid</li></ul></li><li><a href="rdkafka.constants.html">Predefined Constants</a></li></ul></div><hr /><div class="manualnavbar" style="text-align: center;">
+ <div class="prev" style="text-align: left; float: left;"><a href="index.html">PHP Manual (Partial)</a></div>
+ <div class="next" style="text-align: right; float: right;"><a href="rdkafka.setup.html">Installing/Configuring</a></div>
+ <div class="up"><a href="index.html">PHP Manual (Partial)</a></div>
+ <div class="home"><a href="index.html">PHP Manual</a></div>
+</div></body></html>

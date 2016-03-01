@@ -1,0 +1,112 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+ <head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title>Set rebalance callback</title>
+<link media="all" rel="stylesheet" type="text/css" href="styles/d41d8cd98f00b204e9800998ecf8427e-theme-base.css" />
+<link media="all" rel="stylesheet" type="text/css" href="styles/d41d8cd98f00b204e9800998ecf8427e-theme-medium.css" />
+<link media="all" rel="stylesheet" type="text/css" href="styles/d41d8cd98f00b204e9800998ecf8427e-style.css" />
+
+ </head>
+ <body><div class="manualnavbar" style="text-align: center;">
+ <div class="prev" style="text-align: left; float: left;"><a href="rdkafka-conf.seterrorcb.html">RdKafka\Conf::setErrorCb</a></div>
+ <div class="next" style="text-align: right; float: right;"><a href="class.rdkafka-topicconf.html">RdKafka\TopicConf</a></div>
+ <div class="up"><a href="class.rdkafka-conf.html">RdKafka\Conf</a></div>
+ <div class="home"><a href="index.html">PHP Manual</a></div>
+</div><hr /><div id="rdkafka-conf.setrebalancecb" class="refentry">
+ <div class="refnamediv">
+  <h1 class="refname">RdKafka\Conf::setRebalanceCb</h1>
+  <p class="verinfo">(PECL rdkafka &gt;= master, librdkafka &gt;= 0.9)</p><p class="refpurpose"><span class="refname">RdKafka\Conf::setRebalanceCb</span> &mdash; <span class="dc-title">Set rebalance callback</span></p>
+
+ </div>
+
+ <div class="refsect1 description" id="refsect1-rdkafka-conf.setrebalancecb-description">
+  <h3 class="title">Description</h3>
+  <div class="methodsynopsis dc-description">
+   <span class="modifier">public</span> <span class="type"><span class="type void">void</span></span> <span class="methodname"><strong>RdKafka\Conf::setRebalanceCb</strong></span>
+    ( <span class="methodparam"><span class="type"><a href="language.types.callable.html" class="type callable">callable</a></span> <code class="parameter">$callback</code></span>
+   )</div>
+
+  <p class="para rdfs-comment">
+   Set rebalance callback for use with coordinated consumer group balancing.
+  </p>
+  <p class="para">
+   Registering a <code class="code">rebalance_cb</code> turns off librdkafka&#039;s automatic partition assignment/revocation and instead delegates that responsibility to the application&#039;s <code class="code">rebalance_cb</code>.
+  </p>
+  <p class="para">
+   The rebalance callback is responsible for updating librdkafka&#039;s assignment set based on the two events <strong><code>RD_KAFKA_RESP_ERR__ASSIGN_PARTITIONS</code></strong> and <strong><code>RD_KAFKA_RESP_ERR__REVOKE_PARTITIONS</code></strong> but should also be able to handle arbitrary rebalancing failures where <code class="parameter">err</code> is neither of those.
+  </p>
+  <blockquote class="note"><p><strong class="note">Note</strong>: 
+   <p class="para">
+    In this latter case (arbitrary error), the application must <code class="code">$kafka-&gt;assign(NULL)</code> to synchronize state.
+   </p>
+  </p></blockquote>
+  <p class="para">
+   Without a rebalance callback this is done automatically by librdkafka but registering a rebalance callback gives the application flexibility in performing other operations along with the assinging/revocation, such as fetching offsets from an alternate location (on assign) or manually committing offsets (on revoke).
+  </p>
+  <p class="para">
+   The example below shows the application&#039;s responsibilities.
+  </p>
+
+ </div>
+
+
+ <div class="refsect1 parameters" id="refsect1-rdkafka-conf.setrebalancecb-parameters">
+  <h3 class="title">Parameters</h3>
+  <dl>
+
+   
+    <dt>
+<code class="parameter">callback</code> (<span class="type"><a href="language.types.callable.html" class="type callable">callable</a></span>)</dt>
+
+    <dd>
+
+     <p class="para">
+      A callable with the following signature:
+      <div class="example-contents">
+<div class="phpcode"><code><span style="color: #000000">
+<span style="color: #0000BB">&lt;?php<br /></span><span style="color: #FF8000">/**<br />&nbsp;*&nbsp;@param&nbsp;RdKafka\KafkaConsumer&nbsp;$kafka<br />&nbsp;*&nbsp;@param&nbsp;int&nbsp;$err<br />&nbsp;*&nbsp;@param&nbsp;array&nbsp;$partitions<br />&nbsp;*/<br /></span><span style="color: #007700">function&nbsp;(</span><span style="color: #0000BB">RdKafka</span><span style="color: #007700">\</span><span style="color: #0000BB">KafkaConsumer&nbsp;$kafka</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">$err</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">$partitions</span><span style="color: #007700">);</span>
+</span>
+</code></div>
+      </div>
+
+      The <code class="parameter">err</code> parameter is set to either <strong><code>RD_KAFKA_RESP_ERR__ASSIGN_PARTITIONS</code></strong> or <strong><code>RD_KAFKA_RESP_ERR__REVOKE_PARTITIONS</code></strong> (or an unexpected error). The <code class="parameter">partitions</code> parameter is an array of <a href="class.rdkafka-topicpartition.html" class="classname">RdKafka\TopicPartition</a>, representing the full partition set that was either assigned or revoked.
+     </p>
+    </dd>
+
+   
+  </dl>
+
+ </div>
+
+
+ <div class="refsect1 returnvalues" id="refsect1-rdkafka-conf.setrebalancecb-returnvalues">
+  <h3 class="title">Return Values</h3>
+  <p class="para">
+   Returns no value.
+  </p>
+ </div>
+
+
+ <div class="refsect1 examples" id="refsect1-rdkafka-conf.setrebalancecb-examples">
+  <h3 class="title">Examples</h3>
+  <div class="example" id="example-17">
+   <p><strong>Example #1 <span class="function"><strong>RdKafka\Conf::setRebalanceCb()</strong></span> example</strong></p>
+   <div class="example-contents">
+<div class="phpcode"><code><span style="color: #000000">
+<span style="color: #0000BB">&lt;?php<br />$conf</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">setRebalanceCb</span><span style="color: #007700">(function&nbsp;(</span><span style="color: #0000BB">RdKafka</span><span style="color: #007700">\</span><span style="color: #0000BB">KafkaConsumer&nbsp;$kafka</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">$err</span><span style="color: #007700">,&nbsp;array&nbsp;</span><span style="color: #0000BB">$partitions&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">null</span><span style="color: #007700">)&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;switch&nbsp;(</span><span style="color: #0000BB">$err</span><span style="color: #007700">)&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case&nbsp;</span><span style="color: #0000BB">RD_KAFKA_RESP_ERR__ASSIGN_PARTITIONS</span><span style="color: #007700">:<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">//&nbsp;application&nbsp;may&nbsp;load&nbsp;offets&nbsp;from&nbsp;arbitrary&nbsp;external<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;storage&nbsp;here&nbsp;and&nbsp;update&nbsp;partitions<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$kafka</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">assign</span><span style="color: #007700">(</span><span style="color: #0000BB">$partitions</span><span style="color: #007700">);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case&nbsp;</span><span style="color: #0000BB">RD_KAFKA_RESP_ERR__REVOKE_PARTITIONS</span><span style="color: #007700">:<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(</span><span style="color: #0000BB">$manual_commits</span><span style="color: #007700">)&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">//&nbsp;Optional&nbsp;explicit&nbsp;manual&nbsp;commit<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$kafka</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">commit</span><span style="color: #007700">(</span><span style="color: #0000BB">$partitions</span><span style="color: #007700">);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$kafka</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">assign</span><span style="color: #007700">(</span><span style="color: #0000BB">NULL</span><span style="color: #007700">);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;default:<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">handle_unlikely_error</span><span style="color: #007700">(</span><span style="color: #0000BB">$err</span><span style="color: #007700">);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$kafka</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">assign</span><span style="color: #007700">(</span><span style="color: #0000BB">NULL</span><span style="color: #007700">);&nbsp;</span><span style="color: #FF8000">//&nbsp;sync&nbsp;state<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">break;<br />&nbsp;&nbsp;&nbsp;&nbsp;}<br />}<br /></span><span style="color: #0000BB">?&gt;</span>
+</span>
+</code></div>
+   </div>
+
+  </div>
+ </div>
+
+
+
+</div><hr /><div class="manualnavbar" style="text-align: center;">
+ <div class="prev" style="text-align: left; float: left;"><a href="rdkafka-conf.seterrorcb.html">RdKafka\Conf::setErrorCb</a></div>
+ <div class="next" style="text-align: right; float: right;"><a href="class.rdkafka-topicconf.html">RdKafka\TopicConf</a></div>
+ <div class="up"><a href="class.rdkafka-conf.html">RdKafka\Conf</a></div>
+ <div class="home"><a href="index.html">PHP Manual</a></div>
+</div></body></html>

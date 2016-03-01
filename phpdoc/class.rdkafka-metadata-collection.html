@@ -1,0 +1,140 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+ <head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title>The RdKafka\Metadata\Collection class</title>
+<link media="all" rel="stylesheet" type="text/css" href="styles/d41d8cd98f00b204e9800998ecf8427e-theme-base.css" />
+<link media="all" rel="stylesheet" type="text/css" href="styles/d41d8cd98f00b204e9800998ecf8427e-theme-medium.css" />
+<link media="all" rel="stylesheet" type="text/css" href="styles/d41d8cd98f00b204e9800998ecf8427e-style.css" />
+
+ </head>
+ <body><div class="manualnavbar" style="text-align: center;">
+ <div class="prev" style="text-align: left; float: left;"><a href="rdkafka-metadata.gettopics.html">RdKafka\Metadata::getTopics</a></div>
+ <div class="next" style="text-align: right; float: right;"><a href="rdkafka-metadata-collection.count.html">RdKafka\Metadata\Collection::count</a></div>
+ <div class="up"><a href="book.rdkafka.html">Rdkafka</a></div>
+ <div class="home"><a href="index.html">PHP Manual</a></div>
+</div><hr /><div id="class.rdkafka-metadata-collection" class="reference">
+
+ <h1 class="title">The RdKafka\Metadata\Collection class</h1>
+ 
+
+ <div class="partintro"><p class="verinfo">(PECL rdkafka &gt;= 0.9.1)</p>
+
+
+  <div class="section" id="rdkafka-metadata-collection.intro">
+   <h2 class="title">Introduction</h2>
+   <p class="para">
+    The Collection class is used as a collection of metadata items. It implements <span class="interfacename"><strong class="interfacename">Countable</strong></span> and <span class="interfacename"><strong class="interfacename">Iterable</strong></span>, so it can be used with <span class="function"><strong>count()</strong></span> and foreach.
+
+   </p>
+  </div>
+
+
+  <div class="section" id="rdkafka-metadata-collection.synopsis">
+   <h2 class="title">Class synopsis</h2>
+
+
+   <div class="classsynopsis">
+    <div class="ooclass"></div>
+
+
+    <div class="classsynopsisinfo">
+     <span class="ooclass">
+      <strong class="classname">RdKafka\Metadata\Collection</strong>
+     </span>
+     
+     <span class="oointerface">implements 
+      <span class="interfacename"><strong class="interfacename">Countable</strong></span>
+     </span>
+
+     <span class="oointerface">, 
+      <span class="interfacename"><strong class="interfacename">Iterator</strong></span>
+     </span>
+     {</div>
+
+    
+    <div class="classsynopsisinfo classsynopsisinfo_comment">/* Methods */</div>
+    <div class="methodsynopsis dc-description">
+   <span class="modifier">public</span> <span class="type">int</span> <span class="methodname"><a href="rdkafka-metadata-collection.count.html" class="methodname">count</a></span>
+    ( <span class="methodparam">void</span>
+   )</div>
+<div class="methodsynopsis dc-description">
+   <span class="modifier">public</span> <span class="type">mixed</span> <span class="methodname"><a href="rdkafka-metadata-collection.current.html" class="methodname">current</a></span>
+    ( <span class="methodparam">void</span>
+   )</div>
+<div class="methodsynopsis dc-description">
+   <span class="modifier">public</span> <span class="type">scalar</span> <span class="methodname"><a href="rdkafka-metadata-collection.key.html" class="methodname">key</a></span>
+    ( <span class="methodparam">void</span>
+   )</div>
+<div class="methodsynopsis dc-description">
+   <span class="modifier">public</span> <span class="type">void</span> <span class="methodname"><a href="rdkafka-metadata-collection.next.html" class="methodname">next</a></span>
+    ( <span class="methodparam">void</span>
+   )</div>
+<div class="methodsynopsis dc-description">
+   <span class="modifier">public</span> <span class="type">void</span> <span class="methodname"><a href="rdkafka-metadata-collection.rewind.html" class="methodname">rewind</a></span>
+    ( <span class="methodparam">void</span>
+   )</div>
+<div class="methodsynopsis dc-description">
+   <span class="modifier">public</span> <span class="type">boolean</span> <span class="methodname"><a href="rdkafka-metadata-collection.valid.html" class="methodname">valid</a></span>
+    ( <span class="methodparam">void</span>
+   )</div>
+
+   }</div>
+
+
+  </div>
+
+ </div>
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h2>Table of Contents</h2><ul class="chunklist chunklist_reference"><li><a href="rdkafka-metadata-collection.count.html">RdKafka\Metadata\Collection::count</a> — Count elements</li><li><a href="rdkafka-metadata-collection.current.html">RdKafka\Metadata\Collection::current</a> — Gets the current value</li><li><a href="rdkafka-metadata-collection.key.html">RdKafka\Metadata\Collection::key</a> — Get the current key</li><li><a href="rdkafka-metadata-collection.next.html">RdKafka\Metadata\Collection::next</a> — Moves to the next element</li><li><a href="rdkafka-metadata-collection.rewind.html">RdKafka\Metadata\Collection::rewind</a> — Rewinds the Iterator</li><li><a href="rdkafka-metadata-collection.valid.html">RdKafka\Metadata\Collection::valid</a> — Checks if current position is valid</li></ul>
+</div>
+<hr /><div class="manualnavbar" style="text-align: center;">
+ <div class="prev" style="text-align: left; float: left;"><a href="rdkafka-metadata.gettopics.html">RdKafka\Metadata::getTopics</a></div>
+ <div class="next" style="text-align: right; float: right;"><a href="rdkafka-metadata-collection.count.html">RdKafka\Metadata\Collection::count</a></div>
+ <div class="up"><a href="book.rdkafka.html">Rdkafka</a></div>
+ <div class="home"><a href="index.html">PHP Manual</a></div>
+</div></body></html>

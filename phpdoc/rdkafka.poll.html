@@ -1,0 +1,92 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+ <head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title>Poll for events</title>
+<link media="all" rel="stylesheet" type="text/css" href="styles/d41d8cd98f00b204e9800998ecf8427e-theme-base.css" />
+<link media="all" rel="stylesheet" type="text/css" href="styles/d41d8cd98f00b204e9800998ecf8427e-theme-medium.css" />
+<link media="all" rel="stylesheet" type="text/css" href="styles/d41d8cd98f00b204e9800998ecf8427e-style.css" />
+
+ </head>
+ <body><div class="manualnavbar" style="text-align: center;">
+ <div class="prev" style="text-align: left; float: left;"><a href="rdkafka.newtopic.html">RdKafka::newTopic</a></div>
+ <div class="next" style="text-align: right; float: right;"><a href="rdkafka.setloglevel.html">RdKafka::setLogLevel</a></div>
+ <div class="up"><a href="class.rdkafka.html">RdKafka</a></div>
+ <div class="home"><a href="index.html">PHP Manual</a></div>
+</div><hr /><div id="rdkafka.poll" class="refentry">
+ <div class="refnamediv">
+  <h1 class="refname">RdKafka::poll</h1>
+  <p class="verinfo">(PECL rdkafka &gt;= 0.9.1)</p><p class="refpurpose"><span class="refname">RdKafka::poll</span> &mdash; <span class="dc-title">Poll for events</span></p>
+
+ </div>
+
+ <div class="refsect1 description" id="refsect1-rdkafka.poll-description">
+  <h3 class="title">Description</h3>
+  <div class="methodsynopsis dc-description">
+   <span class="modifier">public</span> <span class="type"><span class="type void">void</span></span> <span class="methodname"><strong>RdKafka::poll</strong></span>
+    ( <span class="methodparam"><span class="type">integer</span> <code class="parameter">$timeout_ms</code></span>
+   )</div>
+
+  <p class="para rdfs-comment">
+   Polls for events, cause application provided callbacks to be called.
+  </p>
+  <blockquote class="note"><p><strong class="note">Note</strong>: 
+   <p class="para">
+    An application using a sub-class of <a href="class.rdkafka.html" class="classname">RdKafka</a> should make sure to call poll() at regular intervals to serve any queued callbacks waiting to be called.
+   </p>
+  </p></blockquote>
+  <p class="para">
+   Events:
+   <ul class="simplelist">
+    <li class="listitem">
+     Delivery report callbacks (if dr_cb/dr_msg_cb is configured) [producer]
+    </li>
+    <li class="listitem">
+     Error callbacks (<span class="methodname"><a href="rdkafka-conf.seterrorcb.html" class="methodname">RdKafka\Conf::setErrorCb()</a></span>)
+    </li>
+    <li class="listitem">
+     Stats callbacks (<span class="methodname"><strong>RdKafka\Conf::setStatsCb()</strong></span>)
+    </li>
+    <li class="listitem">
+     Throttle callbacks (<span class="methodname"><strong>RdKafka\Conf::setThrottleCb()</strong></span>)
+    </li>
+   </ul>
+  </p>
+ </div>
+
+
+ <div class="refsect1 parameters" id="refsect1-rdkafka.poll-parameters">
+  <h3 class="title">Parameters</h3>
+  <dl>
+
+   
+    <dt>
+<code class="parameter">timeout_ms</code> (<span class="type"><a href="language.types.integer.html" class="type integer">integer</a></span>)</dt>
+
+    <dd>
+
+     <p class="para">
+      Specifies the maximum amount of time (in milliseconds) that the call will block waiting for events. For non-blocking calls, provide 0 as <code class="parameter">timeout_ms</code>. To wait indefinately for an event, provide -1.
+     </p>
+    </dd>
+
+   
+  </dl>
+
+ </div>
+
+
+ <div class="refsect1 returnvalues" id="refsect1-rdkafka.poll-returnvalues">
+  <h3 class="title">Return Values</h3>
+  <p class="para">
+   Returns the number of events served.
+  </p>
+ </div>
+
+
+</div><hr /><div class="manualnavbar" style="text-align: center;">
+ <div class="prev" style="text-align: left; float: left;"><a href="rdkafka.newtopic.html">RdKafka::newTopic</a></div>
+ <div class="next" style="text-align: right; float: right;"><a href="rdkafka.setloglevel.html">RdKafka::setLogLevel</a></div>
+ <div class="up"><a href="class.rdkafka.html">RdKafka</a></div>
+ <div class="home"><a href="index.html">PHP Manual</a></div>
+</div></body></html>

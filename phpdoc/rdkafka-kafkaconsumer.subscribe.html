@@ -1,0 +1,130 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+ <head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title>Update the subscription set</title>
+<link media="all" rel="stylesheet" type="text/css" href="styles/d41d8cd98f00b204e9800998ecf8427e-theme-base.css" />
+<link media="all" rel="stylesheet" type="text/css" href="styles/d41d8cd98f00b204e9800998ecf8427e-theme-medium.css" />
+<link media="all" rel="stylesheet" type="text/css" href="styles/d41d8cd98f00b204e9800998ecf8427e-style.css" />
+
+ </head>
+ <body><div class="manualnavbar" style="text-align: center;">
+ <div class="prev" style="text-align: left; float: left;"><a href="rdkafka-kafkaconsumer.getsubscription.html">RdKafka\KafkaConsumer::getSubscription</a></div>
+ <div class="next" style="text-align: right; float: right;"><a href="rdkafka-kafkaconsumer.unsubscribe.html">RdKafka\KafkaConsumer::unsubscribe</a></div>
+ <div class="up"><a href="class.rdkafka-kafkaconsumer.html">RdKafka\KafkaConsumer</a></div>
+ <div class="home"><a href="index.html">PHP Manual</a></div>
+</div><hr /><div id="rdkafka-kafkaconsumer.subscribe" class="refentry">
+ <div class="refnamediv">
+  <h1 class="refname">RdKafka\KafkaConsumer::subscribe</h1>
+  <p class="verinfo">(PECL rdkafka &gt;= master, librdkafka &gt;= 0.9)</p><p class="refpurpose"><span class="refname">RdKafka\KafkaConsumer::subscribe</span> &mdash; <span class="dc-title">Update the subscription set</span></p>
+
+ </div>
+
+ <div class="refsect1 description" id="refsect1-rdkafka-kafkaconsumer.subscribe-description">
+  <h3 class="title">Description</h3>
+  <div class="methodsynopsis dc-description">
+   <span class="modifier">public</span> <span class="type"><span class="type void">void</span></span> <span class="methodname"><strong>RdKafka\KafkaConsumer::subscribe</strong></span>
+    ( <span class="methodparam"><span class="type">array</span> <code class="parameter">$topics</code></span>
+   )</div>
+
+  <p class="para rdfs-comment">
+   Update the subscription set to <code class="parameter">topics</code>.
+  </p>
+  <p class="para">
+   This overrides the current assignment. Any previous subscription will be unassigned and unsubscribed first.
+  </p>
+  <p class="para">
+   The subscription set denotes the desired topics to consume. This
+   set is provided to the partition assignor (one of the elected group
+   members) for all clients which then uses the configured
+   <code class="code">partition.assignment.strategy</code> to assign the subscription sets&#039;s
+   topics&#039;s partitions to the consumers, depending on their subscription.
+  </p>
+  <p class="para">
+   The result of such an assignment is a rebalancing which is either
+   handled automatically in librdkafka or can be overriden by the application
+   by providing a <a href="rdkafka-conf.setrebalancecb.html" class="link">rebalance_cb</a>.
+  </p>
+  <p class="para">
+   The rebalancing updates what partitions are actually being fetched by
+   the <a href="class.rdkafka-kafkaconsumer.html" class="classname">RdKafka\KafkaConsumer</a>.
+  </p>
+  <p class="para">
+   Regex pattern matching automatically performed for topics prefixed
+   with <code class="code">^</code> (e.g. <code class="code">^myPfx[0-9]_.*</code>)
+  </p>
+  <blockquote class="note"><p><strong class="note">Note</strong>: 
+   <p class="para">
+    The default configuration for subscribed topics can be changed by calling <span class="function"><a href="rdkafka-conf.setdefaulttopicconf.html" class="function">RdKafka\Conf::setDefaultTopicConf()</a></span>.
+   </p>
+  </p></blockquote>
+
+ </div>
+
+
+ <div class="refsect1 parameters" id="refsect1-rdkafka-kafkaconsumer.subscribe-parameters">
+  <h3 class="title">Parameters</h3>
+  <dl>
+
+   
+    <dt>
+<code class="parameter">topics</code> (<span class="type"><a href="language.types.array.html" class="type array">array</a></span>)</dt>
+
+    <dd>
+
+     <p class="para">
+      Array of topic names.
+     </p>
+     <p class="para">
+      Regex pattern matching automatically performed for topics prefixed
+      with <code class="code">^</code> (e.g. <code class="code">^myPfx[0-9]_.*</code>)
+     </p>
+    </dd>
+
+   
+  </dl>
+
+ </div>
+
+
+ <div class="refsect1 errors" id="refsect1-rdkafka-kafkaconsumer.subscribe-errors">
+  <h3 class="title">Errors/Exceptions</h3>
+  <ul class="simplelist">
+   Throws <a href="class.rdkafka-exception.html" class="classname">RdKafka\Exception</a> on errors.
+  </ul>
+ </div>
+
+
+ <div class="refsect1 examples" id="refsect1-rdkafka-kafkaconsumer.subscribe-examples">
+  <h3 class="title">Examples</h3>
+  <div class="example" id="example-9">
+   <p><strong>Example #1 <span class="function"><strong>RdKafka\KafkaConsumer::subscribe()</strong></span> example</strong></p>
+   <div class="example-contents">
+<div class="phpcode"><code><span style="color: #000000">
+<span style="color: #0000BB">&lt;?php<br />$kafkaConsumer</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">assign</span><span style="color: #007700">([<br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">"logs"</span><span style="color: #007700">,<br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">"^myPfx[0-9]_.*"</span><span style="color: #007700">,<br />]);<br /></span><span style="color: #0000BB">?&gt;</span>
+</span>
+</code></div>
+   </div>
+
+  </div>
+ </div>
+
+
+ <div class="refsect1 seealso" id="refsect1-rdkafka-kafkaconsumer.subscribe-seealso">
+  <h3 class="title">See Also</h3>
+  <p class="para">
+   <ul class="simplelist">
+    <li class="member"><span class="function"><a href="rdkafka-kafkaconsumer.getsubscription.html" class="function" rel="rdfs-seeAlso">RdKafka\KafkaConsumer::getSubscription()</a> - Return the current subscription</span></li>
+    <li class="member"><span class="function"><a href="rdkafka-conf.setdefaulttopicconf.html" class="function" rel="rdfs-seeAlso">RdKafka\Conf::setDefaultTopicConf()</a> - Set default topic configuration</span></li>
+   </ul>
+  </p>
+ </div>
+
+
+
+</div><hr /><div class="manualnavbar" style="text-align: center;">
+ <div class="prev" style="text-align: left; float: left;"><a href="rdkafka-kafkaconsumer.getsubscription.html">RdKafka\KafkaConsumer::getSubscription</a></div>
+ <div class="next" style="text-align: right; float: right;"><a href="rdkafka-kafkaconsumer.unsubscribe.html">RdKafka\KafkaConsumer::unsubscribe</a></div>
+ <div class="up"><a href="class.rdkafka-kafkaconsumer.html">RdKafka\KafkaConsumer</a></div>
+ <div class="home"><a href="index.html">PHP Manual</a></div>
+</div></body></html>

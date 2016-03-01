@@ -1,0 +1,21 @@
+.manualnavbar ~ hr ~ div {
+    background: #F2F2F2;
+    color: #333;
+    padding: 1.5em;
+    width: 75%;
+    margin: 0 auto;
+}
+.manualnavbar ~ hr ~ div a:hover {
+    color: #AE508D;
+    border-color: #AE508D;
+    outline: 0;
+}
+.manualnavbar ~ hr ~ div a:link, .manualnavbar ~ hr ~ div a:visited {
+    color: #369;
+}
+.example-contents > [class$="code"], .example-contents.screen, .informalexample .literallayout {
+    padding: .75rem;
+}
+.example-contents {
+    margin-bottom: 1.5rem;
+}

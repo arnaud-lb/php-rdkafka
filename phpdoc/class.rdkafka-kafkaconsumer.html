@@ -1,0 +1,183 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+ <head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title>The RdKafka\KafkaConsumer class</title>
+<link media="all" rel="stylesheet" type="text/css" href="styles/d41d8cd98f00b204e9800998ecf8427e-theme-base.css" />
+<link media="all" rel="stylesheet" type="text/css" href="styles/d41d8cd98f00b204e9800998ecf8427e-theme-medium.css" />
+<link media="all" rel="stylesheet" type="text/css" href="styles/d41d8cd98f00b204e9800998ecf8427e-style.css" />
+
+ </head>
+ <body><div class="manualnavbar" style="text-align: center;">
+ <div class="prev" style="text-align: left; float: left;"><a href="function.rd-kafka-offset-tail.html">rd_kafka_offset_tail</a></div>
+ <div class="next" style="text-align: right; float: right;"><a href="rdkafka-kafkaconsumer.assign.html">RdKafka\KafkaConsumer::assign</a></div>
+ <div class="up"><a href="book.rdkafka.html">Rdkafka</a></div>
+ <div class="home"><a href="index.html">PHP Manual</a></div>
+</div><hr /><div id="class.rdkafka-kafkaconsumer" class="reference">
+
+ <h1 class="title">The RdKafka\KafkaConsumer class</h1>
+ 
+
+ <div class="partintro"><p class="verinfo">(PECL rdkafka &gt;= master, librdkafka &gt;= 0.9)</p>
+
+
+  <div class="section" id="rdkafka-kafkaconsumer.intro">
+   <h2 class="title">Introduction</h2>
+   <p class="para">
+    This is the High-level KafkaConsumer with support for automatic partition assignment/revocation (requires Kafka &gt;= 0.9).
+   </p>
+  </div>
+
+
+  <div class="section" id="rdkafka-kafkaconsumer.synopsis">
+   <h2 class="title">Class synopsis</h2>
+
+
+   <div class="classsynopsis">
+    <div class="ooclass"></div>
+
+
+    <div class="classsynopsisinfo">
+     <span class="ooclass">
+      <strong class="classname">RdKafka\KafkaConsumer</strong>
+     </span>
+     {</div>
+
+    
+    <div class="classsynopsisinfo classsynopsisinfo_comment">/* Methods */</div>
+    <div class="methodsynopsis dc-description">
+   <span class="modifier">public</span> <span class="type">void</span> <span class="methodname"><a href="rdkafka-kafkaconsumer.assign.html" class="methodname">assign</a></span>
+    ([ <span class="methodparam"><span class="type">array</span> <code class="parameter">$topic_partitions</code><span class="initializer"> = <strong><code>NULL</code></strong></span></span>
+  ] )</div>
+<div class="methodsynopsis dc-description">
+   <span class="modifier">public</span> <span class="type">void</span> <span class="methodname"><a href="rdkafka-kafkaconsumer.commit.html" class="methodname">commit</a></span>
+    ([ <span class="methodparam"><span class="type"><a href="language.pseudo-types.html#language.types.mixed" class="type mixed">mixed</a></span> <code class="parameter">$message_or_offsets</code><span class="initializer"> = <strong><code>NULL</code></strong></span></span>
+  ] )</div>
+<div class="methodsynopsis dc-description">
+   <span class="modifier">public</span> <span class="type">boid</span> <span class="methodname"><a href="rdkafka-kafkaconsumer.commitasync.html" class="methodname">commitAsync</a></span>
+    ([ <span class="methodparam"><span class="type">string</span> <code class="parameter">$message_or_offsets</code><span class="initializer"> = <strong><code>NULL</code></strong></span></span>
+  ] )</div>
+<div class="methodsynopsis dc-description">
+   <span class="modifier">public</span> <span class="type">RdKafka\Message</span> <span class="methodname"><a href="rdkafka-kafkaconsumer.consume.html" class="methodname">consume</a></span>
+    ( <span class="methodparam"><span class="type">string</span> <code class="parameter">$timeout_ms</code></span>
+   )</div>
+<div class="methodsynopsis dc-description">
+   <span class="modifier">public</span> <span class="type">array</span> <span class="methodname"><a href="rdkafka-kafkaconsumer.getassignment.html" class="methodname">getAssignment</a></span>
+    ( <span class="methodparam">void</span>
+   )</div>
+<div class="methodsynopsis dc-description">
+   <span class="modifier">public</span> <a href="class.rdkafka-metadata.html" class="classname">RdKafka\Metadata</a> <span class="methodname"><a href="rdkafka-kafkaconsumer.getmetadata.html" class="methodname">getMetadata</a></span>
+    ( <span class="methodparam"><span class="type">bool</span> <code class="parameter">$all_topics</code></span>
+   , <span class="methodparam"><a href="class.rdkafka-kafkaconsumertopic.html" class="classname">RdKafka\KafkaConsumerTopic</a> <code class="parameter">$only_topic</code><span class="initializer"> = <strong><code>NULL</code></strong></span></span>
+   , <span class="methodparam"><span class="type">int</span> <code class="parameter">$timeout_ms</code></span>
+   )</div>
+<div class="methodsynopsis dc-description">
+   <span class="modifier">public</span> <span class="type">array</span> <span class="methodname"><a href="rdkafka-kafkaconsumer.getsubscription.html" class="methodname">getSubscription</a></span>
+    ( <span class="methodparam">void</span>
+   )</div>
+<div class="methodsynopsis dc-description">
+   <span class="modifier">public</span> <span class="type">void</span> <span class="methodname"><a href="rdkafka-kafkaconsumer.subscribe.html" class="methodname">subscribe</a></span>
+    ( <span class="methodparam"><span class="type">array</span> <code class="parameter">$topics</code></span>
+   )</div>
+<div class="methodsynopsis dc-description">
+   <span class="modifier">public</span> <span class="type">ReturnType</span> <span class="methodname"><a href="rdkafka-kafkaconsumer.unsubscribe.html" class="methodname">unsubscribe</a></span>
+    ( <span class="methodparam">void</span>
+   )</div>
+
+   }</div>
+
+
+  </div>
+
+  <div class="refsect1 seealso" id="refsect1-class.rdkafka-kafkaconsumer-seealso">
+   <h3 class="title">See Also</h3>
+   <p class="para">
+    <ul class="simplelist">
+     <li class="member"><a href="class.rdkafka-consumer.html" class="classname">RdKafka\Consumer</a></li>
+    </ul>
+   </p>
+  </div>
+
+
+ </div>
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h2>Table of Contents</h2><ul class="chunklist chunklist_reference"><li><a href="rdkafka-kafkaconsumer.assign.html">RdKafka\KafkaConsumer::assign</a> — Update the assignment set</li><li><a href="rdkafka-kafkaconsumer.commit.html">RdKafka\KafkaConsumer::commit</a> — Commit offsets</li><li><a href="rdkafka-kafkaconsumer.commitasync.html">RdKafka\KafkaConsumer::commitAsync</a> — Commit offsets asynchronously</li><li><a href="rdkafka-kafkaconsumer.construct.html">RdKafka\KafkaConsumer::__construct</a> — Constructor</li><li><a href="rdkafka-kafkaconsumer.consume.html">RdKafka\KafkaConsumer::consume</a> — Consume message and triggers callbacks</li><li><a href="rdkafka-kafkaconsumer.getassignment.html">RdKafka\KafkaConsumer::getAssignment</a> — Returns the current partition assignment</li><li><a href="rdkafka-kafkaconsumer.getmetadata.html">RdKafka\KafkaConsumer::getMetadata</a> — Request Metadata from broker</li><li><a href="rdkafka-kafkaconsumer.getsubscription.html">RdKafka\KafkaConsumer::getSubscription</a> — Return the current subscription</li><li><a href="rdkafka-kafkaconsumer.subscribe.html">RdKafka\KafkaConsumer::subscribe</a> — Update the subscription set</li><li><a href="rdkafka-kafkaconsumer.unsubscribe.html">RdKafka\KafkaConsumer::unsubscribe</a> — Unsubscribe from the current subscription set</li></ul>
+</div>
+<hr /><div class="manualnavbar" style="text-align: center;">
+ <div class="prev" style="text-align: left; float: left;"><a href="function.rd-kafka-offset-tail.html">rd_kafka_offset_tail</a></div>
+ <div class="next" style="text-align: right; float: right;"><a href="rdkafka-kafkaconsumer.assign.html">RdKafka\KafkaConsumer::assign</a></div>
+ <div class="up"><a href="book.rdkafka.html">Rdkafka</a></div>
+ <div class="home"><a href="index.html">PHP Manual</a></div>
+</div></body></html>

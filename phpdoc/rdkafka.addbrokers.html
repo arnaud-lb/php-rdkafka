@@ -1,0 +1,124 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+ <head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title>Add brokers</title>
+<link media="all" rel="stylesheet" type="text/css" href="styles/d41d8cd98f00b204e9800998ecf8427e-theme-base.css" />
+<link media="all" rel="stylesheet" type="text/css" href="styles/d41d8cd98f00b204e9800998ecf8427e-theme-medium.css" />
+<link media="all" rel="stylesheet" type="text/css" href="styles/d41d8cd98f00b204e9800998ecf8427e-style.css" />
+
+ </head>
+ <body><div class="manualnavbar" style="text-align: center;">
+ <div class="prev" style="text-align: left; float: left;"><a href="class.rdkafka.html">RdKafka</a></div>
+ <div class="next" style="text-align: right; float: right;"><a href="rdkafka.getmetadata.html">RdKafka::getMetadata</a></div>
+ <div class="up"><a href="class.rdkafka.html">RdKafka</a></div>
+ <div class="home"><a href="index.html">PHP Manual</a></div>
+</div><hr /><div id="rdkafka.addbrokers" class="refentry">
+ <div class="refnamediv">
+  <h1 class="refname">RdKafka::addBrokers</h1>
+  <p class="verinfo">(PECL rdkafka &gt;= 0.9.1)</p><p class="refpurpose"><span class="refname">RdKafka::addBrokers</span> &mdash; <span class="dc-title">Add brokers</span></p>
+
+ </div>
+
+ <div class="refsect1 description" id="refsect1-rdkafka.addbrokers-description">
+  <h3 class="title">Description</h3>
+  <div class="methodsynopsis dc-description">
+   <span class="modifier">public</span> <span class="type">integer</span> <span class="methodname"><strong>RdKafka::addBrokers</strong></span>
+    ( <span class="methodparam"><span class="type">string</span> <code class="parameter">$broker_list</code></span>
+   )</div>
+
+  <p class="para rdfs-comment">
+   Adds one or more brokers to the kafka handle&#039;s list of initial boostrap brokers.
+  </p>
+  <p class="para">
+   Additional brokers will be discovered automatically as soon as rdkafka connects to a broker by querying the broker metadata.
+  </p>
+  <p class="para">
+   If a broker name resolves to multiple addresses (and possibly address families) all will be used for connection attempts in round-robin fashion.
+  </p>
+ </div>
+
+
+ <div class="refsect1 parameters" id="refsect1-rdkafka.addbrokers-parameters">
+  <h3 class="title">Parameters</h3>
+  <dl>
+
+   
+    <dt>
+<code class="parameter">broker_list</code></dt>
+
+    <dd>
+
+     <p class="para">
+      Comma-separated list of brokers in the format: <code class="code">&lt;broker1&gt;,&lt;broker2&gt;,...</code>
+     </p>
+     <p class="para">
+      Each broker is in either the host or URL based format:
+      <ul class="simplelist">
+       <li class="listitem">
+        <code class="code">&lt;host&gt;:[&lt;port&gt;]</code>
+       </li>
+       <li class="listitem">
+        <code class="code">&lt;proto&gt;://&lt;host&gt;[:&lt;port&gt;]</code>
+       </li>
+      </ul>
+     </p>
+     <p class="para">
+      <code class="code">&lt;proto&gt;</code> is either <code class="code">PLAINTEXT</code>, <code class="code">SSL</code>, <code class="code">SASL</code>, or <code class="code">SASL_PLAINTEXT</code>.
+     </p>
+     <p class="para">The two formats can be mixed but ultimately the value of the <code class="code">security.protocol</code> config property decides what brokers are allowed.
+     </p>
+     <p class="para">
+      Examples:
+      <ul class="simplelist">
+       <li class="listitem">
+        <code class="code">&quot;broker1:10000,broker2&quot;</code>
+       </li>
+       <li class="listitem">
+        <code class="code">&quot;SSL://broker3:9000,ssl://broker2&quot;</code>
+       </li>
+      </ul>
+     </p>
+     <blockquote class="note"><p><strong class="note">Note</strong>: 
+      <p class="para">
+       Brokers may also be defined with the <code class="code">metadata.broker.list</code> or <code class="code">bootstrap.servers</code> configuration property (preferred method).
+      </p>
+     </p></blockquote>
+    </dd>
+
+   
+  </dl>
+
+ </div>
+
+
+ <div class="refsect1 returnvalues" id="refsect1-rdkafka.addbrokers-returnvalues">
+  <h3 class="title">Return Values</h3>
+  <p class="para">
+   Returns the number of brokers successfully added.
+  </p>
+ </div>
+
+
+ <div class="refsect1 examples" id="refsect1-rdkafka.addbrokers-examples">
+  <h3 class="title">Examples</h3>
+  <div class="example" id="example-10">
+   <p><strong>Example #1 <span class="function"><strong>RdKafka::addBrokers()</strong></span> example</strong></p>
+   <div class="example-contents">
+<div class="phpcode"><code><span style="color: #000000">
+<span style="color: #0000BB">&lt;?php<br />$kafka</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">addBrokers</span><span style="color: #007700">(</span><span style="color: #DD0000">"broker1:10000,broker2"</span><span style="color: #007700">);<br /><br /></span><span style="color: #0000BB">$kafka</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">addBrokers</span><span style="color: #007700">(</span><span style="color: #DD0000">"SSL://broker3:9000,ssl://broker2"</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">?&gt;</span>
+</span>
+</code></div>
+   </div>
+
+  </div>
+ </div>
+
+
+
+</div><hr /><div class="manualnavbar" style="text-align: center;">
+ <div class="prev" style="text-align: left; float: left;"><a href="class.rdkafka.html">RdKafka</a></div>
+ <div class="next" style="text-align: right; float: right;"><a href="rdkafka.getmetadata.html">RdKafka::getMetadata</a></div>
+ <div class="up"><a href="class.rdkafka.html">RdKafka</a></div>
+ <div class="home"><a href="index.html">PHP Manual</a></div>
+</div></body></html>

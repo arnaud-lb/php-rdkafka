@@ -1,0 +1,114 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+ <head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title>Update the assignment set</title>
+<link media="all" rel="stylesheet" type="text/css" href="styles/d41d8cd98f00b204e9800998ecf8427e-theme-base.css" />
+<link media="all" rel="stylesheet" type="text/css" href="styles/d41d8cd98f00b204e9800998ecf8427e-theme-medium.css" />
+<link media="all" rel="stylesheet" type="text/css" href="styles/d41d8cd98f00b204e9800998ecf8427e-style.css" />
+
+ </head>
+ <body><div class="manualnavbar" style="text-align: center;">
+ <div class="prev" style="text-align: left; float: left;"><a href="class.rdkafka-kafkaconsumer.html">RdKafka\KafkaConsumer</a></div>
+ <div class="next" style="text-align: right; float: right;"><a href="rdkafka-kafkaconsumer.commit.html">RdKafka\KafkaConsumer::commit</a></div>
+ <div class="up"><a href="class.rdkafka-kafkaconsumer.html">RdKafka\KafkaConsumer</a></div>
+ <div class="home"><a href="index.html">PHP Manual</a></div>
+</div><hr /><div id="rdkafka-kafkaconsumer.assign" class="refentry">
+ <div class="refnamediv">
+  <h1 class="refname">RdKafka\KafkaConsumer::assign</h1>
+  <p class="verinfo">(PECL rdkafka &gt;= master, librdkafka &gt;= 0.9)</p><p class="refpurpose"><span class="refname">RdKafka\KafkaConsumer::assign</span> &mdash; <span class="dc-title">Update the assignment set</span></p>
+
+ </div>
+
+ <div class="refsect1 description" id="refsect1-rdkafka-kafkaconsumer.assign-description">
+  <h3 class="title">Description</h3>
+  <div class="methodsynopsis dc-description">
+   <span class="modifier">public</span> <span class="type"><span class="type void">void</span></span> <span class="methodname"><strong>RdKafka\KafkaConsumer::assign</strong></span>
+    ([ <span class="methodparam"><span class="type">array</span> <code class="parameter">$topic_partitions</code><span class="initializer"> = <strong><code>NULL</code></strong></span></span>
+  ] )</div>
+
+  <p class="para rdfs-comment">
+   Update the assignment set to <code class="parameter">topic_partitions</code>.
+  </p>
+  <p class="para">
+   The assignment set is the set of partitions actually being consumed by the KafkaConsumer.
+  </p>
+  <blockquote class="note"><p><strong class="note">Note</strong>: 
+   <p class="para">
+    For automatic partition assignment, use <span class="function"><a href="rdkafka-kafkaconsumer.subscribe.html" class="function">RdKafka\KafkaConsumer::subscribe()</a></span>
+   </p>
+  </p></blockquote>
+  <blockquote class="note"><p><strong class="note">Note</strong>: 
+   <p class="para">
+    The default configuration for assigned topics can be changed by calling <span class="function"><a href="rdkafka-conf.setdefaulttopicconf.html" class="function">RdKafka\Conf::setDefaultTopicConf()</a></span>.
+   </p>
+  </p></blockquote>
+
+
+ </div>
+
+
+ <div class="refsect1 parameters" id="refsect1-rdkafka-kafkaconsumer.assign-parameters">
+  <h3 class="title">Parameters</h3>
+  <dl>
+
+   
+    <dt>
+<code class="parameter">topic_partitions</code> (<span class="type"><a href="language.types.array.html" class="type array">array</a></span>)</dt>
+
+    <dd>
+
+     <p class="para">
+      Array of <a href="class.rdkafka-topicpartition.html" class="classname">RdKafka\TopicPartition</a> to assign
+     </p>
+    </dd>
+
+   
+  </dl>
+
+ </div>
+
+
+ <div class="refsect1 errors" id="refsect1-rdkafka-kafkaconsumer.assign-errors">
+  <h3 class="title">Errors/Exceptions</h3>
+  <ul class="simplelist">
+   <li class="member">Throws <a href="class.rdkafka-exception.html" class="classname">RdKafka\Exception</a> on errors.</li>
+  </ul>
+ </div>
+
+
+ <div class="refsect1 examples" id="refsect1-rdkafka-kafkaconsumer.assign-examples">
+  <h3 class="title">Examples</h3>
+  <div class="example" id="example-4">
+   <p><strong>Example #1 <span class="function"><strong>RdKafka\KafkaConsumer::assign()</strong></span> example</strong></p>
+   <div class="example-contents">
+<div class="phpcode"><code><span style="color: #000000">
+<span style="color: #0000BB">&lt;?php<br />$kafkaConsumer</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">assign</span><span style="color: #007700">([<br />&nbsp;&nbsp;&nbsp;&nbsp;new&nbsp;</span><span style="color: #0000BB">RdKafka</span><span style="color: #007700">\</span><span style="color: #0000BB">TopicPartition</span><span style="color: #007700">(</span><span style="color: #DD0000">"logs"</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">0</span><span style="color: #007700">),<br />&nbsp;&nbsp;&nbsp;&nbsp;new&nbsp;</span><span style="color: #0000BB">RdKafka</span><span style="color: #007700">\</span><span style="color: #0000BB">TopicPartition</span><span style="color: #007700">(</span><span style="color: #DD0000">"logs"</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">1</span><span style="color: #007700">),<br />]);<br /></span><span style="color: #0000BB">?&gt;</span>
+</span>
+</code></div>
+   </div>
+
+  </div>
+ </div>
+
+
+ <div class="refsect1 seealso" id="refsect1-rdkafka-kafkaconsumer.assign-seealso">
+  <h3 class="title">See Also</h3>
+  <p class="para">
+   <ul class="simplelist">
+    <li class="member"><span class="function"><a href="rdkafka-kafkaconsumer.subscribe.html" class="function" rel="rdfs-seeAlso">RdKafka\KafkaConsumer::subscribe()</a> - Update the subscription set</span></li>
+    <li class="member"><span class="function"><a href="rdkafka-kafkaconsumer.getassignment.html" class="function" rel="rdfs-seeAlso">RdKafka\KafkaConsumer::getAssignment()</a> - Returns the current partition assignment</span></li>
+    <li class="member"><span class="function"><a href="rdkafka-conf.setdefaulttopicconf.html" class="function" rel="rdfs-seeAlso">RdKafka\Conf::setDefaultTopicConf()</a> - Set default topic configuration</span></li>
+   </ul>
+  </p>
+ </div>
+
+
+
+
+</div><hr /><div class="manualnavbar" style="text-align: center;">
+ <div class="prev" style="text-align: left; float: left;"><a href="class.rdkafka-kafkaconsumer.html">RdKafka\KafkaConsumer</a></div>
+ <div class="next" style="text-align: right; float: right;"><a href="rdkafka-kafkaconsumer.commit.html">RdKafka\KafkaConsumer::commit</a></div>
+ <div class="up"><a href="class.rdkafka-kafkaconsumer.html">RdKafka\KafkaConsumer</a></div>
+ <div class="home"><a href="index.html">PHP Manual</a></div>
+</div></body></html>
