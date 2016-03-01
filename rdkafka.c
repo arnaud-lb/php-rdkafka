@@ -207,15 +207,15 @@ PHP_METHOD(RdKafka__Kafka, addBrokers)
 }
 /* }}} */
 
-/* {{{ proto RdKafka\Metadata::metadata(bool $all_topics, RdKafka\Topic $only_topic, int $timeout_ms)
+/* {{{ proto RdKafka\Metadata::getMetadata(bool $all_topics, RdKafka\Topic $only_topic, int $timeout_ms)
    Request Metadata from broker */
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_metadata, 0, 0, 1)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_get_metadata, 0, 0, 1)
     ZEND_ARG_INFO(0, all_topics)
     ZEND_ARG_INFO(0, only_topic)
     ZEND_ARG_INFO(0, timeout_ms)
 ZEND_END_ARG_INFO()
 
-PHP_METHOD(RdKafka__Kafka, metadata)
+PHP_METHOD(RdKafka__Kafka, getMetadata)
 {
     zend_bool all_topics;
     zval *only_zrkt;
@@ -385,13 +385,13 @@ PHP_METHOD(RdKafka__Kafka, newTopic)
 }
 /* }}} */
 
-/* {{{ proto int RdKafka\Kafka::outqLen()
+/* {{{ proto int RdKafka\Kafka::getOutQLen()
    Returns the current out queue length */
 
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_outq_len, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_get_outq_len, 0, 0, 0)
 ZEND_END_ARG_INFO()
 
-PHP_METHOD(RdKafka__Kafka, outqLen)
+PHP_METHOD(RdKafka__Kafka, getOutQLen)
 {
     kafka_object *intern;
 
@@ -502,11 +502,13 @@ PHP_METHOD(RdKafka__Kafka, __destruct)
 
 static const zend_function_entry kafka_fe[] = {
     PHP_ME(RdKafka__Kafka, addBrokers, arginfo_kafka_add_brokers, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__Kafka, metadata, arginfo_kafka_metadata, ZEND_ACC_PUBLIC)
+    PHP_ME(RdKafka__Kafka, getMetadata, arginfo_kafka_get_metadata, ZEND_ACC_PUBLIC)
+    PHP_ME(RdKafka__Kafka, getOutQLen, arginfo_kafka_get_outq_len, ZEND_ACC_PUBLIC)
+    PHP_MALIAS(RdKafka__Kafka, metadata, getMetadata, arginfo_kafka_get_metadata, ZEND_ACC_PUBLIC | ZEND_ACC_DEPRECATED)
     PHP_ME(RdKafka__Kafka, setLogLevel, arginfo_kafka_set_log_level, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__Kafka, newQueue, arginfo_kafka_new_queue, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__Kafka, newTopic, arginfo_kafka_new_topic, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__Kafka, outqLen, arginfo_kafka_outq_len, ZEND_ACC_PUBLIC)
+    PHP_MALIAS(RdKafka__Kafka, outqLen, getOutQLen, arginfo_kafka_get_outq_len, ZEND_ACC_PUBLIC | ZEND_ACC_DEPRECATED)
     PHP_ME(RdKafka__Kafka, poll, arginfo_kafka_poll, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__Kafka, setLogger, arginfo_kafka_set_logger, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__Kafka, __destruct, arginfo_kafka_kafka___destruct, ZEND_ACC_PUBLIC)
