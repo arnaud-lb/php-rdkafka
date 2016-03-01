@@ -92,7 +92,7 @@ PHP_METHOD(RdKafka__Queue, consume)
         return;
     }
 
-    intern = get_kafka_queue_object(this_ptr TSRMLS_CC);
+    intern = get_kafka_queue_object(getThis() TSRMLS_CC);
     if (!intern) {
         return;
     }

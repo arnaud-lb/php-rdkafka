@@ -119,7 +119,7 @@ PHP_METHOD(RdKafka__Metadata__Partition, getId)
         return;
     }
 
-    intern = get_object(this_ptr TSRMLS_CC);
+    intern = get_object(getThis() TSRMLS_CC);
     if (!intern) {
         return;
     }
@@ -142,7 +142,7 @@ PHP_METHOD(RdKafka__Metadata__Partition, getErr)
         return;
     }
 
-    intern = get_object(this_ptr TSRMLS_CC);
+    intern = get_object(getThis() TSRMLS_CC);
     if (!intern) {
         return;
     }
@@ -165,7 +165,7 @@ PHP_METHOD(RdKafka__Metadata__Partition, getLeader)
         return;
     }
 
-    intern = get_object(this_ptr TSRMLS_CC);
+    intern = get_object(getThis() TSRMLS_CC);
     if (!intern) {
         return;
     }
@@ -192,12 +192,12 @@ PHP_METHOD(RdKafka__Metadata__Partition, getReplicas)
         return;
     }
 
-    intern = get_object(this_ptr TSRMLS_CC);
+    intern = get_object(getThis() TSRMLS_CC);
     if (!intern) {
         return;
     }
 
-    kafka_metadata_collection_init(return_value, this_ptr, intern->metadata_partition->replicas, intern->metadata_partition->replica_cnt, sizeof(*intern->metadata_partition->replicas), int32_ctor TSRMLS_CC);
+    kafka_metadata_collection_init(return_value, getThis(), intern->metadata_partition->replicas, intern->metadata_partition->replica_cnt, sizeof(*intern->metadata_partition->replicas), int32_ctor TSRMLS_CC);
 }
 /* }}} */
 
@@ -215,12 +215,12 @@ PHP_METHOD(RdKafka__Metadata__Partition, getIsrs)
         return;
     }
 
-    intern = get_object(this_ptr TSRMLS_CC);
+    intern = get_object(getThis() TSRMLS_CC);
     if (!intern) {
         return;
     }
 
-    kafka_metadata_collection_init(return_value, this_ptr, intern->metadata_partition->isrs, intern->metadata_partition->isr_cnt, sizeof(*intern->metadata_partition->isrs), int32_ctor TSRMLS_CC);
+    kafka_metadata_collection_init(return_value, getThis(), intern->metadata_partition->isrs, intern->metadata_partition->isr_cnt, sizeof(*intern->metadata_partition->isrs), int32_ctor TSRMLS_CC);
 }
 /* }}} */
 

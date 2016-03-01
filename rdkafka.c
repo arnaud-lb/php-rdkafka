@@ -169,7 +169,7 @@ PHP_METHOD(RdKafka__Consumer, __construct)
         return;
     }
 
-    kafka_init(this_ptr, RD_KAFKA_CONSUMER, zconf TSRMLS_CC);
+    kafka_init(getThis(), RD_KAFKA_CONSUMER, zconf TSRMLS_CC);
 
     zend_restore_error_handling(&error_handling TSRMLS_CC);
 }
@@ -197,7 +197,7 @@ PHP_METHOD(RdKafka__Kafka, addBrokers)
         return;
     }
 
-    intern = get_kafka_object(this_ptr TSRMLS_CC);
+    intern = get_kafka_object(getThis() TSRMLS_CC);
     if (!intern) {
         return;
     }
@@ -228,7 +228,7 @@ PHP_METHOD(RdKafka__Kafka, metadata)
         return;
     }
 
-    intern = get_kafka_object(this_ptr TSRMLS_CC);
+    intern = get_kafka_object(getThis() TSRMLS_CC);
     if (!intern) {
         return;
     }
@@ -267,7 +267,7 @@ PHP_METHOD(RdKafka__Kafka, setLogLevel)
         return;
     }
 
-    intern = get_kafka_object(this_ptr TSRMLS_CC);
+    intern = get_kafka_object(getThis() TSRMLS_CC);
     if (!intern) {
         return;
     }
@@ -292,7 +292,7 @@ PHP_METHOD(RdKafka__Kafka, newQueue)
         return;
     }
 
-    intern = get_kafka_object(this_ptr TSRMLS_CC);
+    intern = get_kafka_object(getThis() TSRMLS_CC);
     if (!intern) {
         return;
     }
@@ -340,7 +340,7 @@ PHP_METHOD(RdKafka__Kafka, newTopic)
         return;
     }
 
-    intern = get_kafka_object(this_ptr TSRMLS_CC);
+    intern = get_kafka_object(getThis() TSRMLS_CC);
     if (!intern) {
         return;
     }
@@ -379,8 +379,8 @@ PHP_METHOD(RdKafka__Kafka, newTopic)
     }
 
     topic_intern->rkt = rkt;
-    topic_intern->zrk = this_ptr;
-    Z_ADDREF_P(this_ptr);
+    topic_intern->zrk = getThis();
+    Z_ADDREF_P(getThis());
 }
 /* }}} */
 
@@ -398,7 +398,7 @@ PHP_METHOD(RdKafka__Kafka, outqLen)
         return;
     }
 
-    intern = get_kafka_object(this_ptr TSRMLS_CC);
+    intern = get_kafka_object(getThis() TSRMLS_CC);
     if (!intern) {
         return;
     }
@@ -423,7 +423,7 @@ PHP_METHOD(RdKafka__Kafka, poll)
         return;
     }
 
-    intern = get_kafka_object(this_ptr TSRMLS_CC);
+    intern = get_kafka_object(getThis() TSRMLS_CC);
     if (!intern) {
         return;
     }
@@ -449,7 +449,7 @@ PHP_METHOD(RdKafka__Kafka, setLogger)
         return;
     }
 
-    intern = get_kafka_object(this_ptr TSRMLS_CC);
+    intern = get_kafka_object(getThis() TSRMLS_CC);
     if (!intern) {
         return;
     }
@@ -486,7 +486,7 @@ PHP_METHOD(RdKafka__Kafka, __destruct)
         return;
     }
 
-    intern = (kafka_object*)zend_object_store_get_object(this_ptr TSRMLS_CC);
+    intern = (kafka_object*)zend_object_store_get_object(getThis() TSRMLS_CC);
     if (intern->rk) {
         while (rd_kafka_outq_len(intern->rk) > 0) {
             rd_kafka_poll(intern->rk, 50);
@@ -530,7 +530,7 @@ PHP_METHOD(RdKafka__Producer, __construct)
         return;
     }
 
-    kafka_init(this_ptr, RD_KAFKA_PRODUCER, zconf TSRMLS_CC);
+    kafka_init(getThis(), RD_KAFKA_PRODUCER, zconf TSRMLS_CC);
 
     zend_restore_error_handling(&error_handling TSRMLS_CC);
 }

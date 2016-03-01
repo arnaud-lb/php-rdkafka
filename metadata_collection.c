@@ -125,7 +125,7 @@ PHP_METHOD(RdKafka__Metadata__Collection, count)
         return;
     }
 
-    intern = get_object(this_ptr TSRMLS_CC);
+    intern = get_object(getThis() TSRMLS_CC);
     if (!intern) {
         return;
     }
@@ -148,7 +148,7 @@ PHP_METHOD(RdKafka__Metadata__Collection, rewind)
         return;
     }
 
-    intern = get_object(this_ptr TSRMLS_CC);
+    intern = get_object(getThis() TSRMLS_CC);
     if (!intern) {
         return;
     }
@@ -171,7 +171,7 @@ PHP_METHOD(RdKafka__Metadata__Collection, current)
         return;
     }
 
-    intern = get_object(this_ptr TSRMLS_CC);
+    intern = get_object(getThis() TSRMLS_CC);
     if (!intern) {
         return;
     }
@@ -199,7 +199,7 @@ PHP_METHOD(RdKafka__Metadata__Collection, key)
         return;
     }
 
-    intern = get_object(this_ptr TSRMLS_CC);
+    intern = get_object(getThis() TSRMLS_CC);
     if (!intern) {
         return;
     }
@@ -227,7 +227,7 @@ PHP_METHOD(RdKafka__Metadata__Collection, next)
         return;
     }
 
-    intern = get_object(this_ptr TSRMLS_CC);
+    intern = get_object(getThis() TSRMLS_CC);
     if (!intern) {
         return;
     }
@@ -250,7 +250,7 @@ PHP_METHOD(RdKafka__Metadata__Collection, valid)
         return;
     }
 
-    intern = get_object(this_ptr TSRMLS_CC);
+    intern = get_object(getThis() TSRMLS_CC);
     if (!intern) {
         return;
     }

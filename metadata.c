@@ -136,7 +136,7 @@ PHP_METHOD(RdKafka__Metadata, getOrigBrokerId)
         return;
     }
 
-    intern = get_object(this_ptr TSRMLS_CC);
+    intern = get_object(getThis() TSRMLS_CC);
     if (!intern) {
         return;
     }
@@ -159,7 +159,7 @@ PHP_METHOD(RdKafka__Metadata, getOrigBrokerName)
         return;
     }
 
-    intern = get_object(this_ptr TSRMLS_CC);
+    intern = get_object(getThis() TSRMLS_CC);
     if (!intern) {
         return;
     }
@@ -182,12 +182,12 @@ PHP_METHOD(RdKafka__Metadata, getBrokers)
         return;
     }
 
-    intern = get_object(this_ptr TSRMLS_CC);
+    intern = get_object(getThis() TSRMLS_CC);
     if (!intern) {
         return;
     }
 
-    brokers_collection(return_value, this_ptr, intern TSRMLS_CC);
+    brokers_collection(return_value, getThis(), intern TSRMLS_CC);
 }
 /* }}} */
 
@@ -205,12 +205,12 @@ PHP_METHOD(RdKafka__Metadata, getTopics)
         return;
     }
 
-    intern = get_object(this_ptr TSRMLS_CC);
+    intern = get_object(getThis() TSRMLS_CC);
     if (!intern) {
         return;
     }
 
-    topics_collection(return_value, this_ptr, intern TSRMLS_CC);
+    topics_collection(return_value, getThis(), intern TSRMLS_CC);
 }
 /* }}} */
 

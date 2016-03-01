@@ -128,7 +128,7 @@ PHP_METHOD(RdKafka__Metadata__Topic, getTopic)
         return;
     }
 
-    intern = get_object(this_ptr TSRMLS_CC);
+    intern = get_object(getThis() TSRMLS_CC);
     if (!intern) {
         return;
     }
@@ -151,7 +151,7 @@ PHP_METHOD(RdKafka__Metadata__Topic, getErr)
         return;
     }
 
-    intern = get_object(this_ptr TSRMLS_CC);
+    intern = get_object(getThis() TSRMLS_CC);
     if (!intern) {
         return;
     }
@@ -175,12 +175,12 @@ PHP_METHOD(RdKafka__Metadata__Topic, getPartitions)
         return;
     }
 
-    intern = get_object(this_ptr TSRMLS_CC);
+    intern = get_object(getThis() TSRMLS_CC);
     if (!intern) {
         return;
     }
 
-    partitions_collection(return_value, this_ptr, intern TSRMLS_CC);
+    partitions_collection(return_value, getThis(), intern TSRMLS_CC);
 }
 /* }}} */
 

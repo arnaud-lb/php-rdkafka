@@ -116,7 +116,7 @@ PHP_METHOD(RdKafka__Metadata__Broker, getId)
         return;
     }
 
-    intern = get_object(this_ptr TSRMLS_CC);
+    intern = get_object(getThis() TSRMLS_CC);
     if (!intern) {
         return;
     }
@@ -139,7 +139,7 @@ PHP_METHOD(RdKafka__Metadata__Broker, getHost)
         return;
     }
 
-    intern = get_object(this_ptr TSRMLS_CC);
+    intern = get_object(getThis() TSRMLS_CC);
     if (!intern) {
         return;
     }
@@ -162,7 +162,7 @@ PHP_METHOD(RdKafka__Metadata__Broker, getPort)
         return;
     }
 
-    intern = get_object(this_ptr TSRMLS_CC);
+    intern = get_object(getThis() TSRMLS_CC);
     if (!intern) {
         return;
     }

@@ -66,13 +66,13 @@ PHP_METHOD(RdKafka__Message, errstr)
         return;
     }
 
-    zerr = zend_read_property(NULL, this_ptr, ZEND_STRL("err"), 0 TSRMLS_CC);
+    zerr = zend_read_property(NULL, getThis(), ZEND_STRL("err"), 0 TSRMLS_CC);
 
     if (!zerr || Z_TYPE_P(zerr) != IS_LONG) {
         return;
     }
 
-    zpayload = zend_read_property(NULL, this_ptr, ZEND_STRL("payload"), 0 TSRMLS_CC);
+    zpayload = zend_read_property(NULL, getThis(), ZEND_STRL("payload"), 0 TSRMLS_CC);
 
     if (zpayload && Z_TYPE_P(zpayload) == IS_STRING) {
         RETURN_ZVAL(zpayload, 1, 0);

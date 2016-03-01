@@ -221,7 +221,7 @@ PHP_METHOD(RdKafka__Conf, __construct)
         return;
     }
 
-    intern = (kafka_conf_object*)zend_object_store_get_object(this_ptr TSRMLS_CC);
+    intern = (kafka_conf_object*)zend_object_store_get_object(getThis() TSRMLS_CC);
     intern->type = KAFKA_CONF;
     intern->u.conf = rd_kafka_conf_new();
 
@@ -246,7 +246,7 @@ PHP_METHOD(RdKafka__Conf, dump)
         return;
     }
 
-    intern = get_kafka_conf_object(this_ptr TSRMLS_CC);
+    intern = get_kafka_conf_object(getThis() TSRMLS_CC);
     if (!intern) {
         return;
     }
@@ -296,7 +296,7 @@ PHP_METHOD(RdKafka__Conf, set)
         return;
     }
 
-    intern = get_kafka_conf_object(this_ptr TSRMLS_CC);
+    intern = get_kafka_conf_object(getThis() TSRMLS_CC);
     if (!intern) {
         return;
     }
@@ -343,7 +343,7 @@ PHP_METHOD(RdKafka__Conf, setDefaultTopicConf)
         return;
     }
 
-    intern = get_kafka_conf_object(this_ptr TSRMLS_CC);
+    intern = get_kafka_conf_object(getThis() TSRMLS_CC);
     if (!intern) {
         return;
     }
@@ -377,7 +377,7 @@ PHP_METHOD(RdKafka__Conf, setErrorCb)
         return;
     }
 
-    intern = get_kafka_conf_object(this_ptr TSRMLS_CC);
+    intern = get_kafka_conf_object(getThis() TSRMLS_CC);
     if (!intern) {
         return;
     }
@@ -413,7 +413,7 @@ PHP_METHOD(RdKafka__Conf, setRebalanceCb)
         return;
     }
 
-    intern = get_kafka_conf_object(this_ptr TSRMLS_CC);
+    intern = get_kafka_conf_object(getThis() TSRMLS_CC);
     if (!intern) {
         return;
     }
@@ -445,7 +445,7 @@ PHP_METHOD(RdKafka__TopicConf, __construct)
         return;
     }
 
-    intern = (kafka_conf_object*)zend_object_store_get_object(this_ptr TSRMLS_CC);
+    intern = (kafka_conf_object*)zend_object_store_get_object(getThis() TSRMLS_CC);
     intern->type = KAFKA_TOPIC_CONF;
     intern->u.topic_conf = rd_kafka_topic_conf_new();
 
@@ -469,7 +469,7 @@ PHP_METHOD(RdKafka__TopicConf, setPartitioner)
         return;
     }
 
-    intern = get_kafka_conf_object(this_ptr TSRMLS_CC);
+    intern = get_kafka_conf_object(getThis() TSRMLS_CC);
     if (!intern) {
         return;
     }

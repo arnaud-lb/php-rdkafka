@@ -226,7 +226,7 @@ PHP_METHOD(RdKafka__TopicPartition, getTopic)
         return;
     }
 
-    intern = get_object(this_ptr TSRMLS_CC);
+    intern = get_object(getThis() TSRMLS_CC);
     if (!intern) {
         return;
     }
@@ -256,7 +256,7 @@ PHP_METHOD(RdKafka__TopicPartition, setTopic)
         return;
     }
 
-    intern = get_object(this_ptr TSRMLS_CC);
+    intern = get_object(getThis() TSRMLS_CC);
     if (!intern) {
         return;
     }
@@ -285,7 +285,7 @@ PHP_METHOD(RdKafka__TopicPartition, getPartition)
         return;
     }
 
-    intern = get_object(this_ptr TSRMLS_CC);
+    intern = get_object(getThis() TSRMLS_CC);
     if (!intern) {
         return;
     }
@@ -310,7 +310,7 @@ PHP_METHOD(RdKafka__TopicPartition, setPartition)
         return;
     }
 
-    intern = get_object(this_ptr TSRMLS_CC);
+    intern = get_object(getThis() TSRMLS_CC);
     if (!intern) {
         return;
     }
@@ -335,7 +335,7 @@ PHP_METHOD(RdKafka__TopicPartition, getOffset)
         return;
     }
 
-    intern = get_object(this_ptr TSRMLS_CC);
+    intern = get_object(getThis() TSRMLS_CC);
     if (!intern) {
         return;
     }
@@ -360,7 +360,7 @@ PHP_METHOD(RdKafka__TopicPartition, setOffset)
         return;
     }
 
-    intern = get_object(this_ptr TSRMLS_CC);
+    intern = get_object(getThis() TSRMLS_CC);
     if (!intern) {
         return;
     }

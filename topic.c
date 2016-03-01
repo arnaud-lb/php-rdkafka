@@ -110,7 +110,7 @@ PHP_METHOD(RdKafka__ConsumerTopic, consumeQueueStart)
         return;
     }
 
-    intern = get_kafka_topic_object(this_ptr TSRMLS_CC);
+    intern = get_kafka_topic_object(getThis() TSRMLS_CC);
     if (!intern) {
         return;
     }
@@ -155,7 +155,7 @@ PHP_METHOD(RdKafka__ConsumerTopic, consumeStart)
         return;
     }
 
-    intern = get_kafka_topic_object(this_ptr TSRMLS_CC);
+    intern = get_kafka_topic_object(getThis() TSRMLS_CC);
     if (!intern) {
         return;
     }
@@ -193,7 +193,7 @@ PHP_METHOD(RdKafka__ConsumerTopic, consumeStop)
         return;
     }
 
-    intern = get_kafka_topic_object(this_ptr TSRMLS_CC);
+    intern = get_kafka_topic_object(getThis() TSRMLS_CC);
     if (!intern) {
         return;
     }
@@ -233,7 +233,7 @@ PHP_METHOD(RdKafka__ConsumerTopic, consume)
         return;
     }
 
-    intern = get_kafka_topic_object(this_ptr TSRMLS_CC);
+    intern = get_kafka_topic_object(getThis() TSRMLS_CC);
     if (!intern) {
         return;
     }
@@ -273,7 +273,7 @@ PHP_METHOD(RdKafka__ConsumerTopic, offsetStore)
         return;
     }
 
-    intern = get_kafka_topic_object(this_ptr TSRMLS_CC);
+    intern = get_kafka_topic_object(getThis() TSRMLS_CC);
     if (!intern) {
         return;
     }
@@ -342,7 +342,7 @@ PHP_METHOD(RdKafka__ProducerTopic, produce)
         return;
     }
 
-    intern = get_kafka_topic_object(this_ptr TSRMLS_CC);
+    intern = get_kafka_topic_object(getThis() TSRMLS_CC);
 
     ret = rd_kafka_produce(intern->rkt, partition, msgflags | RD_KAFKA_MSG_F_COPY, payload, payload_len, key, key_len, NULL);
 
@@ -373,7 +373,7 @@ PHP_METHOD(RdKafka__Topic, getName)
         return;
     }
 
-    intern = get_kafka_topic_object(this_ptr TSRMLS_CC);
+    intern = get_kafka_topic_object(getThis() TSRMLS_CC);
     if (!intern) {
         return;
     }
