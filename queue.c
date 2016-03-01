@@ -22,6 +22,7 @@
 
 #include "php.h"
 #include "php_rdkafka.h"
+#include "php_rdkafka_priv.h"
 #include "librdkafka/rdkafka.h"
 #include "ext/spl/spl_iterators.h"
 #include "Zend/zend_interfaces.h"
@@ -51,7 +52,7 @@ static zend_object_value kafka_queue_new(zend_class_entry *class_type TSRMLS_DC)
     zend_object_value retval;
     kafka_queue_object *intern;
 
-    intern = ecalloc(1, sizeof(*intern));
+    intern = alloc_object(intern, class_type);
     zend_object_std_init(&intern->std, class_type TSRMLS_CC);
     object_properties_init(&intern->std, class_type);
 
@@ -64,7 +65,7 @@ static zend_object_value kafka_queue_new(zend_class_entry *class_type TSRMLS_DC)
 
 kafka_queue_object * get_kafka_queue_object(zval *zrkqu TSRMLS_DC)
 {
-    kafka_queue_object *orkqu = (kafka_queue_object*)zend_object_store_get_object(zrkqu TSRMLS_CC);
+    kafka_queue_object *orkqu = get_custom_object_zval(kafka_queue_object, zrkqu);
 
     if (!orkqu->rkqu) {
         zend_throw_exception_ex(NULL, 0 TSRMLS_CC, "RdKafka\\Queue::__construct() has not been called" TSRMLS_CC);

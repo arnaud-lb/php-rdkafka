@@ -24,6 +24,7 @@
 #include "php_ini.h"
 #include "ext/standard/info.h"
 #include "php_rdkafka.h"
+#include "php_rdkafka_priv.h"
 #include "librdkafka/rdkafka.h"
 #include "Zend/zend_exceptions.h"
 #include "ext/spl/spl_exceptions.h"
@@ -89,7 +90,7 @@ static zend_object_value kafka_conf_new(zend_class_entry *class_type TSRMLS_DC) 
     zend_object_value retval;
     kafka_conf_object *intern;
 
-    intern = ecalloc(1, sizeof(*intern));
+    intern = alloc_object(intern, class_type);
     zend_object_std_init(&intern->std, class_type TSRMLS_CC);
     object_properties_init(&intern->std, class_type);
 
@@ -102,7 +103,7 @@ static zend_object_value kafka_conf_new(zend_class_entry *class_type TSRMLS_DC) 
 
 kafka_conf_object * get_kafka_conf_object(zval *zconf TSRMLS_DC)
 {
-    kafka_conf_object *oconf = (kafka_conf_object*)zend_object_store_get_object(zconf TSRMLS_CC);
+    kafka_conf_object *oconf = get_custom_object_zval(kafka_conf_object, zconf);
 
     if (!oconf->type) {
         zend_throw_exception_ex(NULL, 0 TSRMLS_CC, "RdKafka\\Conf::__construct() has not been called" TSRMLS_CC);
@@ -221,7 +222,7 @@ PHP_METHOD(RdKafka__Conf, __construct)
         return;
     }
 
-    intern = (kafka_conf_object*)zend_object_store_get_object(getThis() TSRMLS_CC);
+    intern = get_custom_object_zval(kafka_conf_object, getThis());
     intern->type = KAFKA_CONF;
     intern->u.conf = rd_kafka_conf_new();
 
@@ -445,7 +446,7 @@ PHP_METHOD(RdKafka__TopicConf, __construct)
         return;
     }
 
-    intern = (kafka_conf_object*)zend_object_store_get_object(getThis() TSRMLS_CC);
+    intern = get_custom_object_zval(kafka_conf_object, getThis());
     intern->type = KAFKA_TOPIC_CONF;
     intern->u.topic_conf = rd_kafka_topic_conf_new();
 

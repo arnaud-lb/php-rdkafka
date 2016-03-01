@@ -71,7 +71,7 @@ static zend_object_value kafka_consumer_new(zend_class_entry *class_type TSRMLS_
 
 static object_intern * get_object(zval *zconsumer TSRMLS_DC) /* {{{ */
 {
-    object_intern *oconsumer = (object_intern*)zend_object_store_get_object(zconsumer TSRMLS_CC);
+    object_intern *oconsumer = get_custom_object_zval(object_intern, zconsumer);
 
     if (!oconsumer->rk) {
         zend_throw_exception_ex(NULL, 0 TSRMLS_CC, "RdKafka\\KafkaConsumer::__construct() has not been called");
@@ -123,7 +123,7 @@ PHP_METHOD(RdKafka__KafkaConsumer, __construct)
         return;
     }
 
-    intern = (object_intern*)zend_object_store_get_object(getThis() TSRMLS_CC);
+    intern = get_custom_object_zval(object_intern, getThis());
 
     conf_intern = get_kafka_conf_object(zconf TSRMLS_CC);
     if (conf_intern) {
@@ -171,7 +171,7 @@ PHP_METHOD(RdKafka__KafkaConsumer, __destruct)
         return;
     }
 
-    intern = (object_intern*)zend_object_store_get_object(getThis() TSRMLS_CC);
+    intern = get_custom_object_zval(object_intern, getThis());
 
     if (intern->rk) {
         err = rd_kafka_consumer_close(intern->rk);
@@ -620,7 +620,7 @@ PHP_METHOD(RdKafka__KafkaConsumer, newTopic)
         return;
     }
 
-    topic_intern = (kafka_topic_object*)zend_object_store_get_object(return_value TSRMLS_CC);
+    topic_intern = get_custom_object_zval(kafka_topic_object, return_value);
     if (!topic_intern) {
         return;
     }

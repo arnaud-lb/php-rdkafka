@@ -22,6 +22,7 @@
 
 #include "php.h"
 #include "php_rdkafka.h"
+#include "php_rdkafka_priv.h"
 #include "librdkafka/rdkafka.h"
 #include "metadata_collection.h"
 #include "metadata_topic.h"
@@ -68,7 +69,7 @@ static zend_object_value kafka_metadata_new(zend_class_entry *class_type TSRMLS_
     zend_object_value retval;
     object_intern *intern;
 
-    intern = ecalloc(1, sizeof(*intern));
+    intern = alloc_object(intern, class_type);
     zend_object_std_init(&intern->std, class_type TSRMLS_CC);
     object_properties_init(&intern->std, class_type);
 
@@ -81,7 +82,7 @@ static zend_object_value kafka_metadata_new(zend_class_entry *class_type TSRMLS_
 
 static object_intern * get_object(zval *zmetadata TSRMLS_DC)
 {
-    object_intern *ometadata = (object_intern*)zend_object_store_get_object(zmetadata TSRMLS_CC);
+    object_intern *ometadata = get_custom_object_zval(object_intern, zmetadata);
 
     if (!ometadata->metadata) {
         zend_throw_exception_ex(NULL, 0 TSRMLS_CC, "RdKafka\\Metadata::__construct() has not been called");
@@ -247,7 +248,7 @@ void kafka_metadata_init(zval *return_value, const rd_kafka_metadata_t *metadata
         return;
     }
 
-    intern = (object_intern*)zend_object_store_get_object(return_value TSRMLS_CC);
+    intern = get_custom_object_zval(object_intern, return_value);
     if (!intern) {
         return;
     }

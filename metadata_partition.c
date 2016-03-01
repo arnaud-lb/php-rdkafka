@@ -22,6 +22,7 @@
 
 #include "php.h"
 #include "php_rdkafka.h"
+#include "php_rdkafka_priv.h"
 #include "librdkafka/rdkafka.h"
 #include "ext/spl/spl_iterators.h"
 #include "Zend/zend_interfaces.h"
@@ -58,7 +59,7 @@ static zend_object_value create_object(zend_class_entry *class_type TSRMLS_DC) /
     zend_object_value retval;
     object_intern *intern;
 
-    intern = ecalloc(1, sizeof(*intern));
+    intern = alloc_object(intern, class_type);
     zend_object_std_init(&intern->std, class_type TSRMLS_CC);
     object_properties_init(&intern->std, class_type);
 
@@ -71,7 +72,7 @@ static zend_object_value create_object(zend_class_entry *class_type TSRMLS_DC) /
 
 static object_intern * get_object(zval *zmt TSRMLS_DC)
 {
-    object_intern *omt = (object_intern*)zend_object_store_get_object(zmt TSRMLS_CC);
+    object_intern *omt = get_custom_object_zval(object_intern, zmt);
 
     if (!omt->metadata_partition) {
         zend_throw_exception_ex(NULL, 0 TSRMLS_CC, "RdKafka\\Metadata\\Partition::__construct() has not been called");
@@ -254,7 +255,7 @@ void kafka_metadata_partition_ctor(zval *return_value, zval *zmetadata, const vo
         return;
     }
 
-    intern = (object_intern*)zend_object_store_get_object(return_value TSRMLS_CC);
+    intern = get_custom_object_zval(object_intern, return_value);
     if (!intern) {
         return;
     }

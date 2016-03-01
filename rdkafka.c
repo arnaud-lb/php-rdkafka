@@ -26,6 +26,7 @@
 #include "php_ini.h"
 #include "ext/standard/info.h"
 #include "php_rdkafka.h"
+#include "php_rdkafka_priv.h"
 #include "librdkafka/rdkafka.h"
 #include "Zend/zend_exceptions.h"
 #include "ext/spl/spl_exceptions.h"
@@ -83,7 +84,7 @@ static void kafka_init(zval *this_ptr, rd_kafka_type_t type, zval *zconf TSRMLS_
     kafka_conf_object *conf_intern;
     rd_kafka_conf_t *conf = NULL;
 
-    intern = (kafka_object*)zend_object_store_get_object(this_ptr TSRMLS_CC);
+    intern = get_custom_object_zval(kafka_object, this_ptr);
     intern->type = type;
 
     if (zconf) {
@@ -112,7 +113,7 @@ static zend_object_value kafka_new(zend_class_entry *class_type TSRMLS_DC) /* {{
     zend_object_value retval;
     kafka_object *intern;
 
-    intern = ecalloc(1, sizeof(*intern));
+    intern = alloc_object(intern, class_type);
     zend_object_std_init(&intern->std, class_type TSRMLS_CC);
     object_properties_init(&intern->std, class_type);
 
@@ -125,7 +126,7 @@ static zend_object_value kafka_new(zend_class_entry *class_type TSRMLS_DC) /* {{
 
 static kafka_object * get_kafka_object(zval *zrk TSRMLS_DC)
 {
-    kafka_object *ork = (kafka_object*)zend_object_store_get_object(zrk TSRMLS_CC);
+    kafka_object *ork = get_custom_object_zval(kafka_object, zrk);
 
     if (!ork->rk) {
         zend_throw_exception_ex(NULL, 0 TSRMLS_CC, "RdKafka\\Kafka::__construct() has not been called" TSRMLS_CC);
@@ -307,7 +308,7 @@ PHP_METHOD(RdKafka__Kafka, newQueue)
         return;
     }
 
-    queue_intern = (kafka_queue_object*)zend_object_store_get_object(return_value TSRMLS_CC);
+    queue_intern = get_custom_object_zval(kafka_queue_object, return_value);
     if (!queue_intern) {
         return;
     }
@@ -373,7 +374,7 @@ PHP_METHOD(RdKafka__Kafka, newTopic)
         return;
     }
 
-    topic_intern = (kafka_topic_object*)zend_object_store_get_object(return_value TSRMLS_CC);
+    topic_intern = get_custom_object_zval(kafka_topic_object, return_value);
     if (!topic_intern) {
         return;
     }
@@ -486,7 +487,7 @@ PHP_METHOD(RdKafka__Kafka, __destruct)
         return;
     }
 
-    intern = (kafka_object*)zend_object_store_get_object(getThis() TSRMLS_CC);
+    intern = get_custom_object_zval(kafka_object, getThis());
     if (intern->rk) {
         while (rd_kafka_outq_len(intern->rk) > 0) {
             rd_kafka_poll(intern->rk, 50);

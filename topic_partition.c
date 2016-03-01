@@ -69,7 +69,7 @@ static zend_object_value create_object(zend_class_entry *class_type TSRMLS_DC) /
 
 static object_intern * get_object(zval *z TSRMLS_DC) /* {{{ */
 {
-    object_intern * intern = (object_intern*)zend_object_store_get_object(z TSRMLS_CC);
+    object_intern * intern = get_custom_object_zval(object_intern, z);
 
     if (!intern->topic) {
         zend_throw_exception_ex(NULL, 0 TSRMLS_CC, "RdKafka\\TopicPartition::__construct() has not been called");
@@ -115,7 +115,7 @@ void kafka_topic_partition_init(zval *zobj, char * topic, int32_t partition, int
 {
     object_intern *intern;
 
-    intern = (object_intern*)zend_object_store_get_object(zobj TSRMLS_CC);
+    intern = get_custom_object_zval(object_intern, zobj);
     if (!intern) {
         return;
     }
