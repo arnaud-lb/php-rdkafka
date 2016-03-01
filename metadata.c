@@ -245,6 +245,9 @@ void kafka_metadata_init(zval *return_value, const rd_kafka_metadata_t *metadata
     }
 
     intern = get_custom_object_zval(object_intern, return_value);
+    if (!intern) {
+        return;
+    }
 
     intern->metadata = metadata;
 }
