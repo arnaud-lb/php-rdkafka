@@ -325,6 +325,41 @@ PHP_METHOD(RdKafka__Conf, set)
 }
 /* }}} */
 
+#ifdef HAVE_NEW_KAFKA_CONSUMER
+/* {{{ proto RdKafka\Conf::setDefaultTopicConf(RdKafka\TopicConf $topicConf) */
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_conf_set_default_topic_conf, 0, 0, 1)
+    ZEND_ARG_INFO(0, topic_conf)
+ZEND_END_ARG_INFO()
+
+PHP_METHOD(RdKafka__Conf, setDefaultTopicConf)
+{
+    zval *ztopic_conf;
+    kafka_conf_object *intern;
+    kafka_conf_object *topic_conf_intern;
+    rd_kafka_topic_conf_t *topic_conf;
+
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "O", &ztopic_conf, ce_kafka_topic_conf) == FAILURE) {
+        return;
+    }
+
+    intern = get_kafka_conf_object(this_ptr TSRMLS_CC);
+    if (!intern) {
+        return;
+    }
+
+    topic_conf_intern = get_kafka_conf_object(ztopic_conf TSRMLS_CC);
+    if (!topic_conf_intern) {
+        return;
+    }
+
+    topic_conf = rd_kafka_topic_conf_dup(topic_conf_intern->u.topic_conf);
+
+    rd_kafka_conf_set_default_topic_conf(intern->u.conf, topic_conf);
+}
+/* }}} */
+#endif /* HAVE_NEW_KAFKA_CONSUMER */
+
 /* {{{ proto void RdKafka\Conf::setErrorCb(callable $callback)
    Sets the error callback */
 
@@ -469,6 +504,9 @@ static const zend_function_entry kafka_conf_fe[] = {
     PHP_ME(RdKafka__Conf, __construct, arginfo_kafka_conf___construct, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__Conf, dump, arginfo_kafka_conf_dump, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__Conf, set, arginfo_kafka_conf_set, ZEND_ACC_PUBLIC)
+#ifdef HAVE_NEW_KAFKA_CONSUMER
+    PHP_ME(RdKafka__Conf, setDefaultTopicConf, arginfo_kafka_conf_set_default_topic_conf, ZEND_ACC_PUBLIC)
+#endif /* HAVE_NEW_KAFKA_CONSUMER */
     PHP_ME(RdKafka__Conf, setErrorCb, arginfo_kafka_conf_set_error_cb, ZEND_ACC_PUBLIC)
 #ifdef HAVE_NEW_KAFKA_CONSUMER
     PHP_ME(RdKafka__Conf, setRebalanceCb, arginfo_kafka_conf_set_rebalance_cb, ZEND_ACC_PUBLIC)
