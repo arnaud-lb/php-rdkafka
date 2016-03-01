@@ -26,5 +26,6 @@ void kafka_topic_minit(TSRMLS_D);
 kafka_topic_object * get_kafka_topic_object(zval *zrkt TSRMLS_DC);
 
 extern zend_class_entry * ce_kafka_consumer_topic;
+extern zend_class_entry * ce_kafka_kafka_consumer_topic;
 extern zend_class_entry * ce_kafka_producer_topic;
 extern zend_class_entry * ce_kafka_topic;

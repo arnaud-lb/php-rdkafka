@@ -34,6 +34,8 @@
 #include "topic.h"
 #include "queue.h"
 #include "message.h"
+#include "kafka_consumer.h"
+#include "topic_partition.h"
 #include "fun.h"
 
 enum {
@@ -43,9 +45,10 @@ enum {
 };
 
 typedef struct _kafka_object {
-    zend_object     std;
-    rd_kafka_type_t type;
-    rd_kafka_t      *rk;
+    zend_object             std;
+    rd_kafka_type_t         type;
+    rd_kafka_t              *rk;
+    kafka_conf_callbacks    cbs;
 } kafka_object;
 
 static const zend_function_entry empty_function_entries[] = {
@@ -63,12 +66,8 @@ static void kafka_free(void *object TSRMLS_DC) /* {{{ */
 {
     kafka_object *intern = (kafka_object*)object;
 
-    if (intern->rk) {
-        while (rd_kafka_outq_len(intern->rk) > 0) {
-            rd_kafka_poll(intern->rk, 50);
-        }
-        rd_kafka_destroy(intern->rk);
-    }
+    /* The rd_kafka_t handle is freed in __destruct, because we might
+     * still receive callbacks during poll/rd_kafka_consumer_close */
 
     zend_object_std_dtor(&intern->std TSRMLS_CC);
 
@@ -84,10 +83,16 @@ static void kafka_init(zval *this_ptr, rd_kafka_type_t type, zval *zconf TSRMLS_
     kafka_conf_object *conf_intern;
     rd_kafka_conf_t *conf = NULL;
 
+    intern = (kafka_object*)zend_object_store_get_object(this_ptr TSRMLS_CC);
+    intern->type = type;
+
     if (zconf) {
         conf_intern = get_kafka_conf_object(zconf TSRMLS_CC);
         if (conf_intern) {
             conf = rd_kafka_conf_dup(conf_intern->u.conf);
+            kafka_conf_callbacks_copy(&intern->cbs, &conf_intern->cbs TSRMLS_CC);
+            intern->cbs.rk = *this_ptr;
+            rd_kafka_conf_set_opaque(conf, &intern->cbs);
         }
     }
 
@@ -98,8 +103,6 @@ static void kafka_init(zval *this_ptr, rd_kafka_type_t type, zval *zconf TSRMLS_
         return;
     }
 
-    intern = (kafka_object*)zend_object_store_get_object(this_ptr TSRMLS_CC);
-    intern->type = type;
     intern->rk = rk;
 }
 /* }}} */
@@ -470,6 +473,32 @@ PHP_METHOD(RdKafka__Kafka, setLogger)
 }
 /* }}} */
 
+/* {{{ proto RdKafka\Kafka::__destruct() */
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_kafka___destruct, 0, 0, 0)
+ZEND_END_ARG_INFO()
+
+PHP_METHOD(RdKafka__Kafka, __destruct)
+{
+    kafka_object *intern;
+
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "") == FAILURE) {
+        return;
+    }
+
+    intern = (kafka_object*)zend_object_store_get_object(this_ptr TSRMLS_CC);
+    if (intern->rk) {
+        while (rd_kafka_outq_len(intern->rk) > 0) {
+            rd_kafka_poll(intern->rk, 50);
+        }
+        rd_kafka_destroy(intern->rk);
+        intern->rk = NULL;
+    }
+
+    kafka_conf_callbacks_dtor(&intern->cbs TSRMLS_CC);
+}
+/* }}} */
+
 static const zend_function_entry kafka_fe[] = {
     PHP_ME(RdKafka__Kafka, addBrokers, arginfo_kafka_add_brokers, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__Kafka, metadata, arginfo_kafka_metadata, ZEND_ACC_PUBLIC)
@@ -479,6 +508,7 @@ static const zend_function_entry kafka_fe[] = {
     PHP_ME(RdKafka__Kafka, outqLen, arginfo_kafka_outq_len, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__Kafka, poll, arginfo_kafka_poll, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__Kafka, setLogger, arginfo_kafka_set_logger, ZEND_ACC_PUBLIC)
+    PHP_ME(RdKafka__Kafka, __destruct, arginfo_kafka_kafka___destruct, ZEND_ACC_PUBLIC)
     PHP_FE_END
 };
 
@@ -614,6 +644,8 @@ PHP_MINIT_FUNCTION(rdkafka)
     ce_kafka->ce_flags |= ZEND_ACC_EXPLICIT_ABSTRACT_CLASS;
     ce_kafka->create_object = kafka_new;
 
+    zend_declare_property_null(ce_kafka, ZEND_STRL("error_cb"), ZEND_ACC_PRIVATE TSRMLS_CC);
+
     INIT_NS_CLASS_ENTRY(ce, "RdKafka", "Consumer", kafka_consumer_fe);
     ce_kafka_consumer = zend_register_internal_class_ex(&ce, ce_kafka, NULL TSRMLS_CC);
 
@@ -624,8 +656,10 @@ PHP_MINIT_FUNCTION(rdkafka)
     ce_kafka_exception = zend_register_internal_class_ex(&ce, zend_exception_get_default(TSRMLS_C), NULL TSRMLS_CC);
 
     kafka_conf_minit(TSRMLS_C);
+    kafka_kafka_consumer_minit(TSRMLS_C);
     kafka_message_minit(TSRMLS_C);
     kafka_metadata_minit(TSRMLS_C);
+    kafka_metadata_topic_partition_minit(TSRMLS_C);
     kafka_queue_minit(TSRMLS_C);
     kafka_topic_minit(TSRMLS_C);
 

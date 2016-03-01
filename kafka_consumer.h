@@ -2,7 +2,7 @@
   +----------------------------------------------------------------------+
   | PHP Version 5                                                        |
   +----------------------------------------------------------------------+
-  | Copyright (c) 1997-2015 The PHP Group                                |
+  | Copyright (c) 2016 Arnaud Le Blanc                                   |
   +----------------------------------------------------------------------+
   | This source file is subject to version 3.01 of the PHP license,      |
   | that is bundled with this package in the file LICENSE, and is        |
@@ -16,18 +16,12 @@
   +----------------------------------------------------------------------+
 */
 
-#if PHP_MAJOR_VERSION == 5 && PHP_MINOR_VERSION < 4
-void rdkafka_object_properties_init_53(zend_object *object, zend_class_entry *class_type);
-#define object_properties_init rdkafka_object_properties_init_53
-#endif
+#ifdef HAVE_NEW_KAFKA_CONSUMER
 
-#if PHP_MAJOR_VERSION == 5 && PHP_MINOR_VERSION < 6
-#   define KAFKA_ZVAL_ZVAL(z, zv, copy, dtor) do {  \
-        zval * ___z = (z);                          \
-        zval * ___zv = (zv);                        \
-        ZVAL_ZVAL(___z, ___zv, copy, dtor);         \
-    } while (0)
-#else
-#   define KAFKA_ZVAL_ZVAL ZVAL_ZVAL
-#endif
+void kafka_kafka_consumer_minit(TSRMLS_D);
 
+#else /* HAVE_NEW_KAFKA_CONSUMER */
+
+static inline void kafka_kafka_consumer_minit(TSRMLS_D) { }
+
+#endif /* HAVE_NEW_KAFKA_CONSUMER */
