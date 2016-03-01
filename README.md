@@ -6,9 +6,9 @@
 
 PHP-rdkafka is a thin [librdkafka](https://github.com/edenhill/librdkafka) binding providing a working PHP 5 / PHP 7 [Kafka](https://kafka.apache.org/) 0.8 / 0.9 client.
 
-It supports the high level and low level *consumers*, *consumer*, *producer*, and *metadata* APIs.
+It supports the high level and low level *consumers*, *producer*, and *metadata* APIs.
 
-The API ressembles as much as possible to librdkafka's.
+The API ressembles as much as possible to librdkafka's, and is fully documented [here](https://arnaud-lb.github.io/php-rdkafka/phpdoc/book.rdkafka.html).
 
 ## Table of Contents
 
@@ -16,8 +16,9 @@ The API ressembles as much as possible to librdkafka's.
 2. [Examples](#examples)
 3. [Usage](#usage)
    * [Producing](#producing)
-   * [Consuming](#consuming)
-   * [Consuming form multiple topics / partitions](#consuming-from-multiple-topics--partitions)
+   * [High-level consuming](#high-level-consuming)
+   * [Low-level consuming](#low-level-consuming)
+   * [Low-level consuming form multiple topics / partitions](#low-level-consuming-from-multiple-topics--partitions)
    * [Using stored offsets](#using-stored-offsets)
    * [Interesting configuration parameters](#interesting-configuration-parameters)
      * [queued.max.messages.kbytes](#queuedmaxmessageskbytes)
@@ -74,9 +75,13 @@ The second argument are message flags and should always be 0, currently.
 
 The message payload can be anything.
 
-### Consuming
+### High-level consuming
 
-For consuming, we first need to create a consumer, and to add brokers (Kafka
+The RdKafka\KafkaConsumer class supports automatic partition assignment/revocation. See the example [here](https://arnaud-lb.github.io/php-rdkafka/phpdoc/rdkafka.examples.html#example-1).
+
+### Low-level consuming
+
+We first need to create a low level consumer, and to add brokers (Kafka
 servers) to it:
 
 ``` php
@@ -119,7 +124,7 @@ while (true) {
 }
 ```
 
-### Consuming from multiple topics / partitions
+### Low-level consuming from multiple topics / partitions
 
 Consuming from multiple topics and/or partitions can be done by telling
 librdkafka to forward all messages from these topics/partitions to an internal
