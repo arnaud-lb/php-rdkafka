@@ -27,8 +27,9 @@
 #include "Zend/zend_interfaces.h"
 #include "Zend/zend_exceptions.h"
 #include "topic.h"
+#include "message.h"
 
-static zend_class_entry * ce_kafka_message;
+zend_class_entry * ce_kafka_message;
 
 void kafka_message_new(zval *return_value, rd_kafka_message_t *message TSRMLS_DC)
 {

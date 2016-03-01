@@ -16,6 +16,9 @@
   +----------------------------------------------------------------------+
 */
 
+#ifndef KAFKA_CONF_H
+#define KAFKA_CONF_H
+
 enum {
         MSG_PARTITIONER_RANDOM = 2
 #ifdef HAVE_RD_KAFKA_MSG_PARTIIONER_CONSISTENT
@@ -28,21 +31,34 @@ typedef enum {
     KAFKA_TOPIC_CONF
 } kafka_conf_type;
 
+typedef struct _kafka_conf_callback {
+    zend_fcall_info fci;
+    zend_fcall_info_cache fcc;
+} kafka_conf_callback;
+
+typedef struct _kafka_conf_callbacks {
+    zval rk;
+    kafka_conf_callback *error;
+    kafka_conf_callback *rebalance;
+} kafka_conf_callbacks;
+
 typedef struct _kafka_conf_object {
     kafka_conf_type type;
     union {
         rd_kafka_conf_t         *conf;
         rd_kafka_topic_conf_t   *topic_conf;
     } u;
-    struct {
-        zend_fcall_info fci;
-        zend_fcall_info_cache fcc;
-    } * error_cb;
-    zend_object     std;
+    kafka_conf_callbacks    cbs;
+    zend_object             std;
 } kafka_conf_object;
 
 kafka_conf_object * get_kafka_conf_object(zval *zconf TSRMLS_DC);
 void kafka_conf_minit(TSRMLS_D);
 
+void kafka_conf_callbacks_dtor(kafka_conf_callbacks *cbs TSRMLS_DC);
+void kafka_conf_callbacks_copy(kafka_conf_callbacks *to, kafka_conf_callbacks *from TSRMLS_DC);
+
 extern zend_class_entry * ce_kafka_conf;
 extern zend_class_entry * ce_kafka_topic_conf;
+
+#endif /* KAFKA_CONF_H */

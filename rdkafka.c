@@ -35,6 +35,8 @@
 #include "topic.h"
 #include "queue.h"
 #include "message.h"
+#include "kafka_consumer.h"
+#include "topic_partition.h"
 #include "fun.h"
 
 enum {
@@ -44,9 +46,10 @@ enum {
 };
 
 typedef struct _kafka_object {
-    rd_kafka_type_t type;
-    rd_kafka_t      *rk;
-    zend_object     std;
+    rd_kafka_type_t         type;
+    rd_kafka_t              *rk;
+    kafka_conf_callbacks    cbs;
+    zend_object             std;
 } kafka_object;
 
 static const zend_function_entry empty_function_entries[] = {
@@ -64,12 +67,8 @@ static void kafka_free(zend_object *object TSRMLS_DC) /* {{{ */
 {
     kafka_object *intern = get_custom_object(kafka_object, object);
 
-    if (intern->rk) {
-        while (rd_kafka_outq_len(intern->rk) > 0) {
-            rd_kafka_poll(intern->rk, 50);
-        }
-        rd_kafka_destroy(intern->rk);
-    }
+    /* The rd_kafka_t handle is freed in __destruct, because we might
+     * still receive callbacks during poll/rd_kafka_consumer_close */
 
     zend_object_std_dtor(&intern->std TSRMLS_CC);
 }
@@ -83,10 +82,16 @@ static void kafka_init(zval *this_ptr, rd_kafka_type_t type, zval *zconf TSRMLS_
     kafka_conf_object *conf_intern;
     rd_kafka_conf_t *conf = NULL;
 
+    intern = get_custom_object_zval(kafka_object, this_ptr);
+    intern->type = type;
+
     if (zconf) {
         conf_intern = get_kafka_conf_object(zconf TSRMLS_CC);
         if (conf_intern) {
             conf = rd_kafka_conf_dup(conf_intern->u.conf);
+            kafka_conf_callbacks_copy(&intern->cbs, &conf_intern->cbs TSRMLS_CC);
+            intern->cbs.rk = *this_ptr;
+            rd_kafka_conf_set_opaque(conf, &intern->cbs);
         }
     }
 
@@ -97,8 +102,6 @@ static void kafka_init(zval *this_ptr, rd_kafka_type_t type, zval *zconf TSRMLS_
         return;
     }
 
-    intern = (kafka_object*)((char *)Z_OBJ_P(this_ptr) - XtOffsetOf(typeof(*intern), std));
-    intern->type = type;
     intern->rk = rk;
 }
 /* }}} */
@@ -467,6 +470,32 @@ PHP_METHOD(RdKafka__Kafka, setLogger)
 }
 /* }}} */
 
+/* {{{ proto RdKafka\Kafka::__destruct() */
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_kafka___destruct, 0, 0, 0)
+ZEND_END_ARG_INFO()
+
+PHP_METHOD(RdKafka__Kafka, __destruct)
+{
+    kafka_object *intern;
+
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "") == FAILURE) {
+        return;
+    }
+
+    intern = get_custom_object_zval(kafka_object, getThis());
+    if (intern->rk) {
+        while (rd_kafka_outq_len(intern->rk) > 0) {
+            rd_kafka_poll(intern->rk, 50);
+        }
+        rd_kafka_destroy(intern->rk);
+        intern->rk = NULL;
+    }
+
+    kafka_conf_callbacks_dtor(&intern->cbs TSRMLS_CC);
+}
+/* }}} */
+
 static const zend_function_entry kafka_fe[] = {
     PHP_ME(RdKafka__Kafka, addBrokers, arginfo_kafka_add_brokers, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__Kafka, metadata, arginfo_kafka_metadata, ZEND_ACC_PUBLIC)
@@ -476,6 +505,7 @@ static const zend_function_entry kafka_fe[] = {
     PHP_ME(RdKafka__Kafka, outqLen, arginfo_kafka_outq_len, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__Kafka, poll, arginfo_kafka_poll, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__Kafka, setLogger, arginfo_kafka_set_logger, ZEND_ACC_PUBLIC)
+    PHP_ME(RdKafka__Kafka, __destruct, arginfo_kafka_kafka___destruct, ZEND_ACC_PUBLIC)
     PHP_FE_END
 };
 
@@ -534,7 +564,7 @@ void register_err_constants(INIT_FUNC_ARGS) /* {{{ */
             len = sizeof(buf)-1;
         }
 
-        zend_register_long_constant(buf, len+1, desc->code, CONST_CS | CONST_PERSISTENT, module_number TSRMLS_CC);
+        zend_register_long_constant(buf, len, desc->code, CONST_CS | CONST_PERSISTENT, module_number TSRMLS_CC);
     }
 
 #else /* HAVE_RD_KAFKA_GET_ERR_DESCS */
@@ -613,6 +643,8 @@ PHP_MINIT_FUNCTION(rdkafka)
     ce_kafka->ce_flags |= ZEND_ACC_EXPLICIT_ABSTRACT_CLASS;
     ce_kafka->create_object = kafka_new;
 
+    zend_declare_property_null(ce_kafka, ZEND_STRL("error_cb"), ZEND_ACC_PRIVATE TSRMLS_CC);
+
     INIT_NS_CLASS_ENTRY(ce, "RdKafka", "Consumer", kafka_consumer_fe);
     ce_kafka_consumer = zend_register_internal_class_ex(&ce, ce_kafka TSRMLS_CC);
 
@@ -623,8 +655,10 @@ PHP_MINIT_FUNCTION(rdkafka)
     ce_kafka_exception = zend_register_internal_class_ex(&ce, zend_exception_get_default(TSRMLS_C) TSRMLS_CC);
 
     kafka_conf_minit(TSRMLS_C);
+    kafka_kafka_consumer_minit(TSRMLS_C);
     kafka_message_minit(TSRMLS_C);
     kafka_metadata_minit(TSRMLS_C);
+    kafka_metadata_topic_partition_minit(TSRMLS_C);
     kafka_queue_minit(TSRMLS_C);
     kafka_topic_minit(TSRMLS_C);
 
