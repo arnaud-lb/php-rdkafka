@@ -22,6 +22,8 @@
    <div class="example-contents">
 <div class="shellcode"><pre class="shellcode">$ git clone https://github.com/arnaud-lb/php-rdkafka.git
 $ cd php-rdkafka
+$ # For PHP 7, checkout the php7 branch:
+$ # git checkout php7
 $ phpize
 $ ./configure
 $ make all -j 5
@@ -30,6 +32,12 @@ $ sudo make install</pre>
    </div>
 
   </p>
+
+  <blockquote class="note"><p><strong class="note">Note</strong>: 
+   <p class="para">
+    For PHP 7, checkout the <code class="code">php7</code> branch after <code class="code">cd php-rdkafka</code>.
+   </p>
+  </p></blockquote>
 
   <p class="para">
    The last step will report where <var class="filename">rdkafka.so</var> has been
