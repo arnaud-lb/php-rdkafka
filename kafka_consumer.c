@@ -643,6 +643,7 @@ static const zend_function_entry fe[] = { /* {{{ */
     PHP_ME(RdKafka__KafkaConsumer, getSubscription, arginfo_kafka_kafka_consumer_getSubscription, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__KafkaConsumer, unsubscribe, arginfo_kafka_kafka_consumer_unsubscribe, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__KafkaConsumer, getMetadata, arginfo_kafka_kafka_consumer_getMetadata, ZEND_ACC_PUBLIC)
+    PHP_ME(RdKafka__KafkaConsumer, newTopic, arginfo_kafka_kafka_consumer_new_topic, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__KafkaConsumer, __destruct, arginfo_kafka_kafka_consumer___destruct, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_FE_END
 }; /* }}} */
