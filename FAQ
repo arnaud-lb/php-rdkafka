@@ -1,0 +1,11 @@
+### GroupCoordinator response error: Broker: Group coordinator not available
+
+Occurs when using RdKafka\KafkaConsumer with Kafka < 0.9, or Kafka has not
+finished booting.
+
+### Local: Invalid argument or configuration
+
+You are using offset.store.method=broker (default in librdkafka 0.9) without
+having set a group id. Try setting the group.id configuration property, or
+setting offset.store.method to 'file'.
+

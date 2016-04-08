@@ -1,0 +1,37 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+ <head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title>Low level consumer: Multiple topics/partitions</title>
+<link media="all" rel="stylesheet" type="text/css" href="styles/d41d8cd98f00b204e9800998ecf8427e-theme-base.css" />
+<link media="all" rel="stylesheet" type="text/css" href="styles/d41d8cd98f00b204e9800998ecf8427e-theme-medium.css" />
+<link media="all" rel="stylesheet" type="text/css" href="styles/d41d8cd98f00b204e9800998ecf8427e-style.css" />
+
+ </head>
+ <body><div class="manualnavbar" style="text-align: center;">
+ <div class="prev" style="text-align: left; float: left;"><a href="rdkafka.examples-low-level-consumer-at-least-once.html">Low level consumer: At least once consuming</a></div>
+ <div class="next" style="text-align: right; float: right;"><a href="rdkafka.examples-producer.html">Producer</a></div>
+ <div class="up"><a href="rdkafka.examples-low-level-consumer.html">Low-level consumer</a></div>
+ <div class="home"><a href="index.html">PHP Manual</a></div>
+</div><hr /><div id="rdkafka.examples-low-level-consumer-multi" class="section">
+  <h2 class="title">Low level consumer: Multiple topics/partitions</h2>
+  <p class="para">
+   This examples show how to consumer from multiple topics and/or partitions
+   when using the low-level consumer.
+   <div class="example" id="example-4">
+    <p><strong>Example #1 Low-level consumer: multiple topics/partitions example</strong></p>
+    <div class="example-contents">
+<div class="phpcode"><code><span style="color: #000000">
+<span style="color: #0000BB">&lt;?php<br /><br /></span><span style="color: #FF8000">//&nbsp;Consuming&nbsp;from&nbsp;multiple&nbsp;topics&nbsp;and/or&nbsp;partitions&nbsp;can&nbsp;be&nbsp;done&nbsp;by&nbsp;telling<br />//&nbsp;librdkafka&nbsp;to&nbsp;forward&nbsp;all&nbsp;messages&nbsp;from&nbsp;these&nbsp;topics/partitions&nbsp;to&nbsp;an<br />//&nbsp;internal&nbsp;queue,&nbsp;and&nbsp;then&nbsp;consuming&nbsp;from&nbsp;this&nbsp;queue.<br /><br /></span><span style="color: #0000BB">$queue&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$rk</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">newQueue</span><span style="color: #007700">();<br /><br /></span><span style="color: #0000BB">$topicConf&nbsp;</span><span style="color: #007700">=&nbsp;new&nbsp;</span><span style="color: #0000BB">RdKafka</span><span style="color: #007700">\</span><span style="color: #0000BB">TopicConf</span><span style="color: #007700">();<br /></span><span style="color: #0000BB">$topicConf</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">set</span><span style="color: #007700">(...);<br /><br /></span><span style="color: #0000BB">$topic1&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$rk</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">newTopic</span><span style="color: #007700">(</span><span style="color: #DD0000">"topic1"</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">$topicConf</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">$topic1</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">consumeQueueStart</span><span style="color: #007700">(</span><span style="color: #0000BB">0</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">RD_KAFKA_OFFSET_BEGINNING</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">$queue</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">$topic1</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">consumeQueueStart</span><span style="color: #007700">(</span><span style="color: #0000BB">1</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">RD_KAFKA_OFFSET_BEGINNING</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">$queue</span><span style="color: #007700">);<br /><br /></span><span style="color: #0000BB">$topic2&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$rk</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">newTopic</span><span style="color: #007700">(</span><span style="color: #DD0000">"topic2"</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">$topicConf</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">$topic2</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">consumeQueueStart</span><span style="color: #007700">(</span><span style="color: #0000BB">0</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">RD_KAFKA_OFFSET_BEGINNING</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">$queue</span><span style="color: #007700">);<br /><br /></span><span style="color: #FF8000">//&nbsp;Now,&nbsp;consume&nbsp;from&nbsp;the&nbsp;queue&nbsp;instead&nbsp;of&nbsp;the&nbsp;topics:<br /><br /></span><span style="color: #007700">while&nbsp;(</span><span style="color: #0000BB">true</span><span style="color: #007700">)&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$message&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$queue</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">consume</span><span style="color: #007700">(</span><span style="color: #0000BB">120</span><span style="color: #007700">*</span><span style="color: #0000BB">1000</span><span style="color: #007700">);<br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">//&nbsp;...<br /></span><span style="color: #007700">}<br /><br /></span><span style="color: #0000BB">?&gt;</span>
+</span>
+</code></div>
+    </div>
+
+   </div>
+  </p>
+ </div><hr /><div class="manualnavbar" style="text-align: center;">
+ <div class="prev" style="text-align: left; float: left;"><a href="rdkafka.examples-low-level-consumer-at-least-once.html">Low level consumer: At least once consuming</a></div>
+ <div class="next" style="text-align: right; float: right;"><a href="rdkafka.examples-producer.html">Producer</a></div>
+ <div class="up"><a href="rdkafka.examples-low-level-consumer.html">Low-level consumer</a></div>
+ <div class="home"><a href="index.html">PHP Manual</a></div>
+</div></body></html>

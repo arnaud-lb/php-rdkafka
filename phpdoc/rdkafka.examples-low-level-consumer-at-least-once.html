@@ -1,0 +1,37 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+ <head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title>Low level consumer: At least once consuming</title>
+<link media="all" rel="stylesheet" type="text/css" href="styles/d41d8cd98f00b204e9800998ecf8427e-theme-base.css" />
+<link media="all" rel="stylesheet" type="text/css" href="styles/d41d8cd98f00b204e9800998ecf8427e-theme-medium.css" />
+<link media="all" rel="stylesheet" type="text/css" href="styles/d41d8cd98f00b204e9800998ecf8427e-style.css" />
+
+ </head>
+ <body><div class="manualnavbar" style="text-align: center;">
+ <div class="prev" style="text-align: left; float: left;"><a href="rdkafka.examples-low-level-consumer-basic.html">Low level consumer example</a></div>
+ <div class="next" style="text-align: right; float: right;"><a href="rdkafka.examples-low-level-consumer-multi.html">Low level consumer: Multiple topics/partitions</a></div>
+ <div class="up"><a href="rdkafka.examples-low-level-consumer.html">Low-level consumer</a></div>
+ <div class="home"><a href="index.html">PHP Manual</a></div>
+</div><hr /><div id="rdkafka.examples-low-level-consumer-at-least-once" class="section">
+  <h2 class="title">Low level consumer: At least once consuming</h2>
+  <p class="para">
+   This example shows how to consume messages at least once. This is achieved
+   by committing offsets only after a message has been successfully consumed.
+   <div class="example" id="example-3">
+    <p><strong>Example #1 Low-level consumer: at least once consuming example</strong></p>
+    <div class="example-contents">
+<div class="phpcode"><code><span style="color: #000000">
+<span style="color: #0000BB">&lt;?php<br /><br /></span><span style="color: #FF8000">//&nbsp;Disable&nbsp;committing&nbsp;offsets&nbsp;automatically<br /></span><span style="color: #0000BB">$topicConf</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">set</span><span style="color: #007700">(</span><span style="color: #DD0000">'auto.commit.enable'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'false'</span><span style="color: #007700">);<br /><br /></span><span style="color: #0000BB">$topic&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$rk</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">newTopic</span><span style="color: #007700">(</span><span style="color: #DD0000">"test"</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">$topicConf</span><span style="color: #007700">);<br /><br /></span><span style="color: #FF8000">//&nbsp;...<br /><br /></span><span style="color: #0000BB">$message&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$rk</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">consume</span><span style="color: #007700">(</span><span style="color: #0000BB">0</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">120</span><span style="color: #007700">*</span><span style="color: #0000BB">1000</span><span style="color: #007700">);<br /><br /></span><span style="color: #0000BB">handle_message</span><span style="color: #007700">(</span><span style="color: #0000BB">$message</span><span style="color: #007700">);<br /><br /></span><span style="color: #FF8000">//&nbsp;After&nbsp;successfully&nbsp;consuming&nbsp;the&nbsp;message,&nbsp;schedule&nbsp;offset&nbsp;store.<br />//&nbsp;Offset&nbsp;is&nbsp;actually&nbsp;committed&nbsp;after&nbsp;'auto.commit.interval.ms'<br />//&nbsp;milliseconds.<br /></span><span style="color: #0000BB">$topic</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">offsetStore</span><span style="color: #007700">(</span><span style="color: #0000BB">$message</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">partition</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">$message</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">offset</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">?&gt;</span>
+</span>
+</code></div>
+    </div>
+
+   </div>
+  </p>
+ </div><hr /><div class="manualnavbar" style="text-align: center;">
+ <div class="prev" style="text-align: left; float: left;"><a href="rdkafka.examples-low-level-consumer-basic.html">Low level consumer example</a></div>
+ <div class="next" style="text-align: right; float: right;"><a href="rdkafka.examples-low-level-consumer-multi.html">Low level consumer: Multiple topics/partitions</a></div>
+ <div class="up"><a href="rdkafka.examples-low-level-consumer.html">Low-level consumer</a></div>
+ <div class="home"><a href="index.html">PHP Manual</a></div>
+</div></body></html>
