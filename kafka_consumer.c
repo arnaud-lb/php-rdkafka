@@ -421,9 +421,9 @@ PHP_METHOD(RdKafka__KafkaConsumer, consume)
 
 static void consumer_commit(int async, INTERNAL_FUNCTION_PARAMETERS) /* {{{ */
 {
-    zval *zarg;
+    zval *zarg = NULL;
     object_intern *intern;
-    rd_kafka_topic_partition_list_t *offsets;
+    rd_kafka_topic_partition_list_t *offsets = NULL;
     rd_kafka_resp_err_t err;
 
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|z", &zarg) == FAILURE) {
@@ -479,7 +479,7 @@ static void consumer_commit(int async, INTERNAL_FUNCTION_PARAMETERS) /* {{{ */
             if (!offsets) {
                 return;
             }
-        } else {
+        } else if (Z_TYPE_P(zarg) != IS_NULL) {
             php_error(E_ERROR,
                     "RdKafka\\KafkaConsumer::%s() expects parameter %d to be %s, %s given",
                     get_active_function_name(TSRMLS_C),
@@ -488,8 +488,6 @@ static void consumer_commit(int async, INTERNAL_FUNCTION_PARAMETERS) /* {{{ */
                     zend_zval_type_name(zarg));
             return;
         }
-    } else {
-        offsets = NULL;
     }
 
     err = rd_kafka_commit(intern->rk, offsets, async);
