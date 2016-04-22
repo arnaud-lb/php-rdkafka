@@ -163,7 +163,7 @@ static void kafka_conf_dr_msg_cb(rd_kafka_t *rk, const rd_kafka_message_t *msg, 
     }
 
     ZVAL_ZVAL(&params[0], &cbs->rk, 1, 0);
-    kafka_message_new(&params[1], msg);
+    kafka_message_new(&params[1], msg TSRMLS_CC);
 
     cbs->dr_msg->fci.retval = &retval;
     cbs->dr_msg->fci.params = params;
