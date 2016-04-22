@@ -53,7 +53,7 @@ void kafka_conf_callbacks_dtor(kafka_conf_callbacks *cbs TSRMLS_DC) /* {{{ */
 static void kafka_conf_callback_copy(kafka_conf_callback **to, kafka_conf_callback *from TSRMLS_DC) /* {{{ */
 {
     if (from) {
-        *to = emalloc(sizeof(*to));
+        *to = emalloc(sizeof(**to));
         **to = *from;
         zval_copy_ctor(&(*to)->fci.function_name);
     }
