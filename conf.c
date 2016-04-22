@@ -451,7 +451,7 @@ PHP_METHOD(RdKafka__Conf, setDrMsgCb)
     kafka_conf_object *intern;
 
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "f", &fci, &fcc) == FAILURE) {
-      return;
+        return;
     }
 
     intern = get_kafka_conf_object(getThis() TSRMLS_CC);
