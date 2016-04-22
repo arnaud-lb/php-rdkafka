@@ -31,7 +31,7 @@
 
 zend_class_entry * ce_kafka_message;
 
-void kafka_message_new(zval *return_value, rd_kafka_message_t *message TSRMLS_DC)
+void kafka_message_new(zval *return_value, const rd_kafka_message_t *message TSRMLS_DC)
 {
     object_init_ex(return_value, ce_kafka_message);
 

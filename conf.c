@@ -30,6 +30,7 @@
 #include "ext/spl/spl_exceptions.h"
 #include "conf.h"
 #include "topic_partition.h"
+#include "message.h"
 
 zend_class_entry * ce_kafka_conf;
 zend_class_entry * ce_kafka_topic_conf;
