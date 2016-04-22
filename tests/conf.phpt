@@ -33,6 +33,11 @@ $conf->setErrorCb(function () { });
 $dump = $conf->dump();
 var_dump(isset($dump["error_cb"]));
 
+echo "Setting dr_msg callback\n";
+$conf->setDrMsgCb(function () { });
+$dump = $conf->dump();
+var_dump(isset($dump["dr_msg_cb"]));
+
 echo "Dumping conf\n";
 var_dump(array_intersect_key($conf->dump(), array(
     "client.id" => true,
@@ -49,6 +54,8 @@ Caught a RdKafka\Exception: Expected bool value for "topic.metadata.refresh.spar
 Setting an invalid property
 Caught a RdKafka\Exception: No such configuration property: "invalid"
 Setting error callback
+bool(true)
+Setting dr_msg callback
 bool(true)
 Dumping conf
 array(3) {

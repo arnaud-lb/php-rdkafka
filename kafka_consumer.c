@@ -657,4 +657,5 @@ void kafka_kafka_consumer_minit(TSRMLS_D) /* {{{ */
 
     zend_declare_property_null(ce, ZEND_STRL("error_cb"), ZEND_ACC_PRIVATE TSRMLS_CC);
     zend_declare_property_null(ce, ZEND_STRL("rebalance_cb"), ZEND_ACC_PRIVATE TSRMLS_CC);
+    zend_declare_property_null(ce, ZEND_STRL("dr_msg_cb"), ZEND_ACC_PRIVATE TSRMLS_CC);
 } /* }}} */
