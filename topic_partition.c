@@ -151,7 +151,7 @@ rd_kafka_topic_partition_list_t * array_arg_to_kafka_topic_partition_list(int ar
     list = rd_kafka_topic_partition_list_new(zend_hash_num_elements(ary));
 
     for (zend_hash_internal_pointer_reset_ex(ary, &pos);
-            (zv = zend_hash_get_current_data_ex(ary, &pos)) == NULL;
+            (zv = zend_hash_get_current_data_ex(ary, &pos)) != NULL;
             zend_hash_move_forward_ex(ary, &pos)) {
         kafka_topic_partition_intern *topar_intern;
         rd_kafka_topic_partition_t *topar;
