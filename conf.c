@@ -182,7 +182,7 @@ static void kafka_conf_dr_msg_cb(rd_kafka_t *rk, const rd_kafka_message_t *msg, 
     KAFKA_ZVAL_ZVAL(zrk, &cbs->rk, 1, 0);
 
     ALLOC_INIT_ZVAL(zrkmsg);
-    kafka_message_new(zrkmsg, msg);
+    kafka_message_new(zrkmsg, msg TSRMLS_CC);
 
     args[0] = &zrk;
     args[1] = &zrkmsg;
