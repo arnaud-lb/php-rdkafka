@@ -33,9 +33,9 @@
 #include "metadata.h"
 
 typedef struct _object_intern {
-    zend_object             std;
     rd_kafka_t              *rk;
     kafka_conf_callbacks    cbs;
+    zend_object             std;
 } object_intern;
 
 static zend_class_entry * ce;

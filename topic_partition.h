@@ -19,10 +19,10 @@
 #ifdef HAVE_NEW_KAFKA_CONSUMER
 
 typedef struct _kafka_topic_partition_intern {
-    zend_object std;
     char        *topic;
     int32_t     partition;
     int64_t     offset;
+    zend_object std;
 } kafka_topic_partition_intern;
 
 void kafka_metadata_topic_partition_minit(TSRMLS_D);
