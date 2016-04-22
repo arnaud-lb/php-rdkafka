@@ -141,8 +141,8 @@ static void kafka_conf_error_cb(rd_kafka_t *rk, int err, const char *reason, voi
     ZVAL_STRING(zreason, reason, 1);
 
     args[0] = &zrk;
-    args[0] = &zerr;
-    args[1] = &zreason;
+    args[1] = &zerr;
+    args[2] = &zreason;
 
     cbs->error.fci.retval_ptr_ptr = &retval;
     cbs->error.fci.params = args;
