@@ -40,6 +40,7 @@ typedef struct _kafka_conf_callbacks {
     zval rk;
     kafka_conf_callback error;
     kafka_conf_callback rebalance;
+    kafka_conf_callback dr_msg;
 } kafka_conf_callbacks;
 
 typedef struct _kafka_conf_object {
