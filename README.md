@@ -219,6 +219,10 @@ $conf->set('internal.termination.signal', SIGIO);
 
 https://arnaud-lb.github.io/php-rdkafka/phpdoc/book.rdkafka.html
 
+## Stubs
+
+Because your IDE is not able to auto discover php-rdkadka api you can consider usage of external package providing a set of stubs for php-rdkafka classes, functions and constants: [kwn/php-rdkafka-stubs](https://github.com/kwn/php-rdkafka-stubs)
+
 ## Contributing
 
 If you would like to contribute, thank you :)
