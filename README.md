@@ -2,7 +2,7 @@
 
 [![Join the chat at https://gitter.im/arnaud-lb/php-rdkafka](https://badges.gitter.im/arnaud-lb/php-rdkafka.svg)](https://gitter.im/arnaud-lb/php-rdkafka?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-![Supported Kafka versions: 0.8, 0.9](https://img.shields.io/badge/kafka-0.8%2C%200.9-blue.svg) ![Supported PHP versions: 5.3 .. 7.0](https://img.shields.io/badge/php-5.3,%207.0-blue.svg) [![Build Status](https://travis-ci.org/arnaud-lb/php-rdkafka.svg)](https://travis-ci.org/arnaud-lb/php-rdkafka)
+![Supported Kafka versions: 0.8, 0.9, 0.10](https://img.shields.io/badge/kafka-0.8%2C%200.9%2C%200.10-blue.svg) ![Supported PHP versions: 5.3 .. 7.0](https://img.shields.io/badge/php-5.3,%207.0-blue.svg) [![Build Status](https://travis-ci.org/arnaud-lb/php-rdkafka.svg)](https://travis-ci.org/arnaud-lb/php-rdkafka)
 
 PHP-rdkafka is a thin [librdkafka](https://github.com/edenhill/librdkafka) binding providing a working PHP 5 / PHP 7 [Kafka](https://kafka.apache.org/) 0.8 / 0.9 client.
 
