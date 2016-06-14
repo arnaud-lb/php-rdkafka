@@ -160,7 +160,6 @@ ZEND_END_ARG_INFO()
 
 PHP_METHOD(RdKafka__KafkaConsumer, __destruct)
 {
-    fprintf(stderr, "DESTRUCT\n");
     object_intern *intern;
     rd_kafka_resp_err_t err;
 
