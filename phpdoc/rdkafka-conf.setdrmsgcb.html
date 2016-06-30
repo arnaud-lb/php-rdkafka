@@ -1,0 +1,99 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+ <head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title>Set delivery report callback</title>
+<link media="all" rel="stylesheet" type="text/css" href="styles/d41d8cd98f00b204e9800998ecf8427e-theme-base.css" />
+<link media="all" rel="stylesheet" type="text/css" href="styles/d41d8cd98f00b204e9800998ecf8427e-theme-medium.css" />
+<link media="all" rel="stylesheet" type="text/css" href="styles/d41d8cd98f00b204e9800998ecf8427e-style.css" />
+
+ </head>
+ <body><div class="manualnavbar" style="text-align: center;">
+ <div class="prev" style="text-align: left; float: left;"><a href="rdkafka-conf.setdefaulttopicconf.html">RdKafka\Conf::setDefaultTopicConf</a></div>
+ <div class="next" style="text-align: right; float: right;"><a href="rdkafka-conf.seterrorcb.html">RdKafka\Conf::setErrorCb</a></div>
+ <div class="up"><a href="class.rdkafka-conf.html">RdKafka\Conf</a></div>
+ <div class="home"><a href="index.html">PHP Manual</a></div>
+</div><hr /><div id="rdkafka-conf.setdrmsgcb" class="refentry">
+ <div class="refnamediv">
+  <h1 class="refname">RdKafka\Conf::setDrMsgCb</h1>
+  <p class="verinfo">(PECL rdkafka &gt;= master)</p><p class="refpurpose"><span class="refname">RdKafka\Conf::setDrMsgCb</span> &mdash; <span class="dc-title">Set delivery report callback</span></p>
+
+ </div>
+
+ <div class="refsect1 description" id="refsect1-rdkafka-conf.setdrmsgcb-description">
+  <h3 class="title">Description</h3>
+  <div class="methodsynopsis dc-description">
+   <span class="modifier">public</span> <span class="type"><span class="type void">void</span></span> <span class="methodname"><strong>RdKafka\Conf::setDrMsgCb</strong></span>
+    ( <span class="methodparam"><span class="type"><a href="language.types.callable.html" class="type callable">callable</a></span> <code class="parameter">$callback</code></span>
+   )</div>
+
+  <p class="para rdfs-comment">
+   Set delivery report callback. The delivery report callback will be called once for each message accepted by <span class="function"><a href="rdkafka-producertopic.produce.html" class="function">RdKafka\ProducerTopic::produce()</a></span> with <code class="code">err</code> set to indicate the result of the produce request.
+  </p>
+  <p class="para">
+   The callback is called when a message is succesfully produced or if librdkafka encountered a permanent failure, or the retry counter for temporary errors has been exhausted.
+  </p>
+  <p class="para">
+   An application must call <span class="function"><a href="rdkafka.poll.html" class="function">RdKafka::poll()</a></span> at regular intervals to serve queued delivery report callbacks.
+  </p>
+ </div>
+
+
+ <div class="refsect1 parameters" id="refsect1-rdkafka-conf.setdrmsgcb-parameters">
+  <h3 class="title">Parameters</h3>
+  <dl>
+
+   
+    <dt>
+<code class="parameter">callback</code> (<span class="type"><a href="language.types.callable.html" class="type callable">callable</a></span>)</dt>
+
+    <dd>
+
+     <p class="para">
+      A <span class="type"><a href="language.types.callable.html" class="type callable">callable</a></span> with the following signature:
+      <div class="example-contents">
+<div class="phpcode"><code><span style="color: #000000">
+<span style="color: #0000BB">&lt;?php<br /></span><span style="color: #FF8000">/**<br />&nbsp;*&nbsp;@param&nbsp;RdKafka\Kafka&nbsp;$kafka<br />&nbsp;*&nbsp;@param&nbsp;RdKafka\Message&nbsp;$message<br />&nbsp;*/<br /></span><span style="color: #007700">function&nbsp;(</span><span style="color: #0000BB">RdKafka</span><span style="color: #007700">\</span><span style="color: #0000BB">Kafka&nbsp;$kafka</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">RdKafka</span><span style="color: #007700">\</span><span style="color: #0000BB">Message&nbsp;$message</span><span style="color: #007700">);</span>
+</span>
+</code></div>
+      </div>
+
+     </p>
+    </dd>
+
+   
+  </dl>
+
+ </div>
+
+
+ <div class="refsect1 returnvalues" id="refsect1-rdkafka-conf.setdrmsgcb-returnvalues">
+  <h3 class="title">Return Values</h3>
+  <p class="para">
+   Returns no value.
+  </p>
+ </div>
+
+
+ <div class="refsect1 examples" id="refsect1-rdkafka-conf.setdrmsgcb-examples">
+  <h3 class="title">Examples</h3>
+  <div class="example" id="example-18">
+   <p><strong>Example #1 <span class="function"><strong>RdKafka\Conf::setDrMsgCb()</strong></span> example</strong></p>
+   <div class="example-contents">
+<div class="phpcode"><code><span style="color: #000000">
+<span style="color: #0000BB">&lt;?php<br />$conf</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">setDrMsgCb</span><span style="color: #007700">(function&nbsp;(</span><span style="color: #0000BB">$kafka</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">$message</span><span style="color: #007700">)&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(</span><span style="color: #0000BB">$message</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">err</span><span style="color: #007700">)&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">//&nbsp;message&nbsp;permanently&nbsp;failed&nbsp;to&nbsp;be&nbsp;delivered<br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">}&nbsp;else&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">//&nbsp;message&nbsp;successfully&nbsp;delivered<br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">}<br />});<br /></span><span style="color: #0000BB">?&gt;</span>
+</span>
+</code></div>
+   </div>
+
+  </div>
+ </div>
+
+
+
+</div><hr /><div class="manualnavbar" style="text-align: center;">
+ <div class="prev" style="text-align: left; float: left;"><a href="rdkafka-conf.setdefaulttopicconf.html">RdKafka\Conf::setDefaultTopicConf</a></div>
+ <div class="next" style="text-align: right; float: right;"><a href="rdkafka-conf.seterrorcb.html">RdKafka\Conf::setErrorCb</a></div>
+ <div class="up"><a href="class.rdkafka-conf.html">RdKafka\Conf</a></div>
+ <div class="home"><a href="index.html">PHP Manual</a></div>
+</div></body></html>
