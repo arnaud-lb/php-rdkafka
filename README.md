@@ -215,6 +215,12 @@ pcntl_sigprocmask(SIG_BLOCK, array(SIGIO));
 $conf->set('internal.termination.signal', SIGIO);
 ```
 
+### socket.blocking.max.ms
+
+> Maximum time a broker socket operation may block. A lower value improves responsiveness at the expense of slightly higher CPU usage.
+
+Reducing the value of this setting improves shutdown speed. The value defines the maximum time librdkafka will block in one iteration of a read loop. This also defines how often the main librdkafka thread will check for termination.
+
 ## Documentation
 
 https://arnaud-lb.github.io/php-rdkafka/phpdoc/book.rdkafka.html

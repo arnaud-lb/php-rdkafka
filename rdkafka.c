@@ -617,7 +617,8 @@ PHP_MINIT_FUNCTION(rdkafka)
     COPY_CONSTANT(RD_KAFKA_OFFSET_STORED);
     COPY_CONSTANT(RD_KAFKA_PARTITION_UA);
     COPY_CONSTANT(RD_KAFKA_PRODUCER);
-    COPY_CONSTANT(RD_KAFKA_VERSION);
+    REGISTER_LONG_CONSTANT("RD_KAFKA_VERSION", rd_kafka_version(), CONST_CS | CONST_PERSISTENT);
+    REGISTER_LONG_CONSTANT("RD_KAFKA_BUILD_VERSION", RD_KAFKA_VERSION, CONST_CS | CONST_PERSISTENT);
 
     register_err_constants(INIT_FUNC_ARGS_PASSTHRU);
 
@@ -700,7 +701,9 @@ PHP_MINFO_FUNCTION(rdkafka)
         (RD_KAFKA_VERSION & 0x000000FF) >> 8
     );
 
-    php_info_print_table_header(2, "librdkafka version", rd_kafka_version);
+    php_info_print_table_header(2, "librdkafka version (runtime)", rd_kafka_version_str());
+    php_info_print_table_header(2, "librdkafka version (build)", rd_kafka_version);
+
 
     efree(rd_kafka_version);
 
