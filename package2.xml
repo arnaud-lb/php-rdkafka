@@ -3,18 +3,18 @@
  <name>rdkafka</name>
  <channel>pecl.php.net</channel>
  <summary>Kafka client based on librdkafka</summary>
- <description>This extension is a librdkafka binding providing a working client for Kafka 0.8 and 0.9.</description>
+ <description>This extension is a librdkafka binding providing a working client for Kafka 0.8, 0.9, 0.10</description>
  <lead>
   <name>Arnaud Le Blanc</name>
   <user>lbarnaud</user>
   <email>arnaud.lb@gmail.com</email>
   <active>yes</active>
  </lead>
- <date>2016-01-11</date>
- <time>10:30:00</time>
+ <date>2016-09-09</date>
+ <time>12:00:00</time>
  <version>
-  <release>0.9.1</release>
-  <api>0.9.0</api>
+  <release>1.0.0</release>
+  <api>1.0.0</api>
  </version>
  <stability>
   <release>beta</release>
@@ -22,7 +22,20 @@
  </stability>
  <license uri="http://opensource.org/licenses/mit-license.php">MIT License</license>
  <notes>
-  * Allow to build against librdkafka master/0.9.x
+This version of rdkafka is indented for php version 5. To compile rdkafka for
+newer versions of php, use the pecl package version 2.
+
+ * Added high level consumer: Rdkafka\KafkaConsumer (librdkafka 0.9)
+ * RD_KAFKA_VERSION now reports the runtime librdkafka version
+ * Added RD_KAFKA_BUILD_VERSION
+ * Export runtime-provided constants from librdkafka (librdkafka 0.9)
+ * Added rd_kafka_get_err_descs() (librdkafka 0.9)
+ * Improve reflection/arginfo
+ * Rdkafka::metadata() is now a deprecated alias to Rdkafka::getMetadata()
+ * Rdkafka::outqLen() is now a deprecated alias to Rdkafka::getOutQLen()
+ * Rdkafka now throws Rdkafka\Exception instances
+ * Added Rdkafka\Conf::setDefaultTopicConf() (librdkafka 0.9)
+ * Added Rdkafka\Conf::setDrMsgCb() (librdkafka 0.9)
  </notes>
  <contents>
   <dir name="/">
@@ -35,8 +48,16 @@
    <file role="doc" name="README.md"/>
    <file role="src" name="compat.c"/>
    <file role="src" name="compat.h"/>
+   <file role="src" name="conf.c"/>
+   <file role="src" name="conf.h"/>
    <file role="src" name="config.m4"/>
    <file role="src" name="config.w32"/>
+   <file role="src" name="fun.c"/>
+   <file role="src" name="fun.h"/>
+   <file role="src" name="kafka_consumer.c"/>
+   <file role="src" name="kafka_consumer.h"/>
+   <file role="src" name="message.c"/>
+   <file role="src" name="message.h"/>
    <file role="src" name="metadata.c"/>
    <file role="src" name="metadata.h"/>
    <file role="src" name="metadata_broker.c"/>
@@ -48,13 +69,21 @@
    <file role="src" name="metadata_topic.c"/>
    <file role="src" name="metadata_topic.h"/>
    <file role="src" name="php_rdkafka.h"/>
+   <file role="src" name="php_rdkafka_priv.h"/>
+   <file role="src" name="queue.c"/>
+   <file role="src" name="queue.h"/>
    <file role="src" name="rdkafka.c"/>
+   <file role="src" name="topic.c"/>
+   <file role="src" name="topic.h"/>
+   <file role="src" name="topic_partition.c"/>
+   <file role="src" name="topic_partition.h"/>
   </dir>
  </contents>
  <dependencies>
   <required>
    <php>
     <min>5.3.0</min>
+    <max>5.99</max>
    </php>
    <pearinstaller>
     <min>1.4.8</min>
@@ -64,6 +93,22 @@
  <providesextension>rdkafka</providesextension>
  <extsrcrelease/>
  <changelog>
+  <release>
+   <date>2016-01-11</date>
+   <time>10:30:00</time>
+   <version>
+    <release>0.9.1</release>
+    <api>0.9.0</api>
+   </version>
+   <stability>
+    <release>beta</release>
+    <api>beta</api>
+   </stability>
+   <license uri="http://opensource.org/licenses/mit-license.php">MIT License</license>
+   <notes>
+    * Allow to build against librdkafka master/0.9.x
+   </notes>
+  </release>
   <release>
    <date>2016-01-09</date>
    <time>14:00:00</time>
