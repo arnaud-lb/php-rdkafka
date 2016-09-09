@@ -233,15 +233,7 @@ Because your IDE is not able to auto discover php-rdkadka api you can consider u
 
 If you would like to contribute, thank you :)
 
-Here are a few informations you need to know before starting:
-
-### Branches
-
-Pull requests should be made against the master branch, which is the PHP 5 implementation of the extension. The maintainers will take care of merging changes in the php7 branch, once the PR has been merged.
-
-### Testing
-
-Tests are wrote in phpt format in the tests directory. They can be run by executing ``make test``.
+Before you start, please take a look at the [CONTRIBUTING document](https://github.com/arnaud-lb/php-rdkafka/blob/master/CONTRIBUTING.md) to see how to get your changes merged in.
 
 ## Credits
 
