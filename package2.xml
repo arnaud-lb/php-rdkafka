@@ -13,7 +13,7 @@
  <date>2016-09-09</date>
  <time>12:00:00</time>
  <version>
-  <release>1.0.0</release>
+  <release>2.0.0</release>
   <api>1.0.0</api>
  </version>
  <stability>
@@ -22,8 +22,8 @@
  </stability>
  <license uri="http://opensource.org/licenses/mit-license.php">MIT License</license>
  <notes>
-This version of rdkafka is indented for php version 5. To compile rdkafka for
-newer versions of php, use the pecl package version 2.
+This version of rdkafka is indented for php version 7. To compile rdkafka for
+older versions of php, use the pecl package version 1.
 
  * Added high level consumer: Rdkafka\KafkaConsumer (librdkafka 0.9)
  * RD_KAFKA_VERSION now reports the runtime librdkafka version
@@ -82,8 +82,7 @@ newer versions of php, use the pecl package version 2.
  <dependencies>
   <required>
    <php>
-    <min>5.3.0</min>
-    <max>5.99</max>
+    <min>7.0</min>
    </php>
    <pearinstaller>
     <min>1.4.8</min>
