@@ -15,7 +15,7 @@ sudo apt-get update
 sudo apt-get install -qq valgrind
 
 echo "extension = $(pwd)/modules/rdkafka.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
-phpenv config-rm xdebug.ini
+phpenv config-rm xdebug.ini || true
 
 phpize
 ./configure
