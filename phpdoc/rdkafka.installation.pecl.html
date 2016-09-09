@@ -27,7 +27,11 @@ located here:
    Linux, Unix, and OS X users may run the following command to install the
    extension:
    <div class="example-contents">
-<div class="shellcode"><pre class="shellcode">$ sudo pecl install channel://pecl.php.net/rdkafka-alpha</pre>
+<div class="shellcode"><pre class="shellcode">$ # For PHP 7:
+$ sudo pecl install channel://pecl.php.net/rdkafka-beta
+
+$ # For PHP 5: (replace 1.x.x with the latest 1.x.x release from https://pecl.php.net/package/rdkafka)
+$ sudo pecl install channel://pecl.php.net/rdkafka-1.x.x</pre>
 </div>
    </div>
 
@@ -41,12 +45,6 @@ located here:
    </div>
 
   </p>
-
-  <blockquote class="note"><p><strong class="note">Note</strong>: 
-   <p class="para">
-    The PECL release currently supports only PHP 5. For PHP 7, prefer other installation methods.
-   </p>
-  </p></blockquote>
 
  </div><hr /><div class="manualnavbar" style="text-align: center;">
  <div class="prev" style="text-align: left; float: left;"><a href="rdkafka.installation.html">Installation</a></div>
