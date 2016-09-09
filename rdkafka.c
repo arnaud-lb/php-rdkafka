@@ -40,9 +40,9 @@
 #include "fun.h"
 
 enum {
-    LOG_PRINT = 100
-    , LOG_SYSLOG = 101
-    , LOG_SYSLOG_PRINT = 102
+   RD_KAFKA_LOG_PRINT = 100
+    ,RD_KAFKA_LOG_SYSLOG = 101
+    ,RD_KAFKA_LOG_SYSLOG_PRINT = 102
 };
 
 typedef struct _kafka_object {
@@ -456,13 +456,13 @@ PHP_METHOD(RdKafka__Kafka, setLogger)
     }
 
     switch (id) {
-        case LOG_PRINT:
+        caseRD_KAFKA_LOG_PRINT:
             logger = rd_kafka_log_print;
             break;
-        case LOG_SYSLOG:
+        caseRD_KAFKA_LOG_SYSLOG:
             logger = rd_kafka_log_syslog;
             break;
-        case LOG_SYSLOG_PRINT:
+        caseRD_KAFKA_LOG_SYSLOG_PRINT:
             logger = kafka_log_syslog_print;
             break;
         default:
@@ -635,9 +635,9 @@ PHP_MINIT_FUNCTION(rdkafka)
     REGISTER_LONG_CONSTANT("RD_KAFKA_MSG_PARTITIONER_CONSISTENT", MSG_PARTITIONER_CONSISTENT, CONST_CS | CONST_PERSISTENT);
 #endif
 
-    REGISTER_LONG_CONSTANT("RD_KAFKA_LOG_PRINT", LOG_PRINT, CONST_CS | CONST_PERSISTENT);
-    REGISTER_LONG_CONSTANT("RD_KAFKA_LOG_SYSLOG", LOG_SYSLOG, CONST_CS | CONST_PERSISTENT);
-    REGISTER_LONG_CONSTANT("RD_KAFKA_LOG_SYSLOG_PRINT", LOG_SYSLOG_PRINT, CONST_CS | CONST_PERSISTENT);
+    REGISTER_LONG_CONSTANT("RD_KAFKA_LOG_PRINT",RD_KAFKA_LOG_PRINT, CONST_CS | CONST_PERSISTENT);
+    REGISTER_LONG_CONSTANT("RD_KAFKA_LOG_SYSLOG",RD_KAFKA_LOG_SYSLOG, CONST_CS | CONST_PERSISTENT);
+    REGISTER_LONG_CONSTANT("RD_KAFKA_LOG_SYSLOG_PRINT",RD_KAFKA_LOG_SYSLOG_PRINT, CONST_CS | CONST_PERSISTENT);
     zend_class_entry ce;
 
     memcpy(&kafka_object_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
