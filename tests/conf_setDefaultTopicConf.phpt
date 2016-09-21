@@ -21,5 +21,5 @@ $conf->setDefaultTopicConf($conf);
 Setting valid topic conf
 Setting invalid topic conf
 
-Warning: RdKafka\Conf::setDefaultTopicConf() expects parameter 1 to be RdKafka\TopicConf, object given in %s/conf_setDefaultTopicConf.php on line 9
+Warning: RdKafka\Conf::setDefaultTopicConf() expects parameter 1 to be RdKafka\TopicConf, object given in %s%econf_setDefaultTopicConf.php on line 9
 
