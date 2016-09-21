@@ -134,7 +134,9 @@ static kafka_object * get_kafka_object(zval *zrk TSRMLS_DC)
 
 static void kafka_log_syslog_print(const rd_kafka_t *rk, int level, const char *fac, const char *buf) {
     rd_kafka_log_print(rk, level, fac, buf);
+#ifndef PHP_WIN32
     rd_kafka_log_syslog(rk, level, fac, buf);
+#endif
 }
 
 /* {{{ private constructor */
@@ -456,8 +458,10 @@ PHP_METHOD(RdKafka__Kafka, setLogger)
             logger = rd_kafka_log_print;
             break;
         case RD_KAFKA_LOG_SYSLOG:
+#ifndef PHP_WIN32
             logger = rd_kafka_log_syslog;
             break;
+#endif
         case RD_KAFKA_LOG_SYSLOG_PRINT:
             logger = kafka_log_syslog_print;
             break;
