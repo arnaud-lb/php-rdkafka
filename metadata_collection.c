@@ -99,7 +99,7 @@ static HashTable *get_debug_info(zval *object, int *is_temp TSRMLS_DC) /* {{{ */
     }
     
     for (i = 0; i < intern->item_cnt; i++) {
-        intern->ctor(&item, &intern->zmetadata, intern->items + i * intern->item_size TSRMLS_CC);
+        intern->ctor(&item, &intern->zmetadata, (char *)intern->items + i * intern->item_size TSRMLS_CC);
         add_next_index_zval(&ary, &item);
     }
 
@@ -177,7 +177,7 @@ PHP_METHOD(RdKafka__Metadata__Collection, current)
         return;
     }
 
-    intern->ctor(return_value, &intern->zmetadata, intern->items + intern->position * intern->item_size TSRMLS_CC);
+    intern->ctor(return_value, &intern->zmetadata, (char *)intern->items + intern->position * intern->item_size TSRMLS_CC);
 }
 /* }}} */
 
