@@ -101,6 +101,7 @@ PHP_METHOD(RdKafka__ConsumerTopic, consumeQueueStart)
     long offset;
     int ret;
     rd_kafka_resp_err_t err;
+    kafka_object *kafka_intern;
 
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "llO", &partition, &offset, &zrkqu, ce_kafka_queue) == FAILURE) {
         return;
@@ -121,6 +122,22 @@ PHP_METHOD(RdKafka__ConsumerTopic, consumeQueueStart)
         return;
     }
 
+    kafka_intern = get_kafka_object(intern->zrk TSRMLS_CC);
+    if (!kafka_intern) {
+        return;
+    }
+
+    if (is_consuming_toppar(kafka_intern, intern->rkt, partition)) {
+        zend_throw_exception_ex(
+            ce_kafka_exception,
+            0 TSRMLS_CC,
+            "%s:%d is already being consumed by the same Consumer instance",
+            rd_kafka_topic_name(intern->rkt),
+            partition
+        );
+        return;
+    }
+
     ret = rd_kafka_consume_start_queue(intern->rkt, partition, offset, queue_intern->rkqu);
 
     if (ret == -1) {
@@ -128,6 +145,8 @@ PHP_METHOD(RdKafka__ConsumerTopic, consumeQueueStart)
         zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err TSRMLS_CC);
         return;
     }
+
+    add_consuming_toppar(kafka_intern, intern->rkt, partition);
 }
 /* }}} */
 
@@ -146,6 +165,7 @@ PHP_METHOD(RdKafka__ConsumerTopic, consumeStart)
     long offset;
     int ret;
     rd_kafka_resp_err_t err;
+    kafka_object *kafka_intern;
 
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ll", &partition, &offset) == FAILURE) {
         return;
@@ -161,6 +181,22 @@ PHP_METHOD(RdKafka__ConsumerTopic, consumeStart)
         return;
     }
 
+    kafka_intern = get_kafka_object(intern->zrk TSRMLS_CC);
+    if (!kafka_intern) {
+        return;
+    }
+
+    if (is_consuming_toppar(kafka_intern, intern->rkt, partition)) {
+        zend_throw_exception_ex(
+            ce_kafka_exception,
+            0 TSRMLS_CC,
+            "%s:%d is already being consumed by the same Consumer instance",
+            rd_kafka_topic_name(intern->rkt),
+            partition
+        );
+        return;
+    }
+
     ret = rd_kafka_consume_start(intern->rkt, partition, offset);
 
     if (ret == -1) {
@@ -168,6 +204,8 @@ PHP_METHOD(RdKafka__ConsumerTopic, consumeStart)
         zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err TSRMLS_CC);
         return;
     }
+
+    add_consuming_toppar(kafka_intern, intern->rkt, partition);
 }
 /* }}} */
 
@@ -184,6 +222,7 @@ PHP_METHOD(RdKafka__ConsumerTopic, consumeStop)
     long partition;
     int ret;
     rd_kafka_resp_err_t err;
+    kafka_object *kafka_intern;
 
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &partition) == FAILURE) {
         return;
@@ -199,6 +238,11 @@ PHP_METHOD(RdKafka__ConsumerTopic, consumeStop)
         return;
     }
 
+    kafka_intern = get_kafka_object(intern->zrk TSRMLS_CC);
+    if (!kafka_intern) {
+        return;
+    }
+
     ret = rd_kafka_consume_stop(intern->rkt, partition);
 
     if (ret == -1) {
@@ -206,6 +250,8 @@ PHP_METHOD(RdKafka__ConsumerTopic, consumeStop)
         zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err TSRMLS_CC);
         return;
     }
+
+    del_consuming_toppar(kafka_intern, intern->rkt, partition);
 }
 /* }}} */
 

@@ -27,4 +27,11 @@
 #define get_custom_object(type, object) \
     ((type*)object)
 
+typedef struct _kafka_object kafka_object;
+
+kafka_object * get_kafka_object(zval *zrk TSRMLS_DC);
+void add_consuming_toppar(kafka_object * intern, rd_kafka_topic_t * rkt, int32_t partition);
+void del_consuming_toppar(kafka_object * intern, rd_kafka_topic_t * rkt, int32_t partition);
+int is_consuming_toppar(kafka_object * intern, rd_kafka_topic_t * rkt, int32_t partition);
+
 #endif /* PHP_RDKAFKA_PRIV_H */
