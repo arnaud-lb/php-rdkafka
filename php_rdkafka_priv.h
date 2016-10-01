@@ -35,4 +35,11 @@ static inline zend_object * is_zend_object(zend_object * object) {
 #define get_custom_object(type, object) \
     ((type*)((char *)is_zend_object(object) - XtOffsetOf(type, std)))
 
+typedef struct _kafka_object kafka_object;
+
+kafka_object * get_kafka_object(zval *zrk TSRMLS_DC);
+void add_consuming_toppar(kafka_object * intern, rd_kafka_topic_t * rkt, int32_t partition);
+void del_consuming_toppar(kafka_object * intern, rd_kafka_topic_t * rkt, int32_t partition);
+int is_consuming_toppar(kafka_object * intern, rd_kafka_topic_t * rkt, int32_t partition);
+
 #endif /* PHP_RDKAFKA_PRIV_H */

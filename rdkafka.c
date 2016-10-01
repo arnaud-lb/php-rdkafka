@@ -49,8 +49,14 @@ typedef struct _kafka_object {
     rd_kafka_type_t         type;
     rd_kafka_t              *rk;
     kafka_conf_callbacks    cbs;
+    HashTable               consuming;
     zend_object             std;
 } kafka_object;
+
+typedef struct _toppar {
+    rd_kafka_topic_t    *rkt;
+    int32_t             partition;
+} toppar;
 
 static const zend_function_entry empty_function_entries[] = {
     PHP_FE_END
@@ -71,8 +77,16 @@ static void kafka_free(zend_object *object TSRMLS_DC) /* {{{ */
      * still receive callbacks during poll/rd_kafka_consumer_close */
 
     zend_object_std_dtor(&intern->std TSRMLS_CC);
+
+    if (intern->type == RD_KAFKA_CONSUMER) {
+        zend_hash_destroy(&intern->consuming);
+    }
 }
 /* }}} */
+
+static void toppar_zv_dtor(zval * ztp) {
+    efree(Z_PTR_P(ztp));
+}
 
 static void kafka_init(zval *this_ptr, rd_kafka_type_t type, zval *zconf TSRMLS_DC) /* {{{ */
 {
@@ -103,6 +117,10 @@ static void kafka_init(zval *this_ptr, rd_kafka_type_t type, zval *zconf TSRMLS_
     }
 
     intern->rk = rk;
+
+    if (type == RD_KAFKA_CONSUMER) {
+        zend_hash_init(&intern->consuming, 0, NULL, (dtor_func_t)toppar_zv_dtor, 0);
+    }
 }
 /* }}} */
 
@@ -120,7 +138,7 @@ static zend_object * kafka_new(zend_class_entry *class_type TSRMLS_DC) /* {{{ */
 }
 /* }}} */
 
-static kafka_object * get_kafka_object(zval *zrk TSRMLS_DC)
+kafka_object * get_kafka_object(zval *zrk TSRMLS_DC)
 {
     kafka_object *ork = get_custom_object_zval(kafka_object, zrk);
 
@@ -137,6 +155,59 @@ static void kafka_log_syslog_print(const rd_kafka_t *rk, int level, const char *
 #ifndef PHP_WIN32
     rd_kafka_log_syslog(rk, level, fac, buf);
 #endif
+}
+
+void add_consuming_toppar(kafka_object * intern, rd_kafka_topic_t * rkt, int32_t partition) {
+    char *key = NULL;
+    int key_len;
+    const char *topic_name = rd_kafka_topic_name(rkt);
+    toppar *tp;
+
+    tp = emalloc(sizeof(*tp));
+    tp->rkt = rkt;
+    tp->partition = partition;
+
+    key_len = spprintf(&key, 0, "%s:%d", topic_name, partition);
+
+    zend_hash_str_add_ptr(&intern->consuming, key, key_len+1, tp);
+
+    efree(key);
+}
+
+void del_consuming_toppar(kafka_object * intern, rd_kafka_topic_t * rkt, int32_t partition) {
+    char *key = NULL;
+    int key_len;
+    const char *topic_name = rd_kafka_topic_name(rkt);
+
+    key_len = spprintf(&key, 0, "%s:%d", topic_name, partition);
+
+    zend_hash_str_del(&intern->consuming, key, key_len+1);
+
+    efree(key);
+}
+
+int is_consuming_toppar(kafka_object * intern, rd_kafka_topic_t * rkt, int32_t partition) {
+    char *key = NULL;
+    int key_len;
+    const char *topic_name = rd_kafka_topic_name(rkt);
+    int ret;
+
+    key_len = spprintf(&key, 0, "%s:%d", topic_name, partition);
+
+    ret = zend_hash_str_exists(&intern->consuming, key, key_len+1);
+
+    efree(key);
+
+    return ret;
+}
+
+static void stop_consuming_toppar_zv(zval * ztp) {
+    toppar *tp = Z_PTR_P(ztp);
+    rd_kafka_consume_stop(tp->rkt, tp->partition);
+}
+
+static void stop_consuming(kafka_object * intern TSRMLS_DC) {
+    zend_hash_apply(&intern->consuming, (apply_func_t)stop_consuming_toppar_zv TSRMLS_CC);
 }
 
 /* {{{ private constructor */
@@ -489,6 +560,9 @@ PHP_METHOD(RdKafka__Kafka, __destruct)
 
     intern = get_custom_object_zval(kafka_object, getThis());
     if (intern->rk) {
+        if (intern->type == RD_KAFKA_CONSUMER) {
+            stop_consuming(intern TSRMLS_CC);
+        }
         while (rd_kafka_outq_len(intern->rk) > 0) {
             rd_kafka_poll(intern->rk, 50);
         }
