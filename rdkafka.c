@@ -69,18 +69,36 @@ static zend_class_entry * ce_kafka_consumer;
 zend_class_entry * ce_kafka_exception;
 static zend_class_entry * ce_kafka_producer;
 
+static void stop_consuming_toppar_pp(toppar ** tp) {
+    rd_kafka_consume_stop((*tp)->rkt, (*tp)->partition);
+}
+
+static void stop_consuming(kafka_object * intern TSRMLS_DC) {
+    zend_hash_apply(&intern->consuming, (apply_func_t)stop_consuming_toppar_pp TSRMLS_CC);
+}
+
 static void kafka_free(void *object TSRMLS_DC) /* {{{ */
 {
     kafka_object *intern = (kafka_object*)object;
 
-    /* The rd_kafka_t handle is freed in __destruct, because we might
-     * still receive callbacks during poll/rd_kafka_consumer_close */
+    if (intern->rk) {
+        if (intern->type == RD_KAFKA_CONSUMER) {
+            stop_consuming(intern TSRMLS_CC);
+        }
+        while (rd_kafka_outq_len(intern->rk) > 0) {
+            rd_kafka_poll(intern->rk, 50);
+        }
+        rd_kafka_destroy(intern->rk);
+        intern->rk = NULL;
+    }
 
-    zend_object_std_dtor(&intern->std TSRMLS_CC);
+    kafka_conf_callbacks_dtor(&intern->cbs TSRMLS_CC);
 
     if (intern->type == RD_KAFKA_CONSUMER) {
         zend_hash_destroy(&intern->consuming);
     }
+
+    zend_object_std_dtor(&intern->std TSRMLS_CC);
 
     efree(intern);
 }
@@ -201,14 +219,6 @@ int is_consuming_toppar(kafka_object * intern, rd_kafka_topic_t * rkt, int32_t p
     efree(key);
 
     return ret;
-}
-
-static void stop_consuming_toppar_pp(toppar ** tp) {
-    rd_kafka_consume_stop((*tp)->rkt, (*tp)->partition);
-}
-
-static void stop_consuming(kafka_object * intern TSRMLS_DC) {
-    zend_hash_apply(&intern->consuming, (apply_func_t)stop_consuming_toppar_pp TSRMLS_CC);
 }
 
 /* {{{ private constructor */
@@ -544,35 +554,6 @@ PHP_METHOD(RdKafka__Kafka, setLogger)
 }
 /* }}} */
 
-/* {{{ proto RdKafka\Kafka::__destruct() */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_kafka___destruct, 0, 0, 0)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__Kafka, __destruct)
-{
-    kafka_object *intern;
-
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "") == FAILURE) {
-        return;
-    }
-
-    intern = get_custom_object_zval(kafka_object, getThis());
-    if (intern->rk) {
-        if (intern->type == RD_KAFKA_CONSUMER) {
-            stop_consuming(intern TSRMLS_CC);
-        }
-        while (rd_kafka_outq_len(intern->rk) > 0) {
-            rd_kafka_poll(intern->rk, 50);
-        }
-        rd_kafka_destroy(intern->rk);
-        intern->rk = NULL;
-    }
-
-    kafka_conf_callbacks_dtor(&intern->cbs TSRMLS_CC);
-}
-/* }}} */
-
 static const zend_function_entry kafka_fe[] = {
     PHP_ME(RdKafka__Kafka, addBrokers, arginfo_kafka_add_brokers, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__Kafka, getMetadata, arginfo_kafka_get_metadata, ZEND_ACC_PUBLIC)
@@ -584,7 +565,6 @@ static const zend_function_entry kafka_fe[] = {
     PHP_MALIAS(RdKafka__Kafka, outqLen, getOutQLen, arginfo_kafka_get_outq_len, ZEND_ACC_PUBLIC | ZEND_ACC_DEPRECATED)
     PHP_ME(RdKafka__Kafka, poll, arginfo_kafka_poll, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__Kafka, setLogger, arginfo_kafka_set_logger, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__Kafka, __destruct, arginfo_kafka_kafka___destruct, ZEND_ACC_PUBLIC)
     PHP_FE_END
 };
 
