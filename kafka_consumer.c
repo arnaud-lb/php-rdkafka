@@ -44,9 +44,22 @@ static zend_object_handlers handlers;
 static void kafka_consumer_free(zend_object *object TSRMLS_DC) /* {{{ */
 {
     object_intern *intern = get_custom_object(object_intern, object);
+    rd_kafka_resp_err_t err;
 
-    /* The rd_kafka_t handle is freed in __destruct, because we might
-     * still receive callbacks during poll/rd_kafka_consumer_close */
+    if (intern->rk) {
+        err = rd_kafka_consumer_close(intern->rk);
+        if (err) {
+            php_error(E_WARNING, "rd_kafka_consumer_close failed: %s", rd_kafka_err2str(err));
+        } else {
+            while (rd_kafka_outq_len(intern->rk) > 0) {
+                rd_kafka_poll(intern->rk, 10);
+            }
+        }
+        rd_kafka_destroy(intern->rk);
+        intern->rk = NULL;
+    }
+
+    kafka_conf_callbacks_dtor(&intern->cbs TSRMLS_CC);
 
     zend_object_std_dtor(&intern->std TSRMLS_CC);
 }
@@ -150,39 +163,6 @@ PHP_METHOD(RdKafka__KafkaConsumer, __construct)
     rd_kafka_poll_set_consumer(rk);
 
     zend_restore_error_handling(&error_handling TSRMLS_CC);
-}
-/* }}} */
-
-/* {{{ proto RdKafka\KafkaConsumer::__destruct() */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_kafka_consumer___destruct, 0, 0, 0)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__KafkaConsumer, __destruct)
-{
-    object_intern *intern;
-    rd_kafka_resp_err_t err;
-
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "") == FAILURE) {
-        return;
-    }
-
-    intern = get_custom_object_zval(object_intern, getThis());
-
-    if (intern->rk) {
-        err = rd_kafka_consumer_close(intern->rk);
-        if (err) {
-            php_error(E_WARNING, "rd_kafka_consumer_close failed: %s", rd_kafka_err2str(err));
-        } else {
-            while (rd_kafka_outq_len(intern->rk) > 0) {
-                rd_kafka_poll(intern->rk, 10);
-            }
-        }
-        rd_kafka_destroy(intern->rk);
-        intern->rk = NULL;
-    }
-
-    kafka_conf_callbacks_dtor(&intern->cbs TSRMLS_CC);
 }
 /* }}} */
 
@@ -638,7 +618,6 @@ static const zend_function_entry fe[] = { /* {{{ */
     PHP_ME(RdKafka__KafkaConsumer, unsubscribe, arginfo_kafka_kafka_consumer_unsubscribe, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__KafkaConsumer, getMetadata, arginfo_kafka_kafka_consumer_getMetadata, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__KafkaConsumer, newTopic, arginfo_kafka_kafka_consumer_new_topic, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__KafkaConsumer, __destruct, arginfo_kafka_kafka_consumer___destruct, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_FE_END
 }; /* }}} */
 
