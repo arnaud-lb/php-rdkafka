@@ -51,7 +51,7 @@ typedef struct _kafka_object {
     kafka_conf_callbacks    cbs;
     HashTable               consuming;
     zend_object             std;
-} kafka_object;
+};
 
 typedef struct _toppar {
     rd_kafka_topic_t    *rkt;
