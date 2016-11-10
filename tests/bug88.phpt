@@ -1,5 +1,10 @@
 --TEST--
 Bug 88
+--SKIPIF--
+<?php
+if (!class_exists("RdKafka\\KafkaConsumer")) {
+    echo "skip";
+}
 --FILE--
 <?php
 $conf = new RdKafka\Conf();
