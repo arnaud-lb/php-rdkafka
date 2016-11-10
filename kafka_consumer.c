@@ -152,6 +152,7 @@ PHP_METHOD(RdKafka__KafkaConsumer, __construct)
             rd_kafka_conf_destroy(conf);
         }
         zend_throw_exception(ce_kafka_exception, "\"group.id\" must be configured", 0 TSRMLS_CC);
+        return;
     }
 
     rk = rd_kafka_new(RD_KAFKA_CONSUMER, conf, errstr, sizeof(errstr));
