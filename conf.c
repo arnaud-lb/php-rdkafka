@@ -317,7 +317,7 @@ PHP_METHOD(RdKafka__Conf, dump)
 }
 /* }}} */
 
-/* {{{ proto void RdKafka\Conf::set(RdKafka\Conf $conf, string $name, string $value)
+/* {{{ proto void RdKafka\Conf::set(string $name, string $value)
    Sets a configuration property. */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_conf_set, 0, 0, 2)
