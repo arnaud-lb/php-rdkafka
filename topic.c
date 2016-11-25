@@ -38,20 +38,20 @@ zend_class_entry * ce_kafka_kafka_consumer_topic;
 zend_class_entry * ce_kafka_producer_topic;
 zend_class_entry * ce_kafka_topic;
 
-static void kafka_topic_free(void *object TSRMLS_DC) /* {{{ */
+static void kafka_topic_free(zend_object *object TSRMLS_DC) /* {{{ */
 {
-    kafka_topic_object *intern = (kafka_topic_object*)object;
+    kafka_topic_object *intern = get_custom_object(kafka_topic_object, object);
 
     if (intern->rkt) {
         rd_kafka_topic_destroy(intern->rkt);
     }
-    if (intern->zrk) {
+    if (P_ZEVAL(intern->zrk)) {
         zval_ptr_dtor(&intern->zrk);
     }
 
     zend_object_std_dtor(&intern->std TSRMLS_CC);
 
-    efree(intern);
+    free_custom_object(intern);
 }
 /* }}} */
 
@@ -64,8 +64,8 @@ static zend_object_value kafka_topic_new(zend_class_entry *class_type TSRMLS_DC)
     zend_object_std_init(&intern->std, class_type TSRMLS_CC);
     object_properties_init(&intern->std, class_type);
 
-    retval.handle = zend_objects_store_put(&intern->std, (zend_objects_store_dtor_t) zend_objects_destroy_object, kafka_topic_free, NULL TSRMLS_CC);
-    retval.handlers = &object_handlers;
+    STORE_OBJECT(retval, intern, (zend_objects_store_dtor_t) zend_objects_destroy_object, kafka_topic_free, NULL);
+    SET_OBJECT_HANDLERS(retval, &object_handlers);
 
     return retval;
 }
@@ -122,7 +122,7 @@ PHP_METHOD(RdKafka__ConsumerTopic, consumeQueueStart)
         return;
     }
 
-    kafka_intern = get_kafka_object(intern->zrk TSRMLS_CC);
+    kafka_intern = get_kafka_object(P_ZEVAL(intern->zrk) TSRMLS_CC);
     if (!kafka_intern) {
         return;
     }
@@ -181,7 +181,7 @@ PHP_METHOD(RdKafka__ConsumerTopic, consumeStart)
         return;
     }
 
-    kafka_intern = get_kafka_object(intern->zrk TSRMLS_CC);
+    kafka_intern = get_kafka_object(P_ZEVAL(intern->zrk) TSRMLS_CC);
     if (!kafka_intern) {
         return;
     }
@@ -238,7 +238,7 @@ PHP_METHOD(RdKafka__ConsumerTopic, consumeStop)
         return;
     }
 
-    kafka_intern = get_kafka_object(intern->zrk TSRMLS_CC);
+    kafka_intern = get_kafka_object(P_ZEVAL(intern->zrk) TSRMLS_CC);
     if (!kafka_intern) {
         return;
     }
@@ -368,9 +368,9 @@ PHP_METHOD(RdKafka__ProducerTopic, produce)
     long partition;
     long msgflags;
     char *payload;
-    int payload_len;
+    arglen_t payload_len;
     char *key = NULL;
-    int key_len = 0;
+    arglen_t key_len = 0;
     int ret;
     rd_kafka_resp_err_t err;
     kafka_topic_object *intern;
@@ -425,7 +425,7 @@ PHP_METHOD(RdKafka__Topic, getName)
         return;
     }
 
-    RETURN_STRING(rd_kafka_topic_name(intern->rkt), 1);
+    RDKAFKA_RETURN_STRING(rd_kafka_topic_name(intern->rkt));
 }
 /* }}} */
 
@@ -440,6 +440,8 @@ void kafka_topic_minit(TSRMLS_D) { /* {{{ */
 
     memcpy(&object_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
     object_handlers.clone_obj = NULL;
+    set_object_handler_free_obj(&object_handlers, kafka_topic_free);
+    set_object_handler_offset(&object_handlers, XtOffsetOf(kafka_topic_object, std));
 
     INIT_NS_CLASS_ENTRY(ce, "RdKafka", "Topic", kafka_topic_fe);
     ce_kafka_topic = zend_register_internal_class(&ce TSRMLS_CC);
@@ -447,11 +449,11 @@ void kafka_topic_minit(TSRMLS_D) { /* {{{ */
     ce_kafka_topic->create_object = kafka_topic_new;
 
     INIT_NS_CLASS_ENTRY(ce, "RdKafka", "ConsumerTopic", kafka_consumer_topic_fe);
-    ce_kafka_consumer_topic = zend_register_internal_class_ex(&ce, ce_kafka_topic, NULL TSRMLS_CC);
+    ce_kafka_consumer_topic = rdkafka_register_internal_class_ex(&ce, ce_kafka_topic TSRMLS_CC);
 
     INIT_NS_CLASS_ENTRY(ce, "RdKafka", "KafkaConsumerTopic", kafka_kafka_consumer_topic_fe);
-    ce_kafka_kafka_consumer_topic = zend_register_internal_class_ex(&ce, ce_kafka_topic, NULL TSRMLS_CC);
+    ce_kafka_kafka_consumer_topic = rdkafka_register_internal_class_ex(&ce, ce_kafka_topic TSRMLS_CC);
 
     INIT_NS_CLASS_ENTRY(ce, "RdKafka", "ProducerTopic", kafka_producer_topic_fe);
-    ce_kafka_producer_topic = zend_register_internal_class_ex(&ce, ce_kafka_topic, NULL TSRMLS_CC);
+    ce_kafka_producer_topic = rdkafka_register_internal_class_ex(&ce, ce_kafka_topic TSRMLS_CC);
 } /* }}} */

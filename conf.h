@@ -38,19 +38,24 @@ typedef struct _kafka_conf_callback {
 
 typedef struct _kafka_conf_callbacks {
     zval rk;
-    kafka_conf_callback error;
-    kafka_conf_callback rebalance;
-    kafka_conf_callback dr_msg;
+    kafka_conf_callback *error;
+    kafka_conf_callback *rebalance;
+    kafka_conf_callback *dr_msg;
 } kafka_conf_callbacks;
 
 typedef struct _kafka_conf_object {
-    zend_object     std;
+#if PHP_MAJOR_VERSION < 7
+    zend_object                 std;
+#endif
     kafka_conf_type type;
     union {
         rd_kafka_conf_t         *conf;
         rd_kafka_topic_conf_t   *topic_conf;
     } u;
     kafka_conf_callbacks cbs;
+#if PHP_MAJOR_VERSION >= 7
+    zend_object                 std;
+#endif
 } kafka_conf_object;
 
 kafka_conf_object * get_kafka_conf_object(zval *zconf TSRMLS_DC);

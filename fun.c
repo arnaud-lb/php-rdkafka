@@ -22,9 +22,11 @@
 
 #include "php.h"
 #include "php_rdkafka.h"
+#include "php_rdkafka_priv.h"
 #include "librdkafka/rdkafka.h"
 #include "Zend/zend_exceptions.h"
 #include "ext/spl/spl_exceptions.h"
+#include "zeval.h"
 
 /* {{{ arginfo */
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_get_err_descs, 0, 0, 0)
@@ -70,7 +72,7 @@ PHP_FUNCTION(rd_kafka_get_err_descs)
 
     for (i = 0; i < cnt; i++) {
         const struct rd_kafka_err_desc *desc = &errdescs[i];
-        zval *el;
+        zeval el;
 
         if (desc->code == 0) {
             if (seen_zero) {
@@ -79,20 +81,20 @@ PHP_FUNCTION(rd_kafka_get_err_descs)
             seen_zero = 1;
         }
 
-        ALLOC_INIT_ZVAL(el);
-        array_init(el);
-        add_assoc_long(el, "code", desc->code);
+        MAKE_STD_ZEVAL(el);
+        array_init(P_ZEVAL(el));
+        add_assoc_long(P_ZEVAL(el), "code", desc->code);
         if (desc->name) {
-            add_assoc_string(el, "name", (char*) desc->name, 1);
+            rdkafka_add_assoc_string(P_ZEVAL(el), "name", (char*) desc->name);
         } else {
-            add_assoc_null(el, "name");
+            add_assoc_null(P_ZEVAL(el), "name");
         }
         if (desc->desc) {
-            add_assoc_string(el, "desc", (char*) desc->desc, 1);
+            rdkafka_add_assoc_string(P_ZEVAL(el), "desc", (char*) desc->desc);
         }else {
-            add_assoc_null(el, "desc");
+            add_assoc_null(P_ZEVAL(el), "desc");
         }
-        add_next_index_zval(return_value, el);
+        add_next_index_zval(return_value, P_ZEVAL(el));
     }
 }
 /* }}} */
@@ -113,7 +115,7 @@ PHP_FUNCTION(rd_kafka_err2str)
     errstr = rd_kafka_err2str(err);
 
     if (errstr) {
-        RETURN_STRING(errstr, 1);
+        RDKAFKA_RETURN_STRING(errstr);
     }
 }
 /* }}} */

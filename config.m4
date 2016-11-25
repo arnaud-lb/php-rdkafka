@@ -25,14 +25,6 @@ if test "$PHP_RDKAFKA" != "no"; then
     AC_MSG_ERROR([Please reinstall the rdkafka distribution])
   fi
 
-  AC_MSG_CHECKING([for PHP version])
-  php_major_version=`$PHP_CONFIG --vernum`
-  php_major_version=$(($php_major_version / 10000))
-  AC_MSG_RESULT([$php_major_version])
-  if test $php_major_version -gt 5; then
-    AC_MSG_ERROR([This version of php-rdkafka is for PHP 5. Try the `php7` branch instead.])
-  fi
-
   PHP_ADD_INCLUDE($RDKAFKA_DIR/include)
 
   SOURCES="rdkafka.c metadata.c metadata_broker.c metadata_topic.c metadata_partition.c metadata_collection.c compat.c conf.c topic.c queue.c message.c fun.c"

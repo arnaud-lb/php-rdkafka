@@ -17,8 +17,13 @@
 */
 
 typedef struct _kafka_queue_object {
+#if PHP_MAJOR_VERSION < 7
     zend_object         std;
+#endif
     rd_kafka_queue_t    *rkqu;
+#if PHP_MAJOR_VERSION >= 7
+    zend_object         std;
+#endif
 } kafka_queue_object;
 
 void kafka_queue_minit(TSRMLS_D);

@@ -33,9 +33,11 @@
 
 zend_class_entry * ce_kafka_queue;
 
-static void kafka_queue_free(void *object TSRMLS_DC) /* {{{ */
+static zend_object_handlers handlers;
+
+static void kafka_queue_free(zend_object *object TSRMLS_DC) /* {{{ */
 {
-    kafka_queue_object *intern = (kafka_queue_object*)object;
+    kafka_queue_object *intern = get_custom_object(kafka_queue_object, object);
 
     if (intern->rkqu) {
         rd_kafka_queue_destroy(intern->rkqu);
@@ -43,7 +45,7 @@ static void kafka_queue_free(void *object TSRMLS_DC) /* {{{ */
 
     zend_object_std_dtor(&intern->std TSRMLS_CC);
 
-    efree(intern);
+    free_custom_object(intern);
 }
 /* }}} */
 
@@ -56,8 +58,8 @@ static zend_object_value kafka_queue_new(zend_class_entry *class_type TSRMLS_DC)
     zend_object_std_init(&intern->std, class_type TSRMLS_CC);
     object_properties_init(&intern->std, class_type);
 
-    retval.handle = zend_objects_store_put(&intern->std, (zend_objects_store_dtor_t) zend_objects_destroy_object, kafka_queue_free, NULL TSRMLS_CC);
-    retval.handlers = &kafka_object_handlers;
+    STORE_OBJECT(retval, intern, (zend_objects_store_dtor_t) zend_objects_destroy_object, kafka_queue_free, NULL);
+    SET_OBJECT_HANDLERS(retval, &handlers);
 
     return retval;
 }
@@ -127,6 +129,10 @@ static const zend_function_entry kafka_queue_fe[] = {
 void kafka_queue_minit(TSRMLS_D) { /* {{{ */
 
     zend_class_entry ce;
+
+    handlers = kafka_default_object_handlers;
+    set_object_handler_free_obj(&handlers, kafka_queue_free);
+    set_object_handler_offset(&handlers, XtOffsetOf(kafka_queue_object, std));
 
     INIT_NS_CLASS_ENTRY(ce, "RdKafka", "Queue", kafka_queue_fe);
     ce_kafka_queue = zend_register_internal_class(&ce TSRMLS_CC);

@@ -29,6 +29,7 @@
 #include "Zend/zend_exceptions.h"
 #include "ext/spl/spl_exceptions.h"
 #include "topic_partition.h"
+#include "zeval.h"
 
 typedef kafka_topic_partition_intern object_intern;
 
@@ -38,9 +39,9 @@ zend_class_entry * ce_kafka_topic_partition;
 
 static zend_object_handlers handlers;
 
-static void free_object(void *object TSRMLS_DC) /* {{{ */
+static void free_object(zend_object *object TSRMLS_DC) /* {{{ */
 {
-    object_intern *intern = (object_intern*)object;
+    object_intern *intern = get_custom_object(object_intern, object);
 
     if (intern->topic) {
         efree(intern->topic);
@@ -48,7 +49,7 @@ static void free_object(void *object TSRMLS_DC) /* {{{ */
 
     zend_object_std_dtor(&intern->std TSRMLS_CC);
 
-    efree(intern);
+    free_custom_object(intern);
 }
 /* }}} */
 
@@ -61,8 +62,8 @@ static zend_object_value create_object(zend_class_entry *class_type TSRMLS_DC) /
     zend_object_std_init(&intern->std, class_type TSRMLS_CC);
     object_properties_init(&intern->std, class_type);
 
-    retval.handle = zend_objects_store_put(&intern->std, (zend_objects_store_dtor_t) zend_objects_destroy_object, free_object, NULL TSRMLS_CC);
-    retval.handlers = &handlers;
+    STORE_OBJECT(retval, intern, (zend_objects_store_dtor_t) zend_objects_destroy_object, free_object, NULL);
+    SET_OBJECT_HANDLERS(retval, &handlers);
 
     return retval;
 }
@@ -100,7 +101,7 @@ static HashTable *get_debug_info(zval *object, int *is_temp TSRMLS_DC) /* {{{ */
     }
 
     if (intern->topic) {
-        add_assoc_string(&ary, "topic", intern->topic, 1);
+        rdkafka_add_assoc_string(&ary, "topic", intern->topic);
     } else {
         add_assoc_null(&ary, "topic");
     }
@@ -133,17 +134,17 @@ void kafka_topic_partition_init(zval *zobj, char * topic, int32_t partition, int
 void kafka_topic_partition_list_to_array(zval *return_value, rd_kafka_topic_partition_list_t *list TSRMLS_DC) /* {{{ */
 {
     rd_kafka_topic_partition_t *topar;
-    zval *ztopar;
+    zeval ztopar;
     int i;
 
     array_init_size(return_value, list->cnt);
 
     for (i = 0; i < list->cnt; i++) {
         topar = &list->elems[i];
-        ALLOC_INIT_ZVAL(ztopar);
-        object_init_ex(ztopar, ce_kafka_topic_partition);
-        kafka_topic_partition_init(ztopar, topar->topic, topar->partition, topar->offset TSRMLS_CC);
-        add_next_index_zval(return_value, ztopar);
+        MAKE_STD_ZEVAL(ztopar);
+        object_init_ex(P_ZEVAL(ztopar), ce_kafka_topic_partition);
+        kafka_topic_partition_init(P_ZEVAL(ztopar), topar->topic, topar->partition, topar->offset TSRMLS_CC);
+        add_next_index_zval(return_value, P_ZEVAL(ztopar));
     }
 } /* }}} */
 
@@ -151,30 +152,30 @@ rd_kafka_topic_partition_list_t * array_arg_to_kafka_topic_partition_list(int ar
 
     HashPosition pos;
     rd_kafka_topic_partition_list_t *list;
-    zval **zv;
+    zeval *zv;
 
     list = rd_kafka_topic_partition_list_new(zend_hash_num_elements(ary));
 
     for (zend_hash_internal_pointer_reset_ex(ary, &pos);
-            zend_hash_get_current_data_ex(ary, (void **) &zv, &pos) == SUCCESS;
+            (zv = rdkafka_hash_get_current_data_ex(ary, &pos)) != NULL;
             zend_hash_move_forward_ex(ary, &pos)) {
         kafka_topic_partition_intern *topar_intern;
         rd_kafka_topic_partition_t *topar;
 
-        if (Z_TYPE_PP(zv) != IS_OBJECT || !instanceof_function(Z_OBJCE_PP(zv), ce_kafka_topic_partition TSRMLS_CC)) {
-			const char *space;
-			const char *class_name = get_active_class_name(&space TSRMLS_CC);
+        if (Z_TYPE_P(ZEVAL(zv)) != IS_OBJECT || !instanceof_function(Z_OBJCE_P(ZEVAL(zv)), ce_kafka_topic_partition TSRMLS_CC)) {
+            const char *space;
+            const char *class_name = get_active_class_name(&space TSRMLS_CC);
             rd_kafka_topic_partition_list_destroy(list);
             php_error(E_ERROR,
                     "Argument %d passed to %s%s%s() must be an array of RdKafka\\TopicPartition, at least one element is a(n) %s",
                     argnum,
                     class_name, space,
                     get_active_function_name(TSRMLS_C),
-                    zend_zval_type_name(*zv));
+                    zend_zval_type_name(ZEVAL(zv)));
             return NULL;
         }
 
-        topar_intern = get_topic_partition_object(*zv TSRMLS_CC);
+        topar_intern = get_topic_partition_object(ZEVAL(zv) TSRMLS_CC);
         if (!topar_intern) {
             rd_kafka_topic_partition_list_destroy(list);
             return NULL;
@@ -197,7 +198,7 @@ ZEND_END_ARG_INFO()
 PHP_METHOD(RdKafka__TopicPartition, __construct)
 {
     char *topic;
-    int topic_len;
+    arglen_t topic_len;
     long partition;
     long offset = 0;
     zend_error_handling error_handling;
@@ -233,7 +234,7 @@ PHP_METHOD(RdKafka__TopicPartition, getTopic)
     }
 
     if (intern->topic) {
-        RETURN_STRING(intern->topic, 1);
+        RDKAFKA_RETURN_STRING(intern->topic);
     } else {
         RETURN_NULL();
     }
@@ -250,7 +251,7 @@ ZEND_END_ARG_INFO()
 PHP_METHOD(RdKafka__TopicPartition, setTopic)
 {
     char * topic;
-    int topic_len;
+    arglen_t topic_len;
     object_intern *intern;
 
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &topic, &topic_len) == FAILURE) {
@@ -391,6 +392,8 @@ void kafka_metadata_topic_partition_minit(TSRMLS_D) /* {{{ */
     ce_kafka_topic_partition = zend_register_internal_class(&tmpce TSRMLS_CC);
     ce_kafka_topic_partition->create_object = create_object;
 
-    memcpy(&handlers, &kafka_object_handlers, sizeof(handlers));
+    handlers = kafka_default_object_handlers;
     handlers.get_debug_info = get_debug_info;
+    set_object_handler_free_obj(&handlers, free_object);
+    set_object_handler_offset(&handlers, XtOffsetOf(object_intern, std));
 } /* }}} */

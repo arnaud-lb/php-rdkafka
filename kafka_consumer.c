@@ -33,17 +33,22 @@
 #include "metadata.h"
 
 typedef struct _object_intern {
+#if PHP_MAJOR_VERSION < 7
     zend_object             std;
+#endif
     rd_kafka_t              *rk;
     kafka_conf_callbacks    cbs;
+#if PHP_MAJOR_VERSION >= 7
+    zend_object             std;
+#endif
 } object_intern;
 
 static zend_class_entry * ce;
 static zend_object_handlers handlers;
 
-static void kafka_consumer_free(void *object TSRMLS_DC) /* {{{ */
+static void kafka_consumer_free(zend_object *object TSRMLS_DC) /* {{{ */
 {
-    object_intern *intern = (object_intern*)object;
+    object_intern *intern = get_custom_object(object_intern, object);
     rd_kafka_resp_err_t err;
 
     if (intern->rk) {
@@ -63,7 +68,7 @@ static void kafka_consumer_free(void *object TSRMLS_DC) /* {{{ */
 
     zend_object_std_dtor(&intern->std TSRMLS_CC);
 
-    efree(intern);
+    free_custom_object(intern);
 }
 /* }}} */
 
@@ -72,12 +77,12 @@ static zend_object_value kafka_consumer_new(zend_class_entry *class_type TSRMLS_
     zend_object_value retval;
     object_intern *intern;
 
-    intern = ecalloc(1, sizeof(*intern));
+    intern = alloc_object(intern, class_type);
     zend_object_std_init(&intern->std, class_type TSRMLS_CC);
     object_properties_init(&intern->std, class_type);
 
-    retval.handle = zend_objects_store_put(&intern->std, (zend_objects_store_dtor_t) zend_objects_destroy_object, kafka_consumer_free, NULL TSRMLS_CC);
-    retval.handlers = &handlers;
+    STORE_OBJECT(retval, intern, (zend_objects_store_dtor_t) zend_objects_destroy_object, kafka_consumer_free, NULL);
+    SET_OBJECT_HANDLERS(retval, &handlers);
 
     return retval;
 }
@@ -263,7 +268,7 @@ PHP_METHOD(RdKafka__KafkaConsumer, subscribe)
     object_intern *intern;
     rd_kafka_topic_partition_list_t *topics;
     rd_kafka_resp_err_t err;
-    zval **zv;
+    zeval *zv;
 
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "h", &htopics) == FAILURE) {
         return;
@@ -277,10 +282,10 @@ PHP_METHOD(RdKafka__KafkaConsumer, subscribe)
     topics = rd_kafka_topic_partition_list_new(zend_hash_num_elements(htopics));
 
     for (zend_hash_internal_pointer_reset_ex(htopics, &pos);
-            zend_hash_get_current_data_ex(htopics, (void **) &zv, &pos) == SUCCESS;
+            (zv = rdkafka_hash_get_current_data_ex(htopics, &pos)) != NULL;
             zend_hash_move_forward_ex(htopics, &pos)) {
         convert_to_string_ex(zv);
-        rd_kafka_topic_partition_list_add(topics, Z_STRVAL_PP(zv), RD_KAFKA_PARTITION_UA);
+        rd_kafka_topic_partition_list_add(topics, Z_STRVAL_P(ZEVAL(zv)), RD_KAFKA_PARTITION_UA);
     }
 
     err = rd_kafka_subscribe(intern->rk, topics);
@@ -326,7 +331,7 @@ PHP_METHOD(RdKafka__KafkaConsumer, getSubscription)
     array_init_size(return_value, topics->cnt);
 
     for (i = 0; i < topics->cnt; i++) {
-        add_next_index_string(return_value, topics->elems[i].topic, 1);
+        add_next_index_string(return_value, topics->elems[i].topic ZEVAL_DUP_CC);
     }
 
     rd_kafka_topic_partition_list_destroy(topics);
@@ -423,25 +428,25 @@ static void consumer_commit(int async, INTERNAL_FUNCTION_PARAMETERS) /* {{{ */
             zval *zoffset;
             rd_kafka_topic_partition_t *rktpar;
 
-            zerr = zend_read_property(NULL, zarg, ZEND_STRL("err"), 0 TSRMLS_CC);
+            zerr = rdkafka_read_property(NULL, zarg, ZEND_STRL("err"), 0 TSRMLS_CC);
             if (zerr && Z_TYPE_P(zerr) != IS_NULL && (Z_TYPE_P(zerr) != IS_LONG || Z_LVAL_P(zerr) != RD_KAFKA_RESP_ERR_NO_ERROR)) {
                 zend_throw_exception(ce_kafka_exception, "Invalid argument: Specified Message has an error", RD_KAFKA_RESP_ERR__INVALID_ARG TSRMLS_CC);
                 return;
             }
 
-            ztopic = zend_read_property(NULL, zarg, ZEND_STRL("topic_name"), 0 TSRMLS_CC);
+            ztopic = rdkafka_read_property(NULL, zarg, ZEND_STRL("topic_name"), 0 TSRMLS_CC);
             if (!ztopic || Z_TYPE_P(ztopic) != IS_STRING) {
                 zend_throw_exception(ce_kafka_exception, "Invalid argument: Specified Message's topic_name is not a string", RD_KAFKA_RESP_ERR__INVALID_ARG TSRMLS_CC);
                 return;
             }
 
-            zpartition = zend_read_property(NULL, zarg, ZEND_STRL("partition"), 0 TSRMLS_CC);
+            zpartition = rdkafka_read_property(NULL, zarg, ZEND_STRL("partition"), 0 TSRMLS_CC);
             if (!zpartition || Z_TYPE_P(zpartition) != IS_LONG) {
                 zend_throw_exception(ce_kafka_exception, "Invalid argument: Specified Message's partition is not an int", RD_KAFKA_RESP_ERR__INVALID_ARG TSRMLS_CC);
                 return;
             }
 
-            zoffset = zend_read_property(NULL, zarg, ZEND_STRL("offset"), 0 TSRMLS_CC);
+            zoffset = rdkafka_read_property(NULL, zarg, ZEND_STRL("offset"), 0 TSRMLS_CC);
             if (!zoffset || Z_TYPE_P(zoffset) != IS_LONG) {
                 zend_throw_exception(ce_kafka_exception, "Invalid argument: Specified Message's offset is not an int", RD_KAFKA_RESP_ERR__INVALID_ARG TSRMLS_CC);
                 return;
@@ -565,7 +570,7 @@ ZEND_END_ARG_INFO()
 PHP_METHOD(RdKafka__KafkaConsumer, newTopic)
 {
     char *topic;
-    int topic_len;
+    arglen_t topic_len;
     rd_kafka_topic_t *rkt;
     object_intern *intern;
     kafka_topic_object *topic_intern;
@@ -605,8 +610,12 @@ PHP_METHOD(RdKafka__KafkaConsumer, newTopic)
     }
 
     topic_intern->rkt = rkt;
+#if PHP_MAJOR_VERSION >= 7
+    topic_intern->zrk = *getThis();
+#else
     topic_intern->zrk = getThis();
-    Z_ADDREF_P(getThis());
+#endif
+    Z_ADDREF_P(P_ZEVAL(topic_intern->zrk));
 }
 /* }}} */
 
@@ -633,7 +642,9 @@ void kafka_kafka_consumer_minit(TSRMLS_D) /* {{{ */
     ce = zend_register_internal_class(&tmpce TSRMLS_CC);
     ce->create_object = kafka_consumer_new;
 
-    memcpy(&handlers, &kafka_object_handlers, sizeof(handlers));
+    handlers = kafka_default_object_handlers;
+    set_object_handler_free_obj(&handlers, kafka_consumer_free);
+    set_object_handler_offset(&handlers, XtOffsetOf(object_intern, std));
 
     zend_declare_property_null(ce, ZEND_STRL("error_cb"), ZEND_ACC_PRIVATE TSRMLS_CC);
     zend_declare_property_null(ce, ZEND_STRL("rebalance_cb"), ZEND_ACC_PRIVATE TSRMLS_CC);

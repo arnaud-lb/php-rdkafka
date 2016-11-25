@@ -22,6 +22,7 @@
 
 #include "php.h"
 #include "php_rdkafka.h"
+#include "php_rdkafka_priv.h"
 #include "librdkafka/rdkafka.h"
 #include "ext/spl/spl_iterators.h"
 #include "Zend/zend_interfaces.h"
@@ -66,13 +67,13 @@ PHP_METHOD(RdKafka__Message, errstr)
         return;
     }
 
-    zerr = zend_read_property(NULL, getThis(), ZEND_STRL("err"), 0 TSRMLS_CC);
+    zerr = rdkafka_read_property(NULL, getThis(), ZEND_STRL("err"), 0 TSRMLS_CC);
 
     if (!zerr || Z_TYPE_P(zerr) != IS_LONG) {
         return;
     }
 
-    zpayload = zend_read_property(NULL, getThis(), ZEND_STRL("payload"), 0 TSRMLS_CC);
+    zpayload = rdkafka_read_property(NULL, getThis(), ZEND_STRL("payload"), 0 TSRMLS_CC);
 
     if (zpayload && Z_TYPE_P(zpayload) == IS_STRING) {
         RETURN_ZVAL(zpayload, 1, 0);
@@ -81,7 +82,7 @@ PHP_METHOD(RdKafka__Message, errstr)
     errstr = rd_kafka_err2str(Z_LVAL_P(zerr));
 
     if (errstr) {
-        RETURN_STRING(errstr, 1);
+        RDKAFKA_RETURN_STRING(errstr);
     }
 }
 /* }}} */

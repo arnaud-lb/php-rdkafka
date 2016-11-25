@@ -35,7 +35,7 @@ extern zend_module_entry rdkafka_module_entry;
 
 #define PHP_RDKAFKA_VERSION "1.0.0"
 
-extern zend_object_handlers kafka_object_handlers;
+extern zend_object_handlers kafka_default_object_handlers;
 extern zend_class_entry * ce_kafka_exception;
 
 #ifdef PHP_WIN32

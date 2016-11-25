@@ -27,11 +27,17 @@
 #include "ext/spl/spl_iterators.h"
 #include "Zend/zend_interfaces.h"
 #include "Zend/zend_exceptions.h"
+#include "zeval.h"
 
 typedef struct _object_intern {
+#if PHP_MAJOR_VERSION < 7
     zend_object                     std;
+#endif
     zval                            zmetadata;
     const rd_kafka_metadata_broker_t *metadata_broker;
+#if PHP_MAJOR_VERSION >= 7
+    zend_object                     std;
+#endif
 } object_intern;
 
 static HashTable *get_debug_info(zval *object, int *is_temp TSRMLS_DC);
@@ -39,9 +45,9 @@ static HashTable *get_debug_info(zval *object, int *is_temp TSRMLS_DC);
 static zend_class_entry * ce;
 static zend_object_handlers handlers;
 
-static void free_object(void *object TSRMLS_DC) /* {{{ */
+static void free_object(zend_object *object TSRMLS_DC) /* {{{ */
 {
-    object_intern *intern = (object_intern*)object;
+    object_intern *intern = get_custom_object(object_intern, object);
 
     if (intern->metadata_broker) {
         zval_dtor(&intern->zmetadata);
@@ -49,7 +55,7 @@ static void free_object(void *object TSRMLS_DC) /* {{{ */
 
     zend_object_std_dtor(&intern->std TSRMLS_CC);
 
-    efree(intern);
+    free_custom_object(intern);
 }
 /* }}} */
 
@@ -62,8 +68,9 @@ static zend_object_value create_object(zend_class_entry *class_type TSRMLS_DC) /
     zend_object_std_init(&intern->std, class_type TSRMLS_CC);
     object_properties_init(&intern->std, class_type);
 
-    retval.handle = zend_objects_store_put(&intern->std, (zend_objects_store_dtor_t) zend_objects_destroy_object, free_object, NULL TSRMLS_CC);
-    retval.handlers = &handlers;
+
+    STORE_OBJECT(retval, intern, (zend_objects_store_dtor_t) zend_objects_destroy_object, free_object, NULL);
+    SET_OBJECT_HANDLERS(retval, &handlers);
 
     return retval;
 }
@@ -96,7 +103,7 @@ static HashTable *get_debug_info(zval *object, int *is_temp TSRMLS_DC) /* {{{ */
     }
 
     add_assoc_long(&ary, "id", intern->metadata_broker->id);
-    add_assoc_string(&ary, "host", intern->metadata_broker->host, 1);
+    rdkafka_add_assoc_string(&ary, "host", intern->metadata_broker->host);
     add_assoc_long(&ary, "port", intern->metadata_broker->port);
 
     return Z_ARRVAL(ary);
@@ -145,7 +152,7 @@ PHP_METHOD(RdKafka__Metadata__Broker, getHost)
         return;
     }
 
-    RETURN_STRING(intern->metadata_broker->host, 1);
+    RDKAFKA_RETURN_STRING(intern->metadata_broker->host);
 }
 /* }}} */
 
@@ -187,8 +194,10 @@ void kafka_metadata_broker_minit(TSRMLS_D)
     ce = zend_register_internal_class(&tmpce TSRMLS_CC);
     ce->create_object = create_object;
 
-    memcpy(&handlers, &kafka_object_handlers, sizeof(handlers));
+    handlers = kafka_default_object_handlers;
     handlers.get_debug_info = get_debug_info;
+    set_object_handler_free_obj(&handlers, free_object);
+    set_object_handler_offset(&handlers, XtOffsetOf(object_intern, std));
 }
 
 void kafka_metadata_broker_ctor(zval *return_value, zval *zmetadata, const void *data TSRMLS_DC)

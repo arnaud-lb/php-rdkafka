@@ -19,10 +19,15 @@
 #ifdef HAVE_NEW_KAFKA_CONSUMER
 
 typedef struct _kafka_topic_partition_intern {
+#if PHP_MAJOR_VERSION < 7
     zend_object std;
+#endif
     char        *topic;
     int32_t     partition;
     int64_t     offset;
+#if PHP_MAJOR_VERSION >= 7
+    zend_object std;
+#endif
 } kafka_topic_partition_intern;
 
 void kafka_metadata_topic_partition_minit(TSRMLS_D);
