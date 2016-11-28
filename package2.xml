@@ -10,10 +10,10 @@
   <email>arnaud.lb@gmail.com</email>
   <active>yes</active>
  </lead>
- <date>2016-09-09</date>
+ <date>2016-11-28</date>
  <time>12:00:00</time>
  <version>
-  <release>2.0.0</release>
+  <release>2.0.1</release>
   <api>1.0.0</api>
  </version>
  <stability>
@@ -25,17 +25,8 @@
 This version of rdkafka is indented for php version 7. To compile rdkafka for
 older versions of php, use the pecl package version 1.
 
- * Added high level consumer: Rdkafka\KafkaConsumer (librdkafka 0.9)
- * RD_KAFKA_VERSION now reports the runtime librdkafka version
- * Added RD_KAFKA_BUILD_VERSION
- * Export runtime-provided constants from librdkafka (librdkafka 0.9)
- * Added rd_kafka_get_err_descs() (librdkafka 0.9)
- * Improve reflection/arginfo
- * Rdkafka::metadata() is now a deprecated alias to Rdkafka::getMetadata()
- * Rdkafka::outqLen() is now a deprecated alias to Rdkafka::getOutQLen()
- * Rdkafka now throws Rdkafka\Exception instances
- * Added Rdkafka\Conf::setDefaultTopicConf() (librdkafka 0.9)
- * Added Rdkafka\Conf::setDrMsgCb() (librdkafka 0.9)
+ * Fix build on PHP 7.1
+ * Various bug fixes
  </notes>
  <contents>
   <dir name="/">
@@ -92,6 +83,35 @@ older versions of php, use the pecl package version 1.
  <providesextension>rdkafka</providesextension>
  <extsrcrelease/>
  <changelog>
+  <release>
+   <date>2016-09-09</date>
+   <time>12:00:00</time>
+   <version>
+    <release>2.0.0</release>
+    <api>1.0.0</api>
+   </version>
+   <stability>
+    <release>beta</release>
+    <api>beta</api>
+   </stability>
+   <license uri="http://opensource.org/licenses/mit-license.php">MIT License</license>
+   <notes>
+    This version of rdkafka is indented for php version 7. To compile rdkafka for
+    older versions of php, use the pecl package version 1.
+
+    * Added high level consumer: Rdkafka\KafkaConsumer (librdkafka 0.9)
+    * RD_KAFKA_VERSION now reports the runtime librdkafka version
+    * Added RD_KAFKA_BUILD_VERSION
+    * Export runtime-provided constants from librdkafka (librdkafka 0.9)
+    * Added rd_kafka_get_err_descs() (librdkafka 0.9)
+    * Improve reflection/arginfo
+    * Rdkafka::metadata() is now a deprecated alias to Rdkafka::getMetadata()
+    * Rdkafka::outqLen() is now a deprecated alias to Rdkafka::getOutQLen()
+    * Rdkafka now throws Rdkafka\Exception instances
+    * Added Rdkafka\Conf::setDefaultTopicConf() (librdkafka 0.9)
+    * Added Rdkafka\Conf::setDrMsgCb() (librdkafka 0.9)
+   </notes>
+  </release>
   <release>
    <date>2016-01-11</date>
    <time>10:30:00</time>
