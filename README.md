@@ -35,7 +35,7 @@ https://arnaud-lb.github.io/php-rdkafka/phpdoc/rdkafka.setup.html
 ## Examples
 
 https://arnaud-lb.github.io/php-rdkafka/phpdoc/rdkafka.examples.html
- 
+
 ## Usage
 
 ### Producing
@@ -224,6 +224,10 @@ Reducing the value of this setting improves shutdown speed. The value defines th
 ## Documentation
 
 https://arnaud-lb.github.io/php-rdkafka/phpdoc/book.rdkafka.html
+
+## Asking for Help
+
+If the documentation is not enough, feel free to ask a questions on the php-rdkafka channels on [Gitter](https://gitter.im/arnaud-lb/php-rdkafka) or [Google Groups](https://groups.google.com/forum/#!groupsettings/php-rdkafka-users/advanced).
 
 ## Stubs
 
