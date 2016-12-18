@@ -10,32 +10,20 @@
   <email>arnaud.lb@gmail.com</email>
   <active>yes</active>
  </lead>
- <date>2016-09-09</date>
+ <date>2016-12-18</date>
  <time>12:00:00</time>
  <version>
-  <release>1.0.0</release>
+  <release>3.0.0</release>
   <api>1.0.0</api>
  </version>
  <stability>
-  <release>beta</release>
-  <api>beta</api>
+  <release>stable</release>
+  <api>stable</api>
  </stability>
  <license uri="http://opensource.org/licenses/mit-license.php">MIT License</license>
  <notes>
-This version of rdkafka is indented for php version 5. To compile rdkafka for
-newer versions of php, use the pecl package version 2.
-
- * Added high level consumer: Rdkafka\KafkaConsumer (librdkafka 0.9)
- * RD_KAFKA_VERSION now reports the runtime librdkafka version
- * Added RD_KAFKA_BUILD_VERSION
- * Export runtime-provided constants from librdkafka (librdkafka 0.9)
- * Added rd_kafka_get_err_descs() (librdkafka 0.9)
- * Improve reflection/arginfo
- * Rdkafka::metadata() is now a deprecated alias to Rdkafka::getMetadata()
- * Rdkafka::outqLen() is now a deprecated alias to Rdkafka::getOutQLen()
- * Rdkafka now throws Rdkafka\Exception instances
- * Added Rdkafka\Conf::setDefaultTopicConf() (librdkafka 0.9)
- * Added Rdkafka\Conf::setDrMsgCb() (librdkafka 0.9)
+ * Unified code for PHP versions 5 and 7. This package builds and works on
+   PHP 5.3 through PHP 7.x.
  </notes>
  <contents>
   <dir name="/">
@@ -77,13 +65,14 @@ newer versions of php, use the pecl package version 2.
    <file role="src" name="topic.h"/>
    <file role="src" name="topic_partition.c"/>
    <file role="src" name="topic_partition.h"/>
+   <file role="src" name="zeval.h"/>
   </dir>
  </contents>
  <dependencies>
   <required>
    <php>
     <min>5.3.0</min>
-    <max>5.99</max>
+    <max>7.99.99</max>
    </php>
    <pearinstaller>
     <min>1.4.8</min>
@@ -93,6 +82,35 @@ newer versions of php, use the pecl package version 2.
  <providesextension>rdkafka</providesextension>
  <extsrcrelease/>
  <changelog>
+  <release>
+   <date>2016-09-09</date>
+   <time>12:00:00</time>
+   <version>
+    <release>1.0.0</release>
+    <api>1.0.0</api>
+   </version>
+   <stability>
+    <release>beta</release>
+    <api>beta</api>
+   </stability>
+   <license uri="http://opensource.org/licenses/mit-license.php">MIT License</license>
+   <notes>
+    This version of rdkafka is indented for php version 5. To compile rdkafka for
+    newer versions of php, use the pecl package version 2.
+
+     * Added high level consumer: Rdkafka\KafkaConsumer (librdkafka 0.9)
+     * RD_KAFKA_VERSION now reports the runtime librdkafka version
+     * Added RD_KAFKA_BUILD_VERSION
+     * Export runtime-provided constants from librdkafka (librdkafka 0.9)
+     * Added rd_kafka_get_err_descs() (librdkafka 0.9)
+     * Improve reflection/arginfo
+     * Rdkafka::metadata() is now a deprecated alias to Rdkafka::getMetadata()
+     * Rdkafka::outqLen() is now a deprecated alias to Rdkafka::getOutQLen()
+     * Rdkafka now throws Rdkafka\Exception instances
+     * Added Rdkafka\Conf::setDefaultTopicConf() (librdkafka 0.9)
+     * Added Rdkafka\Conf::setDrMsgCb() (librdkafka 0.9)
+   </notes>
+  </release>
   <release>
    <date>2016-01-11</date>
    <time>10:30:00</time>
