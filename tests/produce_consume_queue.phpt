@@ -11,7 +11,9 @@ require __DIR__."/test_env.php";
 $delivered = 0;
 
 $conf = new RdKafka\Conf();
-$conf->set('broker.version.fallback', TEST_KAFKA_BROKER_VERSION);
+if (RD_KAFKA_VERSION >= 0x090000) {
+    $conf->set('broker.version.fallback', TEST_KAFKA_BROKER_VERSION);
+}
 $conf->setErrorCb(function ($producer, $err, $errstr) {
     printf("%s: %s\n", rd_kafka_err2str($err), $errstr);
     exit;
