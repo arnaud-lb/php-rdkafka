@@ -375,7 +375,7 @@ PHP_METHOD(RdKafka__ProducerTopic, produce)
     rd_kafka_resp_err_t err;
     kafka_topic_object *intern;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "lls|s", &partition, &msgflags, &payload, &payload_len, &key, &key_len) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "lls|s!", &partition, &msgflags, &payload, &payload_len, &key, &key_len) == FAILURE) {
         return;
     }
 

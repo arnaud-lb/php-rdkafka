@@ -251,7 +251,7 @@ PHP_METHOD(RdKafka__Consumer, __construct)
 
     zend_replace_error_handling(EH_THROW, spl_ce_InvalidArgumentException, &error_handling TSRMLS_CC);
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|O", &zconf, ce_kafka_conf) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|O!", &zconf, ce_kafka_conf) == FAILURE) {
         zend_restore_error_handling(&error_handling TSRMLS_CC);
         return;
     }
@@ -423,7 +423,7 @@ PHP_METHOD(RdKafka__Kafka, newTopic)
     rd_kafka_topic_conf_t *conf = NULL;
     kafka_conf_object *conf_intern;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s|O", &topic, &topic_len, &zconf, ce_kafka_topic_conf) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s|O!", &topic, &topic_len, &zconf, ce_kafka_topic_conf) == FAILURE) {
         return;
     }
 
@@ -591,7 +591,7 @@ PHP_METHOD(RdKafka__Producer, __construct)
 
     zend_replace_error_handling(EH_THROW, spl_ce_InvalidArgumentException, &error_handling TSRMLS_CC);
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|O", &zconf, ce_kafka_conf) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|O!", &zconf, ce_kafka_conf) == FAILURE) {
         zend_restore_error_handling(&error_handling TSRMLS_CC);
         return;
     }
