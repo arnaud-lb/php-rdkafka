@@ -56,7 +56,7 @@ typedef struct _kafka_object {
 #if PHP_MAJOR_VERSION >= 7
     zend_object             std;
 #endif
-} kafka_object;
+};
 
 typedef struct _toppar {
     rd_kafka_topic_t    *rkt;
