@@ -10,10 +10,10 @@
   <email>arnaud.lb@gmail.com</email>
   <active>yes</active>
  </lead>
- <date>2016-12-18</date>
+ <date>2017-01-28</date>
  <time>12:00:00</time>
  <version>
-  <release>3.0.0</release>
+  <release>3.0.1</release>
   <api>1.0.0</api>
  </version>
  <stability>
@@ -22,8 +22,7 @@
  </stability>
  <license uri="http://opensource.org/licenses/mit-license.php">MIT License</license>
  <notes>
- * Unified code for PHP versions 5 and 7. This package builds and works on
-   PHP 5.3 through PHP 7.x.
+ * Fixed build on old gcc
  </notes>
  <contents>
   <dir name="/">
@@ -82,6 +81,23 @@
  <providesextension>rdkafka</providesextension>
  <extsrcrelease/>
  <changelog>
+  <release>
+   <date>2016-12-18</date>
+   <time>12:00:00</time>
+   <version>
+    <release>3.0.0</release>
+    <api>1.0.0</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <license uri="http://opensource.org/licenses/mit-license.php">MIT License</license>
+   <notes>
+   * Unified code for PHP versions 5 and 7. This package builds and works on
+     PHP 5.3 through PHP 7.x.
+   </notes>
+  </release>
   <release>
    <date>2016-09-09</date>
    <time>12:00:00</time>
