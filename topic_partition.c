@@ -211,6 +211,8 @@ PHP_METHOD(RdKafka__TopicPartition, __construct)
     }
 
     kafka_topic_partition_init(getThis(), topic, partition, offset TSRMLS_CC);
+
+    zend_restore_error_handling(&error_handling TSRMLS_CC);
 }
 /* }}} */
 
