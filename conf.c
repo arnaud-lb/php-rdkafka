@@ -51,6 +51,7 @@ void kafka_conf_callbacks_dtor(kafka_conf_callbacks *cbs TSRMLS_DC) /* {{{ */
     kafka_conf_callback_dtor(cbs->error TSRMLS_CC);
     kafka_conf_callback_dtor(cbs->rebalance TSRMLS_CC);
     kafka_conf_callback_dtor(cbs->dr_msg TSRMLS_CC);
+    kafka_conf_callback_dtor(cbs->stats TSRMLS_CC);
 } /* }}} */
 
 static void kafka_conf_callback_copy(kafka_conf_callback **to, kafka_conf_callback *from TSRMLS_DC) /* {{{ */
@@ -71,6 +72,7 @@ void kafka_conf_callbacks_copy(kafka_conf_callbacks *to, kafka_conf_callbacks *f
     kafka_conf_callback_copy(&to->error, from->error TSRMLS_CC);
     kafka_conf_callback_copy(&to->rebalance, from->rebalance TSRMLS_CC);
     kafka_conf_callback_copy(&to->dr_msg, from->dr_msg TSRMLS_CC);
+    kafka_conf_callback_copy(&to->stats, from->stats TSRMLS_CC);
 } /* }}} */
 
 static void kafka_conf_free(zend_object *object TSRMLS_DC) /* {{{ */
@@ -178,6 +180,42 @@ static void kafka_conf_dr_msg_cb(rd_kafka_t *rk, const rd_kafka_message_t *msg, 
 
     zval_ptr_dtor(&args[0]);
     zval_ptr_dtor(&args[1]);
+}
+
+static int kafka_conf_stats_cb(rd_kafka_t *rk, char *json, size_t json_len, void *opaque)
+{
+
+    kafka_conf_callbacks *cbs = (kafka_conf_callbacks*) opaque;
+
+    cbs->dr_msg;
+
+
+    zeval args[3];
+    TSRMLS_FETCH();
+
+    if (!opaque) {
+        return 0;
+    }
+
+    if (!cbs->stats) {
+        return 0;
+    }
+
+    MAKE_STD_ZEVAL(args[0]);
+    MAKE_STD_ZEVAL(args[1]);
+    MAKE_STD_ZEVAL(args[2]);
+
+    KAFKA_ZVAL_ZVAL(P_ZEVAL(args[0]), &cbs->rk, 1, 0);
+    RDKAFKA_ZVAL_STRING(P_ZEVAL(args[1]), json);
+    ZVAL_LONG(P_ZEVAL(args[2]), json_len);
+
+    rdkafka_call_function(&cbs->stats->fci, &cbs->stats->fcc, NULL, 3, args TSRMLS_CC);
+
+    zval_ptr_dtor(&args[0]);
+    zval_ptr_dtor(&args[1]);
+    zval_ptr_dtor(&args[2]);
+
+    return 0;
 }
 
 #ifdef HAVE_NEW_KAFKA_CONSUMER
@@ -441,6 +479,44 @@ PHP_METHOD(RdKafka__Conf, setDrMsgCb)
 }
 /* }}} */
 
+/* {{{ proto void RdKafka\Conf::setStatsCb(callable $callback)
+   Sets the delivery report callback */
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_conf_set_stats_cb, 0, 0, 1)
+    ZEND_ARG_INFO(0, callback)
+ZEND_END_ARG_INFO()
+
+PHP_METHOD(RdKafka__Conf, setStatsCb)
+{
+
+    zend_fcall_info fci;
+    zend_fcall_info_cache fcc;
+    kafka_conf_object *intern;
+
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "f", &fci, &fcc) == FAILURE) {
+        return;
+    }
+
+    intern = get_kafka_conf_object(getThis() TSRMLS_CC);
+    if (!intern) {
+        return;
+    }
+
+    Z_ADDREF_P(P_ZEVAL(fci.function_name));
+
+    if (intern->cbs.stats) {
+        zval_ptr_dtor(&intern->cbs.stats->fci.function_name);
+    } else {
+        intern->cbs.stats = ecalloc(1, sizeof(*intern->cbs.stats));
+    }
+
+    intern->cbs.stats->fci = fci;
+    intern->cbs.stats->fcc = fcc;
+
+    rd_kafka_conf_set_stats_cb(intern->u.conf, kafka_conf_stats_cb);
+}
+/* }}} */
+
 #ifdef HAVE_NEW_KAFKA_CONSUMER
 /* {{{ proto void RdKafka\Conf::setRebalanceCb(mixed $callback)
    Set rebalance callback for use with coordinated consumer group balancing */
@@ -557,6 +633,7 @@ static const zend_function_entry kafka_conf_fe[] = {
 #endif /* HAVE_NEW_KAFKA_CONSUMER */
     PHP_ME(RdKafka__Conf, setErrorCb, arginfo_kafka_conf_set_error_cb, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__Conf, setDrMsgCb, arginfo_kafka_conf_set_dr_msg_cb, ZEND_ACC_PUBLIC)
+    PHP_ME(RdKafka__Conf, setStatsCb, arginfo_kafka_conf_set_stats_cb, ZEND_ACC_PUBLIC)
 #ifdef HAVE_NEW_KAFKA_CONSUMER
     PHP_ME(RdKafka__Conf, setRebalanceCb, arginfo_kafka_conf_set_rebalance_cb, ZEND_ACC_PUBLIC)
 #endif /* HAVE_NEW_KAFKA_CONSUMER */

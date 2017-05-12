@@ -38,6 +38,11 @@ $conf->setDrMsgCb(function () { });
 $dump = $conf->dump();
 var_dump(isset($dump["dr_msg_cb"]));
 
+echo "Setting stats callback\n";
+$conf->setStatsCb(function () { });
+$dump = $conf->dump();
+var_dump(isset($dump["dr_msg_cb"]));
+
 echo "Dumping conf\n";
 var_dump(array_intersect_key($conf->dump(), array(
     "client.id" => true,
@@ -56,6 +61,8 @@ Caught a RdKafka\Exception: No such configuration property: "invalid"
 Setting error callback
 bool(true)
 Setting dr_msg callback
+bool(true)
+Setting stats callback
 bool(true)
 Dumping conf
 array(3) {
