@@ -135,7 +135,7 @@ static inline void *zend_hash_str_add_ptr(HashTable *ht, const char *str, size_t
 
 static inline int zend_hash_str_del(HashTable *ht, const char *str, size_t len)
 {
-	return zend_hash_str_del(ht, str, len);
+	return zend_hash_del(ht, str, len);
 }
 
 static inline zend_bool zend_hash_str_exists(const HashTable *ht, const char *str, size_t len)
