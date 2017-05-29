@@ -92,7 +92,7 @@ static void kafka_free(zend_object *object TSRMLS_DC) /* {{{ */
             stop_consuming(intern TSRMLS_CC);
         }
         while (rd_kafka_outq_len(intern->rk) > 0) {
-            rd_kafka_poll(intern->rk, 50);
+            rd_kafka_poll(intern->rk, 1);
         }
         rd_kafka_destroy(intern->rk);
         intern->rk = NULL;
