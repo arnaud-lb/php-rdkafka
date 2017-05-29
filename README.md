@@ -221,6 +221,41 @@ $conf->set('internal.termination.signal', SIGIO);
 
 Reducing the value of this setting improves shutdown speed. The value defines the maximum time librdkafka will block in one iteration of a read loop. This also defines how often the main librdkafka thread will check for termination.
 
+### queue.buffering.max.ms
+
+This defines the maximum and default time librdkafka will wait before sending a batch of messages. Reducing this setting to e.g. 1ms ensures that messages are sent ASAP, instead of being batched.
+
+This has been seen to reduce the shutdown time of the rdkafka instance, and of the PHP process / request.
+
+## Performance / Low-latency settings
+
+Here is a configuration optimized for low latency. This allows a PHP process / request to send messages ASAP and to terminate quickly.
+
+```
+<?php
+
+$conf = new \RdKafka\Conf();
+$conf->set('socket.timeout.ms', 50); // or socket.blocking.max.ms, depending on librdkafka version
+if (function_exists('pcntl_sigprocmask')) {
+    pcntl_sigprocmask(SIG_BLOCK, array(SIGIO));
+    $conf->set('internal.termination.signal', SIGIO);
+} else {
+    $conf->set('queue.buffering.max.ms', 1);
+}
+
+$producer = new \RdKafka\Producer($conf);
+$consumer = new \RdKafka\Consumer($conf);
+```
+
+Polling after producing can also be important to reduce termination times:
+
+```
+$producer->produce(...);
+while ($producer->getOutQLen() > 0) {
+    $producer->poll(1);
+}
+```
+
 ## Documentation
 
 https://arnaud-lb.github.io/php-rdkafka/phpdoc/book.rdkafka.html
