@@ -231,7 +231,7 @@ This has been seen to reduce the shutdown time of the rdkafka instance, and of t
 
 Here is a configuration optimized for low latency. This allows a PHP process / request to send messages ASAP and to terminate quickly.
 
-```
+``` php
 <?php
 
 $conf = new \RdKafka\Conf();
