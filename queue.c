@@ -42,6 +42,9 @@ static void kafka_queue_free(zend_object *object TSRMLS_DC) /* {{{ */
     if (intern->rkqu) {
         rd_kafka_queue_destroy(intern->rkqu);
     }
+    if (P_ZEVAL(intern->zrk)) {
+        zval_ptr_dtor(&intern->zrk);
+    }
 
     zend_object_std_dtor(&intern->std TSRMLS_CC);
 

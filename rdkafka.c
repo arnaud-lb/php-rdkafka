@@ -400,6 +400,16 @@ PHP_METHOD(RdKafka__Kafka, newQueue)
     }
 
     queue_intern->rkqu = rkqu;
+
+    // Keep a reference to the parent Kafka object, attempts to ensure that
+    // the Queue object is destroyed before the Kafka object.
+    // This avoids rd_kafka_destroy() hanging.
+#if PHP_MAJOR_VERSION >= 7
+    queue_intern->zrk = *getThis();
+#else
+    queue_intern->zrk = getThis();
+#endif
+    Z_ADDREF_P(P_ZEVAL(queue_intern->zrk));
 }
 /* }}} */
 
