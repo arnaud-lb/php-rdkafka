@@ -53,7 +53,7 @@ $rk->addBrokers("10.0.0.1,10.0.0.2");
 
 Next, we create a topic instance from the producer:
 
-```
+``` php
 <?php
 
 $topic = $rk->newTopic("test");
@@ -62,7 +62,7 @@ $topic = $rk->newTopic("test");
 From there, we can produce as much messages as we want, using the produce
 method:
 
-```
+``` php
 <?php
 
 $topic->produce(RD_KAFKA_PARTITION_UA, 0, "Message payload");
