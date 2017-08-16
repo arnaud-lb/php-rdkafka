@@ -41,7 +41,7 @@ var_dump(isset($dump["dr_msg_cb"]));
 echo "Setting stats callback\n";
 $conf->setStatsCb(function () { });
 $dump = $conf->dump();
-var_dump(isset($dump["dr_msg_cb"]));
+var_dump(isset($dump["stats_cb"]));
 
 echo "Dumping conf\n";
 var_dump(array_intersect_key($conf->dump(), array(
