@@ -184,12 +184,7 @@ static void kafka_conf_dr_msg_cb(rd_kafka_t *rk, const rd_kafka_message_t *msg, 
 
 static int kafka_conf_stats_cb(rd_kafka_t *rk, char *json, size_t json_len, void *opaque)
 {
-
     kafka_conf_callbacks *cbs = (kafka_conf_callbacks*) opaque;
-
-    cbs->dr_msg;
-
-
     zeval args[3];
     TSRMLS_FETCH();
 
@@ -488,7 +483,6 @@ ZEND_END_ARG_INFO()
 
 PHP_METHOD(RdKafka__Conf, setStatsCb)
 {
-
     zend_fcall_info fci;
     zend_fcall_info_cache fcc;
     kafka_conf_object *intern;
