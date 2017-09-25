@@ -180,7 +180,9 @@ kafka_object * get_kafka_object(zval *zrk TSRMLS_DC)
 
 static void kafka_log_syslog_print(const rd_kafka_t *rk, int level, const char *fac, const char *buf) {
     rd_kafka_log_print(rk, level, fac, buf);
+#ifndef _MSC_VER
     rd_kafka_log_syslog(rk, level, fac, buf);
+#endif
 }
 
 void add_consuming_toppar(kafka_object * intern, rd_kafka_topic_t * rkt, int32_t partition) {
@@ -559,9 +561,11 @@ PHP_METHOD(RdKafka__Kafka, setLogger)
         case RD_KAFKA_LOG_PRINT:
             logger = rd_kafka_log_print;
             break;
+#ifndef _MSC_VER
         case RD_KAFKA_LOG_SYSLOG:
             logger = rd_kafka_log_syslog;
             break;
+#endif
         case RD_KAFKA_LOG_SYSLOG_PRINT:
             logger = kafka_log_syslog_print;
             break;
