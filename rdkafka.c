@@ -74,17 +74,14 @@ static void kafka_free(zend_object *object TSRMLS_DC) /* {{{ */
 {
     kafka_object *intern = get_custom_object(kafka_object, object);
 
-    if (intern->type == RD_KAFKA_CONSUMER) {
-        zend_hash_destroy(&intern->consuming);
-        zend_hash_destroy(&intern->queues);
-    }
-
-    zend_hash_destroy(&intern->topics);
-
     if (intern->rk) {
         if (intern->type == RD_KAFKA_CONSUMER) {
             stop_consuming(intern TSRMLS_CC);
+            zend_hash_destroy(&intern->consuming);
+            zend_hash_destroy(&intern->queues);
         }
+        zend_hash_destroy(&intern->topics);
+
         while (rd_kafka_outq_len(intern->rk) > 0) {
             rd_kafka_poll(intern->rk, 1);
         }
