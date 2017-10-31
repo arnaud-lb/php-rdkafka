@@ -143,6 +143,13 @@ static inline zend_bool zend_hash_str_exists(const HashTable *ht, const char *st
     return zend_hash_exists(ht, str, len);
 }
 
+static inline void *zend_hash_index_add_ptr(HashTable *ht, zend_ulong h, void *pData)
+{
+    void *pDest;
+    zend_hash_index_update(ht, h, &pData, sizeof(pData), &pDest);
+    return pDest;
+}
+
 static inline zend_class_entry *rdkafka_register_internal_class_ex(zend_class_entry *class_entry, zend_class_entry *parent_ce TSRMLS_DC)
 {
     return zend_register_internal_class_ex(class_entry, parent_ce, NULL TSRMLS_CC);
