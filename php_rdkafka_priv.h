@@ -213,8 +213,6 @@ static inline zval **rdkafka_hash_get_current_data_ex(HashTable *ht, HashPositio
 #define RDKAFKA_ZVAL_STRING(zv, str) ZVAL_STRING(zv, str, 1)
 #endif
 
-typedef struct _kafka_object kafka_object;
-
 kafka_object * get_kafka_object(zval *zrk TSRMLS_DC);
 void add_consuming_toppar(kafka_object * intern, rd_kafka_topic_t * rkt, int32_t partition);
 void del_consuming_toppar(kafka_object * intern, rd_kafka_topic_t * rkt, int32_t partition);

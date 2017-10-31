@@ -45,19 +45,6 @@ enum {
    , RD_KAFKA_LOG_SYSLOG_PRINT = 102
 };
 
-typedef struct _kafka_object {
-#if PHP_MAJOR_VERSION < 7
-    zend_object             std;
-#endif
-    rd_kafka_type_t         type;
-    rd_kafka_t              *rk;
-    kafka_conf_callbacks    cbs;
-    HashTable               consuming;
-#if PHP_MAJOR_VERSION >= 7
-    zend_object             std;
-#endif
-};
-
 typedef struct _toppar {
     rd_kafka_topic_t    *rkt;
     int32_t             partition;
@@ -87,6 +74,13 @@ static void kafka_free(zend_object *object TSRMLS_DC) /* {{{ */
 {
     kafka_object *intern = get_custom_object(kafka_object, object);
 
+    if (intern->type == RD_KAFKA_CONSUMER) {
+        zend_hash_destroy(&intern->consuming);
+        zend_hash_destroy(&intern->queues);
+    }
+
+    zend_hash_destroy(&intern->topics);
+
     if (intern->rk) {
         if (intern->type == RD_KAFKA_CONSUMER) {
             stop_consuming(intern TSRMLS_CC);
@@ -100,10 +94,6 @@ static void kafka_free(zend_object *object TSRMLS_DC) /* {{{ */
 
     kafka_conf_callbacks_dtor(&intern->cbs TSRMLS_CC);
 
-    if (intern->type == RD_KAFKA_CONSUMER) {
-        zend_hash_destroy(&intern->consuming);
-    }
-
     zend_object_std_dtor(&intern->std TSRMLS_CC);
 
     free_custom_object(intern);
@@ -112,6 +102,20 @@ static void kafka_free(zend_object *object TSRMLS_DC) /* {{{ */
 
 static void toppar_pp_dtor(toppar ** tp) {
     efree(*tp);
+}
+
+static void kafka_queue_object_pre_free(kafka_queue_object ** pp) {
+    kafka_queue_object *intern = *pp;
+    rd_kafka_queue_destroy(intern->rkqu);
+    intern->rkqu = NULL;
+    zval_ptr_dtor(&intern->zrk);
+}
+
+static void kafka_topic_object_pre_free(kafka_topic_object ** pp) {
+    kafka_topic_object *intern = *pp;
+    rd_kafka_topic_destroy(intern->rkt);
+    intern->rkt = NULL;
+    zval_ptr_dtor(&intern->zrk);
 }
 
 static void kafka_init(zval *this_ptr, rd_kafka_type_t type, zval *zconf TSRMLS_DC) /* {{{ */
@@ -146,7 +150,10 @@ static void kafka_init(zval *this_ptr, rd_kafka_type_t type, zval *zconf TSRMLS_
 
     if (type == RD_KAFKA_CONSUMER) {
         zend_hash_init(&intern->consuming, 0, NULL, (dtor_func_t)toppar_pp_dtor, 0);
+        zend_hash_init(&intern->queues, 0, NULL, (dtor_func_t)kafka_queue_object_pre_free, 0);
     }
+
+    zend_hash_init(&intern->topics, 0, NULL, (dtor_func_t)kafka_topic_object_pre_free, 0);
 }
 /* }}} */
 
@@ -412,6 +419,8 @@ PHP_METHOD(RdKafka__Kafka, newQueue)
     queue_intern->zrk = getThis();
 #endif
     Z_ADDREF_P(P_ZEVAL(queue_intern->zrk));
+
+    zend_hash_index_add_ptr(&intern->queues, (zend_ulong)queue_intern, queue_intern);
 }
 /* }}} */
 
@@ -484,6 +493,8 @@ PHP_METHOD(RdKafka__Kafka, newTopic)
     topic_intern->zrk = getThis();
 #endif
     Z_ADDREF_P(P_ZEVAL(topic_intern->zrk));
+
+    zend_hash_index_add_ptr(&intern->topics, (zend_ulong)topic_intern, topic_intern);
 }
 /* }}} */
 

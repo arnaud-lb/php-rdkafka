@@ -40,10 +40,10 @@ static void kafka_queue_free(zend_object *object TSRMLS_DC) /* {{{ */
     kafka_queue_object *intern = get_custom_object(kafka_queue_object, object);
 
     if (intern->rkqu) {
-        rd_kafka_queue_destroy(intern->rkqu);
-    }
-    if (P_ZEVAL(intern->zrk)) {
-        zval_ptr_dtor(&intern->zrk);
+        kafka_object *kafka_intern = get_kafka_object(P_ZEVAL(intern->zrk) TSRMLS_CC);
+        if (kafka_intern) {
+            zend_hash_index_del(&kafka_intern->queues, (zend_ulong)intern);
+        }
     }
 
     zend_object_std_dtor(&intern->std TSRMLS_CC);
