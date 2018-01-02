@@ -57,6 +57,12 @@ if test "$PHP_RDKAFKA" != "no"; then
     AC_MSG_WARN([no rd_kafka_get_err_descs, the rd_kafka_get_err_descs function will not be available])
   ])
 
+  AC_CHECK_LIB($LIBNAME,[rd_kafka_message_timestamp],[
+    AC_DEFINE(HAVE_RD_KAFKA_MESSAGE_TIMESTAMP,1,[ ])
+  ],[
+    AC_MSG_WARN([no rd_kafka_message_timestamp, timestamp support will not be available])
+  ])
+
   AC_CHECK_LIB($LIBNAME,[rd_kafka_subscribe],[
     AC_DEFINE(HAVE_NEW_KAFKA_CONSUMER,1,[ ])
     SOURCES="$SOURCES kafka_consumer.c topic_partition.c"
