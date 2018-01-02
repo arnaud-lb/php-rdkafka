@@ -37,7 +37,7 @@ void kafka_message_new(zval *return_value, const rd_kafka_message_t *message TSR
     object_init_ex(return_value, ce_kafka_message);
 
 #ifdef HAVE_RD_KAFKA_MESSAGE_TIMESTAMP
-	rd_kafka_timestamp_type_t tstype;
+    rd_kafka_timestamp_type_t tstype;
     int64_t timestamp;
 
     timestamp = rd_kafka_message_timestamp(message, &tstype);
