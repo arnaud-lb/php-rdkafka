@@ -426,18 +426,11 @@ static void consumer_commit(int async, INTERNAL_FUNCTION_PARAMETERS) /* {{{ */
             zval *ztopic;
             zval *zpartition;
             zval *zoffset;
-            zval *ztimestamp;
             rd_kafka_topic_partition_t *rktpar;
 
             zerr = rdkafka_read_property(NULL, zarg, ZEND_STRL("err"), 0 TSRMLS_CC);
             if (zerr && Z_TYPE_P(zerr) != IS_NULL && (Z_TYPE_P(zerr) != IS_LONG || Z_LVAL_P(zerr) != RD_KAFKA_RESP_ERR_NO_ERROR)) {
                 zend_throw_exception(ce_kafka_exception, "Invalid argument: Specified Message has an error", RD_KAFKA_RESP_ERR__INVALID_ARG TSRMLS_CC);
-                return;
-            }
-
-            ztimestamp = rdkafka_read_property(NULL, zarg, ZEND_STRL("timestamp"), 0 TSRMLS_CC);
-            if (!ztimestamp) {
-                zend_throw_exception(ce_kafka_exception, "Invalid argument: Specified Message has no timestamp", RD_KAFKA_RESP_ERR__INVALID_ARG TSRMLS_CC);
                 return;
             }
 
