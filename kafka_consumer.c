@@ -522,6 +522,8 @@ ZEND_END_ARG_INFO()
 
 PHP_METHOD(RdKafka__KafkaConsumer, close)
 {
+    object_intern *intern;
+
     intern = get_object(getThis() TSRMLS_CC);
     if (!intern) {
         return;
