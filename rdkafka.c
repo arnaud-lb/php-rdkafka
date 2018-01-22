@@ -582,7 +582,7 @@ PHP_METHOD(RdKafka__Kafka, setLogger)
             return;
     }
 
-    rd_kafka_set_logger(intern->rk, logger);
+    rd_kafka_conf_set_log_cb(intern->rk, logger);
 }
 /* }}} */
 
