@@ -77,7 +77,7 @@ void free_kafka_instance(rd_kafka_t *rk)
     }
     rd_kafka_destroy(rk);
 
-    
+    rk = NULL;
 }
 
 void insert_kafka_inst_hash_table(kafka_inst_hash_table *h, char *key, rd_kafka_t *value)
@@ -168,7 +168,7 @@ rd_kafka_t* get_persistent_producer(kafka_inst_hash_table *hash_table, char *ins
     
     if (rk == NULL) {
         zend_throw_exception(NULL, "Instance with given name does not exist", 0 TSRMLS_CC);
-        return;
+        return NULL;
     }
 
     return rk;
@@ -177,7 +177,7 @@ rd_kafka_t* get_persistent_producer(kafka_inst_hash_table *hash_table, char *ins
 void store_persistent_producer(kafka_inst_hash_table *hash_table, rd_kafka_t *rk, char *instance_name) {
     if (search_kafka_inst_hash_table(hash_table, instance_name) != NULL) {
         zend_throw_exception(NULL, "Instance with given name already exists", 0 TSRMLS_CC);
-        return;
+        return NULL;
     }
 
     insert_kafka_inst_hash_table(hash_table, instance_name, rk);
