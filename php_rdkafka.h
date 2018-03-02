@@ -39,6 +39,7 @@ typedef struct _kafka_object {
     HashTable               consuming;
 	HashTable				topics;
 	HashTable				queues;
+    unsigned short          is_persistent;
 #if PHP_MAJOR_VERSION >= 7
     zend_object             std;
 #endif

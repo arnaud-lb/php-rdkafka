@@ -38,6 +38,10 @@
 #include "kafka_consumer.h"
 #include "topic_partition.h"
 #include "fun.h"
+#include "rdkafka_instances.h"
+#ifndef PHP_WIN32
+#include "pthread.h"
+#endif
 
 enum {
    RD_KAFKA_LOG_PRINT = 100
@@ -62,6 +66,62 @@ static zend_class_entry * ce_kafka_consumer;
 zend_class_entry * ce_kafka_exception;
 static zend_class_entry * ce_kafka_producer;
 
+#ifdef PHP_WIN32
+    #define INT_KAFKA_MUTEX_T CRITICAL_SECTION
+#else
+    #define INT_KAFKA_MUTEX_T pthread_mutex_t
+#endif
+
+int int_kafka_mutex_init(INT_KAFKA_MUTEX_T *mutex_p);
+int int_kafka_mutex_release(INT_KAFKA_MUTEX_T *mutex_p);
+int int_kafka_mutex_lock(INT_KAFKA_MUTEX_T *mutex_p);
+int int_kafka_mutex_unlock(INT_KAFKA_MUTEX_T *mutex_p);
+
+int int_kafka_mutex_init(INT_KAFKA_MUTEX_T *mutex_p)
+{
+    #ifdef PHP_WIN32
+	    InitializeCriticalSection(mutex_p);
+
+        return 0;
+    #else
+	    return pthread_mutex_init(mutex_p, NULL);
+    #endif
+}
+
+int int_kafka_mutex_release(INT_KAFKA_MUTEX_T *mutex_p)
+{
+    #ifdef PHP_WIN32
+        DeleteCriticalSection(mutex_p);
+
+        return 0;
+    #else
+       return pthread_mutex_destroy(mutex_p);
+    #endif
+}
+
+int int_kafka_mutex_lock(INT_KAFKA_MUTEX_T *mutex_p)
+{
+    #ifdef PHP_WIN32
+        EnterCriticalSection(mutex_p);
+	    return 0;
+    #else
+       return pthread_mutex_lock(mutex_p);
+    #endif
+}
+
+int int_kafka_mutex_unlock(INT_KAFKA_MUTEX_T *mutex_p)
+{
+    #ifdef PHP_WIN32
+        LeaveCriticalSection(mutex_p);
+	    return 0;
+    #else
+       return pthread_mutex_unlock(mutex_p);
+    #endif
+}
+
+static INT_KAFKA_MUTEX_T int_kafka_mutex;
+static kafka_inst_hash_table *int_kafka_rk_instances;
+
 static void stop_consuming_toppar_pp(toppar ** tp) {
     rd_kafka_consume_stop((*tp)->rkt, (*tp)->partition);
 }
@@ -85,7 +145,9 @@ static void kafka_free(zend_object *object TSRMLS_DC) /* {{{ */
         while (rd_kafka_outq_len(intern->rk) > 0) {
             rd_kafka_poll(intern->rk, 1);
         }
-        rd_kafka_destroy(intern->rk);
+        if (intern->is_persistent == 0) {
+            rd_kafka_destroy(intern->rk);
+        }
         intern->rk = NULL;
     }
 
@@ -115,7 +177,7 @@ static void kafka_topic_object_pre_free(kafka_topic_object ** pp) {
     zval_ptr_dtor(&intern->zrk);
 }
 
-static void kafka_init(zval *this_ptr, rd_kafka_type_t type, zval *zconf TSRMLS_DC) /* {{{ */
+static void kafka_init(zval *this_ptr, rd_kafka_type_t type, zval *zconf, char *instance_name TSRMLS_DC) /* {{{ */
 {
     char errstr[512];
     rd_kafka_t *rk;
@@ -136,7 +198,21 @@ static void kafka_init(zval *this_ptr, rd_kafka_type_t type, zval *zconf TSRMLS_
         }
     }
 
-    rk = rd_kafka_new(type, conf, errstr, sizeof(errstr));
+    if (type == RD_KAFKA_PRODUCER && instance_name != NULL) {
+        intern->is_persistent = 1;
+
+        int_kafka_mutex_lock(&int_kafka_mutex);
+        if (has_producer_instance(int_kafka_rk_instances, instance_name) == 1) {
+            rk = get_persistent_producer(int_kafka_rk_instances, instance_name);
+        } else {
+            rk = rd_kafka_new(type, conf, errstr, sizeof(errstr));
+            store_persistent_producer(int_kafka_rk_instances, rk, instance_name);
+        }
+        int_kafka_mutex_unlock(&int_kafka_mutex);
+    } else {
+        intern->is_persistent = 0;
+        rk = rd_kafka_new(type, conf, errstr, sizeof(errstr));
+    }
 
     if (rk == NULL) {
         zend_throw_exception(ce_kafka_exception, errstr, 0 TSRMLS_CC);
@@ -262,7 +338,7 @@ PHP_METHOD(RdKafka__Consumer, __construct)
         return;
     }
 
-    kafka_init(getThis(), RD_KAFKA_CONSUMER, zconf TSRMLS_CC);
+    kafka_init(getThis(), RD_KAFKA_CONSUMER, zconf, NULL TSRMLS_CC);
 
     zend_restore_error_handling(&error_handling TSRMLS_CC);
 }
@@ -600,32 +676,77 @@ static const zend_function_entry kafka_fe[] = {
     PHP_FE_END
 };
 
-/* {{{ proto RdKafka\Producer::__construct([RdKafka\Conf $conf]) */
+/* {{{ proto RdKafka\Producer::__construct([RdKafka\Conf $conf[, string $instanceName]])
+   If $instanceName is provided a persistent producer is created. If a producer with the same name already exists an exception is thrown. */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_producer___construct, 0, 0, 0)
     ZEND_ARG_INFO(0, conf)
+    ZEND_ARG_INFO(0, instance_name)
 ZEND_END_ARG_INFO()
 
 PHP_METHOD(RdKafka__Producer, __construct)
 {
     zval *zconf = NULL;
+    char *instance_name = NULL;
+    arglen_t instance_name_len = -1;
     zend_error_handling error_handling;
 
     zend_replace_error_handling(EH_THROW, spl_ce_InvalidArgumentException, &error_handling TSRMLS_CC);
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|O!", &zconf, ce_kafka_conf) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|O!s!", &zconf, ce_kafka_conf, &instance_name, &instance_name_len) == FAILURE) {
         zend_restore_error_handling(&error_handling TSRMLS_CC);
         return;
     }
 
-    kafka_init(getThis(), RD_KAFKA_PRODUCER, zconf TSRMLS_CC);
+    if (instance_name != NULL && has_producer_instance(int_kafka_rk_instances, instance_name) == 1) {
+        zend_throw_exception_ex(NULL, 0 TSRMLS_CC, "Cannot create new producer with given name because one already exists. Use RdKafka\\Producer::getInstance() to retrive it." TSRMLS_CC);
+        return;
+    }
+
+    kafka_init(getThis(), RD_KAFKA_PRODUCER, zconf, instance_name TSRMLS_CC);
 
     zend_restore_error_handling(&error_handling TSRMLS_CC);
 }
 /* }}} */
 
+/* {{{ proto RdKafka\Producer::getInstance(string $instanceName)
+   Returns RdKafka\Producer instance if aleready extis, FALSE otherwise. */
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_producer_get_instance, 0, 0, 1)
+    ZEND_ARG_INFO(0, instance_name)
+ZEND_END_ARG_INFO()
+
+PHP_METHOD(RdKafka__Producer, getInstance)
+{
+    char *instance_name;
+    arglen_t instance_name_length;
+
+    zend_error_handling error_handling;
+
+    zend_replace_error_handling(EH_THROW, spl_ce_InvalidArgumentException, &error_handling TSRMLS_CC);
+
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &instance_name, &instance_name_length) == FAILURE) {
+        return;
+    }
+
+    if (has_producer_instance(int_kafka_rk_instances, instance_name) == 0) {
+        RETURN_FALSE;
+    }
+
+    if (object_init_ex(return_value, ce_kafka_producer) == FAILURE) {
+        return;
+    }
+
+    kafka_init(return_value, RD_KAFKA_PRODUCER, NULL, instance_name);
+
+    zend_restore_error_handling(&error_handling TSRMLS_CC);
+}
+
+/* }}} */
+
 static const zend_function_entry kafka_producer_fe[] = {
     PHP_ME(RdKafka__Producer, __construct, arginfo_kafka_producer___construct, ZEND_ACC_PUBLIC)
+    PHP_ME(RdKafka__Producer, getInstance, arginfo_kafka_producer_get_instance, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
     PHP_FE_END
 };
 
@@ -753,6 +874,11 @@ PHP_MINIT_FUNCTION(rdkafka)
     INIT_NS_CLASS_ENTRY(ce, "RdKafka", "Exception", NULL);
     ce_kafka_exception = rdkafka_register_internal_class_ex(&ce, zend_exception_get_default(TSRMLS_C) TSRMLS_CC);
 
+    if(int_kafka_mutex_init(&int_kafka_mutex) != 0) {
+        return FAILURE;
+    }
+    int_kafka_rk_instances = init_kafka_inst_hash_table(64);
+
     kafka_conf_minit(TSRMLS_C);
     kafka_kafka_consumer_minit(TSRMLS_C);
     kafka_message_minit(TSRMLS_C);
@@ -769,6 +895,9 @@ PHP_MINIT_FUNCTION(rdkafka)
  */
 PHP_MSHUTDOWN_FUNCTION(rdkafka)
 {
+    free_kafka_inst_hash_table(int_kafka_rk_instances);
+    int_kafka_mutex_release(&int_kafka_mutex);
+
     rd_kafka_wait_destroyed(1000);
     return SUCCESS;
 }

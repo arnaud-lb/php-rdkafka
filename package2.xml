@@ -59,6 +59,8 @@
    <file role="src" name="php_rdkafka_priv.h"/>
    <file role="src" name="queue.c"/>
    <file role="src" name="queue.h"/>
+   <file role="src" name="rdkafka_instances.c"/>
+   <file role="src" name="rdkafka_instances.h"/>
    <file role="src" name="rdkafka.c"/>
    <file role="src" name="topic.c"/>
    <file role="src" name="topic.h"/>
