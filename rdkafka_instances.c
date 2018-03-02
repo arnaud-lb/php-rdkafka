@@ -131,9 +131,9 @@ rd_kafka_t* search_kafka_inst_hash_table(kafka_inst_hash_table *h, char *key)
     uintptr_t index = kafka_inst_hash_key(key, h->size);
 
     if (h->hash_pairs[index] == NULL) {
-        return;
+        return NULL;
     }
-    
+
     return search_chained_kafka_inst_hash_pairs(h->hash_pairs[index], key);
 }
 
@@ -145,6 +145,8 @@ rd_kafka_t* search_chained_kafka_inst_hash_pairs(kafka_inst_hash_pair *hp, char 
     if (hp->next != NULL) {
         return search_chained_kafka_inst_hash_pairs(hp->next, key);
     }
+
+    return NULL;
 }
 
 int has_producer_instance(kafka_inst_hash_table *hash_table, char *instance_name) {
