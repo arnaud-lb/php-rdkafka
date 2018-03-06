@@ -898,7 +898,9 @@ PHP_MSHUTDOWN_FUNCTION(rdkafka)
     free_kafka_inst_hash_table(int_kafka_rk_instances);
     int_kafka_mutex_release(&int_kafka_mutex);
 
-    rd_kafka_wait_destroyed(1000);
+    if (rd_kafka_version() < 0x000900ff) {
+        rd_kafka_wait_destroyed(1000);
+    }
     return SUCCESS;
 }
 /* }}} */
