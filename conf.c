@@ -773,7 +773,7 @@ static const zend_function_entry kafka_conf_fe[] = {
     PHP_ME(RdKafka__Conf, setRebalanceCb, arginfo_kafka_conf_set_rebalance_cb, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__Conf, setConsumeCb, arginfo_kafka_conf_set_consume_cb, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__Conf, setOffsetCommitCb, arginfo_kafka_conf_set_offset_commit_cb, ZEND_ACC_PUBLIC)
-    #endif /* HAVE_NEW_KAFKA_CONSUMER */
+#endif /* HAVE_NEW_KAFKA_CONSUMER */
     PHP_FE_END
 };
 
