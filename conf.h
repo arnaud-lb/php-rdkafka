@@ -42,6 +42,8 @@ typedef struct _kafka_conf_callbacks {
     kafka_conf_callback *rebalance;
     kafka_conf_callback *dr_msg;
     kafka_conf_callback *stats;
+    kafka_conf_callback *consume;
+    kafka_conf_callback *offset_commit;
 } kafka_conf_callbacks;
 
 typedef struct _kafka_conf_object {
