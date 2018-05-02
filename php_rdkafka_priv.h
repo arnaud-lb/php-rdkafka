@@ -129,8 +129,16 @@ typedef int arglen_t;
 static inline void *zend_hash_str_add_ptr(HashTable *ht, const char *str, size_t len, void *pData)
 {
     void *pDest;
-    zend_hash_add(ht, str, len, &pData, sizeof(pData), &pDest);
+    zend_hash_add(ht, str, len, (void **)&pData, sizeof(pData), &pDest);
     return pDest;
+}
+
+static inline void *zend_hash_str_find_ptr(const HashTable *ht, const char * str, size_t len)
+{
+    void **pDest = NULL;
+    zend_hash_find(ht, str, len, (void**)&pDest);
+
+    return *pDest;
 }
 
 static inline int zend_hash_str_del(HashTable *ht, const char *str, size_t len)

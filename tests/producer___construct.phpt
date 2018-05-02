@@ -9,7 +9,7 @@ new RdKafka\Producer(null, 'instance');
 --EXPECTF--
 bool(true)
 
-Fatal error: Uncaught Exception: Cannot create new producer with given name because one already exists. Use RdKafka\Producer::getInstance() to retrive it. %s
+Fatal error: %sCannot create new producer with given name because one already exists%s
 Stack trace:
 %s
 %s

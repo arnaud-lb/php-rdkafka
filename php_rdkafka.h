@@ -67,6 +67,20 @@ extern zend_class_entry * ce_kafka_exception;
 #include "TSRM.h"
 #endif
 
+ZEND_BEGIN_MODULE_GLOBALS(rdkafka)
+    HashTable kafka_instances;
+ZEND_END_MODULE_GLOBALS(rdkafka)
+
+#ifdef ZTS
+#define RDKAFKA_G(v) TSRMG(rdkafka_globals_id, zend_rdkafka_globals *, v)
+#else
+#define RDKAFKA_G(v) (rdkafka_globals.v)
+#endif
+
+#if defined(ZTS) && defined(COMPILE_DL_RDKAFKA)
+ZEND_TSRMLS_CACHE_EXTERN();
+#endif
+
 #endif	/* PHP_RDKAFKA_H */
 
 /*

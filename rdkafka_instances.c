@@ -16,169 +16,30 @@
   +----------------------------------------------------------------------+
 */
 
-#include "stdlib.h"
-#include "stdint.h"
-#include "string.h"
 #include "php.h"
 #include "Zend/zend_exceptions.h"
-#include "rdkafka_instances.h"
+#include "Zend/zend_hash.h"
+#include "php_rdkafka.h"
+#include "php_rdkafka_priv.h"
 
-void free_next_kafka_inst_hash_pair(kafka_inst_hash_pair *hp);
-void free_kafka_instance(rd_kafka_t *rk);
-void insert_kafka_inst_hash_table(kafka_inst_hash_table *h, char *key, rd_kafka_t *value);
-void insert_next_kafka_inst_hash_table(kafka_inst_hash_pair *hp, char* key, rd_kafka_t *value);
-rd_kafka_t* search_kafka_inst_hash_table(kafka_inst_hash_table *h, char *key);
-rd_kafka_t* search_chained_kafka_inst_hash_pairs(kafka_inst_hash_pair *hp, char *key);
-uintptr_t kafka_inst_hash_key(char * key, unsigned int size);
+ZEND_DECLARE_MODULE_GLOBALS(rdkafka)
 
-kafka_inst_hash_table* init_kafka_inst_hash_table(unsigned int size)
-{
-    unsigned int i;
-
-    kafka_inst_hash_table *h = pecalloc(1, sizeof(kafka_inst_hash_table), 1);
-    h->hash_pairs = pecalloc(size, sizeof(kafka_inst_hash_pair*), 1);
-    h->size = size;
-
-    return h;
+zend_bool has_producer_instance(char *instance_name, arglen_t instance_name_len) {
+    return zend_hash_str_exists(&RDKAFKA_G(kafka_instances), instance_name, instance_name_len);
 }
 
-void free_kafka_inst_hash_table(kafka_inst_hash_table *h)
-{
-    unsigned int i;
-
-    for (i = 0; i < h->size; i ++) {
-        if (h->hash_pairs[i] != NULL) {
-            if (h->hash_pairs[i]->next != NULL) {
-                free_next_kafka_inst_hash_pair(h->hash_pairs[i]->next);
-            }
-
-            free_kafka_instance(h->hash_pairs[i]->value);
-            pefree(h->hash_pairs[i], 1);
-        }
-    }
-    pefree(h->hash_pairs, 1);
-    pefree(h, 1);
-}
-
-void free_next_kafka_inst_hash_pair(kafka_inst_hash_pair *hp)
-{
-    if (hp->next != NULL){
-        free_next_kafka_inst_hash_pair(hp->next);
-    }
-
-    free_kafka_instance(hp->value);
-    pefree(hp, 1);
-}
-
-void free_kafka_instance(rd_kafka_t *rk)
-{
-    while (rd_kafka_outq_len(rk) > 0) {
-        rd_kafka_poll(rk, 50);
-    }
-    rd_kafka_destroy(rk);
-
-    rk = NULL;
-}
-
-void insert_kafka_inst_hash_table(kafka_inst_hash_table *h, char *key, rd_kafka_t *value)
-{
-    uintptr_t index = kafka_inst_hash_key(key, h->size);
-    
-    if (h->hash_pairs[index] == NULL) {
-        kafka_inst_hash_pair *hp = pecalloc(1, sizeof(kafka_inst_hash_pair), 1);
-
-        hp->key = key;
-        hp->value = value;
-        hp->next = NULL;
-
-        h->hash_pairs[index] = hp;
-    } else {
-        insert_next_kafka_inst_hash_table(h->hash_pairs[index], key, value);
-    }
-}
-
-void insert_next_kafka_inst_hash_table(kafka_inst_hash_pair *hp, char* key, rd_kafka_t *value)
-{
-    if (hp->next == NULL) {
-        kafka_inst_hash_pair *next_hp = pecalloc(1, sizeof(kafka_inst_hash_pair), 1);
-
-        next_hp->key = key;
-        next_hp->value = value;
-
-        hp->next = next_hp;
-    } else {
-        insert_next_kafka_inst_hash_table(hp->next, key, value);
-    }
-}
-
-uintptr_t kafka_inst_hash_key(char *key, unsigned int size)
-{
-    size_t len;
-    unsigned int i, index;
-    
-    index = 0;
-    len = strlen(key);
-
-    for (i = 0; i < len; i++) {
-        index += key[i];
-    }
-
-    return (uintptr_t)(index % size);
-}
-
-rd_kafka_t* search_kafka_inst_hash_table(kafka_inst_hash_table *h, char *key)
-{
-    uintptr_t index = kafka_inst_hash_key(key, h->size);
-
-    if (h->hash_pairs[index] == NULL) {
-        return NULL;
-    }
-
-    return search_chained_kafka_inst_hash_pairs(h->hash_pairs[index], key);
-}
-
-rd_kafka_t* search_chained_kafka_inst_hash_pairs(kafka_inst_hash_pair *hp, char *key)
-{
-    if (strcmp(hp->key, key) == 0) {
-        return hp->value;
-    }
-    if (hp->next != NULL) {
-        return search_chained_kafka_inst_hash_pairs(hp->next, key);
-    }
-
-    return NULL;
-}
-
-int has_producer_instance(kafka_inst_hash_table *hash_table, char *instance_name) {
+rd_kafka_t* get_persistent_producer(char *instance_name, arglen_t instance_name_len) {
     rd_kafka_t *rk = NULL;
 
-    rk = search_kafka_inst_hash_table(hash_table, instance_name);
-
-    if (rk != NULL) {
-        return 1;
-    }
-
-    return 0;
-}
-
-rd_kafka_t* get_persistent_producer(kafka_inst_hash_table *hash_table, char *instance_name) {
-    rd_kafka_t *rk = NULL;
-
-    rk = search_kafka_inst_hash_table(hash_table, instance_name);
-    
+    rk = zend_hash_str_find_ptr(&RDKAFKA_G(kafka_instances), instance_name, instance_name_len);
     if (rk == NULL) {
         zend_throw_exception(NULL, "Instance with given name does not exist", 0 TSRMLS_CC);
         return NULL;
     }
-
+    
     return rk;
 }
 
-void store_persistent_producer(kafka_inst_hash_table *hash_table, rd_kafka_t *rk, char *instance_name) {
-    if (search_kafka_inst_hash_table(hash_table, instance_name) != NULL) {
-        zend_throw_exception(NULL, "Instance with given name already exists", 0 TSRMLS_CC);
-        return NULL;
-    }
-
-    insert_kafka_inst_hash_table(hash_table, instance_name, rk);
+void store_persistent_producer(rd_kafka_t *rk, char *instance_name, arglen_t instance_name_len) {
+    zend_hash_str_add_ptr(&RDKAFKA_G(kafka_instances), instance_name, instance_name_len, rk);
 }

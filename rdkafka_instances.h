@@ -16,24 +16,9 @@
   +----------------------------------------------------------------------+
 */
 
+#include "php.h"
 #include "librdkafka/rdkafka.h"
 
-typedef struct kafka_inst_hash_pair kafka_inst_hash_pair;
-
-struct kafka_inst_hash_pair {
-    char *key;
-    rd_kafka_t *value;
-    struct kafka_inst_hash_pair *next;
-};
-
-typedef struct kafka_inst_hash_table {
-    unsigned int size;
-    kafka_inst_hash_pair **hash_pairs;
-} kafka_inst_hash_table;
-
-kafka_inst_hash_table* init_kafka_inst_hash_table(unsigned int size);
-void free_kafka_inst_hash_table(kafka_inst_hash_table *h);
-
-int has_producer_instance(kafka_inst_hash_table *hash_table, char *instance_name);
-rd_kafka_t* get_persistent_producer(kafka_inst_hash_table *hash_table, char *instance_name);
-void store_persistent_producer(kafka_inst_hash_table *hash_table, rd_kafka_t *rk, char *instance_name);
+zend_bool has_producer_instance(char *instance_name, arglen_t instance_name_len);
+rd_kafka_t* get_persistent_producer(char *instance_name, arglen_t instance_name_len);
+void store_persistent_producer(rd_kafka_t *rk, char *instance_name, arglen_t instance_name_len);
