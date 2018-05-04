@@ -51,6 +51,24 @@ if test "$PHP_RDKAFKA" != "no"; then
     AC_MSG_WARN([no rd_kafka_msg_partitioner_consistent, the consistent partitioner will not be available])
   ])
 
+  AC_CHECK_LIB($LIBNAME,[rd_kafka_msg_partitioner_consistent_random],[
+    AC_DEFINE(HAVE_RD_KAFKA_MSG_PARTIIONER_CONSISTENT_RANDOM,1,[ ])
+  ],[
+    AC_MSG_WARN([no rd_kafka_msg_partitioner_consistent_random, the random consistent partitioner will not be available])
+  ])
+
+  AC_CHECK_LIB($LIBNAME,[rd_kafka_msg_partitioner_murmur2],[
+    AC_DEFINE(HAVE_RD_KAFKA_MSG_PARTIIONER_MURMUR2,1,[ ])
+  ],[
+    AC_MSG_WARN([no rd_kafka_msg_partitioner_murmur2, the murmur2 partitioner will not be available])
+  ])
+
+  AC_CHECK_LIB($LIBNAME,[rd_kafka_msg_partitioner_murmur2_random],[
+    AC_DEFINE(HAVE_RD_KAFKA_MSG_PARTIIONER_MURMUR2_RANDOM,1,[ ])
+  ],[
+    AC_MSG_WARN([no rd_kafka_msg_partitioner_murmur2_random, the murmur2 random partitioner will not be available])
+  ])
+
   AC_CHECK_LIB($LIBNAME,[rd_kafka_get_err_descs],[
     AC_DEFINE(HAVE_RD_KAFKA_GET_ERR_DESCS,1,[ ])
   ],[

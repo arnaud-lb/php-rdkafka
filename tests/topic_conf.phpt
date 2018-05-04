@@ -5,8 +5,25 @@ RdKafka\TopicConf
 
 $conf = new RdKafka\TopicConf();
 
-echo "Setting partitioner\n";
+echo "Setting partitioner RD_KAFKA_MSG_PARTITIONER_RANDOM\n";
 $conf->setPartitioner(RD_KAFKA_MSG_PARTITIONER_RANDOM);
 
+echo "Setting partitioner RD_KAFKA_MSG_PARTITIONER_CONSISTENT\n";
+$conf->setPartitioner(RD_KAFKA_MSG_PARTITIONER_CONSISTENT);
+
+echo "Setting partitioner RD_KAFKA_MSG_PARTITIONER_CONSISTENT_RANDOM\n";
+$conf->setPartitioner(RD_KAFKA_MSG_PARTITIONER_CONSISTENT_RANDOM);
+
+echo "Setting partitioner RD_KAFKA_MSG_PARTITIONER_MURMUR2\n";
+$conf->setPartitioner(RD_KAFKA_MSG_PARTITIONER_MURMUR2);
+
+echo "Setting partitioner RD_KAFKA_MSG_PARTITIONER_MURMUR2_RANDOM\n";
+$conf->setPartitioner(RD_KAFKA_MSG_PARTITIONER_MURMUR2_RANDOM);
+
+
 --EXPECT--
-Setting partitioner
+Setting partitioner RD_KAFKA_MSG_PARTITIONER_RANDOM
+Setting partitioner RD_KAFKA_MSG_PARTITIONER_CONSISTENT
+Setting partitioner RD_KAFKA_MSG_PARTITIONER_CONSISTENT_RANDOM
+Setting partitioner RD_KAFKA_MSG_PARTITIONER_MURMUR2
+Setting partitioner RD_KAFKA_MSG_PARTITIONER_MURMUR2_RANDOM
