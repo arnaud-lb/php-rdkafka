@@ -21,4 +21,9 @@
 
 zend_bool has_producer_instance(char *instance_name, arglen_t instance_name_len);
 rd_kafka_t* get_persistent_producer(char *instance_name, arglen_t instance_name_len);
-void store_persistent_producer(rd_kafka_t *rk, char *instance_name, arglen_t instance_name_len);
+void store_persistent_producer(rd_kafka_t *rk, rd_kafka_conf_t *conf, char *instance_name, arglen_t instance_name_len);
+
+typedef struct _kafka_instance {
+    rd_kafka_t *rk;
+    rd_kafka_conf_t *conf;
+} kafka_instance;

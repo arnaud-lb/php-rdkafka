@@ -21,6 +21,7 @@
 #include "Zend/zend_hash.h"
 #include "php_rdkafka.h"
 #include "php_rdkafka_priv.h"
+#include "rdkafka_instances.h"
 
 ZEND_DECLARE_MODULE_GLOBALS(rdkafka)
 
@@ -29,17 +30,24 @@ zend_bool has_producer_instance(char *instance_name, arglen_t instance_name_len)
 }
 
 rd_kafka_t* get_persistent_producer(char *instance_name, arglen_t instance_name_len) {
-    rd_kafka_t *rk = NULL;
+     kafka_instance *instance = NULL;
 
-    rk = zend_hash_str_find_ptr(&RDKAFKA_G(kafka_instances), instance_name, instance_name_len);
-    if (rk == NULL) {
+    instance = zend_hash_str_find_ptr(&RDKAFKA_G(kafka_instances), instance_name, instance_name_len);
+    if (instance == NULL) {
         zend_throw_exception(NULL, "Instance with given name does not exist", 0 TSRMLS_CC);
         return NULL;
     }
     
-    return rk;
+    return instance->rk;
 }
 
-void store_persistent_producer(rd_kafka_t *rk, char *instance_name, arglen_t instance_name_len) {
-    zend_hash_str_add_ptr(&RDKAFKA_G(kafka_instances), instance_name, instance_name_len, rk);
+void store_persistent_producer(rd_kafka_t *rk, rd_kafka_conf_t *conf, char *instance_name, arglen_t instance_name_len) {
+    kafka_instance *instance = NULL;
+
+    instance = pemalloc(sizeof(kafka_instance), 1);
+
+    instance->rk = rk;
+    instance->conf = conf;
+
+    zend_hash_str_add_ptr(&RDKAFKA_G(kafka_instances), instance_name, instance_name_len, instance);
 }

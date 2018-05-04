@@ -65,14 +65,21 @@ static zend_class_entry * ce_kafka_consumer;
 zend_class_entry * ce_kafka_exception;
 static zend_class_entry * ce_kafka_producer;
 
-static void kafka_instance_dtor(rd_kafka_t **rk)
+static void kafka_instance_dtor(kafka_instance **instance)
 {
-    while (rd_kafka_outq_len(*rk) > 0) {
-        rd_kafka_poll(*rk, 50);
+    if (instance == NULL) {
+        return;
     }
-    rd_kafka_destroy(*rk);
 
-    *rk = NULL;
+    kafka_instance *instance_deref = *instance;
+
+    while (rd_kafka_outq_len(instance_deref->rk) > 0) {
+        rd_kafka_poll(instance_deref->rk, 50);
+    }
+    rd_kafka_destroy(instance_deref->rk);
+
+    pefree(instance_deref, 1);
+    instance = NULL;
 }
 
 static void stop_consuming_toppar_pp(toppar ** tp) {
@@ -158,7 +165,7 @@ static void kafka_init(zval *this_ptr, rd_kafka_type_t type, zval *zconf, char *
             rk = get_persistent_producer(instance_name, instance_name_len);
         } else {
             rk = rd_kafka_new(type, conf, errstr, sizeof(errstr));
-            store_persistent_producer(rk, instance_name, instance_name_len);
+            store_persistent_producer(rk, conf, instance_name, instance_name_len);
         }
     } else {
         intern->is_persistent = 0;
