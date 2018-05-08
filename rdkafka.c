@@ -781,10 +781,10 @@ PHP_MINFO_FUNCTION(rdkafka)
     char *rd_kafka_version;
 
     php_info_print_table_start();
-    php_info_print_table_header(2, "rdkafka support", "enabled");
+    php_info_print_table_row(2, "rdkafka support", "enabled");
 
-    php_info_print_table_header(2, "version", PHP_RDKAFKA_VERSION);
-    php_info_print_table_header(2, "build date", __DATE__ " " __TIME__);
+    php_info_print_table_row(2, "version", PHP_RDKAFKA_VERSION);
+    php_info_print_table_row(2, "build date", __DATE__ " " __TIME__);
 
     spprintf(
         &rd_kafka_version,
@@ -796,8 +796,8 @@ PHP_MINFO_FUNCTION(rdkafka)
         (RD_KAFKA_VERSION & 0x000000FF) >> 8
     );
 
-    php_info_print_table_header(2, "librdkafka version (runtime)", rd_kafka_version_str());
-    php_info_print_table_header(2, "librdkafka version (build)", rd_kafka_version);
+    php_info_print_table_row(2, "librdkafka version (runtime)", rd_kafka_version_str());
+    php_info_print_table_row(2, "librdkafka version (build)", rd_kafka_version);
 
 
     efree(rd_kafka_version);
