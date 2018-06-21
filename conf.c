@@ -82,7 +82,13 @@ static void kafka_conf_free(zend_object *object TSRMLS_DC) /* {{{ */
     switch (intern->type) {
         case KAFKA_CONF:
             if (intern->u.conf) {
-                rd_kafka_conf_destroy(intern->u.conf);
+                if(intern->is_persistent == 1) {
+                    rd_kafka_conf_set_dr_msg_cb(intern->u.conf, NULL);
+                    rd_kafka_conf_set_opaque(intern->u.conf, NULL);
+                } else {
+                    rd_kafka_conf_destroy(intern->u.conf);
+                    intern->u.conf = NULL;
+                }
             }
             kafka_conf_callbacks_dtor(&intern->cbs TSRMLS_CC);
             break;
@@ -107,6 +113,7 @@ static zend_object_value kafka_conf_new(zend_class_entry *class_type TSRMLS_DC) 
     intern = alloc_object(intern, class_type);
     zend_object_std_init(&intern->std, class_type TSRMLS_CC);
     object_properties_init(&intern->std, class_type);
+    intern->is_persistent = 0;
 
     STORE_OBJECT(retval, intern, (zend_objects_store_dtor_t) zend_objects_destroy_object, kafka_conf_free, NULL);
     SET_OBJECT_HANDLERS(retval, &handlers);

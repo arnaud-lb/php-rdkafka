@@ -54,6 +54,7 @@ typedef struct _kafka_conf_object {
         rd_kafka_topic_conf_t   *topic_conf;
     } u;
     kafka_conf_callbacks cbs;
+    unsigned short              is_persistent;
 #if PHP_MAJOR_VERSION >= 7
     zend_object                 std;
 #endif

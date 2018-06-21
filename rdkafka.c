@@ -73,10 +73,16 @@ static void kafka_instance_dtor(kafka_instance **instance)
 
     kafka_instance *instance_deref = *instance;
 
+    if (instance_deref->conf) {
+        rd_kafka_conf_destroy(instance_deref->conf);
+        instance_deref->conf = NULL;
+    }
+
     while (rd_kafka_outq_len(instance_deref->rk) > 0) {
         rd_kafka_poll(instance_deref->rk, 50);
     }
     rd_kafka_destroy(instance_deref->rk);
+    instance_deref->rk = NULL;
 
     pefree(instance_deref, 1);
     instance = NULL;
@@ -160,6 +166,9 @@ static void kafka_init(zval *this_ptr, rd_kafka_type_t type, zval *zconf, char *
 
     if (type == RD_KAFKA_PRODUCER && instance_name != NULL) {
         intern->is_persistent = 1;
+        if (zconf && conf_intern) {
+            conf_intern->is_persistent = 1;
+        }
 
         if (has_producer_instance(instance_name, instance_name_len) == 1) {
             rk = get_persistent_producer(instance_name, instance_name_len);
@@ -667,23 +676,25 @@ PHP_METHOD(RdKafka__Producer, __construct)
 }
 /* }}} */
 
-/* {{{ proto RdKafka\Producer::getInstance(string $instanceName)
+/* {{{ proto RdKafka\Producer::getInstance(string $instanceName[, array $callbacks = []]])
    Returns RdKafka\Producer instance if aleready extis, FALSE otherwise. */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_producer_get_instance, 0, 0, 1)
     ZEND_ARG_INFO(0, instance_name)
+    ZEND_ARG_INFO(0, callbacks)
 ZEND_END_ARG_INFO()
 
 PHP_METHOD(RdKafka__Producer, getInstance)
 {
-    char *instance_name;
-    arglen_t instance_name_len;
+    char *instance_name = NULL;
+    arglen_t instance_name_len = -1;
+    HashTable *callbacks = NULL;
 
     zend_error_handling error_handling;
 
     zend_replace_error_handling(EH_THROW, spl_ce_InvalidArgumentException, &error_handling TSRMLS_CC);
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &instance_name, &instance_name_len) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s|h!", &instance_name, &instance_name_len, &callbacks) == FAILURE) {
         return;
     }
 
