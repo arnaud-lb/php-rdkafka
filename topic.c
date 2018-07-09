@@ -353,10 +353,10 @@ static const zend_function_entry kafka_kafka_consumer_topic_fe[] = {
     PHP_FE_END
 };
 
-/* {{{ proto void RdKafka\ProducerTopic::produce(int $partition, int $msgflags, string $payload[, string $key])
+/* {{{ proto void RdKafka\ProducerTopic::produce(int $partition, int $msgflags[, string $payload, string $key])
    Produce and send a single message to broker. */
 
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_produce, 0, 0, 3)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_produce, 0, 0, 2)
     ZEND_ARG_INFO(0, partition)
     ZEND_ARG_INFO(0, msgflags)
     ZEND_ARG_INFO(0, payload)
@@ -367,15 +367,15 @@ PHP_METHOD(RdKafka__ProducerTopic, produce)
 {
     long partition;
     long msgflags;
-    char *payload;
-    arglen_t payload_len;
+    char *payload = NULL;
+    arglen_t payload_len = 0;
     char *key = NULL;
     arglen_t key_len = 0;
     int ret;
     rd_kafka_resp_err_t err;
     kafka_topic_object *intern;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "lls|s!", &partition, &msgflags, &payload, &payload_len, &key, &key_len) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ll|s!s!", &partition, &msgflags, &payload, &payload_len, &key, &key_len) == FAILURE) {
         return;
     }
 
