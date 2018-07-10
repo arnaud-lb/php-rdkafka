@@ -10,7 +10,8 @@ require __DIR__."/test_env.php";
 
 $topicName = sprintf('test_rdkafka_%s', uniqid());
 
-$producer = createProducer();
+$producer = new RdKafka\Producer();
+$producer->addBrokers(TEST_KAFKA_BROKERS);
 $topic = $producer->newTopic($topicName);
 
 $topic->produce(0, 0);
@@ -20,7 +21,7 @@ while ($producer->getOutQLen() > 0) {
 }
 
 $consumer = new RdKafka\Consumer();
-$consumer->addBrokers('kafka');
+$consumer->addBrokers(TEST_KAFKA_BROKERS);
 
 $topic = $consumer->newTopic($topicName);
 $topic->consumeStart(0, RD_KAFKA_OFFSET_BEGINNING);
@@ -39,21 +40,6 @@ while (true) {
 }
 
 $topic->consumeStop(0);
-
-function createProducer() {
-    $producer = new RdKafka\Producer();
-    $producer->addBrokers('kafka');
-
-    return $producer;
-}
-
-function createConsumer($group) {
-    $conf = new RdKafka\Conf();
-    $conf->set('group.id', $group);
-    $conf->set('metadata.broker.list', 'kafka');
-
-    return new RdKafka\KafkaConsumer($conf);
-}
 
 --EXPECTF--
 NULL
