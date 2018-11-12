@@ -48,7 +48,7 @@ servers) to it:
 
 $rk = new RdKafka\Producer();
 $rk->setLogLevel(LOG_DEBUG);
-$rk->addBrokers("10.0.0.1,10.0.0.2");
+$rk->addBrokers("10.0.0.1:9092,10.0.0.2:9092");
 ```
 
 Next, we create a topic instance from the producer:
