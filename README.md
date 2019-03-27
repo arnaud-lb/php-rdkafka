@@ -115,7 +115,6 @@ while (true) {
     // The first argument is the partition (again).
     // The second argument is the timeout.
     $msg = $topic->consume(0, 1000);
-    
     if (null === $msg) {
         continue;
     } elseif ($msg->err) {
