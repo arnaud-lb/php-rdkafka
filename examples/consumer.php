@@ -10,7 +10,9 @@ $topic->consumeStart(0, RD_KAFKA_OFFSET_BEGINNING);
 
 while (true) {
     $msg = $topic->consume(0, 1000);
-    if ($msg->err) {
+    if (null === $msg) {
+        continue;
+    } elseif ($msg->err) {
         echo $msg->errstr(), "\n";
         break;
     } else {
