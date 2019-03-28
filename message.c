@@ -85,16 +85,16 @@ PHP_METHOD(RdKafka__Message, errstr)
         return;
     }
 
-    zpayload = rdkafka_read_property(NULL, getThis(), ZEND_STRL("payload"), 0 TSRMLS_CC);
-
-    if (zpayload && Z_TYPE_P(zpayload) == IS_STRING) {
-        RETURN_ZVAL(zpayload, 1, 0);
-    }
-
     errstr = rd_kafka_err2str(Z_LVAL_P(zerr));
 
     if (errstr) {
         RDKAFKA_RETURN_STRING(errstr);
+    }
+
+    zpayload = rdkafka_read_property(NULL, getThis(), ZEND_STRL("payload"), 0 TSRMLS_CC);
+
+    if (zpayload && Z_TYPE_P(zpayload) == IS_STRING) {
+        RETURN_ZVAL(zpayload, 1, 0);
     }
 }
 /* }}} */
