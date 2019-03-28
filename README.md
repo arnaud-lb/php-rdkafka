@@ -115,7 +115,9 @@ while (true) {
     // The first argument is the partition (again).
     // The second argument is the timeout.
     $msg = $topic->consume(0, 1000);
-    if ($msg->err) {
+    if (null === $msg) {
+        continue;
+    } elseif ($msg->err) {
         echo $msg->errstr(), "\n";
         break;
     } else {
@@ -158,7 +160,9 @@ Next, retrieve the consumed messages from the queue:
 while (true) {
     // The only argument is the timeout.
     $msg = $queue->consume(1000);
-    if ($msg->err) {
+    if (null === $msg) {
+        continue;
+    } elseif ($msg->err) {
         echo $msg->errstr(), "\n";
         break;
     } else {
