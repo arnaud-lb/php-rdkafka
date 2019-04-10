@@ -401,6 +401,7 @@ PHP_METHOD(RdKafka__ProducerTopic, produce)
 }
 /* }}} */
 
+#ifdef HAVE_RD_KAFKA_MESSAGE_HEADERS
 /* {{{ proto void RdKafka\ProducerTopic::producev(int $partition, int $msgflags[, string $payload, string $key, array $headers])
    Produce and send a single message to broker (with headers possibility). */
 
@@ -480,11 +481,14 @@ PHP_METHOD(RdKafka__ProducerTopic, producev)
     }
 }
 /* }}} */
+#endif
 
 static const zend_function_entry kafka_producer_topic_fe[] = {
     PHP_ME(RdKafka, __construct, arginfo_kafka___private_construct, ZEND_ACC_PRIVATE)
     PHP_ME(RdKafka__ProducerTopic, produce, arginfo_kafka_produce, ZEND_ACC_PUBLIC)
+#ifdef HAVE_RD_KAFKA_MESSAGE_HEADERS
     PHP_ME(RdKafka__ProducerTopic, producev, arginfo_kafka_producev, ZEND_ACC_PUBLIC)
+#endif
     PHP_FE_END
 };
 
