@@ -72,17 +72,19 @@ void kafka_message_new(zval *return_value, const rd_kafka_message_t *message TSR
     zend_update_property_long(NULL, return_value, ZEND_STRL("offset"), message->offset TSRMLS_CC);
 
 #ifdef HAVE_RD_KAFKA_MESSAGE_HEADERS
-    rd_kafka_message_headers(message, &message_headers);
-    if (message_headers != NULL) {
-        array_init(&headers_array);
-        for (i = 0; i < rd_kafka_header_cnt(message_headers); i++) {
-            header_response = rd_kafka_header_get_all(message_headers, i, &header_name, &header_value, &header_size);
-            if (header_response != RD_KAFKA_RESP_ERR_NO_ERROR) {
-                break;
+    if (message->err == RD_KAFKA_RESP_ERR_NO_ERROR) {
+        rd_kafka_message_headers(message, &message_headers);
+        if (message_headers != NULL) {
+            array_init(&headers_array);
+            for (i = 0; i < rd_kafka_header_cnt(message_headers); i++) {
+                header_response = rd_kafka_header_get_all(message_headers, i, &header_name, &header_value, &header_size);
+                if (header_response != RD_KAFKA_RESP_ERR_NO_ERROR) {
+                    break;
+                }
+                rdkafka_add_assoc_string(&headers_array, header_name, (char*)header_value);
             }
-            rdkafka_add_assoc_string(&headers_array, header_name, (char*)header_value);
+            zend_update_property(NULL, return_value, ZEND_STRL("headers"), &headers_array TSRMLS_CC);
         }
-        zend_update_property(NULL, return_value, ZEND_STRL("headers"), &headers_array TSRMLS_CC);
     }
 #endif
 }
