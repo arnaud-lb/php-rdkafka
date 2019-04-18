@@ -3,17 +3,17 @@
  <name>rdkafka</name>
  <channel>pecl.php.net</channel>
  <summary>Kafka client based on librdkafka</summary>
- <description>This extension is a librdkafka binding providing a working client for Kafka 0.8, 0.9, 0.10</description>
+ <description>This extension is a librdkafka binding providing a working client for Kafka</description>
  <lead>
   <name>Arnaud Le Blanc</name>
   <user>lbarnaud</user>
   <email>arnaud.lb@gmail.com</email>
   <active>yes</active>
  </lead>
- <date>2017-11-20</date>
+ <date>2019-04-18</date>
  <time>12:00:00</time>
  <version>
-  <release>3.0.5</release>
+  <release>3.1.0</release>
   <api>1.0.0</api>
  </version>
  <stability>
@@ -22,7 +22,15 @@
  </stability>
  <license uri="http://opensource.org/licenses/mit-license.php">MIT License</license>
  <notes>
- * Fixed destruction order, fixes hangs during RdKafka\Consumer destruction
+ * Added timestamp support (@mariam-japaridze)
+ * Added headers support (@martynaszaliaduonis, @dariuskasiulevicius)
+ * Added Rdkafka\Conf::setConsumeCb(), RdKafka\Conf::setOffsetCommitCb() (@tPl0ch)
+ * Added RdKafka\KafkaConsumer::getCommittedOffsets() (@dariuskasiulevicius)
+ * Fixed RdKafka\Message::errstr() (@JustBlackBird)
+ * Fixed reflection (@carusogabriel)
+ * Allow null key and null message (@awons)
+ * Dropped official PHP 5.4 / 5.5 support (@tPl0ch)
+ * Improved examples (@dbakiu, @Steveb-p)
  </notes>
  <contents>
   <dir name="/">
@@ -70,7 +78,7 @@
  <dependencies>
   <required>
    <php>
-    <min>5.3.0</min>
+    <min>5.6.0</min>
     <max>7.99.99</max>
    </php>
    <pearinstaller>
@@ -81,6 +89,22 @@
  <providesextension>rdkafka</providesextension>
  <extsrcrelease/>
  <changelog>
+  <release>
+   <date>2017-11-20</date>
+   <time>12:00:00</time>
+   <version>
+    <release>3.0.5</release>
+    <api>1.0.0</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <license uri="http://opensource.org/licenses/mit-license.php">MIT License</license>
+   <notes>
+   * Fixed destruction order, fixes hangs during RdKafka\Consumer destruction
+   </notes>
+  </release>
   <release>
    <date>2017-08-16</date>
    <time>12:00:00</time>
