@@ -538,7 +538,7 @@ PHP_METHOD(RdKafka__Conf, setDrMsgCb)
 /* }}} */
 
 /* {{{ proto void RdKafka\Conf::setStatsCb(callable $callback)
-   Sets the delivery report callback */
+   Sets the statistics report callback */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_conf_set_stats_cb, 0, 0, 1)
     ZEND_ARG_INFO(0, callback)
