@@ -3,17 +3,27 @@
  <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <title>The RdKafka\ProducerTopic class</title>
-<link media="all" rel="stylesheet" type="text/css" href="styles/d41d8cd98f00b204e9800998ecf8427e-theme-base.css" />
-<link media="all" rel="stylesheet" type="text/css" href="styles/d41d8cd98f00b204e9800998ecf8427e-theme-medium.css" />
-<link media="all" rel="stylesheet" type="text/css" href="styles/d41d8cd98f00b204e9800998ecf8427e-style.css" />
+<link media="all" rel="stylesheet" type="text/css" href="styles/03e73060321a0a848018724a6c83de7f-theme-base.css" />
+<link media="all" rel="stylesheet" type="text/css" href="styles/03e73060321a0a848018724a6c83de7f-theme-medium.css" />
 
  </head>
- <body><div class="manualnavbar" style="text-align: center;">
- <div class="prev" style="text-align: left; float: left;"><a href="rdkafka-consumertopic.offsetstore.html">RdKafka\ConsumerTopic::offsetStore</a></div>
- <div class="next" style="text-align: right; float: right;"><a href="rdkafka-producertopic.produce.html">RdKafka\ProducerTopic::produce</a></div>
- <div class="up"><a href="book.rdkafka.html">Rdkafka</a></div>
- <div class="home"><a href="index.html">PHP Manual</a></div>
-</div><hr /><div id="class.rdkafka-producertopic" class="reference">
+ <body class="docs"><div class="navbar navbar-fixed-top">
+  <div class="navbar-inner clearfix">
+    <ul class="nav" style="width: 100%">
+      <li style="float: left;"><a href="rdkafka-consumertopic.offsetstore.html">« RdKafka\ConsumerTopic::offsetStore</a></li>
+      <li style="float: right;"><a href="rdkafka-producertopic.produce.html">RdKafka\ProducerTopic::produce »</a></li>
+    </ul>
+  </div>
+</div>
+<div id="breadcrumbs" class="clearfix">
+  <ul class="breadcrumbs-container">
+    <li><a href="index.html">PHP Manual</a></li>
+    <li><a href="book.rdkafka.html">Rdkafka</a></li>
+    <li>The RdKafka\ProducerTopic class</li>
+  </ul>
+</div>
+<div id="layout">
+  <div id="layout-content"><div id="class.rdkafka-producertopic" class="reference">
 
  <h1 class="title">The RdKafka\ProducerTopic class</h1>
  
@@ -51,19 +61,27 @@
     
     <div class="classsynopsisinfo classsynopsisinfo_comment">/* Methods */</div>
     <div class="methodsynopsis dc-description">
-   <span class="modifier">public</span> <span class="type">void</span> <span class="methodname"><a href="rdkafka-producertopic.produce.html" class="methodname">produce</a></span>
+   <span class="modifier">public</span> <span class="methodname"><a href="rdkafka-producertopic.produce.html" class="methodname">produce</a></span>
     ( <span class="methodparam"><span class="type">integer</span> <code class="parameter">$partition</code></span>
    , <span class="methodparam"><span class="type">integer</span> <code class="parameter">$msgflags</code></span>
    , <span class="methodparam"><span class="type">string</span> <code class="parameter">$payload</code></span>
    [, <span class="methodparam"><span class="type">string</span> <code class="parameter">$key</code> <span class="initializer"> = <strong><code>NULL</code></strong></span></span>
-  ] )</div>
+  ] ) : <span class="type"><span class="type void">void</span></span></div>
+<div class="methodsynopsis dc-description">
+   <span class="modifier">public</span> <span class="methodname"><a href="rdkafka-producertopic.producev.html" class="methodname">producev</a></span>
+    ( <span class="methodparam"><span class="type">integer</span> <code class="parameter">$partition</code></span>
+   , <span class="methodparam"><span class="type">integer</span> <code class="parameter">$msgflags</code></span>
+   , <span class="methodparam"><span class="type">string</span> <code class="parameter">$payload</code></span>
+   [, <span class="methodparam"><span class="type">string</span> <code class="parameter">$key</code> <span class="initializer"> = <strong><code>NULL</code></strong></span></span>
+   ], <span class="methodparam"><span class="type">array</span> <code class="parameter">$headers</code></span>
+   ) : <span class="type"><span class="type void">void</span></span></div>
 
     
     <div class="classsynopsisinfo classsynopsisinfo_comment">/* Inherited methods */</div>
     <div class="methodsynopsis dc-description">
-   <span class="modifier">public</span> <span class="type">string</span> <span class="methodname"><a href="rdkafka-topic.getname.html" class="methodname">RdKafka\Topic::getName</a></span>
+   <span class="modifier">public</span> <span class="methodname"><a href="rdkafka-topic.getname.html" class="methodname">RdKafka\Topic::getName</a></span>
     ( <span class="methodparam">void</span>
-   )</div>
+   ) : <span class="type">string</span></div>
 
 
    }</div>
@@ -82,11 +100,13 @@
 
 
 
-<h2>Table of Contents</h2><ul class="chunklist chunklist_reference"><li><a href="rdkafka-producertopic.produce.html">RdKafka\ProducerTopic::produce</a> — Produce and send a single message</li></ul>
+
+
+
+
+
+
+
+<h2>Table of Contents</h2><ul class="chunklist chunklist_reference"><li><a href="rdkafka-producertopic.produce.html">RdKafka\ProducerTopic::produce</a> — Produce and send a single message</li><li><a href="rdkafka-producertopic.producev.html">RdKafka\ProducerTopic::producev</a> — Produce and send a single message with headers</li></ul>
 </div>
-<hr /><div class="manualnavbar" style="text-align: center;">
- <div class="prev" style="text-align: left; float: left;"><a href="rdkafka-consumertopic.offsetstore.html">RdKafka\ConsumerTopic::offsetStore</a></div>
- <div class="next" style="text-align: right; float: right;"><a href="rdkafka-producertopic.produce.html">RdKafka\ProducerTopic::produce</a></div>
- <div class="up"><a href="book.rdkafka.html">Rdkafka</a></div>
- <div class="home"><a href="index.html">PHP Manual</a></div>
-</div></body></html>
+</div></div></body></html>
