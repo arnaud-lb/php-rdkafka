@@ -177,14 +177,13 @@ librdkafka can store offsets in a local file, or on the broker. The default is l
 
 By default, the file is created in the current directory, with a name based on the topic and the partition. The directory can be changed by setting the ``offset.store.path`` [configuration property](https://github.com/edenhill/librdkafka/blob/master/CONFIGURATION.md).
 
-Other interesting properties are: ``offset.store.sync.interval.ms``, ``offset.store.method``, ``auto.commit.interval.ms``, ``auto.commit.enable``, ``offset.store.method``, ``group.id``.
+Other interesting properties are: ``auto.commit.interval.ms``, ``auto.commit.enable``, ``group.id``, ``max.poll.interval.ms``.
 
 ``` php
 <?php
 
 $topicConf = new RdKafka\TopicConf();
 $topicConf->set("auto.commit.interval.ms", 1e3);
-$topicConf->set("offset.store.sync.interval.ms", 60e3);
 
 $topic = $rk->newTopic("test", $topicConf);
 
@@ -219,7 +218,7 @@ pcntl_sigprocmask(SIG_BLOCK, array(SIGIO));
 $conf->set('internal.termination.signal', SIGIO);
 ```
 
-### socket.blocking.max.ms
+### socket.blocking.max.ms (librdkafka < 1.0.0)
 
 > Maximum time a broker socket operation may block. A lower value improves responsiveness at the expense of slightly higher CPU usage.
 
