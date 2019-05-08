@@ -543,6 +543,50 @@ PHP_METHOD(RdKafka__Kafka, poll)
 }
 /* }}} */
 
+/* {{{ proto void RdKafka\Kafka::queryWatermarkOffsets(string $topic, int $partition, int &$low, int &$high, int $timeout_ms)
+   Query broker for low (oldest/beginning) or high (newest/end) offsets for partition */
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_query_watermark_offsets, 0, 0, 1)
+    ZEND_ARG_INFO(0, topic)
+    ZEND_ARG_INFO(0, partition)
+    ZEND_ARG_INFO(1, low)
+    ZEND_ARG_INFO(1, high)
+    ZEND_ARG_INFO(0, timeout_ms)
+ZEND_END_ARG_INFO()
+
+PHP_METHOD(RdKafka__Kafka, queryWatermarkOffsets)
+{
+    kafka_object *intern;
+    char *topic;
+    arglen_t topic_length;
+    long partition, low, high, timeout;
+    zval *lowResult, *highResult;
+    rd_kafka_resp_err_t err;
+
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "slzzl", &topic, &topic_length, &partition, &lowResult, &highResult, &timeout) == FAILURE) {
+        return;
+    }
+
+    ZVAL_DEREF(lowResult);
+    ZVAL_DEREF(highResult);
+
+    intern = get_kafka_object(getThis() TSRMLS_CC);
+    if (!intern) {
+        return;
+    }
+
+    err = rd_kafka_query_watermark_offsets(intern->rk, topic, partition, &low, &high, timeout);
+
+    if (err != RD_KAFKA_RESP_ERR_NO_ERROR) {
+        zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err TSRMLS_CC);
+        return;
+    }
+
+    ZVAL_LONG(lowResult, low);
+    ZVAL_LONG(highResult, high);
+}
+/* }}} */
+
 /* {{{ proto void RdKafka::setLogger(mixed $logger)
    Sets the log callback */
 
@@ -597,6 +641,7 @@ static const zend_function_entry kafka_fe[] = {
     PHP_MALIAS(RdKafka__Kafka, outqLen, getOutQLen, arginfo_kafka_get_outq_len, ZEND_ACC_PUBLIC | ZEND_ACC_DEPRECATED)
     PHP_ME(RdKafka__Kafka, poll, arginfo_kafka_poll, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__Kafka, setLogger, arginfo_kafka_set_logger, ZEND_ACC_PUBLIC)
+    PHP_ME(RdKafka__Kafka, queryWatermarkOffsets, arginfo_kafka_query_watermark_offsets, ZEND_ACC_PUBLIC)
     PHP_FE_END
 };
 
