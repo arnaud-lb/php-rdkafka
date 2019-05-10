@@ -423,6 +423,7 @@ PHP_METHOD(RdKafka__ProducerTopic, producev)
     arglen_t key_len = 0;
     rd_kafka_resp_err_t err;
     kafka_topic_object *intern;
+    kafka_object *kafka_intern;
     HashTable *headersParam = NULL;
     HashPosition headersParamPos;
     char *header_key;
@@ -464,8 +465,13 @@ PHP_METHOD(RdKafka__ProducerTopic, producev)
         headers = rd_kafka_headers_new(0);
     }
 
+    kafka_intern = get_kafka_object(P_ZEVAL(intern->zrk) TSRMLS_CC);
+    if (!kafka_intern) {
+        return;
+    }
+
     err = rd_kafka_producev(
-            NULL,
+            kafka_intern->rk,
             RD_KAFKA_V_RKT(intern->rkt),
             RD_KAFKA_V_PARTITION(partition),
             RD_KAFKA_V_MSGFLAGS(msgflags | RD_KAFKA_MSG_F_COPY),
