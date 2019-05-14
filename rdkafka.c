@@ -838,7 +838,7 @@ PHP_MINFO_FUNCTION(rdkafka)
         (RD_KAFKA_VERSION & 0xFF000000) >> 24,
         (RD_KAFKA_VERSION & 0x00FF0000) >> 16,
         (RD_KAFKA_VERSION & 0x0000FF00) >> 8,
-        (RD_KAFKA_VERSION & 0x000000FF) >> 8
+        (RD_KAFKA_VERSION & 0x000000FF)
     );
 
     php_info_print_table_header(2, "librdkafka version (runtime)", rd_kafka_version_str());
