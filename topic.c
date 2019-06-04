@@ -402,8 +402,8 @@ PHP_METHOD(RdKafka__ProducerTopic, produce)
 /* }}} */
 
 #ifdef HAVE_RD_KAFKA_MESSAGE_HEADERS
-/* {{{ proto void RdKafka\ProducerTopic::producev(int $partition, int $msgflags[, string $payload, string $key, array $headers])
-   Produce and send a single message to broker (with headers possibility). */
+/* {{{ proto void RdKafka\ProducerTopic::producev(int $partition, int $msgflags[, string $payload, string $key, array $headers, int $timestamp_ms])
+   Produce and send a single message to broker (with headers possibility and timestamp). */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_producev, 0, 0, 2)
     ZEND_ARG_INFO(0, partition)
@@ -411,6 +411,7 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_producev, 0, 0, 2)
     ZEND_ARG_INFO(0, payload)
     ZEND_ARG_INFO(0, key)
     ZEND_ARG_INFO(0, headers)
+    ZEND_ARG_INFO(0, timestamp_ms)
 ZEND_END_ARG_INFO()
 
 PHP_METHOD(RdKafka__ProducerTopic, producev)
@@ -429,8 +430,10 @@ PHP_METHOD(RdKafka__ProducerTopic, producev)
     char *header_key;
     zeval *header_value;
     rd_kafka_headers_t *headers;
+    long timestamp_ms = 0;
+    zend_bool timestamp_ms_is_null = 0;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ll|s!s!h!", &partition, &msgflags, &payload, &payload_len, &key, &key_len, &headersParam) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ll|s!s!h!l!", &partition, &msgflags, &payload, &payload_len, &key, &key_len, &headersParam, &timestamp_ms, &timestamp_ms_is_null) == FAILURE) {
         return;
     }
 
@@ -442,6 +445,10 @@ PHP_METHOD(RdKafka__ProducerTopic, producev)
     if (msgflags != 0) {
         zend_throw_exception_ex(spl_ce_InvalidArgumentException, 0 TSRMLS_CC, "Invalid value '%ld' for $msgflags", msgflags TSRMLS_CC);
         return;
+    }
+
+    if (timestamp_ms_is_null == 1) {
+        timestamp_ms = 0;
     }
 
     intern = get_kafka_topic_object(getThis() TSRMLS_CC);
@@ -477,6 +484,7 @@ PHP_METHOD(RdKafka__ProducerTopic, producev)
             RD_KAFKA_V_MSGFLAGS(msgflags | RD_KAFKA_MSG_F_COPY),
             RD_KAFKA_V_VALUE(payload, payload_len),
             RD_KAFKA_V_KEY(key, key_len),
+            RD_KAFKA_V_TIMESTAMP(timestamp_ms),
             RD_KAFKA_V_HEADERS(headers),
             RD_KAFKA_V_END
     );
