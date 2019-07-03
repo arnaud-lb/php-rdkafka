@@ -76,6 +76,12 @@ if test "$PHP_RDKAFKA" != "no"; then
     AC_MSG_WARN([no rd_kafka_subscribe, new KafkaConsumer will not be available])
   ])
 
+  AC_CHECK_LIB($LIBNAME,[rd_kafka_query_watermark_offsets],[
+    AC_DEFINE(HAVE_RD_KAFKA_QUERY_WATERMARK_OFFSETS,1,[ ])
+  ],[
+    AC_MSG_WARN([no rd_kafka_query_watermark_offsets, queryWatermarkOffsets will not be available])
+  ])
+
   LFGLAGS="$ORIG_LDFLAGS"
 
   PHP_SUBST(RDKAFKA_SHARED_LIBADD)

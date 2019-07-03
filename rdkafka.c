@@ -543,6 +543,7 @@ PHP_METHOD(RdKafka__Kafka, poll)
 }
 /* }}} */
 
+#ifdef HAVE_RD_KAFKA_QUERY_WATERMARK_OFFSETS
 /* {{{ proto void RdKafka\Kafka::queryWatermarkOffsets(string $topic, int $partition, int &$low, int &$high, int $timeout_ms)
    Query broker for low (oldest/beginning) or high (newest/end) offsets for partition */
 
@@ -586,6 +587,7 @@ PHP_METHOD(RdKafka__Kafka, queryWatermarkOffsets)
     ZVAL_LONG(highResult, high);
 }
 /* }}} */
+#endif /* HAVE_RD_KAFKA_QUERY_WATERMARK_OFFSETS */
 
 /* {{{ proto void RdKafka::setLogger(mixed $logger)
    Sets the log callback */
@@ -641,7 +643,9 @@ static const zend_function_entry kafka_fe[] = {
     PHP_MALIAS(RdKafka__Kafka, outqLen, getOutQLen, arginfo_kafka_get_outq_len, ZEND_ACC_PUBLIC | ZEND_ACC_DEPRECATED)
     PHP_ME(RdKafka__Kafka, poll, arginfo_kafka_poll, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__Kafka, setLogger, arginfo_kafka_set_logger, ZEND_ACC_PUBLIC)
+#ifdef HAVE_RD_KAFKA_QUERY_WATERMARK_OFFSETS
     PHP_ME(RdKafka__Kafka, queryWatermarkOffsets, arginfo_kafka_query_watermark_offsets, ZEND_ACC_PUBLIC)
+#endif /* HAVE_RD_KAFKA_QUERY_WATERMARK_OFFSETS */
     PHP_FE_END
 };
 

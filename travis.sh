@@ -4,8 +4,13 @@ set -xe
 
 git clone --depth 1 --branch "$LIBRDKAFKA_VERSION" https://github.com/edenhill/librdkafka.git
 (
+    flags=''
+    if [ "$LIBRDKAFKA_VERSION" = "0.8.6" ]; then
+        flags='-Wno-strict-overflow'
+    fi
+
     cd librdkafka
-    ./configure
+    CFLAGS="$flags" CXXFLAGS="$flags" ./configure
     make
     sudo make install
 )
