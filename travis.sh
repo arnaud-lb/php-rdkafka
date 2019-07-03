@@ -18,7 +18,7 @@ echo "extension = $(pwd)/modules/rdkafka.so" >> ~/.phpenv/versions/$(phpenv vers
 phpenv config-rm xdebug.ini || true
 
 phpize
-./configure
+CFLAGS='-Werror=implicit-function-declaration' ./configure
 make
 
 showmem=

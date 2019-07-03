@@ -567,8 +567,8 @@ PHP_METHOD(RdKafka__Kafka, queryWatermarkOffsets)
         return;
     }
 
-    ZVAL_DEREF(lowResult);
-    ZVAL_DEREF(highResult);
+    ZEVAL_DEREF(lowResult);
+    ZEVAL_DEREF(highResult);
 
     intern = get_kafka_object(getThis() TSRMLS_CC);
     if (!intern) {
