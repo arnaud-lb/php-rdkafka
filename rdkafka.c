@@ -618,7 +618,7 @@ PHP_METHOD(RdKafka__Kafka, offsetsForTimes)
         return;
     }
 
-    err = rd_kafka_offsets_for_times(intern->rk, topicPartitions, timeout);
+    err = rd_kafka_offsets_for_times(intern->rk, topicPartitions, timeout_ms);
 
     if (err != RD_KAFKA_RESP_ERR_NO_ERROR) {
         zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err TSRMLS_CC);
