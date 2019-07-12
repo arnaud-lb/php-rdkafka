@@ -680,6 +680,9 @@ static const zend_function_entry kafka_fe[] = {
 #ifdef HAVE_RD_KAFKA_QUERY_WATERMARK_OFFSETS
     PHP_ME(RdKafka__Kafka, queryWatermarkOffsets, arginfo_kafka_query_watermark_offsets, ZEND_ACC_PUBLIC)
 #endif /* HAVE_RD_KAFKA_QUERY_WATERMARK_OFFSETS */
+#ifdef HAVE_RD_KAFKA_OFFSETS_FOR_TIMES
+    PHP_ME(RdKafka__Kafka, offsetsForTimes, arginfo_kafka_offsets_for_times, ZEND_ACC_PUBLIC)
+#endif /* HAVE_RD_KAFKA_OFFSETS_FOR_TIMES */
     PHP_FE_END
 };
 
