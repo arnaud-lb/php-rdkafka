@@ -589,6 +589,40 @@ PHP_METHOD(RdKafka__Kafka, queryWatermarkOffsets)
 /* }}} */
 #endif /* HAVE_RD_KAFKA_QUERY_WATERMARK_OFFSETS */
 
+#ifdef HAVE_RD_KAFKA_OFFSETS_FOR_TIMES
+/* {{{ proto void RdKafka\Kafka::offsetsForTimes(array $topicPartitions, int $timeout_ms)
+   Look up the offsets for the given partitions by timestamp. */
+ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_offsets_for_times, 0, 0, 2)
+    ZEND_ARG_INFO(0, topicPartitions)
+    ZEND_ARG_INFO(0, timeout_ms)
+ZEND_END_ARG_INFO()
+PHP_METHOD(RdKafka__Kafka, offsetsForTimes)
+{
+    kafka_object *intern;
+    zval *topicPartitions;
+    long timeout;
+    rd_kafka_resp_err_t err;
+
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "zl", &topicPartitions, &timeout) == FAILURE) {
+        return;
+    }
+
+    intern = get_kafka_object(getThis() TSRMLS_CC);
+    if (!intern) {
+        return;
+    }
+
+    err = rd_kafka_offsets_for_times(intern->rk, topicPartitions, timeout);
+
+    if (err != RD_KAFKA_RESP_ERR_NO_ERROR) {
+        zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err TSRMLS_CC);
+        return;
+    }
+}
+/* }}} */
+#endif /* HAVE_RD_KAFKA_OFFSETS_FOR_TIMES */
+
+
 /* {{{ proto void RdKafka::setLogger(mixed $logger)
    Sets the log callback */
 
