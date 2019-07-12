@@ -593,22 +593,28 @@ PHP_METHOD(RdKafka__Kafka, queryWatermarkOffsets)
 /* {{{ proto void RdKafka\Kafka::offsetsForTimes(array $topicPartitions, int $timeout_ms)
    Look up the offsets for the given partitions by timestamp. */
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_offsets_for_times, 0, 0, 2)
-    ZEND_ARG_INFO(0, topicPartitions)
+    ZEND_ARG_INFO(0, topic_partitions)
     ZEND_ARG_INFO(0, timeout_ms)
 ZEND_END_ARG_INFO()
 PHP_METHOD(RdKafka__Kafka, offsetsForTimes)
 {
+    HashTable *htopars = NULL;
     kafka_object *intern;
-    zval *topicPartitions;
-    long timeout;
+    rd_kafka_topic_partition_list_t *topicPartitions;
+    long timeout_ms;
     rd_kafka_resp_err_t err;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "al", &topicPartitions, &timeout) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "hl", &htopars, &timeout_ms) == FAILURE) {
         return;
     }
 
     intern = get_kafka_object(getThis() TSRMLS_CC);
     if (!intern) {
+        return;
+    }
+
+    topicPartitions = array_arg_to_kafka_topic_partition_list(1, htopars TSRMLS_CC);
+    if (!topicPartitions) {
         return;
     }
 
