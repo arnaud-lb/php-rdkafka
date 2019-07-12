@@ -624,6 +624,8 @@ PHP_METHOD(RdKafka__Kafka, offsetsForTimes)
         zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err TSRMLS_CC);
         return;
     }
+    kafka_topic_partition_list_to_array(return_value, topicPartitions TSRMLS_CC);
+    rd_kafka_topic_partition_list_destroy(topicPartitions);
 }
 /* }}} */
 #endif /* HAVE_RD_KAFKA_OFFSETS_FOR_TIMES */
