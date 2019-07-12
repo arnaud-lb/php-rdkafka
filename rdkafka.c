@@ -603,7 +603,7 @@ PHP_METHOD(RdKafka__Kafka, offsetsForTimes)
     long timeout;
     rd_kafka_resp_err_t err;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "zl", &topicPartitions, &timeout) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "al", &topicPartitions, &timeout) == FAILURE) {
         return;
     }
 
