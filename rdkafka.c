@@ -589,6 +589,49 @@ PHP_METHOD(RdKafka__Kafka, queryWatermarkOffsets)
 /* }}} */
 #endif /* HAVE_RD_KAFKA_QUERY_WATERMARK_OFFSETS */
 
+#ifdef HAVE_RD_KAFKA_OFFSETS_FOR_TIMES
+/* {{{ proto void RdKafka\Kafka::offsetsForTimes(array $topicPartitions, int $timeout_ms)
+   Look up the offsets for the given partitions by timestamp. */
+ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_offsets_for_times, 0, 0, 2)
+    ZEND_ARG_INFO(0, topic_partitions)
+    ZEND_ARG_INFO(0, timeout_ms)
+ZEND_END_ARG_INFO()
+PHP_METHOD(RdKafka__Kafka, offsetsForTimes)
+{
+    HashTable *htopars = NULL;
+    kafka_object *intern;
+    rd_kafka_topic_partition_list_t *topicPartitions;
+    long timeout_ms;
+    rd_kafka_resp_err_t err;
+
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "hl", &htopars, &timeout_ms) == FAILURE) {
+        return;
+    }
+
+    intern = get_kafka_object(getThis() TSRMLS_CC);
+    if (!intern) {
+        return;
+    }
+
+    topicPartitions = array_arg_to_kafka_topic_partition_list(1, htopars TSRMLS_CC);
+    if (!topicPartitions) {
+        return;
+    }
+
+    err = rd_kafka_offsets_for_times(intern->rk, topicPartitions, timeout_ms);
+
+    if (err != RD_KAFKA_RESP_ERR_NO_ERROR) {
+        rd_kafka_topic_partition_list_destroy(topicPartitions);
+        zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err TSRMLS_CC);
+        return;
+    }
+    kafka_topic_partition_list_to_array(return_value, topicPartitions TSRMLS_CC);
+    rd_kafka_topic_partition_list_destroy(topicPartitions);
+}
+/* }}} */
+#endif /* HAVE_RD_KAFKA_OFFSETS_FOR_TIMES */
+
+
 /* {{{ proto void RdKafka::setLogger(mixed $logger)
    Sets the log callback */
 
@@ -646,6 +689,9 @@ static const zend_function_entry kafka_fe[] = {
 #ifdef HAVE_RD_KAFKA_QUERY_WATERMARK_OFFSETS
     PHP_ME(RdKafka__Kafka, queryWatermarkOffsets, arginfo_kafka_query_watermark_offsets, ZEND_ACC_PUBLIC)
 #endif /* HAVE_RD_KAFKA_QUERY_WATERMARK_OFFSETS */
+#ifdef HAVE_RD_KAFKA_OFFSETS_FOR_TIMES
+    PHP_ME(RdKafka__Kafka, offsetsForTimes, arginfo_kafka_offsets_for_times, ZEND_ACC_PUBLIC)
+#endif /* HAVE_RD_KAFKA_OFFSETS_FOR_TIMES */
     PHP_FE_END
 };
 

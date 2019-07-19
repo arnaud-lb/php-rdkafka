@@ -82,6 +82,12 @@ if test "$PHP_RDKAFKA" != "no"; then
     AC_MSG_WARN([no rd_kafka_query_watermark_offsets, queryWatermarkOffsets will not be available])
   ])
 
+  AC_CHECK_LIB($LIBNAME,[rd_kafka_offsets_for_times],[
+    AC_DEFINE(HAVE_RD_KAFKA_OFFSETS_FOR_TIMES,1,[ ])
+  ],[
+    AC_MSG_WARN([no rd_kafka_offsets_for_times, offsetsForTimes will not be available])
+  ])
+
   LFGLAGS="$ORIG_LDFLAGS"
 
   PHP_SUBST(RDKAFKA_SHARED_LIBADD)
