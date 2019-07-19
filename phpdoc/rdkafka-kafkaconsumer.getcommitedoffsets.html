@@ -26,7 +26,7 @@
   <div id="layout-content"><div id="rdkafka-kafkaconsumer.getcommitedoffsets" class="refentry">
     <div class="refnamediv">
         <h1 class="refname">RdKafka\KafkaConsumer::getCommitedOffsets</h1>
-        <p class="verinfo">(No version information available, might only be in Git)</p><p class="refpurpose"><span class="refname">RdKafka\KafkaConsumer::getCommitedOffsets</span> &mdash; <span class="dc-title">Returns the commited offsets</span></p>
+        <p class="verinfo">(PECL rdkafka &gt;= 3.1.0, librdkafka &gt;= 0.9)</p><p class="refpurpose"><span class="refname">RdKafka\KafkaConsumer::getCommitedOffsets</span> &mdash; <span class="dc-title">Returns the commited offsets</span></p>
 
     </div>
 
@@ -34,7 +34,8 @@
         <h3 class="title">Description</h3>
         <div class="methodsynopsis dc-description">
             <span class="modifier">public</span> <span class="methodname"><strong>RdKafka\KafkaConsumer::getCommitedOffsets</strong></span>
-             ( <span class="methodparam">void</span>
+             ( <span class="methodparam"><span class="type">array</span> <code class="parameter">$topics</code></span>
+            , <span class="methodparam"><span class="type">int</span> <code class="parameter">$timeout_ms</code></span>
          ) : <span class="type">array</span></div>
 
         <p class="para rdfs-comment">
@@ -54,7 +55,7 @@
                 <dd>
 
                     <p class="para">
-                        Array of topic names.
+                        Array of <a href="class.rdkafka-topicpartition.html" class="classname">RdKafka\TopicPartition</a>.
                     </p>
                 </dd>
 
@@ -79,7 +80,7 @@
     <div class="refsect1 returnvalues" id="refsect1-rdkafka-kafkaconsumer.getcommitedoffsets-returnvalues">
         <h3 class="title">Return Values</h3>
         <p class="para">
-            Returns an array of <a href="class.rdkafka-topicpartition.html" class="classname">RdKafka\TopicPartition</a>
+            Returns an array of <a href="class.rdkafka-topicpartition.html" class="classname">RdKafka\TopicPartition</a> with their offsets
         </p>
     </div>
 

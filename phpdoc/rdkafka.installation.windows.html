@@ -30,10 +30,14 @@
    Precompiled binaries for each release are available from
    <a href="http://pecl.php.net/package/rdkafka" class="link external">&raquo;&nbsp;PECL</a> for a variety of
    combinations of versions, thread safety, and VC libraries. Extract the
-   archive and put <var class="filename">php_rdkfaka.dll</var> in your PHP extension
+   archive and put the <var class="filename">php_rdkfaka.dll</var> and <var class="filename">librdkafka.dll</var> files in your PHP extension
    directory (&quot;ext&quot; by default).
   </p>
-
+  <blockquote class="note"><p><strong class="note">Note</strong>: 
+   <p class="para">
+    Each precompiled binary works only for a specific PHP build. Please make sure to download the right one after opening the DLL link on <a href="http://pecl.php.net/package/rdkafka" class="link external">&raquo;&nbsp;PECL</a>.
+   </p>
+  </p></blockquote>
   <p class="para">
    Add the following line to your <var class="filename">php.ini</var> file:
    <div class="example-contents">
