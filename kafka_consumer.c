@@ -716,6 +716,7 @@ static const zend_function_entry fe[] = { /* {{{ */
     PHP_ME(RdKafka__KafkaConsumer, getMetadata, arginfo_kafka_kafka_consumer_getMetadata, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__KafkaConsumer, newTopic, arginfo_kafka_kafka_consumer_new_topic, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__KafkaConsumer, getCommittedOffsets, arginfo_kafka_kafka_consumer_get_committed_offsets, ZEND_ACC_PUBLIC)
+    PHP_ME(RdKafka__KafkaConsumer, getOffsetPositions, arginfo_kafka_kafka_consumer_get_offset_positions, ZEND_ACC_PUBLIC)
     PHP_FE_END
 }; /* }}} */
 
