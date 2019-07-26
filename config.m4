@@ -88,6 +88,12 @@ if test "$PHP_RDKAFKA" != "no"; then
     AC_MSG_WARN([no rd_kafka_offsets_for_times, offsetsForTimes will not be available])
   ])
 
+  AC_CHECK_DECLS([RD_KAFKA_MSG_F_BLOCK],[
+    AC_DEFINE(HAVE_RD_KAFKA_MSG_F_BLOCK,1,[ ])
+  ],[
+    AC_MSG_WARN([no RD_KAFKA_MSG_F_BLOCK, flag for blocking produce, on full queue, will not be available])
+  ],[[#include <librdkafka/rdkafka.h>]])
+
   LFGLAGS="$ORIG_LDFLAGS"
 
   PHP_SUBST(RDKAFKA_SHARED_LIBADD)

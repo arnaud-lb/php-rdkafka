@@ -391,7 +391,7 @@ PHP_METHOD(RdKafka__ProducerTopic, produce)
 
     intern = get_kafka_topic_object(getThis() TSRMLS_CC);
 
-    ret = rd_kafka_produce(intern->rkt, partition, msgflags | RD_KAFKA_MSG_F_COPY | RD_KAFKA_MSG_F_BLOCK, payload, payload_len, key, key_len, NULL);
+    ret = rd_kafka_produce(intern->rkt, partition, msgflags | RD_KAFKA_MSG_F_COPY, payload, payload_len, key, key_len, NULL);
 
     if (ret == -1) {
         err = rd_kafka_errno2err(errno);
@@ -481,7 +481,7 @@ PHP_METHOD(RdKafka__ProducerTopic, producev)
             kafka_intern->rk,
             RD_KAFKA_V_RKT(intern->rkt),
             RD_KAFKA_V_PARTITION(partition),
-            RD_KAFKA_V_MSGFLAGS(msgflags | RD_KAFKA_MSG_F_COPY | RD_KAFKA_MSG_F_BLOCK),
+            RD_KAFKA_V_MSGFLAGS(msgflags | RD_KAFKA_MSG_F_COPY),
             RD_KAFKA_V_VALUE(payload, payload_len),
             RD_KAFKA_V_KEY(key, key_len),
             RD_KAFKA_V_TIMESTAMP(timestamp_ms),
