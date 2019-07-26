@@ -8,7 +8,8 @@ PHP-rdkafka is a thin [librdkafka](https://github.com/edenhill/librdkafka) bindi
 
 It supports the high level and low level *consumers*, *producer*, and *metadata* APIs.
 
-The API ressembles as much as possible to librdkafka's, and is fully documented [here](https://arnaud-lb.github.io/php-rdkafka/phpdoc/book.rdkafka.html).
+The API ressembles as much as possible to librdkafka's, and is fully documented [here](https://arnaud-lb.github.io/php-rdkafka/phpdoc/book.rdkafka.html).  
+The source of the documentation can be found [here](https://github.com/arnaud-lb/php-rdkafka-doc)
 
 ## Table of Contents
 
@@ -261,7 +262,8 @@ while ($producer->getOutQLen() > 0) {
 
 ## Documentation
 
-https://arnaud-lb.github.io/php-rdkafka/phpdoc/book.rdkafka.html
+https://arnaud-lb.github.io/php-rdkafka/phpdoc/book.rdkafka.html  
+The source of the documentation can be found [here](https://github.com/arnaud-lb/php-rdkafka-doc)
 
 ## Asking for Help
 
