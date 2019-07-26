@@ -16,12 +16,4 @@
   +----------------------------------------------------------------------+
 */
 
-#ifdef HAVE_NEW_KAFKA_CONSUMER
-
 void kafka_kafka_consumer_minit(TSRMLS_D);
-
-#else /* HAVE_NEW_KAFKA_CONSUMER */
-
-static inline void kafka_kafka_consumer_minit(TSRMLS_D) { }
-
-#endif /* HAVE_NEW_KAFKA_CONSUMER */

@@ -39,6 +39,10 @@
 #include "topic_partition.h"
 #include "fun.h"
 
+#if RD_KAFKA_VERSION < 0x000b0000
+#	error librdkafka version 0.11.0 or greater required
+#endif
+
 enum {
    RD_KAFKA_LOG_PRINT = 100
    , RD_KAFKA_LOG_SYSLOG = 101
@@ -543,7 +547,6 @@ PHP_METHOD(RdKafka__Kafka, poll)
 }
 /* }}} */
 
-#ifdef HAVE_RD_KAFKA_QUERY_WATERMARK_OFFSETS
 /* {{{ proto void RdKafka\Kafka::queryWatermarkOffsets(string $topic, int $partition, int &$low, int &$high, int $timeout_ms)
    Query broker for low (oldest/beginning) or high (newest/end) offsets for partition */
 
@@ -587,9 +590,7 @@ PHP_METHOD(RdKafka__Kafka, queryWatermarkOffsets)
     ZVAL_LONG(highResult, high);
 }
 /* }}} */
-#endif /* HAVE_RD_KAFKA_QUERY_WATERMARK_OFFSETS */
 
-#ifdef HAVE_RD_KAFKA_OFFSETS_FOR_TIMES
 /* {{{ proto void RdKafka\Kafka::offsetsForTimes(array $topicPartitions, int $timeout_ms)
    Look up the offsets for the given partitions by timestamp. */
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_offsets_for_times, 0, 0, 2)
@@ -629,7 +630,6 @@ PHP_METHOD(RdKafka__Kafka, offsetsForTimes)
     rd_kafka_topic_partition_list_destroy(topicPartitions);
 }
 /* }}} */
-#endif /* HAVE_RD_KAFKA_OFFSETS_FOR_TIMES */
 
 
 /* {{{ proto void RdKafka::setLogger(mixed $logger)
@@ -686,12 +686,8 @@ static const zend_function_entry kafka_fe[] = {
     PHP_MALIAS(RdKafka__Kafka, outqLen, getOutQLen, arginfo_kafka_get_outq_len, ZEND_ACC_PUBLIC | ZEND_ACC_DEPRECATED)
     PHP_ME(RdKafka__Kafka, poll, arginfo_kafka_poll, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__Kafka, setLogger, arginfo_kafka_set_logger, ZEND_ACC_PUBLIC)
-#ifdef HAVE_RD_KAFKA_QUERY_WATERMARK_OFFSETS
     PHP_ME(RdKafka__Kafka, queryWatermarkOffsets, arginfo_kafka_query_watermark_offsets, ZEND_ACC_PUBLIC)
-#endif /* HAVE_RD_KAFKA_QUERY_WATERMARK_OFFSETS */
-#ifdef HAVE_RD_KAFKA_OFFSETS_FOR_TIMES
     PHP_ME(RdKafka__Kafka, offsetsForTimes, arginfo_kafka_offsets_for_times, ZEND_ACC_PUBLIC)
-#endif /* HAVE_RD_KAFKA_OFFSETS_FOR_TIMES */
     PHP_FE_END
 };
 
@@ -729,7 +725,6 @@ static const zend_function_entry kafka_producer_fe[] = {
 
 void register_err_constants(INIT_FUNC_ARGS) /* {{{ */
 {
-#ifdef HAVE_RD_KAFKA_GET_ERR_DESCS
     const struct rd_kafka_err_desc *errdescs;
     size_t cnt;
     size_t i;
@@ -756,43 +751,6 @@ void register_err_constants(INIT_FUNC_ARGS) /* {{{ */
 
         zend_register_long_constant(buf, len, desc->code, CONST_CS | CONST_PERSISTENT, module_number TSRMLS_CC);
     }
-
-#else /* HAVE_RD_KAFKA_GET_ERR_DESCS */
-
-    COPY_CONSTANT(RD_KAFKA_RESP_ERR__BEGIN);
-    COPY_CONSTANT(RD_KAFKA_RESP_ERR__BAD_MSG);
-    COPY_CONSTANT(RD_KAFKA_RESP_ERR__BAD_COMPRESSION);
-    COPY_CONSTANT(RD_KAFKA_RESP_ERR__DESTROY);
-    COPY_CONSTANT(RD_KAFKA_RESP_ERR__FAIL);
-    COPY_CONSTANT(RD_KAFKA_RESP_ERR__TRANSPORT);
-    COPY_CONSTANT(RD_KAFKA_RESP_ERR__CRIT_SYS_RESOURCE);
-    COPY_CONSTANT(RD_KAFKA_RESP_ERR__RESOLVE);
-    COPY_CONSTANT(RD_KAFKA_RESP_ERR__MSG_TIMED_OUT);
-    COPY_CONSTANT(RD_KAFKA_RESP_ERR__PARTITION_EOF);
-    COPY_CONSTANT(RD_KAFKA_RESP_ERR__UNKNOWN_PARTITION);
-    COPY_CONSTANT(RD_KAFKA_RESP_ERR__FS);
-    COPY_CONSTANT(RD_KAFKA_RESP_ERR__UNKNOWN_TOPIC);
-    COPY_CONSTANT(RD_KAFKA_RESP_ERR__ALL_BROKERS_DOWN);
-    COPY_CONSTANT(RD_KAFKA_RESP_ERR__INVALID_ARG);
-    COPY_CONSTANT(RD_KAFKA_RESP_ERR__TIMED_OUT);
-    COPY_CONSTANT(RD_KAFKA_RESP_ERR__QUEUE_FULL);
-    COPY_CONSTANT(RD_KAFKA_RESP_ERR__ISR_INSUFF);
-    COPY_CONSTANT(RD_KAFKA_RESP_ERR__END);
-    COPY_CONSTANT(RD_KAFKA_RESP_ERR_UNKNOWN);
-    COPY_CONSTANT(RD_KAFKA_RESP_ERR_NO_ERROR);
-    COPY_CONSTANT(RD_KAFKA_RESP_ERR_OFFSET_OUT_OF_RANGE);
-    COPY_CONSTANT(RD_KAFKA_RESP_ERR_INVALID_MSG);
-    COPY_CONSTANT(RD_KAFKA_RESP_ERR_UNKNOWN_TOPIC_OR_PART);
-    COPY_CONSTANT(RD_KAFKA_RESP_ERR_INVALID_MSG_SIZE);
-    COPY_CONSTANT(RD_KAFKA_RESP_ERR_LEADER_NOT_AVAILABLE);
-    COPY_CONSTANT(RD_KAFKA_RESP_ERR_NOT_LEADER_FOR_PARTITION);
-    COPY_CONSTANT(RD_KAFKA_RESP_ERR_REQUEST_TIMED_OUT);
-    COPY_CONSTANT(RD_KAFKA_RESP_ERR_BROKER_NOT_AVAILABLE);
-    COPY_CONSTANT(RD_KAFKA_RESP_ERR_REPLICA_NOT_AVAILABLE);
-    COPY_CONSTANT(RD_KAFKA_RESP_ERR_MSG_SIZE_TOO_LARGE);
-    COPY_CONSTANT(RD_KAFKA_RESP_ERR_STALE_CTRL_EPOCH);
-    COPY_CONSTANT(RD_KAFKA_RESP_ERR_OFFSET_METADATA_TOO_LARGE);
-#endif /* HAVE_RD_KAFKA_GET_ERR_DESCS */
 } /* }}} */
 
 /* {{{ PHP_MINIT_FUNCTION
@@ -815,9 +773,7 @@ PHP_MINIT_FUNCTION(rdkafka)
     COPY_CONSTANT(RD_KAFKA_CONF_OK);
 
     REGISTER_LONG_CONSTANT("RD_KAFKA_MSG_PARTITIONER_RANDOM", MSG_PARTITIONER_RANDOM, CONST_CS | CONST_PERSISTENT);
-#ifdef HAVE_RD_KAFKA_MSG_PARTIIONER_CONSISTENT
     REGISTER_LONG_CONSTANT("RD_KAFKA_MSG_PARTITIONER_CONSISTENT", MSG_PARTITIONER_CONSISTENT, CONST_CS | CONST_PERSISTENT);
-#endif
 
     REGISTER_LONG_CONSTANT("RD_KAFKA_LOG_PRINT", RD_KAFKA_LOG_PRINT, CONST_CS | CONST_PERSISTENT);
     REGISTER_LONG_CONSTANT("RD_KAFKA_LOG_SYSLOG", RD_KAFKA_LOG_SYSLOG, CONST_CS | CONST_PERSISTENT);
