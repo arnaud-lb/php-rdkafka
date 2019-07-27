@@ -141,7 +141,7 @@ PHP_METHOD(RdKafka__ConsumerTopic, consumeQueueStart)
     ret = rd_kafka_consume_start_queue(intern->rkt, partition, offset, queue_intern->rkqu);
 
     if (ret == -1) {
-        err = rd_kafka_errno2err(errno);
+        err = rd_kafka_last_error();
         zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err TSRMLS_CC);
         return;
     }
@@ -200,7 +200,7 @@ PHP_METHOD(RdKafka__ConsumerTopic, consumeStart)
     ret = rd_kafka_consume_start(intern->rkt, partition, offset);
 
     if (ret == -1) {
-        err = rd_kafka_errno2err(errno);
+        err = rd_kafka_last_error();
         zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err TSRMLS_CC);
         return;
     }
@@ -246,7 +246,7 @@ PHP_METHOD(RdKafka__ConsumerTopic, consumeStop)
     ret = rd_kafka_consume_stop(intern->rkt, partition);
 
     if (ret == -1) {
-        err = rd_kafka_errno2err(errno);
+        err = rd_kafka_last_error();
         zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err TSRMLS_CC);
         return;
     }
@@ -288,7 +288,7 @@ PHP_METHOD(RdKafka__ConsumerTopic, consume)
     message = rd_kafka_consume(intern->rkt, partition, timeout_ms);
 
     if (!message) {
-        err = rd_kafka_errno2err(errno);
+        err = rd_kafka_last_error();
         if (err == RD_KAFKA_RESP_ERR__TIMED_OUT) {
             return;
         }
@@ -394,7 +394,7 @@ PHP_METHOD(RdKafka__ProducerTopic, produce)
     ret = rd_kafka_produce(intern->rkt, partition, msgflags | RD_KAFKA_MSG_F_COPY, payload, payload_len, key, key_len, NULL);
 
     if (ret == -1) {
-        err = rd_kafka_errno2err(errno);
+        err = rd_kafka_last_error();
         zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err TSRMLS_CC);
         return;
     }
