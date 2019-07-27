@@ -16,8 +16,6 @@
   +----------------------------------------------------------------------+
 */
 
-#ifdef HAVE_NEW_KAFKA_CONSUMER
-
 typedef struct _kafka_topic_partition_intern {
 #if PHP_MAJOR_VERSION < 7
     zend_object std;
@@ -39,9 +37,3 @@ void kafka_topic_partition_list_to_array(zval *return_value, rd_kafka_topic_part
 rd_kafka_topic_partition_list_t * array_arg_to_kafka_topic_partition_list(int argnum, HashTable *ary TSRMLS_DC);
 
 extern zend_class_entry * ce_kafka_topic_partition;
-
-#else /* HAVE_NEW_KAFKA_CONSUMER */
-
-static inline void kafka_metadata_topic_partition_minit(TSRMLS_D) { }
-
-#endif /* HAVE_NEW_KAFKA_CONSUMER */

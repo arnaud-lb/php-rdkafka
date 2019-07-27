@@ -27,7 +27,7 @@ if test "$PHP_RDKAFKA" != "no"; then
 
   PHP_ADD_INCLUDE($RDKAFKA_DIR/include)
 
-  SOURCES="rdkafka.c metadata.c metadata_broker.c metadata_topic.c metadata_partition.c metadata_collection.c compat.c conf.c topic.c queue.c message.c fun.c"
+  SOURCES="rdkafka.c metadata.c metadata_broker.c metadata_topic.c metadata_partition.c metadata_collection.c compat.c conf.c topic.c queue.c message.c fun.c kafka_consumer.c topic_partition.c"
 
   LIBNAME=rdkafka
   LIBSYMBOL=rd_kafka_new
@@ -43,24 +43,20 @@ if test "$PHP_RDKAFKA" != "no"; then
   ])
 
   ORIG_LDFLAGS="$LDFLAGS"
+  ORIG_CPPFLAGS="$CPPFLAGS"
   LDFLAGS="-L$RDKAFKA_DIR/$PHP_LIBDIR -lm"
+  CPPFLAGS="-I$RDKAFKA_DIR/include"
 
-  AC_CHECK_LIB($LIBNAME,[rd_kafka_msg_partitioner_consistent],[
-    AC_DEFINE(HAVE_RD_KAFKA_MSG_PARTIIONER_CONSISTENT,1,[ ])
+  AC_MSG_CHECKING([for librdkafka version])
+  AC_EGREP_CPP(yes,[
+#include <librdkafka/rdkafka.h>
+#if RD_KAFKA_VERSION >= 0x000b0000
+  yes
+#endif
   ],[
-    AC_MSG_WARN([no rd_kafka_msg_partitioner_consistent, the consistent partitioner will not be available])
-  ])
-
-  AC_CHECK_LIB($LIBNAME,[rd_kafka_get_err_descs],[
-    AC_DEFINE(HAVE_RD_KAFKA_GET_ERR_DESCS,1,[ ])
+    AC_MSG_RESULT([>= 0.11.0])
   ],[
-    AC_MSG_WARN([no rd_kafka_get_err_descs, the rd_kafka_get_err_descs function will not be available])
-  ])
-
-  AC_CHECK_LIB($LIBNAME,[rd_kafka_message_timestamp],[
-    AC_DEFINE(HAVE_RD_KAFKA_MESSAGE_TIMESTAMP,1,[ ])
-  ],[
-    AC_MSG_WARN([no rd_kafka_message_timestamp, timestamp support will not be available])
+    AC_MSG_ERROR([librdkafka version 0.11.0 or greater required.])
   ])
 
   AC_CHECK_LIB($LIBNAME,[rd_kafka_message_headers],[
@@ -69,26 +65,8 @@ if test "$PHP_RDKAFKA" != "no"; then
     AC_MSG_WARN([no rd_kafka_message_headers, headers support will not be available])
   ])
 
-  AC_CHECK_LIB($LIBNAME,[rd_kafka_subscribe],[
-    AC_DEFINE(HAVE_NEW_KAFKA_CONSUMER,1,[ ])
-    SOURCES="$SOURCES kafka_consumer.c topic_partition.c"
-  ],[
-    AC_MSG_WARN([no rd_kafka_subscribe, new KafkaConsumer will not be available])
-  ])
-
-  AC_CHECK_LIB($LIBNAME,[rd_kafka_query_watermark_offsets],[
-    AC_DEFINE(HAVE_RD_KAFKA_QUERY_WATERMARK_OFFSETS,1,[ ])
-  ],[
-    AC_MSG_WARN([no rd_kafka_query_watermark_offsets, queryWatermarkOffsets will not be available])
-  ])
-
-  AC_CHECK_LIB($LIBNAME,[rd_kafka_offsets_for_times],[
-    AC_DEFINE(HAVE_RD_KAFKA_OFFSETS_FOR_TIMES,1,[ ])
-  ],[
-    AC_MSG_WARN([no rd_kafka_offsets_for_times, offsetsForTimes will not be available])
-  ])
-
-  LFGLAGS="$ORIG_LDFLAGS"
+  LDFLAGS="$ORIG_LDFLAGS"
+  CPPFLAGS="$ORIG_CPPFLAGS"
 
   PHP_SUBST(RDKAFKA_SHARED_LIBADD)
 
