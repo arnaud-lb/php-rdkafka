@@ -311,12 +311,12 @@ static void kafka_conf_log_cb(rd_kafka_t *rk, int level, const char *fac, const 
     MAKE_STD_ZEVAL(args[2]);
     MAKE_STD_ZEVAL(args[3]);
 
-    KAFKA_ZVAL_ZVAL(P_ZEVAL(args[0]), &cbs->rk, 1, 0);
+    KAFKA_ZVAL_ZVAL(P_ZEVAL(args[0]), rk, 1, 0);
     ZVAL_LONG(P_ZEVAL(args[1]), level);
     RDKAFKA_ZVAL_STRING(P_ZEVAL(args[2]), fac);
     RDKAFKA_ZVAL_STRING(P_ZEVAL(args[3]), buf);
 
-    rdkafka_call_function(&cbs->log->fci, &cbs->log->fcc, NULL, 4, args TSRMLS_CC);
+    rdkafka_call_function(rk->rk_conf->cbs.log->fci, rk->rk_conf->cbs.log->fcc, NULL, 4, args TSRMLS_CC);
 
     zval_ptr_dtor(&args[0]);
     zval_ptr_dtor(&args[1]);
