@@ -21,9 +21,7 @@
 
 enum {
         MSG_PARTITIONER_RANDOM = 2
-#ifdef HAVE_RD_KAFKA_MSG_PARTIIONER_CONSISTENT
         , MSG_PARTITIONER_CONSISTENT = 3
-#endif
 };
 
 typedef enum {

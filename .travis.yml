@@ -7,6 +7,7 @@ php:
     - 7.2
 env:
     - LIBRDKAFKA_VERSION=0.11.x
-    - LIBRDKAFKA_VERSION=1.0.x
+    - LIBRDKAFKA_VERSION=v1.0.1
+    - LIBRDKAFKA_VERSION=v1.1.0
     - LIBRDKAFKA_VERSION=master
 script: ./travis.sh

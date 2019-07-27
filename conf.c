@@ -217,7 +217,6 @@ static int kafka_conf_stats_cb(rd_kafka_t *rk, char *json, size_t json_len, void
     return 0;
 }
 
-#ifdef HAVE_NEW_KAFKA_CONSUMER
 static void kafka_conf_rebalance_cb(rd_kafka_t *rk, rd_kafka_resp_err_t err, rd_kafka_topic_partition_list_t *partitions, void *opaque)
 {
     kafka_conf_callbacks *cbs = (kafka_conf_callbacks*) opaque;
@@ -246,9 +245,7 @@ static void kafka_conf_rebalance_cb(rd_kafka_t *rk, rd_kafka_resp_err_t err, rd_
     zval_ptr_dtor(&args[1]);
     zval_ptr_dtor(&args[2]);
 }
-#endif /* HAVE_NEW_KAFKA_CONSUMER */
 
-#ifdef HAVE_NEW_KAFKA_CONSUMER
 static void kafka_conf_consume_cb(rd_kafka_message_t *msg, void *opaque)
 {
     kafka_conf_callbacks *cbs = (kafka_conf_callbacks*) opaque;
@@ -274,9 +271,7 @@ static void kafka_conf_consume_cb(rd_kafka_message_t *msg, void *opaque)
     zval_ptr_dtor(&args[0]);
     zval_ptr_dtor(&args[1]);
 }
-#endif /* HAVE_NEW_KAFKA_CONSUMER */
 
-#ifdef HAVE_NEW_KAFKA_CONSUMER
 static void kafka_conf_offset_commit_cb(rd_kafka_t *rk, rd_kafka_resp_err_t err, rd_kafka_topic_partition_list_t *partitions, void *opaque)
 {
     kafka_conf_callbacks *cbs = (kafka_conf_callbacks*) opaque;
@@ -305,7 +300,6 @@ static void kafka_conf_offset_commit_cb(rd_kafka_t *rk, rd_kafka_resp_err_t err,
     zval_ptr_dtor(&args[1]);
     zval_ptr_dtor(&args[2]);
 }
-#endif /* HAVE_NEW_KAFKA_CONSUMER */
 
 /* {{{ proto RdKafka\Conf::__construct() */
 
@@ -428,7 +422,6 @@ PHP_METHOD(RdKafka__Conf, set)
 }
 /* }}} */
 
-#ifdef HAVE_NEW_KAFKA_CONSUMER
 /* {{{ proto RdKafka\Conf::setDefaultTopicConf(RdKafka\TopicConf $topicConf) */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_conf_set_default_topic_conf, 0, 0, 1)
@@ -461,7 +454,6 @@ PHP_METHOD(RdKafka__Conf, setDefaultTopicConf)
     rd_kafka_conf_set_default_topic_conf(intern->u.conf, topic_conf);
 }
 /* }}} */
-#endif /* HAVE_NEW_KAFKA_CONSUMER */
 
 /* {{{ proto void RdKafka\Conf::setErrorCb(callable $callback)
    Sets the error callback */
@@ -574,7 +566,6 @@ PHP_METHOD(RdKafka__Conf, setStatsCb)
 }
 /* }}} */
 
-#ifdef HAVE_NEW_KAFKA_CONSUMER
 /* {{{ proto void RdKafka\Conf::setRebalanceCb(mixed $callback)
    Set rebalance callback for use with coordinated consumer group balancing */
 
@@ -611,9 +602,7 @@ PHP_METHOD(RdKafka__Conf, setRebalanceCb)
     rd_kafka_conf_set_rebalance_cb(intern->u.conf, kafka_conf_rebalance_cb);
 }
 /* }}} */
-#endif /* HAVE_NEW_KAFKA_CONSUMER */
 
-#ifdef HAVE_NEW_KAFKA_CONSUMER
 /* {{{ proto void RdKafka\Conf::setConsumeCb(callable $callback)
    Set consume callback to use with poll */
 
@@ -650,9 +639,7 @@ PHP_METHOD(RdKafka__Conf, setConsumeCb)
     rd_kafka_conf_set_consume_cb(intern->u.conf, kafka_conf_consume_cb);
 }
 /* }}} */
-#endif /* HAVE_NEW_KAFKA_CONSUMER */
 
-#ifdef HAVE_NEW_KAFKA_CONSUMER
 /* {{{ proto void RdKafka\Conf::setOffsetCommitCb(mixed $callback)
    Set offset commit callback for use with consumer groups */
 
@@ -689,7 +676,6 @@ PHP_METHOD(RdKafka__Conf, setOffsetCommitCb)
     rd_kafka_conf_set_offset_commit_cb(intern->u.conf, kafka_conf_offset_commit_cb);
 }
 /* }}} */
-#endif /* HAVE_NEW_KAFKA_CONSUMER */
 
 /* {{{ proto RdKafka\TopicConf::__construct() */
 PHP_METHOD(RdKafka__TopicConf, __construct)
@@ -737,11 +723,9 @@ PHP_METHOD(RdKafka__TopicConf, setPartitioner)
         case MSG_PARTITIONER_RANDOM:
             partitioner = rd_kafka_msg_partitioner_random;
             break;
-#ifdef HAVE_RD_KAFKA_MSG_PARTIIONER_CONSISTENT
         case MSG_PARTITIONER_CONSISTENT:
             partitioner = rd_kafka_msg_partitioner_consistent;
             break;
-#endif
         default:
             zend_throw_exception_ex(NULL, 0 TSRMLS_CC, "Invalid partitioner" TSRMLS_CC);
             return;
@@ -763,17 +747,13 @@ static const zend_function_entry kafka_conf_fe[] = {
     PHP_ME(RdKafka__Conf, __construct, arginfo_kafka_conf___construct, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__Conf, dump, arginfo_kafka_conf_dump, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__Conf, set, arginfo_kafka_conf_set, ZEND_ACC_PUBLIC)
-#ifdef HAVE_NEW_KAFKA_CONSUMER
     PHP_ME(RdKafka__Conf, setDefaultTopicConf, arginfo_kafka_conf_set_default_topic_conf, ZEND_ACC_PUBLIC)
-#endif /* HAVE_NEW_KAFKA_CONSUMER */
     PHP_ME(RdKafka__Conf, setErrorCb, arginfo_kafka_conf_set_error_cb, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__Conf, setDrMsgCb, arginfo_kafka_conf_set_dr_msg_cb, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__Conf, setStatsCb, arginfo_kafka_conf_set_stats_cb, ZEND_ACC_PUBLIC)
-#ifdef HAVE_NEW_KAFKA_CONSUMER
     PHP_ME(RdKafka__Conf, setRebalanceCb, arginfo_kafka_conf_set_rebalance_cb, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__Conf, setConsumeCb, arginfo_kafka_conf_set_consume_cb, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__Conf, setOffsetCommitCb, arginfo_kafka_conf_set_offset_commit_cb, ZEND_ACC_PUBLIC)
-#endif /* HAVE_NEW_KAFKA_CONSUMER */
     PHP_FE_END
 };
 
