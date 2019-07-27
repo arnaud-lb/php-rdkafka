@@ -16,15 +16,14 @@ git clone --depth 1 --branch "$LIBRDKAFKA_VERSION" https://github.com/edenhill/l
 )
 sudo ldconfig
 
-sudo apt-get update
-sudo apt-get install -qq valgrind
-
 echo "extension = $(pwd)/modules/rdkafka.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 phpenv config-rm xdebug.ini || true
 
 phpize
 CFLAGS='-Werror=implicit-function-declaration' ./configure
 make
+
+export PATH=$TRAVIS_BUILD_DIR/.travis:$PATH
 
 showmem=
 if grep -q 'cfgfiles.*mem' run-tests.php; then
