@@ -384,7 +384,7 @@ PHP_METHOD(RdKafka__ProducerTopic, produce)
         return;
     }
 
-    if (msgflags != 0) {
+    if (msgflags != 0 && msgflags != RD_KAFKA_MSG_F_BLOCK) {
         zend_throw_exception_ex(spl_ce_InvalidArgumentException, 0 TSRMLS_CC, "Invalid value '%ld' for $msgflags", msgflags TSRMLS_CC);
         return;
     }
@@ -442,7 +442,7 @@ PHP_METHOD(RdKafka__ProducerTopic, producev)
         return;
     }
 
-    if (msgflags != 0) {
+    if (msgflags != 0 && msgflags != RD_KAFKA_MSG_F_BLOCK) {
         zend_throw_exception_ex(spl_ce_InvalidArgumentException, 0 TSRMLS_CC, "Invalid value '%ld' for $msgflags", msgflags TSRMLS_CC);
         return;
     }
