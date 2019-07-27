@@ -301,6 +301,30 @@ static void kafka_conf_offset_commit_cb(rd_kafka_t *rk, rd_kafka_resp_err_t err,
     zval_ptr_dtor(&args[2]);
 }
 
+static void kafka_conf_log_cb(rd_kafka_t *rk, int level, const char *fac, const char *buf)
+{
+    zeval args[4];
+    TSRMLS_FETCH();
+
+    MAKE_STD_ZEVAL(args[0]);
+    MAKE_STD_ZEVAL(args[1]);
+    MAKE_STD_ZEVAL(args[2]);
+    MAKE_STD_ZEVAL(args[3]);
+
+    KAFKA_ZVAL_ZVAL(P_ZEVAL(args[0]), &cbs->rk, 1, 0);
+    ZVAL_LONG(P_ZEVAL(args[1]), level);
+    RDKAFKA_ZVAL_STRING(P_ZEVAL(args[2]), fac);
+    RDKAFKA_ZVAL_STRING(P_ZEVAL(args[3]), buf);
+
+    rdkafka_call_function(&cbs->log->fci, &cbs->log->fcc, NULL, 4, args TSRMLS_CC);
+
+    zval_ptr_dtor(&args[0]);
+    zval_ptr_dtor(&args[1]);
+    zval_ptr_dtor(&args[2]);
+    zval_ptr_dtor(&args[3]);
+
+}
+
 /* {{{ proto RdKafka\Conf::__construct() */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_conf___construct, 0, 0, 0)
@@ -677,6 +701,43 @@ PHP_METHOD(RdKafka__Conf, setOffsetCommitCb)
 }
 /* }}} */
 
+/* {{{ proto void RdKafka\Conf::setLogCb(mixed $callback)
+   Set offset commit callback for use with consumer groups */
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_conf_set_log_cb, 0, 0, 1)
+    ZEND_ARG_INFO(0, callback)
+ZEND_END_ARG_INFO()
+
+PHP_METHOD(RdKafka__Conf, setLogCb)
+{
+    zend_fcall_info fci;
+    zend_fcall_info_cache fcc;
+    kafka_conf_object *intern;
+
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "f", &fci, &fcc) == FAILURE) {
+        return;
+    }
+
+    intern = get_kafka_conf_object(getThis() TSRMLS_CC);
+    if (!intern) {
+        return;
+    }
+
+    Z_ADDREF_P(P_ZEVAL(fci.function_name));
+
+    if (intern->cbs.log) {
+        zval_ptr_dtor(&intern->cbs.log->fci.function_name);
+    } else {
+        intern->cbs.log = ecalloc(1, sizeof(*intern->cbs.log));
+    }
+
+    intern->cbs.log->fci = fci;
+    intern->cbs.log->fcc = fcc;
+
+    rd_kafka_conf_set_log_cb(intern->u.conf, kafka_conf_log_cb);
+}
+/* }}} */
+
 /* {{{ proto RdKafka\TopicConf::__construct() */
 PHP_METHOD(RdKafka__TopicConf, __construct)
 {
@@ -754,6 +815,7 @@ static const zend_function_entry kafka_conf_fe[] = {
     PHP_ME(RdKafka__Conf, setRebalanceCb, arginfo_kafka_conf_set_rebalance_cb, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__Conf, setConsumeCb, arginfo_kafka_conf_set_consume_cb, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__Conf, setOffsetCommitCb, arginfo_kafka_conf_set_offset_commit_cb, ZEND_ACC_PUBLIC)
+    PHP_ME(RdKafka__Conf, setLogCb, arginfo_kafka_conf_set_log_cb, ZEND_ACC_PUBLIC)
     PHP_FE_END
 };
 
