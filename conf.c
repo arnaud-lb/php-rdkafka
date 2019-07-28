@@ -303,9 +303,38 @@ static void kafka_conf_offset_commit_cb(rd_kafka_t *rk, rd_kafka_resp_err_t err,
     zval_ptr_dtor(&args[2]);
 }
 
-static void kafka_conf_log_cb(rd_kafka_t *rk, int level, const char *fac, const char *buf)
+static void kafka_conf_log_cb(rd_kafka_t *rk, int level, const char *facility, const char *message)
 {
+    kafka_conf_object *intern;
+    zeval args[4];
+    TSRMLS_FETCH();
 
+    intern = get_kafka_conf_object(rk TSRMLS_CC);
+
+    if (!intern) {
+        return;
+    }
+
+    if (!intern->cbs.log) {
+        return;
+    }
+
+    MAKE_STD_ZEVAL(args[0]);
+    MAKE_STD_ZEVAL(args[1]);
+    MAKE_STD_ZEVAL(args[2]);
+    MAKE_STD_ZEVAL(args[3]);
+
+    KAFKA_ZVAL_ZVAL(P_ZEVAL(args[0]), &rk, 1, 0);
+    ZVAL_LONG(P_ZEVAL(args[1]), level);
+    RDKAFKA_ZVAL_STRING(P_ZEVAL(args[2]), facility);
+    RDKAFKA_ZVAL_STRING(P_ZEVAL(args[3]), message);
+
+    rdkafka_call_function(&intern->cbs.log->fci, &intern->cbs.log->fcc, NULL, 4, args TSRMLS_CC);
+
+    zval_ptr_dtor(&args[0]);
+    zval_ptr_dtor(&args[1]);
+    zval_ptr_dtor(&args[2]);
+    zval_ptr_dtor(&args[3]);
 }
 
 /* {{{ proto RdKafka\Conf::__construct() */
