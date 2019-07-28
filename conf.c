@@ -54,6 +54,7 @@ void kafka_conf_callbacks_dtor(kafka_conf_callbacks *cbs TSRMLS_DC) /* {{{ */
     kafka_conf_callback_dtor(cbs->stats TSRMLS_CC);
     kafka_conf_callback_dtor(cbs->consume TSRMLS_CC);
     kafka_conf_callback_dtor(cbs->offset_commit TSRMLS_CC);
+    kafka_conf_callback_dtor(cbs->log TSRMLS_CC);
 } /* }}} */
 
 static void kafka_conf_callback_copy(kafka_conf_callback **to, kafka_conf_callback *from TSRMLS_DC) /* {{{ */
@@ -77,6 +78,7 @@ void kafka_conf_callbacks_copy(kafka_conf_callbacks *to, kafka_conf_callbacks *f
     kafka_conf_callback_copy(&to->stats, from->stats TSRMLS_CC);
     kafka_conf_callback_copy(&to->consume, from->consume TSRMLS_CC);
     kafka_conf_callback_copy(&to->offset_commit, from->offset_commit TSRMLS_CC);
+    kafka_conf_callback_copy(&to->log, from->log TSRMLS_CC);
 } /* }}} */
 
 static void kafka_conf_free(zend_object *object TSRMLS_DC) /* {{{ */
