@@ -306,16 +306,13 @@ static void kafka_conf_offset_commit_cb(rd_kafka_t *rk, rd_kafka_resp_err_t err,
 static void kafka_conf_log_cb(rd_kafka_t *rk, int level, const char *facility, const char *message)
 {
     kafka_conf_object *intern;
+    rd_kafka_queue_t *log_queue;
     zeval args[4];
     TSRMLS_FETCH();
 
-    intern = get_kafka_conf_object(rk TSRMLS_CC);
+    kafka_conf_callbacks *cbs = (kafka_conf_callbacks*) rd_kafka_opaque(rk);
 
-    if (!intern) {
-        return;
-    }
-
-    if (!intern->cbs.log) {
+    if (!cbs->log) {
         return;
     }
 
@@ -324,12 +321,15 @@ static void kafka_conf_log_cb(rd_kafka_t *rk, int level, const char *facility, c
     MAKE_STD_ZEVAL(args[2]);
     MAKE_STD_ZEVAL(args[3]);
 
-    KAFKA_ZVAL_ZVAL(P_ZEVAL(args[0]), &rk, 1, 0);
+    KAFKA_ZVAL_ZVAL(P_ZEVAL(args[0]), &cbs->rk, 1, 0);
     ZVAL_LONG(P_ZEVAL(args[1]), level);
     RDKAFKA_ZVAL_STRING(P_ZEVAL(args[2]), facility);
     RDKAFKA_ZVAL_STRING(P_ZEVAL(args[3]), message);
 
-    rdkafka_call_function(&intern->cbs.log->fci, &intern->cbs.log->fcc, NULL, 4, args TSRMLS_CC);
+    log_queue = rd_kafka_queue_new(rk);
+    rd_kafka_set_log_queue(rk, log_queue);
+
+    rdkafka_call_function(&cbs->log->fci, &cbs->log->fcc, NULL, 4, args TSRMLS_CC);
 
     zval_ptr_dtor(&args[0]);
     zval_ptr_dtor(&args[1]);
