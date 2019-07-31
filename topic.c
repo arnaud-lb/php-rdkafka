@@ -302,6 +302,57 @@ PHP_METHOD(RdKafka__ConsumerTopic, consume)
 }
 /* }}} */
 
+/* {{{ proto RdKafka\Message RdKafka\ConsumerTopic::consumeBatch(int $partition, int $timeout_ms, int $batch_size)
+   Consume a batch of messages from a partition */
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_consume_batch, 0, 0, 3)
+    ZEND_ARG_INFO(0, partition)
+    ZEND_ARG_INFO(0, timeout_ms)
+    ZEND_ARG_INFO(0, batch_size)
+ZEND_END_ARG_INFO()
+
+PHP_METHOD(RdKafka__ConsumerTopic, consumeBatch)
+{
+    kafka_topic_object *intern;
+    long partition, timeout_ms, batch_size, result, i;
+    zval messages;
+    rd_kafka_message_t **rkmessages = NULL;
+    rd_kafka_resp_err_t err;
+
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "lll", &partition, &timeout_ms, &batch_size) == FAILURE) {
+        return;
+    }
+
+    if(0 >= batch_size) {
+        zend_throw_exception_ex(spl_ce_InvalidArgumentException, 0 TSRMLS_CC, "Out of range value '%ld' for batch_size", batch_size TSRMLS_CC);
+        return;
+    }
+
+    if (partition != RD_KAFKA_PARTITION_UA && (partition < 0 || partition > 0x7FFFFFFF)) {
+        zend_throw_exception_ex(spl_ce_InvalidArgumentException, 0 TSRMLS_CC, "Out of range value '%ld' for $partition", partition TSRMLS_CC);
+        return;
+    }
+
+    rkmessages = malloc(sizeof(*rkmessages) * batch_size);
+
+    intern = get_kafka_topic_object(getThis() TSRMLS_CC);
+    if (!intern) {
+        return;
+    }
+
+    result = rd_kafka_consume_batch(intern->rkt, partition, timeout_ms, rkmessages, batch_size);
+
+    kafka_message_list_to_array(return_value, &rkmessages, batch_size TSRMLS_CC);
+
+    if(result != -1) {
+        for (i = 0; i < batch_size; ++i)
+        {
+            rd_kafka_message_destroy(rkmessages[i]);
+        }
+    }
+}
+/* }}} */
+
 /* {{{ proto void RdKafka\ConsumerTopic::offsetStore(int partition, int offset) */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_offset_store, 0, 0, 2)
@@ -343,6 +394,7 @@ static const zend_function_entry kafka_consumer_topic_fe[] = {
     PHP_ME(RdKafka__ConsumerTopic, consumeStart, arginfo_kafka_consume_start, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__ConsumerTopic, consumeStop, arginfo_kafka_consume_stop, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__ConsumerTopic, consume, arginfo_kafka_consume, ZEND_ACC_PUBLIC)
+    PHP_ME(RdKafka__ConsumerTopic, consumeBatch, arginfo_kafka_consume_batch, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__ConsumerTopic, offsetStore, arginfo_kafka_offset_store, ZEND_ACC_PUBLIC)
     PHP_FE_END
 };

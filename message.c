@@ -85,6 +85,23 @@ void kafka_message_new(zval *return_value, const rd_kafka_message_t *message TSR
 #endif
 }
 
+void kafka_message_list_to_array(zval *return_value, rd_kafka_message_t *messages, long size TSRMLS_DC) /* {{{ */
+{
+    rd_kafka_message_t *msg;
+    zeval zmsg;
+    int i;
+
+    array_init_size(return_value, size);
+
+    for (i = 0; i < size; i++) {
+        msg = &messages[i];
+        MAKE_STD_ZEVAL(zmsg);
+        object_init_ex(P_ZEVAL(zmsg), ce_kafka_message);
+        kafka_message_new(P_ZEVAL(zmsg), msg TSRMLS_CC);
+        add_next_index_zval(return_value, P_ZEVAL(zmsg));
+    }
+} /* }}} */
+
 /* {{{ proto string RdKafka\Message::errstr()
  *  Returns the error string for an errored KrKafka\Message or NULL if there was no error.
  */
