@@ -306,7 +306,6 @@ static void kafka_conf_offset_commit_cb(rd_kafka_t *rk, rd_kafka_resp_err_t err,
 static void kafka_conf_log_cb(rd_kafka_t *rk, int level, const char *facility, const char *message)
 {
     kafka_conf_object *intern;
-    rd_kafka_queue_t *log_queue;
     zeval args[4];
     TSRMLS_FETCH();
 
@@ -325,9 +324,6 @@ static void kafka_conf_log_cb(rd_kafka_t *rk, int level, const char *facility, c
     ZVAL_LONG(P_ZEVAL(args[1]), level);
     RDKAFKA_ZVAL_STRING(P_ZEVAL(args[2]), facility);
     RDKAFKA_ZVAL_STRING(P_ZEVAL(args[3]), message);
-
-    log_queue = rd_kafka_queue_new(rk);
-    rd_kafka_set_log_queue(rk, log_queue);
 
     rdkafka_call_function(&cbs->log->fci, &cbs->log->fcc, NULL, 4, args TSRMLS_CC);
 
@@ -722,31 +718,37 @@ ZEND_END_ARG_INFO()
 
 PHP_METHOD(RdKafka__Conf, setLogCb)
 {
+    rd_kafka_t *rk;
+    rd_kafka_queue_t *log_queue;
     zend_fcall_info fci;
     zend_fcall_info_cache fcc;
-    kafka_conf_object *intern;
+    kafka_conf_object *conf;
 
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "f", &fci, &fcc) == FAILURE) {
         return;
     }
 
-    intern = get_kafka_conf_object(getThis() TSRMLS_CC);
-    if (!intern) {
+    conf = get_kafka_conf_object(getThis() TSRMLS_CC);
+    if (!conf) {
         return;
     }
 
     Z_ADDREF_P(P_ZEVAL(fci.function_name));
 
-    if (intern->cbs.log) {
-        zval_ptr_dtor(&intern->cbs.log->fci.function_name);
+    if (conf->cbs.log) {
+        zval_ptr_dtor(&conf->cbs.log->fci.function_name);
     } else {
-        intern->cbs.log = ecalloc(1, sizeof(*intern->cbs.log));
+        conf->cbs.log = ecalloc(1, sizeof(*conf->cbs.log));
     }
 
-    intern->cbs.log->fci = fci;
-    intern->cbs.log->fcc = fcc;
+    conf->cbs.log->fci = fci;
+    conf->cbs.log->fcc = fcc;
 
-    rd_kafka_conf_set_log_cb(intern->u.conf, kafka_conf_log_cb);
+    log_queue = rd_kafka_queue_new(&conf->cbs.rk);
+    rd_kafka_set_log_queue(&conf->cbs.rk, log_queue);
+    rd_kafka_conf_set_log_cb(conf->u.conf, kafka_conf_log_cb);
+
+
 }
 /* }}} */
 
