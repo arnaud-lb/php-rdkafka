@@ -548,7 +548,7 @@ PHP_METHOD(RdKafka__Kafka, poll)
 /* }}} */
 
 /* {{{ proto int RdKafka\Kafka::purge(int $purge_flags)
-   Polls the provided kafka handle for events */
+   Purge messages that are in queue or in flight */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_purge, 0, 0, 1)
     ZEND_ARG_INFO(0, purge_flags)
