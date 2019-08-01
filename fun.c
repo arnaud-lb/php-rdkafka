@@ -177,8 +177,8 @@ PHP_FUNCTION(rd_kafka_offset_tail)
 const zend_function_entry rdkafka_functions[] = {
     PHP_FE(rd_kafka_get_err_descs,  arginfo_kafka_get_err_descs)
     PHP_FE(rd_kafka_err2str,        arginfo_kafka_err2str)
-    PHP_FE(rd_kafka_errno2err,      arginfo_kafka_errno2err)
-    PHP_FE(rd_kafka_errno,          arginfo_kafka_errno)
+    PHP_DEP_FE(rd_kafka_errno2err,      arginfo_kafka_errno2err)
+    PHP_DEP_FE(rd_kafka_errno,          arginfo_kafka_errno)
     PHP_FE(rd_kafka_offset_tail,    arginfo_kafka_offset_tail)
     PHP_FE(rd_kafka_thread_cnt,     arginfo_kafka_thread_cnt)
     PHP_FE_END    /* Must be the last line in rdkafka_functions[] */
