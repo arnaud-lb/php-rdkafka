@@ -545,7 +545,35 @@ PHP_METHOD(RdKafka__Kafka, poll)
 
     RETURN_LONG(rd_kafka_poll(intern->rk, timeout));
 }
+
+#ifdef HAS_RD_KAFKA_PURGE
 /* }}} */
+
+/* {{{ proto int RdKafka\Kafka::purge(int $purge_flags)
+   Purge messages that are in queue or in flight */
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_purge, 0, 0, 1)
+    ZEND_ARG_INFO(0, purge_flags)
+ZEND_END_ARG_INFO()
+
+PHP_METHOD(RdKafka__Kafka, purge)
+{
+    kafka_object *intern;
+    long purge_flags;
+
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &purge_flags) == FAILURE) {
+        return;
+    }
+
+    intern = get_kafka_object(getThis() TSRMLS_CC);
+    if (!intern) {
+        return;
+    }
+
+    RETURN_LONG(rd_kafka_purge(intern->rk, purge_flags));
+}
+/* }}} */
+#endif
 
 /* {{{ proto void RdKafka\Kafka::queryWatermarkOffsets(string $topic, int $partition, int &$low, int &$high, int $timeout_ms)
    Query broker for low (oldest/beginning) or high (newest/end) offsets for partition */
@@ -685,6 +713,9 @@ static const zend_function_entry kafka_fe[] = {
     PHP_ME(RdKafka__Kafka, newTopic, arginfo_kafka_new_topic, ZEND_ACC_PUBLIC)
     PHP_MALIAS(RdKafka__Kafka, outqLen, getOutQLen, arginfo_kafka_get_outq_len, ZEND_ACC_PUBLIC | ZEND_ACC_DEPRECATED)
     PHP_ME(RdKafka__Kafka, poll, arginfo_kafka_poll, ZEND_ACC_PUBLIC)
+#ifdef HAS_RD_KAFKA_PURGE
+    PHP_ME(RdKafka__Kafka, purge, arginfo_kafka_purge, ZEND_ACC_PUBLIC)
+#endif
     PHP_ME(RdKafka__Kafka, setLogger, arginfo_kafka_set_logger, ZEND_ACC_PUBLIC | ZEND_ACC_DEPRECATED)
     PHP_ME(RdKafka__Kafka, queryWatermarkOffsets, arginfo_kafka_query_watermark_offsets, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__Kafka, offsetsForTimes, arginfo_kafka_offsets_for_times, ZEND_ACC_PUBLIC)
@@ -764,6 +795,11 @@ PHP_MINIT_FUNCTION(rdkafka)
     COPY_CONSTANT(RD_KAFKA_PARTITION_UA);
     COPY_CONSTANT(RD_KAFKA_PRODUCER);
     COPY_CONSTANT(RD_KAFKA_MSG_F_BLOCK);
+#ifdef HAS_RD_KAFKA_PURGE
+    COPY_CONSTANT(RD_KAFKA_PURGE_F_QUEUE);
+    COPY_CONSTANT(RD_KAFKA_PURGE_F_INFLIGHT);
+    COPY_CONSTANT(RD_KAFKA_PURGE_F_NON_BLOCKING);
+#endif
     REGISTER_LONG_CONSTANT("RD_KAFKA_VERSION", rd_kafka_version(), CONST_CS | CONST_PERSISTENT);
     REGISTER_LONG_CONSTANT("RD_KAFKA_BUILD_VERSION", RD_KAFKA_VERSION, CONST_CS | CONST_PERSISTENT);
 
