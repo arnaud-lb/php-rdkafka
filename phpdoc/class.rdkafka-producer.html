@@ -91,9 +91,30 @@
     ( <span class="methodparam"><span class="type">integer</span> <code class="parameter">$timeout_ms</code></span>
    ) : <span class="type"><span class="type void">void</span></span></div>
 <div class="methodsynopsis dc-description">
+   <span class="modifier">public</span> <span class="methodname"><a href="rdkafka.purge.html" class="methodname">RdKafka::purge</a></span>
+    ( <span class="methodparam"><span class="type">integer</span> <code class="parameter">$purge_flags</code></span>
+   ) : <span class="type">integer</span></div>
+<div class="methodsynopsis dc-description">
    <span class="modifier">public</span> <span class="methodname"><a href="rdkafka.setloglevel.html" class="methodname">RdKafka::setLogLevel</a></span>
     ( <span class="methodparam"><span class="type">integer</span> <code class="parameter">$level</code></span>
    ) : <span class="type"><span class="type void">void</span></span></div>
+<div class="methodsynopsis dc-description">
+   <span class="modifier">public</span> <span class="methodname"><a href="rdkafka.setlogger.html" class="methodname">RdKafka::setLogger</a></span>
+    ( <span class="methodparam"><span class="type">integer</span> <code class="parameter">$logger_id</code></span>
+   ) : <span class="type"><span class="type void">void</span></span></div>
+<div class="methodsynopsis dc-description">
+   <span class="modifier">public</span> <span class="methodname"><a href="rdkafka.querywatermakoffsets.html" class="methodname">RdKafka::queryWatermarkOffsets</a></span>
+    ( <span class="methodparam"><span class="type">string</span> <code class="parameter">$topic</code></span>
+   , <span class="methodparam"><span class="type">integer</span> <code class="parameter">$partition</code></span>
+   , <span class="methodparam"><span class="type">integer</span> <code class="parameter reference">&$low</code></span>
+   , <span class="methodparam"><span class="type">integer</span> <code class="parameter reference">&$high</code></span>
+   , <span class="methodparam"><span class="type">integer</span> <code class="parameter">$timeout_ms</code></span>
+   ) : <span class="type"><span class="type void">void</span></span></div>
+<div class="methodsynopsis dc-description">
+   <span class="modifier">public</span> <span class="methodname"><a href="rdkafka.offsetsfortimes.html" class="methodname">RdKafka::offsetsForTimes</a></span>
+    ( <span class="methodparam"><span class="type">array</span> <code class="parameter">$topicPartitions</code></span>
+   , <span class="methodparam"><span class="type">integer</span> <code class="parameter">$timeout_ms</code></span>
+   ) : <span class="type">array</span></div>
 
 
    }</div>
