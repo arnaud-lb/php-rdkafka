@@ -545,10 +545,9 @@ PHP_METHOD(RdKafka__Kafka, poll)
 
     RETURN_LONG(rd_kafka_poll(intern->rk, timeout));
 }
-
-#ifdef HAS_RD_KAFKA_PURGE
 /* }}} */
 
+#ifdef HAS_RD_KAFKA_PURGE
 /* {{{ proto int RdKafka\Kafka::purge(int $purge_flags)
    Purge messages that are in queue or in flight */
 
