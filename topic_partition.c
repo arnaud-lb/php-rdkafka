@@ -193,8 +193,8 @@ rd_kafka_topic_partition_list_t * array_arg_to_kafka_topic_partition_list(int ar
    Constructor */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_topic_partition___construct, 0, 0, 3)
-    ZEND_ARG_INFO(1, topic)
-    ZEND_ARG_INFO(1, partition)
+    ZEND_ARG_INFO(0, topic)
+    ZEND_ARG_INFO(0, partition)
     ZEND_ARG_INFO(0, offset)
 ZEND_END_ARG_INFO()
 
