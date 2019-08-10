@@ -342,6 +342,11 @@ PHP_METHOD(RdKafka__ConsumerTopic, consumeBatch)
 
     result = rd_kafka_consume_batch(intern->rkt, partition, timeout_ms, rkmessages, batch_size);
 
+    if (result == -1) {
+        zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(rd_kafka_last_error()), err TSRMLS_CC);
+        return;
+    }
+
     if(result > 0) {
         kafka_message_list_to_array(return_value, rkmessages, batch_size TSRMLS_CC);
         for (i = 0; i < batch_size; ++i)
