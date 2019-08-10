@@ -316,7 +316,7 @@ PHP_METHOD(RdKafka__ConsumerTopic, consumeBatch)
     kafka_topic_object *intern;
     long partition, timeout_ms, batch_size, result, i;
     zval messages;
-    rd_kafka_message_t **rkmessages = NULL;
+    rd_kafka_message_t **rkmessages;
     rd_kafka_resp_err_t err;
 
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "lll", &partition, &timeout_ms, &batch_size) == FAILURE) {
@@ -342,7 +342,7 @@ PHP_METHOD(RdKafka__ConsumerTopic, consumeBatch)
 
     result = rd_kafka_consume_batch(intern->rkt, partition, timeout_ms, rkmessages, batch_size);
 
-    kafka_message_list_to_array(return_value, &rkmessages, batch_size TSRMLS_CC);
+    kafka_message_list_to_array(return_value, rkmessages, batch_size TSRMLS_CC);
 
     if(result != -1) {
         for (i = 0; i < batch_size; ++i)
