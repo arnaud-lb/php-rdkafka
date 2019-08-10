@@ -86,9 +86,6 @@ static void kafka_free(zend_object *object TSRMLS_DC) /* {{{ */
         }
         zend_hash_destroy(&intern->topics);
 
-        while (rd_kafka_outq_len(intern->rk) > 0) {
-            rd_kafka_poll(intern->rk, 1);
-        }
         rd_kafka_destroy(intern->rk);
         intern->rk = NULL;
     }
