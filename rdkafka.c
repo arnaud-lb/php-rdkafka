@@ -136,7 +136,7 @@ static void kafka_init(zval *this_ptr, rd_kafka_type_t type, zval *zconf TSRMLS_
         if (conf_intern) {
             conf = rd_kafka_conf_dup(conf_intern->u.conf);
             kafka_conf_callbacks_copy(&intern->cbs, &conf_intern->cbs TSRMLS_CC);
-            intern->cbs.rk = *this_ptr;
+            intern->cbs.zrk = *this_ptr;
             rd_kafka_conf_set_opaque(conf, &intern->cbs);
         }
     }
