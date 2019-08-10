@@ -134,6 +134,8 @@ PHP_METHOD(RdKafka__KafkaConsumer, __construct)
     object_intern *intern;
     kafka_conf_object *conf_intern;
     rd_kafka_conf_t *conf = NULL;
+    rd_kafka_queue_t *log_queue;
+
 
     zend_replace_error_handling(EH_THROW, spl_ce_InvalidArgumentException, &error_handling TSRMLS_CC);
 
@@ -166,6 +168,11 @@ PHP_METHOD(RdKafka__KafkaConsumer, __construct)
         zend_restore_error_handling(&error_handling TSRMLS_CC);
         zend_throw_exception(ce_kafka_exception, errstr, 0 TSRMLS_CC);
         return;
+    }
+
+    if(intern->cbs.log) {
+        log_queue = rd_kafka_queue_new(rk);
+        rd_kafka_set_log_queue(rk, log_queue);
     }
 
     intern->rk = rk;

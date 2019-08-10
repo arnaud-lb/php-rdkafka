@@ -717,8 +717,6 @@ ZEND_END_ARG_INFO()
 
 PHP_METHOD(RdKafka__Conf, setLogCb)
 {
-    rd_kafka_t *rk;
-    rd_kafka_queue_t *log_queue;
     zend_fcall_info fci;
     zend_fcall_info_cache fcc;
     kafka_conf_object *conf;
@@ -743,8 +741,6 @@ PHP_METHOD(RdKafka__Conf, setLogCb)
     conf->cbs.log->fci = fci;
     conf->cbs.log->fcc = fcc;
 
-    log_queue = rd_kafka_queue_new(&conf->cbs.rk);
-    rd_kafka_set_log_queue(&conf->cbs.rk, log_queue);
     rd_kafka_conf_set_log_cb(conf->u.conf, kafka_conf_log_cb);
 
 
