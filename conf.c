@@ -305,7 +305,6 @@ static void kafka_conf_offset_commit_cb(rd_kafka_t *rk, rd_kafka_resp_err_t err,
 
 static void kafka_conf_log_cb(rd_kafka_t *rk, int level, const char *facility, const char *message)
 {
-    kafka_conf_object *intern;
     zeval args[4];
     TSRMLS_FETCH();
 
