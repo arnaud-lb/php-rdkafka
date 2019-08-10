@@ -729,12 +729,14 @@ PHP_METHOD(RdKafka__TopicConf, setPartitioner)
         case MSG_PARTITIONER_CONSISTENT_RANDOM:
             partitioner = rd_kafka_msg_partitioner_consistent_random;
             break;
+#ifdef HAS_RD_KAFKA_PARTITIONER_MURMUR2
         case MSG_PARTITIONER_MURMUR2:
             partitioner = rd_kafka_msg_partitioner_murmur2;
             break;
         case MSG_PARTITIONER_MURMUR2_RANDOM:
             partitioner = rd_kafka_msg_partitioner_murmur2_random;
             break;
+#endif
         default:
             zend_throw_exception_ex(NULL, 0 TSRMLS_CC, "Invalid partitioner" TSRMLS_CC);
             return;

@@ -71,6 +71,12 @@ if test "$PHP_RDKAFKA" != "no"; then
     AC_MSG_WARN([purge is not available])
   ])
 
+  AC_CHECK_LIB($LIBNAME,[rd_kafka_msg_partitioner_murmur2],[
+    AC_DEFINE(HAS_RD_KAFKA_PARTITIONER_MURMUR2,1,[ ])
+  ],[
+    AC_MSG_WARN([murmur2 partitioner is not available])
+  ])
+
   LDFLAGS="$ORIG_LDFLAGS"
   CPPFLAGS="$ORIG_CPPFLAGS"
 
