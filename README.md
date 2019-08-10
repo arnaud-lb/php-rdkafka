@@ -46,9 +46,10 @@ servers) to it:
 
 ``` php
 <?php
-
-$rk = new RdKafka\Producer();
-$rk->setLogLevel(LOG_DEBUG);
+$conf = new Conf();
+$conf->set('log_level', 7);
+$conf->set('debug', 'all');
+$rk = new RdKafka\Producer($conf);
 $rk->addBrokers("10.0.0.1:9092,10.0.0.2:9092");
 ```
 
@@ -87,9 +88,10 @@ servers) to it:
 
 ``` php
 <?php
-
-$rk = new RdKafka\Consumer();
-$rk->setLogLevel(LOG_DEBUG);
+$conf = new Conf();
+$conf->set('log_level', 7);
+$conf->set('debug', 'all');
+$rk = new RdKafka\Consumer($conf);
 $rk->addBrokers("10.0.0.1,10.0.0.2");
 ```
 
