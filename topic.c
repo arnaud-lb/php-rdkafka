@@ -342,14 +342,15 @@ PHP_METHOD(RdKafka__ConsumerTopic, consumeBatch)
 
     result = rd_kafka_consume_batch(intern->rkt, partition, timeout_ms, rkmessages, batch_size);
 
-    kafka_message_list_to_array(return_value, rkmessages, batch_size TSRMLS_CC);
-
-    if(result != -1) {
+    if(result > 0) {
+        kafka_message_list_to_array(return_value, rkmessages, batch_size TSRMLS_CC);
         for (i = 0; i < batch_size; ++i)
         {
             rd_kafka_message_destroy(rkmessages[i]);
         }
     }
+
+    free(rkmessages);
 }
 /* }}} */
 
