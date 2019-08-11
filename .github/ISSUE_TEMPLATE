@@ -4,7 +4,7 @@ Thank you for creating a ticket!
 If you have questions, you can also join the Gitter channel.
 https://gitter.im/arnaud-lb/php-rdkafka
 
-If you are reporting a bug, please provide the following informations:
+Please always include the following in an issue, so we can help faster:
 -->
 
  * PHP version:
