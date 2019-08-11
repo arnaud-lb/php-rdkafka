@@ -530,6 +530,7 @@ PHP_METHOD(RdKafka__KafkaConsumer, close)
     }
 
     rd_kafka_consumer_close(intern->rk);
+    intern->rk = null;
 }
 /* }}} */
 
