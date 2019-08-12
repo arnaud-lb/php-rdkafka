@@ -126,7 +126,6 @@ static void kafka_init(zval *this_ptr, rd_kafka_type_t type, zval *zconf TSRMLS_
     kafka_object *intern;
     kafka_conf_object *conf_intern;
     rd_kafka_conf_t *conf = NULL;
-    rd_kafka_queue_t *log_queue;
 
     intern = get_custom_object_zval(kafka_object, this_ptr);
     intern->type = type;
@@ -149,8 +148,7 @@ static void kafka_init(zval *this_ptr, rd_kafka_type_t type, zval *zconf TSRMLS_
     }
 
     if(intern->cbs.log) {
-        log_queue = rd_kafka_queue_new(rk);
-        rd_kafka_set_log_queue(rk, log_queue);
+        rd_kafka_set_log_queue(rk, NULL);
     }
 
     intern->rk = rk;
