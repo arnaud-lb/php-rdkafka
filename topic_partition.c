@@ -192,7 +192,7 @@ rd_kafka_topic_partition_list_t * array_arg_to_kafka_topic_partition_list(int ar
 /* {{{ proto void RdKafka\TopicPartition::__construct(string $topic, int $partition[, int $offset])
    Constructor */
 
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_topic_partition___construct, 0, 0, 3)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_topic_partition___construct, 0, 0, 2)
     ZEND_ARG_INFO(0, topic)
     ZEND_ARG_INFO(0, partition)
     ZEND_ARG_INFO(0, offset)
