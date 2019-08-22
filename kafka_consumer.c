@@ -168,7 +168,7 @@ PHP_METHOD(RdKafka__KafkaConsumer, __construct)
         return;
     }
 
-    if(intern->cbs.log) {
+    if (intern->cbs.log) {
         rd_kafka_set_log_queue(rk, NULL);
     }
 
