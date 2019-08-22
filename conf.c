@@ -742,8 +742,6 @@ PHP_METHOD(RdKafka__Conf, setLogCb)
     conf->cbs.log->fcc = fcc;
 
     rd_kafka_conf_set_log_cb(conf->u.conf, kafka_conf_log_cb);
-
-
 }
 /* }}} */
 
