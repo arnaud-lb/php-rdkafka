@@ -134,8 +134,13 @@ static void kafka_init(zval *this_ptr, rd_kafka_type_t type, zval *zconf TSRMLS_
         conf_intern = get_kafka_conf_object(zconf TSRMLS_CC);
         if (conf_intern) {
             conf = rd_kafka_conf_dup(conf_intern->u.conf);
+
+            if (intern->cbs.log) {
+                rd_kafka_conf_set(conf, "log.queue", "true", errstr, sizeof(errstr));
+            }
+            
             kafka_conf_callbacks_copy(&intern->cbs, &conf_intern->cbs TSRMLS_CC);
-            intern->cbs.rk = *this_ptr;
+            intern->cbs.zrk = *this_ptr;
             rd_kafka_conf_set_opaque(conf, &intern->cbs);
         }
     }
@@ -145,6 +150,10 @@ static void kafka_init(zval *this_ptr, rd_kafka_type_t type, zval *zconf TSRMLS_
     if (rk == NULL) {
         zend_throw_exception(ce_kafka_exception, errstr, 0 TSRMLS_CC);
         return;
+    }
+
+    if (intern->cbs.log) {
+        rd_kafka_set_log_queue(rk, NULL);
     }
 
     intern->rk = rk;

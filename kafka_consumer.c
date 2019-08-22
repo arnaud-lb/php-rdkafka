@@ -148,7 +148,7 @@ PHP_METHOD(RdKafka__KafkaConsumer, __construct)
     if (conf_intern) {
         conf = rd_kafka_conf_dup(conf_intern->u.conf);
         kafka_conf_callbacks_copy(&intern->cbs, &conf_intern->cbs TSRMLS_CC);
-        intern->cbs.rk = *getThis();
+        intern->cbs.zrk = *getThis();
         rd_kafka_conf_set_opaque(conf, &intern->cbs);
     }
 
@@ -166,6 +166,10 @@ PHP_METHOD(RdKafka__KafkaConsumer, __construct)
         zend_restore_error_handling(&error_handling TSRMLS_CC);
         zend_throw_exception(ce_kafka_exception, errstr, 0 TSRMLS_CC);
         return;
+    }
+
+    if (intern->cbs.log) {
+        rd_kafka_set_log_queue(rk, NULL);
     }
 
     intern->rk = rk;
