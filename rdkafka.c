@@ -147,7 +147,7 @@ static void kafka_init(zval *this_ptr, rd_kafka_type_t type, zval *zconf TSRMLS_
         return;
     }
 
-    if(intern->cbs.log) {
+    if (intern->cbs.log) {
         rd_kafka_set_log_queue(rk, NULL);
     }
 
