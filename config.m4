@@ -65,6 +65,12 @@ if test "$PHP_RDKAFKA" != "no"; then
     AC_MSG_WARN([no rd_kafka_message_headers, headers support will not be available])
   ])
 
+  AC_CHECK_LIB($LIBNAME,[rd_kafka_purge],[
+    AC_DEFINE(HAS_RD_KAFKA_PURGE,1,[ ])
+  ],[
+    AC_MSG_WARN([purge is not available])
+  ])
+
   LDFLAGS="$ORIG_LDFLAGS"
   CPPFLAGS="$ORIG_CPPFLAGS"
 
