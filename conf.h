@@ -38,13 +38,14 @@ typedef struct _kafka_conf_callback {
 } kafka_conf_callback;
 
 typedef struct _kafka_conf_callbacks {
-    zval rk;
+    zval zrk;
     kafka_conf_callback *error;
     kafka_conf_callback *rebalance;
     kafka_conf_callback *dr_msg;
     kafka_conf_callback *stats;
     kafka_conf_callback *consume;
     kafka_conf_callback *offset_commit;
+    kafka_conf_callback *log;
 } kafka_conf_callbacks;
 
 typedef struct _kafka_conf_object {

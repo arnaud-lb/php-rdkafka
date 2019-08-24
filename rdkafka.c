@@ -134,8 +134,13 @@ static void kafka_init(zval *this_ptr, rd_kafka_type_t type, zval *zconf TSRMLS_
         conf_intern = get_kafka_conf_object(zconf TSRMLS_CC);
         if (conf_intern) {
             conf = rd_kafka_conf_dup(conf_intern->u.conf);
+
+            if (intern->cbs.log) {
+                rd_kafka_conf_set(conf, "log.queue", "true", errstr, sizeof(errstr));
+            }
+            
             kafka_conf_callbacks_copy(&intern->cbs, &conf_intern->cbs TSRMLS_CC);
-            intern->cbs.rk = *this_ptr;
+            intern->cbs.zrk = *this_ptr;
             rd_kafka_conf_set_opaque(conf, &intern->cbs);
         }
     }
@@ -145,6 +150,10 @@ static void kafka_init(zval *this_ptr, rd_kafka_type_t type, zval *zconf TSRMLS_
     if (rk == NULL) {
         zend_throw_exception(ce_kafka_exception, errstr, 0 TSRMLS_CC);
         return;
+    }
+
+    if (intern->cbs.log) {
+        rd_kafka_set_log_queue(rk, NULL);
     }
 
     intern->rk = rk;
@@ -545,10 +554,9 @@ PHP_METHOD(RdKafka__Kafka, poll)
 
     RETURN_LONG(rd_kafka_poll(intern->rk, timeout));
 }
-
-#ifdef HAS_RD_KAFKA_PURGE
 /* }}} */
 
+#ifdef HAS_RD_KAFKA_PURGE
 /* {{{ proto int RdKafka\Kafka::purge(int $purge_flags)
    Purge messages that are in queue or in flight */
 
@@ -708,7 +716,7 @@ static const zend_function_entry kafka_fe[] = {
     PHP_ME(RdKafka__Kafka, getMetadata, arginfo_kafka_get_metadata, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__Kafka, getOutQLen, arginfo_kafka_get_outq_len, ZEND_ACC_PUBLIC)
     PHP_MALIAS(RdKafka__Kafka, metadata, getMetadata, arginfo_kafka_get_metadata, ZEND_ACC_PUBLIC | ZEND_ACC_DEPRECATED)
-    PHP_ME(RdKafka__Kafka, setLogLevel, arginfo_kafka_set_log_level, ZEND_ACC_PUBLIC)
+    PHP_ME(RdKafka__Kafka, setLogLevel, arginfo_kafka_set_log_level, ZEND_ACC_PUBLIC | ZEND_ACC_DEPRECATED)
     PHP_ME(RdKafka__Kafka, newQueue, arginfo_kafka_new_queue, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__Kafka, newTopic, arginfo_kafka_new_topic, ZEND_ACC_PUBLIC)
     PHP_MALIAS(RdKafka__Kafka, outqLen, getOutQLen, arginfo_kafka_get_outq_len, ZEND_ACC_PUBLIC | ZEND_ACC_DEPRECATED)
@@ -716,7 +724,7 @@ static const zend_function_entry kafka_fe[] = {
 #ifdef HAS_RD_KAFKA_PURGE
     PHP_ME(RdKafka__Kafka, purge, arginfo_kafka_purge, ZEND_ACC_PUBLIC)
 #endif
-    PHP_ME(RdKafka__Kafka, setLogger, arginfo_kafka_set_logger, ZEND_ACC_PUBLIC)
+    PHP_ME(RdKafka__Kafka, setLogger, arginfo_kafka_set_logger, ZEND_ACC_PUBLIC | ZEND_ACC_DEPRECATED)
     PHP_ME(RdKafka__Kafka, queryWatermarkOffsets, arginfo_kafka_query_watermark_offsets, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__Kafka, offsetsForTimes, arginfo_kafka_offsets_for_times, ZEND_ACC_PUBLIC)
     PHP_FE_END
@@ -874,10 +882,10 @@ PHP_MINFO_FUNCTION(rdkafka)
     char *rd_kafka_version;
 
     php_info_print_table_start();
-    php_info_print_table_header(2, "rdkafka support", "enabled");
+    php_info_print_table_row(2, "rdkafka support", "enabled");
 
-    php_info_print_table_header(2, "version", PHP_RDKAFKA_VERSION);
-    php_info_print_table_header(2, "build date", __DATE__ " " __TIME__);
+    php_info_print_table_row(2, "version", PHP_RDKAFKA_VERSION);
+    php_info_print_table_row(2, "build date", __DATE__ " " __TIME__);
 
     spprintf(
         &rd_kafka_version,
@@ -889,8 +897,8 @@ PHP_MINFO_FUNCTION(rdkafka)
         (RD_KAFKA_VERSION & 0x000000FF)
     );
 
-    php_info_print_table_header(2, "librdkafka version (runtime)", rd_kafka_version_str());
-    php_info_print_table_header(2, "librdkafka version (build)", rd_kafka_version);
+    php_info_print_table_row(2, "librdkafka version (runtime)", rd_kafka_version_str());
+    php_info_print_table_row(2, "librdkafka version (build)", rd_kafka_version);
 
 
     efree(rd_kafka_version);
