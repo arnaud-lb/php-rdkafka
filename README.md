@@ -41,6 +41,7 @@ https://arnaud-lb.github.io/php-rdkafka/phpdoc/rdkafka.examples.html
 
 ### Producing
 
+#### Creating a producer
 For producing, we first need to create a producer, and to add brokers (Kafka
 servers) to it:
 
@@ -53,6 +54,7 @@ $rk = new RdKafka\Producer($conf);
 $rk->addBrokers("10.0.0.1:9092,10.0.0.2:9092");
 ```
 
+#### Producing messages
 Next, we create a topic instance from the producer:
 
 ``` php
@@ -76,6 +78,20 @@ The first argument is the partition. RD_KAFKA_PARTITION_UA stands for
 The second argument are message flags and should always be 0, currently.
 
 The message payload can be anything.
+
+#### Proper shutdown
+This should typically be done prior to destroying a producer instance  
+to make sure all queued and in-flight produce requests are completed  
+before terminating. Use a reasonable value for $timeout_ms.
+```php
+$rk->flush($timeout_ms);
+```
+Optionally, you can purge all messages from the queue that haven't  
+been sent to the broker yet, before calling flush.
+```php
+$rk->purge(RD_KAFKA_PURGE_F_QUEUE);
+$rk->flush($timeout_ms);
+```
 
 ### High-level consuming
 
