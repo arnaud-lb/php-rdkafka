@@ -160,9 +160,9 @@ static void kafka_init(zval *this_ptr, rd_kafka_type_t type, zval *zconf TSRMLS_
 
     if (type == RD_KAFKA_CONSUMER) {
         zend_hash_init(&intern->consuming, 0, NULL, (dtor_func_t)toppar_pp_dtor, 0);
+        zend_hash_init(&intern->queues, 0, NULL, (dtor_func_t)kafka_queue_object_pre_free, 0);
     }
 
-    zend_hash_init(&intern->queues, 0, NULL, (dtor_func_t)kafka_queue_object_pre_free, 0);
     zend_hash_init(&intern->topics, 0, NULL, (dtor_func_t)kafka_topic_object_pre_free, 0);
 }
 /* }}} */
@@ -401,6 +401,10 @@ PHP_METHOD(RdKafka__Kafka, newQueue)
     intern = get_kafka_object(getThis() TSRMLS_CC);
     if (!intern) {
         return;
+    }
+
+    if(intern->type == RD_KAFKA_PRODUCER) {
+        RETURN_LONG(RD_KAFKA_RESP_ERR__NOT_IMPLEMENTED);
     }
 
     rkqu = rd_kafka_queue_new(intern->rk);
