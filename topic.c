@@ -350,8 +350,7 @@ PHP_METHOD(RdKafka__ConsumerTopic, consumeBatch)
 
     if (result > 0) {
         kafka_message_list_to_array(return_value, rkmessages, result TSRMLS_CC);
-        for (i = 0; i < batch_size; ++i)
-        {
+        for (i = 0; i < batch_size; ++i) {
             rd_kafka_message_destroy(rkmessages[i]);
         }
     }
