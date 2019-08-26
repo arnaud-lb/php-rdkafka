@@ -333,22 +333,23 @@ PHP_METHOD(RdKafka__ConsumerTopic, consumeBatch)
         return;
     }
 
-    rkmessages = malloc(sizeof(*rkmessages) * batch_size);
-
     intern = get_kafka_topic_object(getThis() TSRMLS_CC);
     if (!intern) {
         return;
     }
 
+    rkmessages = malloc(sizeof(*rkmessages) * batch_size);
+
     result = rd_kafka_consume_batch(intern->rkt, partition, timeout_ms, rkmessages, batch_size);
 
     if (result == -1) {
-        zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(rd_kafka_last_error()), err TSRMLS_CC);
+        err = rd_kafka_last_error();
+        zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err TSRMLS_CC);
         return;
     }
 
     if (result > 0) {
-        kafka_message_list_to_array(return_value, rkmessages, batch_size TSRMLS_CC);
+        kafka_message_list_to_array(return_value, rkmessages, result TSRMLS_CC);
         for (i = 0; i < batch_size; ++i)
         {
             rd_kafka_message_destroy(rkmessages[i]);
