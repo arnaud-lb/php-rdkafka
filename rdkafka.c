@@ -283,6 +283,7 @@ PHP_METHOD(RdKafka__Consumer, __construct)
 
 static const zend_function_entry kafka_consumer_fe[] = {
     PHP_ME(RdKafka__Consumer, __construct, arginfo_kafka_consumer___construct, ZEND_ACC_PUBLIC)
+    PHP_ME(RdKafka__Consumer, newQueue, arginfo_kafka_new_queue, ZEND_ACC_PUBLIC)
     PHP_FE_END
 };
 
@@ -382,7 +383,7 @@ PHP_METHOD(RdKafka__Kafka, setLogLevel)
 }
 /* }}} */
 
-/* {{{ proto RdKafka\Queue RdKafka\Kafka::newQueue()
+/* {{{ proto RdKafka\Queue RdKafka\Consumer::newQueue()
    Returns a RdKafka\Queue object */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_new_queue, 0, 0, 0)
@@ -401,10 +402,6 @@ PHP_METHOD(RdKafka__Kafka, newQueue)
     intern = get_kafka_object(getThis() TSRMLS_CC);
     if (!intern) {
         return;
-    }
-
-    if(intern->type == RD_KAFKA_PRODUCER) {
-        RETURN_LONG(RD_KAFKA_RESP_ERR__NOT_IMPLEMENTED);
     }
 
     rkqu = rd_kafka_queue_new(intern->rk);
@@ -721,7 +718,6 @@ static const zend_function_entry kafka_fe[] = {
     PHP_ME(RdKafka__Kafka, getOutQLen, arginfo_kafka_get_outq_len, ZEND_ACC_PUBLIC)
     PHP_MALIAS(RdKafka__Kafka, metadata, getMetadata, arginfo_kafka_get_metadata, ZEND_ACC_PUBLIC | ZEND_ACC_DEPRECATED)
     PHP_ME(RdKafka__Kafka, setLogLevel, arginfo_kafka_set_log_level, ZEND_ACC_PUBLIC | ZEND_ACC_DEPRECATED)
-    PHP_ME(RdKafka__Kafka, newQueue, arginfo_kafka_new_queue, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__Kafka, newTopic, arginfo_kafka_new_topic, ZEND_ACC_PUBLIC)
     PHP_MALIAS(RdKafka__Kafka, outqLen, getOutQLen, arginfo_kafka_get_outq_len, ZEND_ACC_PUBLIC | ZEND_ACC_DEPRECATED)
     PHP_ME(RdKafka__Kafka, poll, arginfo_kafka_poll, ZEND_ACC_PUBLIC)
