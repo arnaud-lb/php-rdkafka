@@ -96,7 +96,6 @@ void kafka_message_list_to_array(zval *return_value, rd_kafka_message_t **messag
     for (i = 0; i < size; i++) {
         msg = messages[i];
         MAKE_STD_ZEVAL(zmsg);
-        object_init_ex(P_ZEVAL(zmsg), ce_kafka_message);
         kafka_message_new(P_ZEVAL(zmsg), msg TSRMLS_CC);
         add_next_index_zval(return_value, P_ZEVAL(zmsg));
     }
