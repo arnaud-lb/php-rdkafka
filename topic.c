@@ -323,7 +323,7 @@ PHP_METHOD(RdKafka__ConsumerTopic, consumeBatch)
         return;
     }
 
-    if(0 >= batch_size) {
+    if (0 >= batch_size) {
         zend_throw_exception_ex(spl_ce_InvalidArgumentException, 0 TSRMLS_CC, "Out of range value '%ld' for batch_size", batch_size TSRMLS_CC);
         return;
     }
@@ -347,7 +347,7 @@ PHP_METHOD(RdKafka__ConsumerTopic, consumeBatch)
         return;
     }
 
-    if(result > 0) {
+    if (result > 0) {
         kafka_message_list_to_array(return_value, rkmessages, batch_size TSRMLS_CC);
         for (i = 0; i < batch_size; ++i)
         {
