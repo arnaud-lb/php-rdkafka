@@ -86,9 +86,6 @@ static void kafka_free(zend_object *object TSRMLS_DC) /* {{{ */
         }
         zend_hash_destroy(&intern->topics);
 
-        while (rd_kafka_outq_len(intern->rk) > 0) {
-            rd_kafka_poll(intern->rk, 1);
-        }
         rd_kafka_destroy(intern->rk);
         intern->rk = NULL;
     }
@@ -138,7 +135,7 @@ static void kafka_init(zval *this_ptr, rd_kafka_type_t type, zval *zconf TSRMLS_
             if (intern->cbs.log) {
                 rd_kafka_conf_set(conf, "log.queue", "true", errstr, sizeof(errstr));
             }
-            
+
             kafka_conf_callbacks_copy(&intern->cbs, &conf_intern->cbs TSRMLS_CC);
             intern->cbs.zrk = *this_ptr;
             rd_kafka_conf_set_opaque(conf, &intern->cbs);
@@ -557,6 +554,31 @@ PHP_METHOD(RdKafka__Kafka, poll)
 }
 /* }}} */
 
+/* {{{ proto int RdKafka\Kafka::flush(int $timeout_ms)
+   Wait until all outstanding produce requests, et.al, are completed. */
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_flush, 0, 0, 1)
+    ZEND_ARG_INFO(0, timeout_ms)
+ZEND_END_ARG_INFO()
+
+PHP_METHOD(RdKafka__Kafka, flush)
+{
+    kafka_object *intern;
+    long timeout;
+
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &timeout) == FAILURE) {
+        return;
+    }
+
+    intern = get_kafka_object(getThis() TSRMLS_CC);
+    if (!intern) {
+        return;
+    }
+
+    RETURN_LONG(rd_kafka_flush(intern->rk, timeout));
+}
+/* }}} */
+
 #ifdef HAS_RD_KAFKA_PURGE
 /* {{{ proto int RdKafka\Kafka::purge(int $purge_flags)
    Purge messages that are in queue or in flight */
@@ -721,6 +743,7 @@ static const zend_function_entry kafka_fe[] = {
     PHP_ME(RdKafka__Kafka, newTopic, arginfo_kafka_new_topic, ZEND_ACC_PUBLIC)
     PHP_MALIAS(RdKafka__Kafka, outqLen, getOutQLen, arginfo_kafka_get_outq_len, ZEND_ACC_PUBLIC | ZEND_ACC_DEPRECATED)
     PHP_ME(RdKafka__Kafka, poll, arginfo_kafka_poll, ZEND_ACC_PUBLIC)
+    PHP_ME(RdKafka__Kafka, flush, arginfo_kafka_flush, ZEND_ACC_PUBLIC)
 #ifdef HAS_RD_KAFKA_PURGE
     PHP_ME(RdKafka__Kafka, purge, arginfo_kafka_purge, ZEND_ACC_PUBLIC)
 #endif
