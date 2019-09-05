@@ -343,6 +343,7 @@ PHP_METHOD(RdKafka__ConsumerTopic, consumeBatch)
     result = rd_kafka_consume_batch(intern->rkt, partition, timeout_ms, rkmessages, batch_size);
 
     if (result == -1) {
+        free(rkmessages);
         err = rd_kafka_last_error();
         zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err TSRMLS_CC);
         return;
