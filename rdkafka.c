@@ -281,8 +281,61 @@ PHP_METHOD(RdKafka__Consumer, __construct)
 }
 /* }}} */
 
+/* {{{ proto RdKafka\Queue RdKafka\Consumer::newQueue()
+   Returns a RdKafka\Queue object */
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_new_queue, 0, 0, 0)
+ZEND_END_ARG_INFO()
+
+PHP_METHOD(RdKafka__Consumer, newQueue)
+{
+    rd_kafka_queue_t *rkqu;
+    kafka_object *intern;
+    kafka_queue_object *queue_intern;
+
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "") == FAILURE) {
+        return;
+    }
+
+    intern = get_kafka_object(getThis() TSRMLS_CC);
+    if (!intern) {
+        return;
+    }
+
+    rkqu = rd_kafka_queue_new(intern->rk);
+
+    if (!rkqu) {
+        return;
+    }
+
+    if (object_init_ex(return_value, ce_kafka_queue) != SUCCESS) {
+        return;
+    }
+
+    queue_intern = get_custom_object_zval(kafka_queue_object, return_value);
+    if (!queue_intern) {
+        return;
+    }
+
+    queue_intern->rkqu = rkqu;
+
+    // Keep a reference to the parent Kafka object, attempts to ensure that
+    // the Queue object is destroyed before the Kafka object.
+    // This avoids rd_kafka_destroy() hanging.
+#if PHP_MAJOR_VERSION >= 7
+    queue_intern->zrk = *getThis();
+#else
+    queue_intern->zrk = getThis();
+#endif
+    Z_ADDREF_P(P_ZEVAL(queue_intern->zrk));
+
+    zend_hash_index_add_ptr(&intern->queues, (zend_ulong)queue_intern, queue_intern);
+}
+/* }}} */
+
 static const zend_function_entry kafka_consumer_fe[] = {
     PHP_ME(RdKafka__Consumer, __construct, arginfo_kafka_consumer___construct, ZEND_ACC_PUBLIC)
+    PHP_ME(RdKafka__Consumer, newQueue, arginfo_kafka_new_queue, ZEND_ACC_PUBLIC)
     PHP_FE_END
 };
 
@@ -379,58 +432,6 @@ PHP_METHOD(RdKafka__Kafka, setLogLevel)
     }
 
     rd_kafka_set_log_level(intern->rk, level);
-}
-/* }}} */
-
-/* {{{ proto RdKafka\Queue RdKafka\Kafka::newQueue()
-   Returns a RdKafka\Queue object */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_new_queue, 0, 0, 0)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__Kafka, newQueue)
-{
-    rd_kafka_queue_t *rkqu;
-    kafka_object *intern;
-    kafka_queue_object *queue_intern;
-
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "") == FAILURE) {
-        return;
-    }
-
-    intern = get_kafka_object(getThis() TSRMLS_CC);
-    if (!intern) {
-        return;
-    }
-
-    rkqu = rd_kafka_queue_new(intern->rk);
-
-    if (!rkqu) {
-        return;
-    }
-
-    if (object_init_ex(return_value, ce_kafka_queue) != SUCCESS) {
-        return;
-    }
-
-    queue_intern = get_custom_object_zval(kafka_queue_object, return_value);
-    if (!queue_intern) {
-        return;
-    }
-
-    queue_intern->rkqu = rkqu;
-
-    // Keep a reference to the parent Kafka object, attempts to ensure that
-    // the Queue object is destroyed before the Kafka object.
-    // This avoids rd_kafka_destroy() hanging.
-#if PHP_MAJOR_VERSION >= 7
-    queue_intern->zrk = *getThis();
-#else
-    queue_intern->zrk = getThis();
-#endif
-    Z_ADDREF_P(P_ZEVAL(queue_intern->zrk));
-
-    zend_hash_index_add_ptr(&intern->queues, (zend_ulong)queue_intern, queue_intern);
 }
 /* }}} */
 
@@ -717,7 +718,6 @@ static const zend_function_entry kafka_fe[] = {
     PHP_ME(RdKafka__Kafka, getOutQLen, arginfo_kafka_get_outq_len, ZEND_ACC_PUBLIC)
     PHP_MALIAS(RdKafka__Kafka, metadata, getMetadata, arginfo_kafka_get_metadata, ZEND_ACC_PUBLIC | ZEND_ACC_DEPRECATED)
     PHP_ME(RdKafka__Kafka, setLogLevel, arginfo_kafka_set_log_level, ZEND_ACC_PUBLIC | ZEND_ACC_DEPRECATED)
-    PHP_ME(RdKafka__Kafka, newQueue, arginfo_kafka_new_queue, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__Kafka, newTopic, arginfo_kafka_new_topic, ZEND_ACC_PUBLIC)
     PHP_MALIAS(RdKafka__Kafka, outqLen, getOutQLen, arginfo_kafka_get_outq_len, ZEND_ACC_PUBLIC | ZEND_ACC_DEPRECATED)
     PHP_ME(RdKafka__Kafka, poll, arginfo_kafka_poll, ZEND_ACC_PUBLIC)
