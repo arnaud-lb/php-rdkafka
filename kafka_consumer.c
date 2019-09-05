@@ -53,13 +53,11 @@ static void kafka_consumer_free(zend_object *object TSRMLS_DC) /* {{{ */
 
     if (intern->rk) {
         err = rd_kafka_consumer_close(intern->rk);
+        
         if (err) {
             php_error(E_WARNING, "rd_kafka_consumer_close failed: %s", rd_kafka_err2str(err));
-        } else {
-            while (rd_kafka_outq_len(intern->rk) > 0) {
-                rd_kafka_poll(intern->rk, 10);
-            }
         }
+
         rd_kafka_destroy(intern->rk);
         intern->rk = NULL;
     }
