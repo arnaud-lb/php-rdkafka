@@ -77,6 +77,12 @@ if test "$PHP_RDKAFKA" != "no"; then
     AC_MSG_WARN([murmur2 partitioner is not available])
   ])
 
+  AC_CHECK_LIB($LIBNAME,[rd_kafka_destroy_flags],[
+    AC_DEFINE(HAS_RD_KAFKA_DESTROY_FLAGS,1,[ ])
+  ],[
+    AC_MSG_WARN([Destroy flags are not available])
+  ])
+
   LDFLAGS="$ORIG_LDFLAGS"
   CPPFLAGS="$ORIG_CPPFLAGS"
 
