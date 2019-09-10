@@ -18,5 +18,6 @@
 
 void kafka_message_minit(TSRMLS_D);
 void kafka_message_new(zval *return_value, const rd_kafka_message_t *message TSRMLS_DC);
+void kafka_message_list_to_array(zval *return_value, rd_kafka_message_t **messages, long size TSRMLS_DC);
 
 extern zend_class_entry * ce_kafka_message;
