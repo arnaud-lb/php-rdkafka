@@ -518,6 +518,26 @@ PHP_METHOD(RdKafka__KafkaConsumer, commitAsync)
 }
 /* }}} */
 
+/* {{{ proto void RdKafka\KafkaConsumer::close()
+   Close connection */
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_kafka_consumer_close, 0, 0, 0)
+ZEND_END_ARG_INFO()
+
+PHP_METHOD(RdKafka__KafkaConsumer, close)
+{
+    object_intern *intern;
+
+    intern = get_object(getThis() TSRMLS_CC);
+    if (!intern) {
+        return;
+    }
+
+    rd_kafka_consumer_close(intern->rk);
+    intern->rk = NULL;
+}
+/* }}} */
+
 /* {{{ proto Metadata RdKafka\KafkaConsumer::getMetadata(bool all_topics, RdKafka\Topic only_topic, int timeout_ms)
    Request Metadata from broker */
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_kafka_consumer_getMetadata, 0, 0, 3)
@@ -796,6 +816,7 @@ static const zend_function_entry fe[] = { /* {{{ */
     PHP_ME(RdKafka__KafkaConsumer, assign, arginfo_kafka_kafka_consumer_assign, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__KafkaConsumer, getAssignment, arginfo_kafka_kafka_consumer_getAssignment, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__KafkaConsumer, commit, arginfo_kafka_kafka_consumer_commit, ZEND_ACC_PUBLIC)
+    PHP_ME(RdKafka__KafkaConsumer, close, arginfo_kafka_kafka_consumer_close, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__KafkaConsumer, commitAsync, arginfo_kafka_kafka_consumer_commit_async, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__KafkaConsumer, consume, arginfo_kafka_kafka_consumer_consume, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__KafkaConsumer, subscribe, arginfo_kafka_kafka_consumer_subscribe, ZEND_ACC_PUBLIC)
