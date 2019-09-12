@@ -59,6 +59,13 @@ static void kafka_consumer_free(zend_object *object TSRMLS_DC) /* {{{ */
     intern->cbs.log = NULL;
 
     if (intern->rk) {
+        err = rd_kafka_assign(intern->rk, NULL);
+
+        if (err != RD_KAFKA_RESP_ERR_NO_ERROR) {
+            zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err TSRMLS_CC);
+            return;
+        }
+
         err = rd_kafka_consumer_close(intern->rk);
 
         if (err) {
