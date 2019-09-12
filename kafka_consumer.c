@@ -50,11 +50,15 @@ static void kafka_consumer_free(zend_object *object TSRMLS_DC) /* {{{ */
 {
     object_intern *intern = get_custom_object(object_intern, object);
     rd_kafka_resp_err_t err;
+    kafka_conf_callbacks_dtor(&intern->cbs TSRMLS_CC);
+    intern->cbs.error = NULL;
+    intern->cbs.rebalance = NULL;
+    intern->cbs.dr_msg = NULL;
+    intern->cbs.consume = NULL;
+    intern->cbs.offset_commit = NULL;
+    intern->cbs.log = NULL;
 
     if (intern->rk) {
-#ifdef HAS_RD_KAFKA_DESTROY_FLAGS
-        rd_kafka_destroy_flags(intern->rk, RD_KAFKA_DESTROY_F_NO_CONSUMER_CLOSE);
-#else
         err = rd_kafka_consumer_close(intern->rk);
 
         if (err) {
@@ -62,7 +66,6 @@ static void kafka_consumer_free(zend_object *object TSRMLS_DC) /* {{{ */
         }
 
         rd_kafka_destroy(intern->rk);
-#endif
         intern->rk = NULL;
     }
 
