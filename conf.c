@@ -230,6 +230,13 @@ static void kafka_conf_rebalance_cb(rd_kafka_t *rk, rd_kafka_resp_err_t err, rd_
     }
 
     if (!cbs->rebalance) {
+        err = rd_kafka_assign(rk, NULL);
+
+        if (err != RD_KAFKA_RESP_ERR_NO_ERROR) {
+            zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err TSRMLS_CC);
+            return;
+        }
+
         return;
     }
 

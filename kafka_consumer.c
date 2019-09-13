@@ -51,15 +51,14 @@ static void kafka_consumer_free(zend_object *object TSRMLS_DC) /* {{{ */
     object_intern *intern = get_custom_object(object_intern, object);
     rd_kafka_resp_err_t err;
     kafka_conf_callbacks_dtor(&intern->cbs TSRMLS_CC);
+    intern->cbs.error = NULL;
+    intern->cbs.rebalance = NULL;
+    intern->cbs.dr_msg = NULL;
+    intern->cbs.consume = NULL;
+    intern->cbs.offset_commit = NULL;
+    intern->cbs.log = NULL;
 
     if (intern->rk) {
-        err = rd_kafka_assign(intern->rk, NULL);
-
-        if (err != RD_KAFKA_RESP_ERR_NO_ERROR) {
-            zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err TSRMLS_CC);
-            return;
-        }
-
         err = rd_kafka_consumer_close(intern->rk);
 
         if (err) {
