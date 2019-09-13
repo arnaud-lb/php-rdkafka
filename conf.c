@@ -49,12 +49,19 @@ static void kafka_conf_callback_dtor(kafka_conf_callback *cb TSRMLS_DC) /* {{{ *
 void kafka_conf_callbacks_dtor(kafka_conf_callbacks *cbs TSRMLS_DC) /* {{{ */
 {
     kafka_conf_callback_dtor(cbs->error TSRMLS_CC);
+    cbs->error = NULL;
     kafka_conf_callback_dtor(cbs->rebalance TSRMLS_CC);
+    cbs->rebalance = NULL;
     kafka_conf_callback_dtor(cbs->dr_msg TSRMLS_CC);
+    cbs->dr_msg = NULL;
     kafka_conf_callback_dtor(cbs->stats TSRMLS_CC);
+    cbs->stats = NULL;
     kafka_conf_callback_dtor(cbs->consume TSRMLS_CC);
+    cbs->consume = NULL;
     kafka_conf_callback_dtor(cbs->offset_commit TSRMLS_CC);
+    cbs->offset_commit = NULL;
     kafka_conf_callback_dtor(cbs->log TSRMLS_CC);
+    cbs->log = NULL;
 } /* }}} */
 
 static void kafka_conf_callback_copy(kafka_conf_callback **to, kafka_conf_callback *from TSRMLS_DC) /* {{{ */
