@@ -806,7 +806,7 @@ PHP_METHOD(RdKafka__TopicConf, setPartitioner)
             break;
 #endif
         default:
-            zend_throw_exception_ex(NULL, 0 TSRMLS_CC, "Invalid partitioner" TSRMLS_CC);
+            zend_throw_exception_ex(spl_ce_InvalidArgumentException, 0 TSRMLS_CC, "Invalid partitioner given", partitioner TSRMLS_CC);
             return;
     }
 
