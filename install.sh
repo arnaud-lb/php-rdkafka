@@ -9,6 +9,8 @@ sudo make install
 
 sudo ldconfig
 
+cd ..
+
 phpize
 CFLAGS='-Werror=implicit-function-declaration' ./configure
 make
