@@ -31,6 +31,8 @@ typedef zval zeval;
 #define ZEVAL_DUP_C
 #define ZEVAL_DUP_CC
 
+#define ZEVAL_DEREF(v) ZVAL_DEREF(v)
+
 /***************************************************************************/
 #elif defined(ZEND_ENGINE_2)
 
@@ -58,6 +60,8 @@ typedef zval* zeval;
 
 #define ZEVAL_DUP_C    1
 #define ZEVAL_DUP_CC , 1
+
+#define ZEVAL_DEREF(v) (v)
 
 /***************************************************************************/
 #else

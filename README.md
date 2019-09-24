@@ -2,9 +2,9 @@
 
 [![Join the chat at https://gitter.im/arnaud-lb/php-rdkafka](https://badges.gitter.im/arnaud-lb/php-rdkafka.svg)](https://gitter.im/arnaud-lb/php-rdkafka?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-![Supported Kafka versions: 0.8, 0.9, 0.10](https://img.shields.io/badge/kafka-0.8%2C%200.9%2C%200.10-blue.svg) ![Supported PHP versions: 5.3 .. 7.x](https://img.shields.io/badge/php-5.3,%207.x-blue.svg) [![Build Status](https://travis-ci.org/arnaud-lb/php-rdkafka.svg)](https://travis-ci.org/arnaud-lb/php-rdkafka)
+[![Supported Kafka versions: >= 0.8](https://img.shields.io/badge/kafka-%3E%3D%200.8-blue.svg)](https://github.com/edenhill/librdkafka/wiki/Broker-version-compatibility) ![Supported PHP versions: 5.6 .. 7.x](https://img.shields.io/badge/php-5.6%20..%207.x-blue.svg) [![Build Status](https://travis-ci.org/arnaud-lb/php-rdkafka.svg)](https://travis-ci.org/arnaud-lb/php-rdkafka)
 
-PHP-rdkafka is a thin [librdkafka](https://github.com/edenhill/librdkafka) binding providing a working PHP 5 / PHP 7 [Kafka](https://kafka.apache.org/) 0.8 / 0.9 / 0.10 client.
+PHP-rdkafka is a thin [librdkafka](https://github.com/edenhill/librdkafka) binding providing a working PHP 5 / PHP 7 [Kafka](https://kafka.apache.org/) client.
 
 It supports the high level and low level *consumers*, *producer*, and *metadata* APIs.
 
@@ -48,7 +48,7 @@ servers) to it:
 
 $rk = new RdKafka\Producer();
 $rk->setLogLevel(LOG_DEBUG);
-$rk->addBrokers("10.0.0.1,10.0.0.2");
+$rk->addBrokers("10.0.0.1:9092,10.0.0.2:9092");
 ```
 
 Next, we create a topic instance from the producer:
@@ -115,7 +115,9 @@ while (true) {
     // The first argument is the partition (again).
     // The second argument is the timeout.
     $msg = $topic->consume(0, 1000);
-    if ($msg->err) {
+    if (null === $msg) {
+        continue;
+    } elseif ($msg->err) {
         echo $msg->errstr(), "\n";
         break;
     } else {
@@ -158,7 +160,9 @@ Next, retrieve the consumed messages from the queue:
 while (true) {
     // The only argument is the timeout.
     $msg = $queue->consume(1000);
-    if ($msg->err) {
+    if (null === $msg) {
+        continue;
+    } elseif ($msg->err) {
         echo $msg->errstr(), "\n";
         break;
     } else {
@@ -173,14 +177,13 @@ librdkafka can store offsets in a local file, or on the broker. The default is l
 
 By default, the file is created in the current directory, with a name based on the topic and the partition. The directory can be changed by setting the ``offset.store.path`` [configuration property](https://github.com/edenhill/librdkafka/blob/master/CONFIGURATION.md).
 
-Other interesting properties are: ``offset.store.sync.interval.ms``, ``offset.store.method``, ``auto.commit.interval.ms``, ``auto.commit.enable``, ``offset.store.method``, ``group.id``.
+Other interesting properties are: ``auto.commit.interval.ms``, ``auto.commit.enable``, ``group.id``, ``max.poll.interval.ms``.
 
 ``` php
 <?php
 
 $topicConf = new RdKafka\TopicConf();
 $topicConf->set("auto.commit.interval.ms", 1e3);
-$topicConf->set("offset.store.sync.interval.ms", 60e3);
 
 $topic = $rk->newTopic("test", $topicConf);
 
@@ -215,7 +218,7 @@ pcntl_sigprocmask(SIG_BLOCK, array(SIGIO));
 $conf->set('internal.termination.signal', SIGIO);
 ```
 
-### socket.blocking.max.ms
+### socket.blocking.max.ms (librdkafka < 1.0.0)
 
 > Maximum time a broker socket operation may block. A lower value improves responsiveness at the expense of slightly higher CPU usage.
 

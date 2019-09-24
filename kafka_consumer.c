@@ -619,6 +619,48 @@ PHP_METHOD(RdKafka__KafkaConsumer, newTopic)
 }
 /* }}} */
 
+/* {{{ proto array RdKafka\KafkaConsumer::getCommittedOffsets(array $topics, int timeout_ms)
+   Retrieve committed offsets for topics+partitions */
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_kafka_consumer_get_committed_offsets, 0, 0, 2)
+    ZEND_ARG_INFO(0, topic_partitions)
+    ZEND_ARG_INFO(0, timeout_ms)
+ZEND_END_ARG_INFO()
+
+PHP_METHOD(RdKafka__KafkaConsumer, getCommittedOffsets)
+{
+    HashTable *htopars = NULL;
+    long timeout_ms;
+    object_intern *intern;
+    rd_kafka_resp_err_t err;
+    rd_kafka_topic_partition_list_t *topics;
+
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "hl", &htopars, &timeout_ms) == FAILURE) {
+        return;
+    }
+
+    intern = get_object(getThis() TSRMLS_CC);
+    if (!intern) {
+        return;
+    }
+
+    topics = array_arg_to_kafka_topic_partition_list(1, htopars TSRMLS_CC);
+    if (!topics) {
+        return;
+    }
+
+    err = rd_kafka_committed(intern->rk, topics, timeout_ms);
+
+    if (err != RD_KAFKA_RESP_ERR_NO_ERROR) {
+        rd_kafka_topic_partition_list_destroy(topics);
+        zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err TSRMLS_CC);
+        return;
+    }
+    kafka_topic_partition_list_to_array(return_value, topics TSRMLS_CC);
+    rd_kafka_topic_partition_list_destroy(topics);
+}
+/* }}} */
+
 static const zend_function_entry fe[] = { /* {{{ */
     PHP_ME(RdKafka__KafkaConsumer, __construct, arginfo_kafka_kafka_consumer___construct, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__KafkaConsumer, assign, arginfo_kafka_kafka_consumer_assign, ZEND_ACC_PUBLIC)
@@ -631,6 +673,7 @@ static const zend_function_entry fe[] = { /* {{{ */
     PHP_ME(RdKafka__KafkaConsumer, unsubscribe, arginfo_kafka_kafka_consumer_unsubscribe, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__KafkaConsumer, getMetadata, arginfo_kafka_kafka_consumer_getMetadata, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__KafkaConsumer, newTopic, arginfo_kafka_kafka_consumer_new_topic, ZEND_ACC_PUBLIC)
+    PHP_ME(RdKafka__KafkaConsumer, getCommittedOffsets, arginfo_kafka_kafka_consumer_get_committed_offsets, ZEND_ACC_PUBLIC)
     PHP_FE_END
 }; /* }}} */
 

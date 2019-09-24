@@ -63,11 +63,23 @@ if test "$PHP_RDKAFKA" != "no"; then
     AC_MSG_WARN([no rd_kafka_message_timestamp, timestamp support will not be available])
   ])
 
+  AC_CHECK_LIB($LIBNAME,[rd_kafka_message_headers],[
+    AC_DEFINE(HAVE_RD_KAFKA_MESSAGE_HEADERS,1,[ ])
+  ],[
+    AC_MSG_WARN([no rd_kafka_message_headers, headers support will not be available])
+  ])
+
   AC_CHECK_LIB($LIBNAME,[rd_kafka_subscribe],[
     AC_DEFINE(HAVE_NEW_KAFKA_CONSUMER,1,[ ])
     SOURCES="$SOURCES kafka_consumer.c topic_partition.c"
   ],[
     AC_MSG_WARN([no rd_kafka_subscribe, new KafkaConsumer will not be available])
+  ])
+
+  AC_CHECK_LIB($LIBNAME,[rd_kafka_query_watermark_offsets],[
+    AC_DEFINE(HAVE_RD_KAFKA_QUERY_WATERMARK_OFFSETS,1,[ ])
+  ],[
+    AC_MSG_WARN([no rd_kafka_query_watermark_offsets, queryWatermarkOffsets will not be available])
   ])
 
   LFGLAGS="$ORIG_LDFLAGS"

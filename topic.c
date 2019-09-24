@@ -353,10 +353,10 @@ static const zend_function_entry kafka_kafka_consumer_topic_fe[] = {
     PHP_FE_END
 };
 
-/* {{{ proto void RdKafka\ProducerTopic::produce(int $partition, int $msgflags, string $payload[, string $key])
+/* {{{ proto void RdKafka\ProducerTopic::produce(int $partition, int $msgflags[, string $payload, string $key])
    Produce and send a single message to broker. */
 
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_produce, 0, 0, 3)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_produce, 0, 0, 2)
     ZEND_ARG_INFO(0, partition)
     ZEND_ARG_INFO(0, msgflags)
     ZEND_ARG_INFO(0, payload)
@@ -367,15 +367,15 @@ PHP_METHOD(RdKafka__ProducerTopic, produce)
 {
     long partition;
     long msgflags;
-    char *payload;
-    arglen_t payload_len;
+    char *payload = NULL;
+    arglen_t payload_len = 0;
     char *key = NULL;
     arglen_t key_len = 0;
     int ret;
     rd_kafka_resp_err_t err;
     kafka_topic_object *intern;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "lls|s!", &partition, &msgflags, &payload, &payload_len, &key, &key_len) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ll|s!s!", &partition, &msgflags, &payload, &payload_len, &key, &key_len) == FAILURE) {
         return;
     }
 
@@ -401,9 +401,108 @@ PHP_METHOD(RdKafka__ProducerTopic, produce)
 }
 /* }}} */
 
+#ifdef HAVE_RD_KAFKA_MESSAGE_HEADERS
+/* {{{ proto void RdKafka\ProducerTopic::producev(int $partition, int $msgflags[, string $payload, string $key, array $headers, int $timestamp_ms])
+   Produce and send a single message to broker (with headers possibility and timestamp). */
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_producev, 0, 0, 2)
+    ZEND_ARG_INFO(0, partition)
+    ZEND_ARG_INFO(0, msgflags)
+    ZEND_ARG_INFO(0, payload)
+    ZEND_ARG_INFO(0, key)
+    ZEND_ARG_INFO(0, headers)
+    ZEND_ARG_INFO(0, timestamp_ms)
+ZEND_END_ARG_INFO()
+
+PHP_METHOD(RdKafka__ProducerTopic, producev)
+{
+    long partition;
+    long msgflags;
+    char *payload = NULL;
+    arglen_t payload_len = 0;
+    char *key = NULL;
+    arglen_t key_len = 0;
+    rd_kafka_resp_err_t err;
+    kafka_topic_object *intern;
+    kafka_object *kafka_intern;
+    HashTable *headersParam = NULL;
+    HashPosition headersParamPos;
+    char *header_key;
+    zeval *header_value;
+    rd_kafka_headers_t *headers;
+    long timestamp_ms = 0;
+    zend_bool timestamp_ms_is_null = 0;
+
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ll|s!s!h!l!", &partition, &msgflags, &payload, &payload_len, &key, &key_len, &headersParam, &timestamp_ms, &timestamp_ms_is_null) == FAILURE) {
+        return;
+    }
+
+    if (partition != RD_KAFKA_PARTITION_UA && (partition < 0 || partition > 0x7FFFFFFF)) {
+        zend_throw_exception_ex(spl_ce_InvalidArgumentException, 0 TSRMLS_CC, "Out of range value '%ld' for $partition", partition TSRMLS_CC);
+        return;
+    }
+
+    if (msgflags != 0) {
+        zend_throw_exception_ex(spl_ce_InvalidArgumentException, 0 TSRMLS_CC, "Invalid value '%ld' for $msgflags", msgflags TSRMLS_CC);
+        return;
+    }
+
+    if (timestamp_ms_is_null == 1) {
+        timestamp_ms = 0;
+    }
+
+    intern = get_kafka_topic_object(getThis() TSRMLS_CC);
+
+    if (headersParam != NULL && zend_hash_num_elements(headersParam) > 0) {
+        headers = rd_kafka_headers_new(zend_hash_num_elements(headersParam));
+        for (zend_hash_internal_pointer_reset_ex(headersParam, &headersParamPos);
+                (header_value = rdkafka_hash_get_current_data_ex(headersParam, &headersParamPos)) != NULL &&
+                (header_key = rdkafka_hash_get_current_key_ex(headersParam, &headersParamPos)) != NULL;
+                zend_hash_move_forward_ex(headersParam, &headersParamPos)) {
+            convert_to_string_ex(header_value);
+            rd_kafka_header_add(
+                headers,
+                header_key,
+                -1, // Auto detect header title length
+                Z_STRVAL_P(ZEVAL(header_value)),
+                -1 // Auto detect header value length
+            );
+        }
+    } else {
+        headers = rd_kafka_headers_new(0);
+    }
+
+    kafka_intern = get_kafka_object(P_ZEVAL(intern->zrk) TSRMLS_CC);
+    if (!kafka_intern) {
+        return;
+    }
+
+    err = rd_kafka_producev(
+            kafka_intern->rk,
+            RD_KAFKA_V_RKT(intern->rkt),
+            RD_KAFKA_V_PARTITION(partition),
+            RD_KAFKA_V_MSGFLAGS(msgflags | RD_KAFKA_MSG_F_COPY),
+            RD_KAFKA_V_VALUE(payload, payload_len),
+            RD_KAFKA_V_KEY(key, key_len),
+            RD_KAFKA_V_TIMESTAMP(timestamp_ms),
+            RD_KAFKA_V_HEADERS(headers),
+            RD_KAFKA_V_END
+    );
+
+    if (err != RD_KAFKA_RESP_ERR_NO_ERROR) {
+        zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err TSRMLS_CC);
+        return;
+    }
+}
+/* }}} */
+#endif
+
 static const zend_function_entry kafka_producer_topic_fe[] = {
     PHP_ME(RdKafka, __construct, arginfo_kafka___private_construct, ZEND_ACC_PRIVATE)
     PHP_ME(RdKafka__ProducerTopic, produce, arginfo_kafka_produce, ZEND_ACC_PUBLIC)
+#ifdef HAVE_RD_KAFKA_MESSAGE_HEADERS
+    PHP_ME(RdKafka__ProducerTopic, producev, arginfo_kafka_producev, ZEND_ACC_PUBLIC)
+#endif
     PHP_FE_END
 };
 

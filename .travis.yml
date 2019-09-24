@@ -1,14 +1,14 @@
-sudo: true
+dist: xenial
 language: php
 php:
-    - 5.4
-    - 5.5
     - 5.6
     - 7.0
     - 7.1
+    - 7.2
 env:
     - LIBRDKAFKA_VERSION=0.8.6
     - LIBRDKAFKA_VERSION=0.8
     - LIBRDKAFKA_VERSION=0.9.5.x
+    - LIBRDKAFKA_VERSION=0.11.x
     - LIBRDKAFKA_VERSION=master
 script: ./travis.sh

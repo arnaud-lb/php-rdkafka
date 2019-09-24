@@ -43,6 +43,16 @@ void kafka_message_new(zval *return_value, const rd_kafka_message_t *message TSR
     timestamp = rd_kafka_message_timestamp(message, &tstype);
 #endif /* HAVE_RD_KAFKA_MESSAGE_TIMESTAMP */
 
+#ifdef HAVE_RD_KAFKA_MESSAGE_HEADERS
+    rd_kafka_headers_t *message_headers = NULL;
+    rd_kafka_resp_err_t header_response;
+    const char *header_name = NULL;
+    const void *header_value = NULL;
+    size_t header_size = 0;
+    zval headers_array;
+    int i;
+#endif /* HAVE_RD_KAFKA_MESSAGE_HEADERS */
+
     zend_update_property_long(NULL, return_value, ZEND_STRL("err"), message->err TSRMLS_CC);
 
     if (message->rkt) {
@@ -60,6 +70,23 @@ void kafka_message_new(zval *return_value, const rd_kafka_message_t *message TSR
         zend_update_property_stringl(NULL, return_value, ZEND_STRL("key"), message->key, message->key_len TSRMLS_CC);
     }
     zend_update_property_long(NULL, return_value, ZEND_STRL("offset"), message->offset TSRMLS_CC);
+
+#ifdef HAVE_RD_KAFKA_MESSAGE_HEADERS
+    if (message->err == RD_KAFKA_RESP_ERR_NO_ERROR) {
+        rd_kafka_message_headers(message, &message_headers);
+        if (message_headers != NULL) {
+            array_init(&headers_array);
+            for (i = 0; i < rd_kafka_header_cnt(message_headers); i++) {
+                header_response = rd_kafka_header_get_all(message_headers, i, &header_name, &header_value, &header_size);
+                if (header_response != RD_KAFKA_RESP_ERR_NO_ERROR) {
+                    break;
+                }
+                rdkafka_add_assoc_string(&headers_array, header_name, (char*)header_value);
+            }
+            zend_update_property(NULL, return_value, ZEND_STRL("headers"), &headers_array TSRMLS_CC);
+        }
+    }
+#endif
 }
 
 /* {{{ proto string RdKafka\Message::errstr()
@@ -85,16 +112,16 @@ PHP_METHOD(RdKafka__Message, errstr)
         return;
     }
 
-    zpayload = rdkafka_read_property(NULL, getThis(), ZEND_STRL("payload"), 0 TSRMLS_CC);
-
-    if (zpayload && Z_TYPE_P(zpayload) == IS_STRING) {
-        RETURN_ZVAL(zpayload, 1, 0);
-    }
-
     errstr = rd_kafka_err2str(Z_LVAL_P(zerr));
 
     if (errstr) {
         RDKAFKA_RETURN_STRING(errstr);
+    }
+
+    zpayload = rdkafka_read_property(NULL, getThis(), ZEND_STRL("payload"), 0 TSRMLS_CC);
+
+    if (zpayload && Z_TYPE_P(zpayload) == IS_STRING) {
+        RETURN_ZVAL(zpayload, 1, 0);
     }
 }
 /* }}} */
@@ -120,4 +147,7 @@ void kafka_message_minit(TSRMLS_D) { /* {{{ */
     zend_declare_property_null(ce_kafka_message, ZEND_STRL("len"), ZEND_ACC_PUBLIC TSRMLS_CC);
     zend_declare_property_null(ce_kafka_message, ZEND_STRL("key"), ZEND_ACC_PUBLIC TSRMLS_CC);
     zend_declare_property_null(ce_kafka_message, ZEND_STRL("offset"), ZEND_ACC_PUBLIC TSRMLS_CC);
+#ifdef HAVE_RD_KAFKA_MESSAGE_HEADERS
+    zend_declare_property_null(ce_kafka_message, ZEND_STRL("headers"), ZEND_ACC_PUBLIC TSRMLS_CC);
+#endif
 } /* }}} */

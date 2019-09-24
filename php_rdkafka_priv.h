@@ -99,6 +99,18 @@ static inline zval *rdkafka_hash_get_current_data_ex(HashTable *ht, HashPosition
     return zend_hash_get_current_data_ex(ht, pos);
 }
 
+static inline char *rdkafka_hash_get_current_key_ex(HashTable *ht, HashPosition *pos)
+{
+    zend_string* key;
+    zend_ulong index;
+
+    if (zend_hash_get_current_key_ex(ht, &key, &index, pos) == HASH_KEY_IS_STRING) {
+        return key->val;
+    }
+
+    return NULL;
+}
+
 #define rdkafka_add_assoc_string(arg, key, str) add_assoc_string(arg, key, str)
 
 #define RDKAFKA_RETURN_STRING(str) RETURN_STRING(str)
@@ -217,6 +229,19 @@ static inline zval **rdkafka_hash_get_current_data_ex(HashTable *ht, HashPositio
 
     if (zend_hash_get_current_data_ex(ht, (void**)&zv, pos) == SUCCESS) {
         return zv;
+    }
+
+    return NULL;
+}
+
+static inline char **rdkafka_hash_get_current_key_ex(HashTable *ht, HashPosition *pos)
+{
+    char *key = NULL;
+    uint  klen;
+    ulong index;
+
+    if (zend_hash_get_current_key_ex(ht, &key, &klen, &index, 0, pos) == HASH_KEY_IS_STRING) {
+        return key;
     }
 
     return NULL;

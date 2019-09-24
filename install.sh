@@ -10,7 +10,7 @@ sudo make install
 sudo ldconfig
 
 phpize
-./configure
+CFLAGS='-Werror=implicit-function-declaration' ./configure
 make
 
 PHP=$(which php)
