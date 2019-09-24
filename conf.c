@@ -720,6 +720,7 @@ PHP_METHOD(RdKafka__Conf, setLogCb)
     zend_fcall_info fci;
     zend_fcall_info_cache fcc;
     kafka_conf_object *conf;
+    char errstr[512];
 
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "f", &fci, &fcc) == FAILURE) {
         return;
@@ -742,6 +743,7 @@ PHP_METHOD(RdKafka__Conf, setLogCb)
     conf->cbs.log->fcc = fcc;
 
     rd_kafka_conf_set_log_cb(conf->u.conf, kafka_conf_log_cb);
+    rd_kafka_conf_set(conf->u.conf, "log.queue", "true", errstr, sizeof(errstr));
 }
 /* }}} */
 
