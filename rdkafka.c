@@ -170,11 +170,11 @@ static void kafka_init(zval *this_ptr, rd_kafka_type_t type, zval *zconf, char *
             conf_intern->is_persistent = 1;
         }
 
-        if (has_producer_instance(instance_name, instance_name_len) == 1) {
-            rk = get_persistent_producer(instance_name, instance_name_len);
+        if (has_producer_instance(instance_name, instance_name_len TSRMLS_CC) == 1) {
+            rk = get_persistent_producer(instance_name, instance_name_len TSRMLS_CC);
         } else {
             rk = rd_kafka_new(type, conf, errstr, sizeof(errstr));
-            store_persistent_producer(rk, conf, instance_name, instance_name_len);
+            store_persistent_producer(rk, conf, instance_name, instance_name_len TSRMLS_CC);
         }
     } else {
         intern->is_persistent = 0;
@@ -665,7 +665,7 @@ PHP_METHOD(RdKafka__Producer, __construct)
         return;
     }
 
-    if (instance_name != NULL && has_producer_instance(instance_name, instance_name_len) == 1) {
+    if (instance_name != NULL && has_producer_instance(instance_name, instance_name_len TSRMLS_CC) == 1) {
         zend_throw_exception_ex(NULL, 0 TSRMLS_CC, "Cannot create new producer with given name because one already exists. Use RdKafka\\Producer::getInstance() to retrive it." TSRMLS_CC);
         return;
     }
@@ -698,7 +698,7 @@ PHP_METHOD(RdKafka__Producer, getInstance)
         return;
     }
 
-    if (has_producer_instance(instance_name, instance_name_len) == 0) {
+    if (has_producer_instance(instance_name, instance_name_len TSRMLS_CC) == 0) {
         RETURN_FALSE;
     }
 
@@ -706,7 +706,7 @@ PHP_METHOD(RdKafka__Producer, getInstance)
         return;
     }
 
-    kafka_init(return_value, RD_KAFKA_PRODUCER, NULL, instance_name, instance_name_len);
+    kafka_init(return_value, RD_KAFKA_PRODUCER, NULL, instance_name, instance_name_len TSRMLS_CC);
 
     zend_restore_error_handling(&error_handling TSRMLS_CC);
 }

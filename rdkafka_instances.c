@@ -25,11 +25,11 @@
 
 ZEND_DECLARE_MODULE_GLOBALS(rdkafka)
 
-zend_bool has_producer_instance(char *instance_name, arglen_t instance_name_len) {
+zend_bool has_producer_instance(char *instance_name, arglen_t instance_name_len TSRMLS_DC) {
     return zend_hash_str_exists(&RDKAFKA_G(kafka_instances), instance_name, instance_name_len);
 }
 
-rd_kafka_t* get_persistent_producer(char *instance_name, arglen_t instance_name_len) {
+rd_kafka_t* get_persistent_producer(char *instance_name, arglen_t instance_name_len TSRMLS_DC) {
      kafka_instance *instance = NULL;
 
     instance = zend_hash_str_find_ptr(&RDKAFKA_G(kafka_instances), instance_name, instance_name_len);
@@ -41,7 +41,7 @@ rd_kafka_t* get_persistent_producer(char *instance_name, arglen_t instance_name_
     return instance->rk;
 }
 
-void store_persistent_producer(rd_kafka_t *rk, rd_kafka_conf_t *conf, char *instance_name, arglen_t instance_name_len) {
+void store_persistent_producer(rd_kafka_t *rk, rd_kafka_conf_t *conf, char *instance_name, arglen_t instance_name_len TSRMLS_DC) {
     kafka_instance *instance = NULL;
 
     instance = pemalloc(sizeof(kafka_instance), 1);
