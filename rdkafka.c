@@ -73,16 +73,16 @@ static void kafka_instance_dtor(kafka_instance **instance)
 
     kafka_instance *instance_deref = *instance;
 
-    if (instance_deref->conf) {
-        rd_kafka_conf_destroy(instance_deref->conf);
-        instance_deref->conf = NULL;
-    }
-
     while (rd_kafka_outq_len(instance_deref->rk) > 0) {
         rd_kafka_poll(instance_deref->rk, 50);
     }
     rd_kafka_destroy(instance_deref->rk);
     instance_deref->rk = NULL;
+
+//  if (instance_deref->conf) {
+//      rd_kafka_conf_destroy(instance_deref->conf);
+//      instance_deref->conf = NULL;
+//  }
 
     pefree(instance_deref, 1);
     instance = NULL;
