@@ -1121,6 +1121,48 @@ been compiled into PHP or dynamically loaded at runtime.
 
    
    
+    <dt id="constant.rd-kafka-msg-partitioner-consistent-random">
+     <strong><code>RD_KAFKA_MSG_PARTITIONER_CONSISTENT_RANDOM</code></strong>
+     (<span class="type"><a href="language.types.integer.html" class="type integer">integer</a></span>)
+    </dt>
+
+    <dd>
+
+     <span class="simpara">
+      The consistent random partitioner. Uses consistent hashing to map identical keys onto identical partitions. Uses CRC32 as hashing function. Messages with no key or empty key are randomly partitioned.
+     </span>
+    </dd>
+
+   
+   
+    <dt id="constant.rd-kafka-msg-partitioner-murmur2">
+     <strong><code>RD_KAFKA_MSG_PARTITIONER_MURMUR2</code></strong>
+     (<span class="type"><a href="language.types.integer.html" class="type integer">integer</a></span>)
+    </dt>
+
+    <dd>
+
+     <span class="simpara">
+      The murmur2 partitioner. Uses consistent hashing to map identical keys onto identical partitions. Uses Java Producer compatible Murmur2 as hashing function. Messages with no key or empty key are always assigned to the same partition.
+     </span>
+    </dd>
+
+   
+   
+    <dt id="constant.rd-kafka-msg-partitioner-murmur2-random">
+     <strong><code>RD_KAFKA_MSG_PARTITIONER_CONSISTENT</code></strong>
+     (<span class="type"><a href="language.types.integer.html" class="type integer">integer</a></span>)
+    </dt>
+
+    <dd>
+
+     <span class="simpara">
+      The murmur2 random partitioner. Uses consistent hashing to map identical keys onto identical partitions. Uses Java Producer compatible Murmur2 as hashing function. Messages with no key or empty key are randomly partitioned.
+     </span>
+    </dd>
+
+   
+   
     <dt id="constant.rd-kafka-log-print">
      <strong><code>RD_KAFKA_LOG_PRINT</code></strong>
      (<span class="type"><a href="language.types.integer.html" class="type integer">integer</a></span>)

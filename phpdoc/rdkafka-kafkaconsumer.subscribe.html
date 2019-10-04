@@ -10,7 +10,7 @@
  <body class="docs"><div class="navbar navbar-fixed-top">
   <div class="navbar-inner clearfix">
     <ul class="nav" style="width: 100%">
-      <li style="float: left;"><a href="rdkafka-kafkaconsumer.getsubscription.html">« RdKafka\KafkaConsumer::getSubscription</a></li>
+      <li style="float: left;"><a href="rdkafka-kafkaconsumer.querywatermakoffsets.html">« RdKafka\KafkaConsumer::queryWatermarkOffsets</a></li>
       <li style="float: right;"><a href="rdkafka-kafkaconsumer.unsubscribe.html">RdKafka\KafkaConsumer::unsubscribe »</a></li>
     </ul>
   </div>
@@ -65,7 +65,7 @@
   </p>
   <blockquote class="note"><p><strong class="note">Note</strong>: 
    <p class="para">
-    The default configuration for subscribed topics can be changed by calling <span class="function"><a href="rdkafka-conf.setdefaulttopicconf.html" class="function">RdKafka\Conf::setDefaultTopicConf()</a></span>.
+    The default configuration for subscribed topics can be changed by calling <span class="function"><a href="rdkafka-conf.set.html" class="function">RdKafka\Conf::set()</a></span>.
    </p>
   </p></blockquote>
 
@@ -107,11 +107,11 @@
 
  <div class="refsect1 examples" id="refsect1-rdkafka-kafkaconsumer.subscribe-examples">
   <h3 class="title">Examples</h3>
-  <div class="example" id="example-13">
+  <div class="example" id="example-14">
    <p><strong>Example #1 <span class="function"><strong>RdKafka\KafkaConsumer::subscribe()</strong></span> example</strong></p>
    <div class="example-contents">
 <div class="phpcode"><code><span style="color: #000000">
-<span style="color: #0000BB">&lt;?php<br />$kafkaConsumer</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">assign</span><span style="color: #007700">([<br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">"logs"</span><span style="color: #007700">,<br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">"^myPfx[0-9]_.*"</span><span style="color: #007700">,<br />]);<br /></span><span style="color: #0000BB">?&gt;</span>
+<span style="color: #0000BB">&lt;?php<br />$kafkaConsumer</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">subscribe</span><span style="color: #007700">([<br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">"logs"</span><span style="color: #007700">,<br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">"^myPfx[0-9]_.*"</span><span style="color: #007700">,<br />]);<br /></span><span style="color: #0000BB">?&gt;</span>
 </span>
 </code></div>
    </div>

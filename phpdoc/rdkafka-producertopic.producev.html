@@ -43,6 +43,10 @@
 
   <p class="para rdfs-comment">
    Produce and send a single message to broker with headers.
+   Produce and send a single message to broker.
+   Since producing is asynchronous, you should call <a href="rdkafka.flush.html" class="link">flush</a> before
+   you destroy the producer. Otherwise, any outstanding messages will be
+   silently discarded.
   </p>
   <p class="para">
    This is a async and non-blocking.
@@ -129,7 +133,7 @@
 
  <div class="refsect1 examples" id="refsect1-rdkafka-producertopic.producev-examples">
   <h3 class="title">Examples</h3>
-  <div class="example" id="example-19">
+  <div class="example" id="example-20">
    <p><strong>Example #1 <span class="function"><strong>RdKafka\ProducerTopic::producev()</strong></span> example</strong></p>
    <div class="example-contents">
 <div class="phpcode"><code><span style="color: #000000">

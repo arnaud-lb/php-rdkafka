@@ -38,4 +38,19 @@
 
    </div>
   </p>
+     <p class="para">
+         For a proper shutdown of the <a href="" class="link">producer</a> we need to wait
+         until all outstanding produce requests, et.al, are completed. This should typically be done [after using] a producer instance
+         to make sure all queued and in-flight produce requests are completed  before terminating.
+         <div class="example" id="example-6">
+             <p><strong>Example #2 Shutdown example</strong></p>
+             <div class="example-contents">
+                 <div class="phpcode"><code><span style="color: #000000">
+<span style="color: #0000BB">&lt;?php<br /><br /></span><span style="color: #FF8000">//&nbsp;Purge&nbsp;messages&nbsp;not&nbsp;yet&nbsp;sent&nbsp;to&nbsp;the&nbsp;broker&nbsp;(this&nbsp;is&nbsp;a&nbsp;safe&nbsp;operation&nbsp;to&nbsp;do)<br /></span><span style="color: #0000BB">$rk</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">purge</span><span style="color: #007700">(</span><span style="color: #0000BB">RD_KAFKA_PURGE_F_QUEUE</span><span style="color: #007700">);<br /><br /></span><span style="color: #FF8000">//&nbsp;You&nbsp;can&nbsp;also&nbsp;purge&nbsp;messages&nbsp;that&nbsp;are&nbsp;inflight,&nbsp;not&nbsp;that&nbsp;this&nbsp;poses&nbsp;risks<br />//&nbsp;Purge&nbsp;messages&nbsp;in-flight&nbsp;to&nbsp;or&nbsp;from&nbsp;the&nbsp;broker.<br />//&nbsp;Purging&nbsp;these&nbsp;messages&nbsp;will&nbsp;void&nbsp;any&nbsp;future&nbsp;acknowledgements&nbsp;from&nbsp;the<br />//&nbsp;broker,&nbsp;making&nbsp;it&nbsp;impossible&nbsp;for&nbsp;the&nbsp;application&nbsp;to&nbsp;know&nbsp;if&nbsp;these<br />//&nbsp;messages&nbsp;were&nbsp;successfully&nbsp;delivered&nbsp;or&nbsp;not.<br />//&nbsp;Retrying&nbsp;these&nbsp;messages&nbsp;may&nbsp;lead&nbsp;to&nbsp;duplicates.<br /></span><span style="color: #0000BB">$rk</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">purge</span><span style="color: #007700">(</span><span style="color: #0000BB">RD_KAFKA_PURGE_F_QUEUE</span><span style="color: #007700">);<br /><br /></span><span style="color: #FF8000">//&nbsp;This&nbsp;is&nbsp;highly&nbsp;recommended,&nbsp;flush&nbsp;waits&nbsp;for&nbsp;all&nbsp;outstanding&nbsp;producer&nbsp;requests&nbsp;to&nbsp;be&nbsp;handled<br />//&nbsp;when&nbsp;not&nbsp;using&nbsp;flush,&nbsp;you&nbsp;might&nbsp;lose&nbsp;messages&nbsp;and&nbsp;message&nbsp;errors<br /></span><span style="color: #0000BB">$rk</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">flush</span><span style="color: #007700">(</span><span style="color: #0000BB">10000</span><span style="color: #007700">);<br /><br /></span><span style="color: #0000BB">?&gt;</span>
+</span>
+</code></div>
+             </div>
+
+         </div>
+     </p>
  </div></div></div></body></html>

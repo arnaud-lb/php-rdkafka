@@ -10,30 +10,30 @@
  <body class="docs"><div class="navbar navbar-fixed-top">
   <div class="navbar-inner clearfix">
     <ul class="nav" style="width: 100%">
-      <li style="float: left;"><a href="rdkafka.querywatermakoffsets.html">« RdKafka::queryWatermarkOffsets</a></li>
-      <li style="float: right;"><a href="class.rdkafka-consumer.html">RdKafka\Consumer »</a></li>
+      <li style="float: left;"><a href="rdkafka-kafkaconsumer.getsubscription.html">« RdKafka\KafkaConsumer::getSubscription</a></li>
+      <li style="float: right;"><a href="rdkafka-kafkaconsumer.querywatermakoffsets.html">RdKafka\KafkaConsumer::queryWatermarkOffsets »</a></li>
     </ul>
   </div>
 </div>
 <div id="breadcrumbs" class="clearfix">
   <ul class="breadcrumbs-container">
     <li><a href="index.html">PHP Manual</a></li>
-    <li><a href="class.rdkafka.html">RdKafka</a></li>
+    <li><a href="class.rdkafka-kafkaconsumer.html">RdKafka\KafkaConsumer</a></li>
     <li>Get offsets for timestamps</li>
   </ul>
 </div>
 <div id="layout">
-  <div id="layout-content"><div id="rdkafka.offsetsfortimes" class="refentry">
+  <div id="layout-content"><div id="rdkafka-kafkaconsumer.offsetsfortimes" class="refentry">
  <div class="refnamediv">
-  <h1 class="refname">RdKafka::offsetsForTimes</h1>
-  <p class="verinfo">(PECL rdkafka &gt;= 4.0.0, librdkafka &gt;= 0.9.4)</p><p class="refpurpose"><span class="refname">RdKafka::offsetsForTimes</span> &mdash; <span class="dc-title">Get offsets for timestamps</span></p>
+  <h1 class="refname">RdKafka\KafkaConsumer::offsetsForTimes</h1>
+  <p class="verinfo">(PECL rdkafka &gt;= 4.0.0, librdkafka &gt;= 0.9.4)</p><p class="refpurpose"><span class="refname">RdKafka\KafkaConsumer::offsetsForTimes</span> &mdash; <span class="dc-title">Get offsets for timestamps</span></p>
 
  </div>
 
- <div class="refsect1 description" id="refsect1-rdkafka.offsetsfortimes-description">
+ <div class="refsect1 description" id="refsect1-rdkafka-kafkaconsumer.offsetsfortimes-description">
   <h3 class="title">Description</h3>
   <div class="methodsynopsis dc-description">
-   <span class="modifier">public</span> <span class="methodname"><strong>RdKafka::offsetsForTimes</strong></span>
+   <span class="modifier">public</span> <span class="methodname"><strong>RdKafka\KafkaConsumer::offsetsForTimes</strong></span>
     ( <span class="methodparam"><span class="type">array</span> <code class="parameter">$topicPartitions</code></span>
    , <span class="methodparam"><span class="type">integer</span> <code class="parameter">$timeout_ms</code></span>
    ) : <span class="type">array</span></div>
@@ -44,7 +44,7 @@
  </div>
 
 
- <div class="refsect1 parameters" id="refsect1-rdkafka.offsetsfortimes-parameters">
+ <div class="refsect1 parameters" id="refsect1-rdkafka-kafkaconsumer.offsetsfortimes-parameters">
   <h3 class="title">Parameters</h3>
   <dl>
 
@@ -77,7 +77,7 @@
  </div>
 
 
- <div class="refsect1 returnvalues" id="refsect1-rdkafka.offsetsfortimes-returnvalues">
+ <div class="refsect1 returnvalues" id="refsect1-rdkafka-kafkaconsumer.offsetsfortimes-returnvalues">
   <h3 class="title">Return Values</h3>
   <p class="para">
    Returns an array of <a href="class.rdkafka-topicpartition.html" class="classname">RdKafka\TopicPartition</a> where the offset is now the earliest offset found for the given timestamp

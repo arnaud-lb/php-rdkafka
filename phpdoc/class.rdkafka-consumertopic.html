@@ -66,6 +66,12 @@
    , <span class="methodparam"><span class="type">integer</span> <code class="parameter">$timeout_ms</code></span>
    )</div>
 <div class="methodsynopsis dc-description">
+            <span class="modifier">public</span>  <span class="methodname"><a href="rdkafka-consumertopic.consumebatch.html" class="methodname">consumeBatch</a></span>
+             ( <span class="methodparam"><span class="type">integer</span> <code class="parameter">$partition</code></span>
+            , <span class="methodparam"><span class="type">integer</span> <code class="parameter">$timeout_ms</code></span>
+            , <span class="methodparam"><span class="type">integer</span> <code class="parameter">$batch_size</code></span>
+         ) : <span class="type">array</span></div>
+<div class="methodsynopsis dc-description">
    <span class="modifier">public</span> <span class="methodname"><a href="rdkafka-consumertopic.consumequeuestart.html" class="methodname">consumeQueueStart</a></span>
     ( <span class="methodparam"><span class="type">integer</span> <code class="parameter">$partition</code></span>
    , <span class="methodparam"><span class="type">integer</span> <code class="parameter">$offset</code></span>
@@ -113,6 +119,7 @@
 
 
 
+        
 
 
 
@@ -138,6 +145,12 @@
 
 
 
-<h2>Table of Contents</h2><ul class="chunklist chunklist_reference"><li><a href="rdkafka-consumertopic.consume.html">RdKafka\ConsumerTopic::consume</a> — Consume a single message from a partition</li><li><a href="rdkafka-consumertopic.consumequeuestart.html">RdKafka\ConsumerTopic::consumeQueueStart</a> — Pipe a partition to a queue</li><li><a href="rdkafka-consumertopic.consumestart.html">RdKafka\ConsumerTopic::consumeStart</a> — Start consuming messages from a partition</li><li><a href="rdkafka-consumertopic.consumestop.html">RdKafka\ConsumerTopic::consumeStop</a> — Stop consuming messages from partition</li><li><a href="rdkafka-consumertopic.offsetstore.html">RdKafka\ConsumerTopic::offsetStore</a> — Store offset</li></ul>
+
+
+
+
+
+
+<h2>Table of Contents</h2><ul class="chunklist chunklist_reference"><li><a href="rdkafka-consumertopic.consume.html">RdKafka\ConsumerTopic::consume</a> — Consume a single message from a partition</li><li><a href="rdkafka-consumertopic.consumebatch.html">RdKafka\ConsumerTopic::consumeBatch</a> — Consume a batch of messages from a partition</li><li><a href="rdkafka-consumertopic.consumequeuestart.html">RdKafka\ConsumerTopic::consumeQueueStart</a> — Pipe a partition to a queue</li><li><a href="rdkafka-consumertopic.consumestart.html">RdKafka\ConsumerTopic::consumeStart</a> — Start consuming messages from a partition</li><li><a href="rdkafka-consumertopic.consumestop.html">RdKafka\ConsumerTopic::consumeStop</a> — Stop consuming messages from partition</li><li><a href="rdkafka-consumertopic.offsetstore.html">RdKafka\ConsumerTopic::offsetStore</a> — Store offset</li></ul>
 </div>
 </div></div></body></html>
