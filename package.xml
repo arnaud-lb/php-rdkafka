@@ -99,6 +99,26 @@
    <file role="src" name="topic_partition.c"/>
    <file role="src" name="topic_partition.h"/>
    <file role="src" name="zeval.h"/>
+   <dir name="tests">
+    <file role="test" name="allow_null_payload_and_key.phpt"/>
+    <file role="test" name="allow_null_payload.phpt"/>
+    <file role="test" name="bug115.phpt"/>
+    <file role="test" name="bug74.phpt"/>
+    <file role="test" name="bug88.phpt"/>
+    <file role="test" name="bugConfSetArgument.phpt"/>
+    <file role="test" name="conf_callbacks_integration.phpt"/>
+    <file role="test" name="conf_callbacks.phpt"/>
+    <file role="test" name="conf.phpt"/>
+    <file role="test" name="conf_setDefaultTopicConf.phpt"/>
+    <file role="test" name="constants.phpt"/>
+    <file role="test" name="message_headers.phpt"/>
+    <file role="test" name="produce_consume.phpt"/>
+    <file role="test" name="produce_consume_queue.phpt"/>
+    <file role="test" name="rd_kafka_get_err_descs.phpt"/>
+    <file role="test" name="test0.phpt"/>
+    <file role="test" name="topic_conf.phpt"/>
+    <file role="test" name="topic_partition.phpt"/>
+   </dir>
   </dir>
  </contents>
  <dependencies>
