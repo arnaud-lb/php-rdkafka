@@ -55,8 +55,8 @@ $rk->addBrokers("10.0.0.1:9092,10.0.0.2:9092");
 ```
 
 #### Producing messages
+:warning: Make sure that your producer follows proper shutdown (see below) to not lose messages.  
 Next, we create a topic instance from the producer:
-
 ``` php
 <?php
 
@@ -65,22 +65,18 @@ $topic = $rk->newTopic("test");
 
 From there, we can produce as much messages as we want, using the produce
 method:
-
 ``` php
 <?php
 
 $topic->produce(RD_KAFKA_PARTITION_UA, 0, "Message payload");
 ```
-
 The first argument is the partition. RD_KAFKA_PARTITION_UA stands for
-*unassigned*, and lets librdkafka choose the partition.
-
-The second argument are message flags and should always be 0, currently.
-
+*unassigned*, and lets librdkafka choose the partition.  
+The second argument are message flags and should always be 0, currently.  
 The message payload can be anything.
 
 #### Proper shutdown
-This should typically be done prior to destroying a producer instance  
+This should be done prior to destroying a producer instance  
 to make sure all queued and in-flight produce requests are completed  
 before terminating. Use a reasonable value for $timeout_ms.
 ```php
@@ -92,6 +88,7 @@ been sent to the broker yet, before calling flush.
 $rk->purge(RD_KAFKA_PURGE_F_QUEUE);
 $rk->flush($timeout_ms);
 ```
+:warning: Not calling flush can lead to message loss!
 
 ### High-level consuming
 
