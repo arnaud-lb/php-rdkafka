@@ -888,7 +888,6 @@ PHP_MINIT_FUNCTION(rdkafka)
  */
 PHP_MSHUTDOWN_FUNCTION(rdkafka)
 {
-    rd_kafka_wait_destroyed(1000);
     return SUCCESS;
 }
 /* }}} */
