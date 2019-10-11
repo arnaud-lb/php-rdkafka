@@ -8,7 +8,7 @@ PHP-rdkafka is a thin [librdkafka](https://github.com/edenhill/librdkafka) bindi
 
 It supports the high level and low level *consumers*, *producer*, and *metadata* APIs.
 
-The API ressembles as much as possible to librdkafka's, and is fully documented [here](https://arnaud-lb.github.io/php-rdkafka/phpdoc/book.rdkafka.html).
+The API ressembles as much as possible to librdkafka's, and is fully documented [here](https://arnaud-lb.github.io/php-rdkafka/phpdoc/book.rdkafka.html).  
 The source of the documentation can be found [here](https://github.com/arnaud-lb/php-rdkafka-doc)
 
 ## Table of Contents
@@ -47,7 +47,7 @@ servers) to it:
 
 ``` php
 <?php
-$conf = new RdKafka\Conf();
+$conf = RdKafka\new Conf();
 $conf->set('log_level', LOG_DEBUG);
 $conf->set('debug', 'all');
 $rk = new RdKafka\Producer($conf);
@@ -80,13 +80,13 @@ The second argument are message flags and should always be 0, currently.
 The message payload can be anything.
 
 #### Proper shutdown
-This should typically be done prior to destroying a producer instance
-to make sure all queued and in-flight produce requests are completed
+This should typically be done prior to destroying a producer instance  
+to make sure all queued and in-flight produce requests are completed  
 before terminating. Use a reasonable value for $timeout_ms.
 ```php
 $rk->flush($timeout_ms);
 ```
-Optionally, you can purge all messages from the queue that haven't
+Optionally, you can purge all messages from the queue that haven't  
 been sent to the broker yet, before calling flush.
 ```php
 $rk->purge(RD_KAFKA_PURGE_F_QUEUE);
@@ -280,7 +280,7 @@ while ($producer->getOutQLen() > 0) {
 
 ## Documentation
 
-https://arnaud-lb.github.io/php-rdkafka/phpdoc/book.rdkafka.html
+https://arnaud-lb.github.io/php-rdkafka/phpdoc/book.rdkafka.html  
 The source of the documentation can be found [here](https://github.com/arnaud-lb/php-rdkafka-doc)
 
 ## Asking for Help
