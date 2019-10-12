@@ -47,7 +47,7 @@ servers) to it:
 
 ``` php
 <?php
-$conf = RdKafka\new Conf();
+$conf = new RdKafka\Conf();
 $conf->set('log_level', LOG_DEBUG);
 $conf->set('debug', 'all');
 $rk = new RdKafka\Producer($conf);
