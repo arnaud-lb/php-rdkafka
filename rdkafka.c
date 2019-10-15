@@ -884,14 +884,6 @@ PHP_MINIT_FUNCTION(rdkafka)
 }
 /* }}} */
 
-/* {{{ PHP_MSHUTDOWN_FUNCTION
- */
-PHP_MSHUTDOWN_FUNCTION(rdkafka)
-{
-    return SUCCESS;
-}
-/* }}} */
-
 /* {{{ PHP_MINFO_FUNCTION
  */
 PHP_MINFO_FUNCTION(rdkafka)
@@ -931,7 +923,7 @@ zend_module_entry rdkafka_module_entry = {
     "rdkafka",
     rdkafka_functions,
     PHP_MINIT(rdkafka),
-    PHP_MSHUTDOWN(rdkafka),
+    NULL,
     NULL,
     NULL,
     PHP_MINFO(rdkafka),
