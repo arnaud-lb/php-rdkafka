@@ -77,16 +77,18 @@ or `RD_KAFKA_MSG_F_BLOCK` to block produce on full queue.
 The message payload can be anything.
 
 #### Proper shutdown
+
 This should be done prior to destroying a producer instance  
 to make sure all queued and in-flight produce requests are completed  
-before terminating. Use a reasonable value for $timeout_ms.  
+before terminating. Use a reasonable value for `$timeout_ms`.  
 :warning: Not calling flush can lead to message loss!
 
 ```php
 $rk->flush($timeout_ms);
 ```
-Optionally, you can purge all messages from the queue that haven't  
-been sent to the broker yet, before calling flush.
+
+In case you don't care about sending messages that haven't been sent yet,
+you can use `purge()` before calling `flush()`:
 
 ```php
 $rk->purge(RD_KAFKA_PURGE_F_QUEUE);
