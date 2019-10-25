@@ -91,7 +91,9 @@ In case you don't care about sending messages that haven't been sent yet,
 you can use `purge()` before calling `flush()`:
 
 ```php
+// Forget messages that are not fully sent yet
 $rk->purge(RD_KAFKA_PURGE_F_QUEUE);
+
 $rk->flush($timeout_ms);
 ```
 
