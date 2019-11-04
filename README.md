@@ -39,6 +39,8 @@ https://arnaud-lb.github.io/php-rdkafka/phpdoc/rdkafka.examples.html
 
 ## Usage
 
+Configuration parameters used below can found in [Librdkafka Configuration reference](https://github.com/edenhill/librdkafka/blob/master/CONFIGURATION.md)
+
 ### Producing
 
 #### Creating a producer
@@ -210,9 +212,9 @@ Other interesting properties are: ``auto.commit.interval.ms``, ``auto.commit.ena
 
 `auto.commit.interval.ms` and `auto.commit.enable` work in tandem: unless you specify otherwise, consumers **WILL**
 commit automatically in the background (at least high-level ones). If you need control and want to commit manually,
-then you want to disable `auto.commit.enable`.
+then you want to set `auto.commit.enable` to `'false'`.
 
-`group.id` is responsible for setting your consumer group ID and it should be unique for your application (and should
+`group.id` is responsible for setting your consumer group ID and it should be unique (and should
 not change). Kafka uses it to recognize applications and store offsets for them.
 
 ``` php
@@ -227,6 +229,8 @@ $topic->consumeStart(0, RD_KAFKA_OFFSET_STORED);
 ```
 
 ### Interesting configuration parameters
+
+[Librdkafka Configuration reference](https://github.com/edenhill/librdkafka/blob/master/CONFIGURATION.md)
 
 #### queued.max.messages.kbytes
 
