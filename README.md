@@ -202,8 +202,7 @@ while (true) {
 librdkafka per default stores offsets on the broker.
 
 #### File offsets (deprecated)
-
-If you're using local file for offset storage, then by default, the file is created in the current directory, with a
+If you're using local file for offset storage, then by default the file is created in the current directory, with a
 name based on the topic and the partition. The directory can be changed by setting the ``offset.store.path``
 [configuration property](https://github.com/edenhill/librdkafka/blob/master/CONFIGURATION.md).
 
