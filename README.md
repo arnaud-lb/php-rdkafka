@@ -162,7 +162,7 @@ Creating the queue:
 $queue = $rk->newQueue();
 ```
 
-Adding topics to the queue:
+Adding topic partitions to the queue:
 
 ``` php
 <?php
@@ -196,16 +196,16 @@ while (true) {
 
 ### Using stored offsets
 
-librdkafka can store offsets in a local file, or on the broker.
+#### Broker (default)
+librdkafka per default stores offsets on the broker.
 
-For older versions of librdkafka library, default value was storing offset values in local file, but it has since been
-deprecated. Currently by default librdkafka will use broker as offset storage. You can switch it back by using
-`offset.store.method` configuration property.
+#### File offsets (deprecated)
 
 If you're using local file for offset storage, then by default, the file is created in the current directory, with a
 name based on the topic and the partition. The directory can be changed by setting the ``offset.store.path``
 [configuration property](https://github.com/edenhill/librdkafka/blob/master/CONFIGURATION.md).
 
+#### Useful offset settings
 Other interesting properties are: ``auto.commit.interval.ms``, ``auto.commit.enable``, ``group.id``, ``max.poll.interval.ms``.
 
 `auto.commit.interval.ms` and `auto.commit.enable` work in tandem: unless you specify otherwise, consumers **WILL**
@@ -297,7 +297,7 @@ while ($producer->getOutQLen() > 0) {
 
 ## Documentation
 
-https://arnaud-lb.github.io/php-rdkafka/phpdoc/book.rdkafka.html
+https://arnaud-lb.github.io/php-rdkafka/phpdoc/book.rdkafka.html  
 The source of the documentation can be found [here](https://github.com/arnaud-lb/php-rdkafka-doc)
 
 ## Asking for Help
