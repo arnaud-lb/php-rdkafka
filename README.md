@@ -1,8 +1,5 @@
 # PHP Kafka client - php-rdkafka
 
-[![Join the chat at https://bit.ly/31JYZA0](https://img.shields.io/badge/chat-on%20Slack-blueviolet)](https://bit.ly/31JYZA0) or 
-[![Join the chat at https://gitter.im/arnaud-lb/php-rdkafka](https://badges.gitter.im/arnaud-lb/php-rdkafka.svg)](https://gitter.im/arnaud-lb/php-rdkafka?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
 [![Supported librdkafka versions: >= 0.11](https://img.shields.io/badge/librdkafka-%3E%3D%200.11-blue.svg)](https://github.com/edenhill/librdkafka/releases) [![Supported Kafka versions: >= 0.8](https://img.shields.io/badge/kafka-%3E%3D%200.8-blue.svg)](https://github.com/edenhill/librdkafka/wiki/Broker-version-compatibility) ![Supported PHP versions: 5.6 .. 7.x](https://img.shields.io/badge/php-5.6%20..%207.x-blue.svg) [![Build Status](https://travis-ci.org/arnaud-lb/php-rdkafka.svg)](https://travis-ci.org/arnaud-lb/php-rdkafka)
 
 PHP-rdkafka is a thin [librdkafka](https://github.com/edenhill/librdkafka) binding providing a working PHP 5 / PHP 7 [Kafka](https://kafka.apache.org/) client.
@@ -29,6 +26,7 @@ The source of the documentation can be found [here](https://github.com/arnaud-lb
 4. [Documentation](#documentation)
 5. [Credits](#credits)
 6. [License](#license)
+7. [Chats](#chats)
 
 ## Installation
 
@@ -311,3 +309,7 @@ Authors: see [contributors](https://github.com/arnaud-lb/php-rdkafka/graphs/cont
 ## License
 
 php-rdkafka is released under the [MIT](https://github.com/arnaud-lb/php-rdkafka/blob/master/LICENSE) license.
+
+## Chats
+RdKafka chat: [![Join the chat at https://gitter.im/arnaud-lb/php-rdkafka](https://badges.gitter.im/arnaud-lb/php-rdkafka.svg)](https://gitter.im/arnaud-lb/php-rdkafka?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)  
+General PHP Kafka chat: [![Join the chat at https://bit.ly/31JYZA0](https://img.shields.io/badge/chat-on%20Slack-blueviolet)](https://bit.ly/31JYZA0)
