@@ -67,12 +67,3 @@ extern zend_class_entry * ce_kafka_exception;
 #endif
 
 #endif	/* PHP_RDKAFKA_H */
-
-/*
- * Local variables:
- * tab-width: 4
- * c-basic-offset: 4
- * End:
- * vim600: noet sw=4 ts=4 fdm=marker
- * vim<600: noet sw=4 ts=4
- */

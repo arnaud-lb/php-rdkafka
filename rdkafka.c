@@ -935,12 +935,3 @@ zend_module_entry rdkafka_module_entry = {
 #ifdef COMPILE_DL_RDKAFKA
 ZEND_GET_MODULE(rdkafka)
 #endif
-
-/*
- * Local variables:
- * tab-width: 4
- * c-basic-offset: 4
- * End:
- * vim600: noet sw=4 ts=4 fdm=marker
- * vim<600: noet sw=4 ts=4
- */
