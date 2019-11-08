@@ -251,7 +251,6 @@ PHP_METHOD(RdKafka, __construct)
 }
 /* }}} */
 
-
 /* {{{ proto RdKafka\Consumer::__construct([RdKafka\Conf $conf]) */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_consumer___construct, 0, 0, 0)
