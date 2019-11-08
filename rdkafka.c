@@ -39,6 +39,8 @@
 #include "topic_partition.h"
 #include "fun.h"
 
+extern void (*consume_callback)(void);
+
 #if RD_KAFKA_VERSION < 0x000b0000
 #	error librdkafka version 0.11.0 or greater required
 #endif
@@ -249,6 +251,7 @@ PHP_METHOD(RdKafka, __construct)
 }
 /* }}} */
 
+
 /* {{{ proto RdKafka\Consumer::__construct([RdKafka\Conf $conf]) */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_consumer___construct, 0, 0, 0)
@@ -270,6 +273,50 @@ PHP_METHOD(RdKafka__Consumer, __construct)
     kafka_init(getThis(), RD_KAFKA_CONSUMER, zconf TSRMLS_CC);
 
     zend_restore_error_handling(&error_handling TSRMLS_CC);
+}
+/* }}} */
+
+/* {{{ proto RdKafka\Consumer::consumeCallback([RdKafka\Topic $topic, int $partition, int timeout_ms]) */
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_consumer__consume_callback, 0, 0, 3)
+    ZEND_ARG_INFO(0, topic)
+    ZEND_ARG_INFO(0, partition)
+    ZEND_ARG_INFO(0, timeout_ms)
+ZEND_END_ARG_INFO()
+
+PHP_METHOD(RdKafka__Consumer, consumeCallback)
+{
+    zval *ztopic;
+    long partition;
+    long timeout_ms;
+    kafka_object *intern;
+    kafka_topic_object *topic;
+
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "Oll", &ztopic, ce_kafka_topic, &partition, &timeout_ms) == FAILURE) {
+        return;
+    }
+
+    if (partition < 0 || partition > 0x7FFFFFFF) {
+        zend_throw_exception_ex(spl_ce_InvalidArgumentException, 0 TSRMLS_CC, "Out of range value '%ld' for $partition", partition TSRMLS_CC);
+        return;
+    }
+
+    intern = get_kafka_object(getThis() TSRMLS_CC);
+    if (!intern) {
+        return;
+    }
+
+    if (!intern->cbs.consume) {
+        zend_throw_exception(ce_kafka_exception, "You need to set a consume callback", 0 TSRMLS_CC);
+        return;
+    }
+
+    topic = get_kafka_topic_object(ztopic TSRMLS_CC);
+    if (!topic) {
+        return;
+    }
+
+   RETURN_LONG(rd_kafka_consume_callback(topic->rkt, partition, timeout_ms, consume_callback, rd_kafka_opaque(intern->rk)));
 }
 /* }}} */
 
@@ -327,6 +374,7 @@ PHP_METHOD(RdKafka__Consumer, newQueue)
 
 static const zend_function_entry kafka_consumer_fe[] = {
     PHP_ME(RdKafka__Consumer, __construct, arginfo_kafka_consumer___construct, ZEND_ACC_PUBLIC)
+    PHP_ME(RdKafka__Consumer, consumeCallback, arginfo_kafka_consumer__consume_callback, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__Consumer, newQueue, arginfo_kafka_new_queue, ZEND_ACC_PUBLIC)
     PHP_FE_END
 };
