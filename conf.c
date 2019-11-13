@@ -36,8 +36,6 @@
 zend_class_entry * ce_kafka_conf;
 zend_class_entry * ce_kafka_topic_conf;
 
-void (*consume_callback)(void);
-
 static zend_object_handlers handlers;
 
 static void kafka_conf_callback_dtor(kafka_conf_callback *cb TSRMLS_DC) /* {{{ */
@@ -859,7 +857,6 @@ static const zend_function_entry kafka_conf_fe[] = {
 void kafka_conf_minit(TSRMLS_D)
 {
     zend_class_entry tmpce;
-    consume_callback = kafka_conf_consume_cb;
     handlers = kafka_default_object_handlers;
     set_object_handler_free_obj(&handlers, kafka_conf_free);
     set_object_handler_offset(&handlers, XtOffsetOf(kafka_conf_object, std));
