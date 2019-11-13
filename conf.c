@@ -857,6 +857,7 @@ static const zend_function_entry kafka_conf_fe[] = {
 void kafka_conf_minit(TSRMLS_D)
 {
     zend_class_entry tmpce;
+    
     handlers = kafka_default_object_handlers;
     set_object_handler_free_obj(&handlers, kafka_conf_free);
     set_object_handler_offset(&handlers, XtOffsetOf(kafka_conf_object, std));
