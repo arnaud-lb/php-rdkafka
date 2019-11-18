@@ -279,8 +279,9 @@ static void kafka_conf_consume_cb(rd_kafka_message_t *msg, void *opaque)
     MAKE_STD_ZEVAL(args[0]);
     MAKE_STD_ZEVAL(args[1]);
 
-            KAFKA_ZVAL_ZVAL(P_ZEVAL(args[0]), &cbs->zrk, 1, 0);
-    kafka_message_new(P_ZEVAL(args[1]), msg TSRMLS_CC);
+    kafka_message_new(P_ZEVAL(args[0]), msg TSRMLS_CC);
+    KAFKA_ZVAL_ZVAL(P_ZEVAL(args[1]), &cbs->zrk, 1, 0);
+
 
     rdkafka_call_function(&cbs->consume->fci, &cbs->consume->fcc, NULL, 2, args TSRMLS_CC);
 
