@@ -38,6 +38,11 @@ zend_class_entry * ce_kafka_kafka_consumer_topic;
 zend_class_entry * ce_kafka_producer_topic;
 zend_class_entry * ce_kafka_topic;
 
+typedef struct _php_callback {
+    zend_fcall_info fci;
+    zend_fcall_info_cache fcc;
+} php_callback;
+
 static void kafka_topic_free(zend_object *object TSRMLS_DC) /* {{{ */
 {
     kafka_topic_object *intern = get_custom_object(kafka_topic_object, object);
@@ -117,15 +122,13 @@ ZEND_END_ARG_INFO()
 
 PHP_METHOD(RdKafka__ConsumerTopic, consumeCallback)
 {
-    php_callback *cb;
-    zend_fcall_info fci;
-    zend_fcall_info_cache fcc;
+    php_callback cb;
     long partition;
     long timeout_ms;
     long result;
     kafka_topic_object *intern;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "llf", &partition, &timeout_ms, &fci, &fcc) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "llf", &partition, &timeout_ms, &cb.fci, &cb.fcc) == FAILURE) {
         return;
     }
 
@@ -139,15 +142,11 @@ PHP_METHOD(RdKafka__ConsumerTopic, consumeCallback)
         return;
     }
 
-    Z_ADDREF_P(P_ZEVAL(fci.function_name));
-    cb = ecalloc(1, sizeof(*cb));
-    cb->fci = fci;
-    cb->fcc = fcc;
+    Z_ADDREF_P(P_ZEVAL(cb.fci.function_name));
 
-    result = rd_kafka_consume_callback(intern->rkt, partition, timeout_ms, consume_callback, cb);
+    result = rd_kafka_consume_callback(intern->rkt, partition, timeout_ms, consume_callback, &cb);
 
-    zval_ptr_dtor(&cb->fci.function_name);
-    efree(cb);
+    zval_ptr_dtor(&cb.fci.function_name);
 
     RETURN_LONG(result);
 }

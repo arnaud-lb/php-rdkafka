@@ -29,11 +29,6 @@ typedef struct _kafka_topic_object {
 #endif
 } kafka_topic_object;
 
-typedef struct _php_callback {
-    zend_fcall_info fci;
-    zend_fcall_info_cache fcc;
-} php_callback;
-
 void kafka_topic_minit(TSRMLS_D);
 kafka_topic_object * get_kafka_topic_object(zval *zrkt TSRMLS_DC);
 
