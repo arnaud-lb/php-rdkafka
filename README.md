@@ -39,6 +39,8 @@ https://arnaud-lb.github.io/php-rdkafka/phpdoc/rdkafka.examples.html
 
 ## Usage
 
+Configuration parameters used below can found in [Librdkafka Configuration reference](https://github.com/edenhill/librdkafka/blob/master/CONFIGURATION.md)
+
 ### Producing
 
 #### Creating a producer
@@ -162,7 +164,7 @@ Creating the queue:
 $queue = $rk->newQueue();
 ```
 
-Adding topars to the queue:
+Adding topic partitions to the queue:
 
 ``` php
 <?php
@@ -196,11 +198,23 @@ while (true) {
 
 ### Using stored offsets
 
-librdkafka can store offsets in a local file, or on the broker. The default is local file, and as soon as you start using ``RD_KAFKA_OFFSET_STORED`` as consuming offset, rdkafka starts to store the offset.
+#### Broker (default)
+librdkafka per default stores offsets on the broker.
 
-By default, the file is created in the current directory, with a name based on the topic and the partition. The directory can be changed by setting the ``offset.store.path`` [configuration property](https://github.com/edenhill/librdkafka/blob/master/CONFIGURATION.md).
+#### File offsets (deprecated)
+If you're using local file for offset storage, then by default the file is created in the current directory, with a
+name based on the topic and the partition. The directory can be changed by setting the ``offset.store.path``
+[configuration property](https://github.com/edenhill/librdkafka/blob/master/CONFIGURATION.md).
 
+#### Useful offset settings
 Other interesting properties are: ``auto.commit.interval.ms``, ``auto.commit.enable``, ``group.id``, ``max.poll.interval.ms``.
+
+`auto.commit.interval.ms` and `auto.commit.enable` work in tandem: unless you specify otherwise, consumers **WILL**
+commit automatically in the background (at least high-level ones). If you need control and want to commit manually,
+then you want to set `auto.commit.enable` to `'false'`.
+
+`group.id` is responsible for setting your consumer group ID and it should be unique (and should
+not change). Kafka uses it to recognize applications and store offsets for them.
 
 ``` php
 <?php
@@ -214,6 +228,8 @@ $topic->consumeStart(0, RD_KAFKA_OFFSET_STORED);
 ```
 
 ### Interesting configuration parameters
+
+[Librdkafka Configuration reference](https://github.com/edenhill/librdkafka/blob/master/CONFIGURATION.md)
 
 #### queued.max.messages.kbytes
 
