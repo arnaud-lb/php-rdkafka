@@ -31,6 +31,23 @@ The source of the documentation can be found [here](https://github.com/arnaud-lb
 
 ## Installation
 
+### Installing [librdkafka](https://github.com/edenhill/librdkafka) dependency (Ubuntu and Debian)
+
+:warning: To install the latest stable version make sure to first follow these [instructions].(https://docs.confluent.io/current/installation/installing_cp/deb-ubuntu.html#get-the-software)
+
+If you install by running:
+```bash
+apt-get -y install librdkafka-dev
+```
+librdkafka version 0.x.x will be installed.
+
+You can check currently installed version of librdkafka-dev by running:
+```bash
+apt-cache policy librdkafka-dev
+```
+
+### Instaling php-rdkafka
+
 https://arnaud-lb.github.io/php-rdkafka/phpdoc/rdkafka.setup.html
 
 ## Examples
