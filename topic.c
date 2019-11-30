@@ -544,7 +544,7 @@ void kafka_topic_minit(TSRMLS_D) { /* {{{ */
 
     INIT_NS_CLASS_ENTRY(ce, "RdKafka", "Topic", kafka_topic_fe);
     ce_kafka_topic = zend_register_internal_class(&ce TSRMLS_CC);
-    ce_kafka_topic->ce_flags = ZEND_ACC_EXPLICIT_ABSTRACT_CLASS;
+    ce_kafka_topic->ce_flags |= ZEND_ACC_EXPLICIT_ABSTRACT_CLASS;
     ce_kafka_topic->create_object = kafka_topic_new;
 
     INIT_NS_CLASS_ENTRY(ce, "RdKafka", "ConsumerTopic", kafka_consumer_topic_fe);
