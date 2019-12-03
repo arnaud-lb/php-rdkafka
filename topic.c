@@ -618,9 +618,8 @@ PHP_METHOD(RdKafka__ProducerTopic, producev)
             RD_KAFKA_V_END
     );
 
-    rd_kafka_headers_destroy(headers);
-
     if (err != RD_KAFKA_RESP_ERR_NO_ERROR) {
+        rd_kafka_headers_destroy(headers);
         zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err TSRMLS_CC);
         return;
     }
