@@ -10,6 +10,8 @@ require __DIR__ . '/integration-tests-check.php';
 $delivered = 0;
 
 $conf = new RdKafka\Conf();
+// Required to detect actual reaching of partition EOF for both topics
+$conf->set('enable.partition.eof', 'true');
 if (RD_KAFKA_VERSION >= 0x090000 && false !== getenv('TEST_KAFKA_BROKER_VERSION')) {
     $conf->set('broker.version.fallback', getenv('TEST_KAFKA_BROKER_VERSION'));
 }
@@ -69,8 +71,13 @@ $messages = [];
 
 while (true) {
     $msg = $queue->consume(15000);
-    // librdkafka before 1.0 returns message with RD_KAFKA_RESP_ERR__PARTITION_EOF when reaching topic end.
-    if (!$msg || $msg->err === RD_KAFKA_RESP_ERR__PARTITION_EOF) {
+    if (!$msg) {
+        // Still waiting for messages
+        continue;
+    }
+
+    if (RD_KAFKA_RESP_ERR__PARTITION_EOF === $msg->err) {
+        // Reached actual EOF for both partitions
         break;
     }
 
