@@ -68,8 +68,9 @@ array_walk($topicNames, function ($topicName) use ($consumer, $queue) {
 });
 
 $messages = [];
+$receivedTopicEofs = [];
 
-while (true) {
+while (count($receivedTopicEofs) < 2) {
     $msg = $queue->consume(15000);
     if (!$msg) {
         // Still waiting for messages
@@ -77,8 +78,9 @@ while (true) {
     }
 
     if (RD_KAFKA_RESP_ERR__PARTITION_EOF === $msg->err) {
-        // Reached actual EOF for both partitions
-        break;
+        // Reached actual EOF
+        $receivedTopicEofs[$msg->topic_name] = true;
+        continue;
     }
 
     if (RD_KAFKA_RESP_ERR_NO_ERROR !== $msg->err) {
