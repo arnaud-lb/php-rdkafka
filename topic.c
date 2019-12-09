@@ -200,7 +200,7 @@ PHP_METHOD(RdKafka__ConsumerTopic, consumeQueueStart)
         zend_throw_exception_ex(
             ce_kafka_exception,
             0 TSRMLS_CC,
-            "%s:%d is already being consumed by the same Consumer instance",
+            "%s:%ld is already being consumed by the same Consumer instance",
             rd_kafka_topic_name(intern->rkt),
             partition
         );
@@ -259,7 +259,7 @@ PHP_METHOD(RdKafka__ConsumerTopic, consumeStart)
         zend_throw_exception_ex(
             ce_kafka_exception,
             0 TSRMLS_CC,
-            "%s:%d is already being consumed by the same Consumer instance",
+            "%s:%ld is already being consumed by the same Consumer instance",
             rd_kafka_topic_name(intern->rkt),
             partition
         );
