@@ -384,7 +384,6 @@ PHP_METHOD(RdKafka__ConsumerTopic, consumeBatch)
 {
     kafka_topic_object *intern;
     long partition, timeout_ms, batch_size, result, i;
-    zval messages;
     rd_kafka_message_t **rkmessages;
     rd_kafka_resp_err_t err;
 

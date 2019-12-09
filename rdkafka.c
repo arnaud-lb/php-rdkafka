@@ -54,10 +54,6 @@ typedef struct _toppar {
     int32_t             partition;
 } toppar;
 
-static const zend_function_entry empty_function_entries[] = {
-    PHP_FE_END
-};
-
 static zend_object_handlers kafka_object_handlers;
 zend_object_handlers kafka_default_object_handlers;
 
@@ -239,9 +235,6 @@ int is_consuming_toppar(kafka_object * intern, rd_kafka_topic_t * rkt, int32_t p
 }
 
 /* {{{ private constructor */
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka___private_construct, 0, 0, 0)
-ZEND_END_ARG_INFO()
-
 PHP_METHOD(RdKafka, __construct)
 {
     zend_throw_exception(NULL, "Private constructor", 0 TSRMLS_CC);
