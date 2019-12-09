@@ -117,6 +117,9 @@ static inline char *rdkafka_hash_get_current_key_ex(HashTable *ht, HashPosition 
 #define RDKAFKA_ZVAL_STRING(zv, str) ZVAL_STRING(zv, str)
 #else /* PHP < 7 */
 
+typedef long zend_long;
+#define ZEND_LONG_FMT "%ld"
+
 typedef int arglen_t;
 
 #define STORE_OBJECT(retval, intern, dtor, free, clone) do { \

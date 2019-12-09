@@ -792,7 +792,7 @@ ZEND_END_ARG_INFO()
 PHP_METHOD(RdKafka__TopicConf, setPartitioner)
 {
     kafka_conf_object *intern;
-    long id;
+    zend_long id;
     int32_t (*partitioner) (const rd_kafka_topic_t * rkt, const void * keydata, size_t keylen, int32_t partition_cnt, void * rkt_opaque, void * msg_opaque);
 
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &id) == FAILURE) {
