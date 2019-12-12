@@ -56,7 +56,7 @@ void kafka_message_new(zval *return_value, const rd_kafka_message_t *message TSR
     if (message->rkt) {
         zend_update_property_string(NULL, return_value, ZEND_STRL("topic_name"), rd_kafka_topic_name(message->rkt) TSRMLS_CC);
     }
-    if (RD_KAFKA_RESP_ERR_NO_ERROR == message->err) {
+    if (RD_KAFKA_RESP_ERR_NO_ERROR == message->err || NULL != message->partition) {
         zend_update_property_long(NULL, return_value, ZEND_STRL("partition"), message->partition TSRMLS_CC);
     }
     if (message->payload) {
