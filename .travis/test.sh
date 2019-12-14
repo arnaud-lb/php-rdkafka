@@ -7,4 +7,4 @@ if grep -q 'cfgfiles.*mem' run-tests.php; then
     showmem=--show-mem
 fi
 
-docker exec rdkafka-${PHP_IMAGE_TAG}-${LIBRDKAFKA_VERSION} "php run-tests.php -q -m --show-diff $showmem"
+docker run rdkafka-${PHP_IMAGE_TAG}-${LIBRDKAFKA_VERSION} "php run-tests.php -q -m --show-diff $showmem"
