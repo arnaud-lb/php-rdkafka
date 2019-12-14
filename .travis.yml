@@ -1,6 +1,11 @@
 sudo: required
 services:
     - docker
+
+cache:
+    directories:
+        - /kafka
+
 jobs:
     fast_finish: true
     include:
