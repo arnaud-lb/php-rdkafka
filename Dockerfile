@@ -21,7 +21,6 @@ RUN git clone --depth 1 --branch ${LIBRDKAFKA_VERSION} https://github.com/edenhi
     && cd /php-rdkafka \
     && phpize \
     && CFLAGS='-Werror=implicit-function-declaration' ./configure \
-    && make \
-    && docker-php-ext-enable rdkafka
+    && make
 
 WORKDIR /php-rdkafka
