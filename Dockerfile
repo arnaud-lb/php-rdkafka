@@ -1,11 +1,11 @@
 ARG PHP_IMAGE_TAG
 
-COPY . /php-rdkafka
-
 FROM php:${PHP_IMAGE_TAG}
 
 ARG LIBRDKAFKA_VERSION
 ARG LIBSSL_VERSION
+
+COPY . /php-rdkafka
 
 # Install packages
 RUN apk --no-cache upgrade && \
