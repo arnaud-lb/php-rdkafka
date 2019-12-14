@@ -7,6 +7,7 @@ if grep -q 'cfgfiles.*mem' run-tests.php; then
     showmem=--show-mem
 fi
 docker run \
+  --network="host" \
   -e TEST_KAFKA_BROKERS=${TEST_KAFKA_BROKERS} \
   -e TEST_KAFKA_BROKER_VERSION=${TEST_KAFKA_BROKER_VERSION} \
   -e "TEST_PHP_EXECUTABLE=/usr/local/bin/php" \
