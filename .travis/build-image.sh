@@ -3,4 +3,4 @@ docker build \
   --build-arg LIBRDKAFKA_VERSION=${LIBRDKAFKA_VERSION} \
   --build-arg LIBSSL_VERSION=${LIBSSL_VERSION} \
   -t rdkafka-${PHP_IMAGE_TAG}-${LIBRDKAFKA_VERSION} \
-  ${TRAVIS_BUILD_DIR}/docker
+  ${TRAVIS_BUILD_DIR}
