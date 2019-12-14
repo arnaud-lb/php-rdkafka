@@ -1,6 +1,6 @@
 #!/bin/sh
 mkdir -p ${HOME}/kafka
-if [ ! -f "/kafka/kafka_2.12-2.3.0.tgz" ]; then
+if [ ! -f "${HOME}/kafka/kafka_2.12-2.3.0.tgz" ]; then
     wget -O ${HOME}/kafka/kafka_2.12-2.3.0.tgz http://ftp.man.poznan.pl/apache/kafka/2.3.0/kafka_2.12-2.3.0.tgz;
 fi
 tar -xzf ${HOME}/kafka/kafka_2.12-2.3.0.tgz
