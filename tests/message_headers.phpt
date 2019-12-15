@@ -12,6 +12,7 @@ $delivered = 0;
 
 $conf = new RdKafka\Conf();
 $conf->set('auto.offset.reset', 'earliest');
+$conf->set('enable.partition.eof', 'true');
 $conf->setErrorCb(function ($producer, $err, $errstr) {
     printf("%s: %s\n", rd_kafka_err2str($err), $errstr);
     exit;
@@ -50,11 +51,10 @@ $headers = [
     ['key'],
 ];
 
-$key = uniqid();
+$key = uniqid('', true);
 
 foreach ($headers as $index => $header) {
-    $topic->producev(0, 0, "message $index", $key, $header);
-    $producer->poll(0);
+    $topic->producev(0, 0, "message $index", $key.$index, $header);
 }
 
 while ($producer->getOutQLen()) {
@@ -74,7 +74,7 @@ $messages = [];
 while (true) {
     $msg = $topic->consume(0, 1000);
 
-    if (!$msg || $msg->err === RD_KAFKA_RESP_ERR__PARTITION_EOF) {
+    if ($msg->err === RD_KAFKA_RESP_ERR__PARTITION_EOF) {
         break;
     }
 
@@ -82,7 +82,7 @@ while (true) {
         throw new Exception($msg->errstr(), $msg->err);
     }
 
-    if ($key !== $msg->key) {
+    if (false === strpos($msg->headers, $key)) {
         continue;
     }
 
