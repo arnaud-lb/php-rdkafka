@@ -82,6 +82,7 @@ void kafka_message_new(zval *return_value, const rd_kafka_message_t *message TSR
                 rdkafka_add_assoc_string(&headers_array, header_name, (char*)header_value);
             }
             zend_update_property(NULL, return_value, ZEND_STRL("headers"), &headers_array TSRMLS_CC);
+            zval_ptr_dtor(&headers_array);
         }
     }
 #endif
