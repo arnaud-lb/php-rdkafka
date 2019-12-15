@@ -10,7 +10,7 @@ COPY . /php-rdkafka
 # Install packages
 RUN apk --no-cache upgrade && \
     apk --no-cache add bash openssh sudo git gcc g++ make autoconf \
-    icu libssl${LIBSSL_VERSION} openssl-dev pcre-dev zlib-dev icu-dev wget
+    icu libssl${LIBSSL_VERSION} openssl-dev pcre-dev zlib-dev icu-dev wget valgrind
 
 # Install librdkafka and ext-rdkafka
 RUN git clone --depth 1 --branch ${LIBRDKAFKA_VERSION} https://github.com/edenhill/librdkafka.git \
@@ -23,6 +23,7 @@ RUN git clone --depth 1 --branch ${LIBRDKAFKA_VERSION} https://github.com/edenhi
     && CFLAGS='-Werror=implicit-function-declaration' ./configure \
     && make \
     && cp modules/rdkafka.so "$(php -r 'echo ini_get("extension_dir");')" \
-    && docker-php-ext-enable rdkafka
+    && docker-php-ext-enable rdkafka \
+    && echo 'alias valgrind="valgrind --suppressions=/php-rdkafka/.travis/default.supp $@"' >> ~/.bashrc
 
 WORKDIR /php-rdkafka
