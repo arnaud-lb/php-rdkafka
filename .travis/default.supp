@@ -1,5 +1,11 @@
 {
     String_Equality_Intentionally_Reads_Uninit_Memory
-    Memcheck:Cond, Free
+    Memcheck:Cond
     fun:zend_string_equal_val
+}
+
+{
+    Surppress_duplicate_free
+    Memcheck:Free
+    fun:free
 }

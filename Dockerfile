@@ -24,6 +24,7 @@ RUN git clone --depth 1 --branch ${LIBRDKAFKA_VERSION} https://github.com/edenhi
     && make \
     && cp modules/rdkafka.so "$(php -r 'echo ini_get("extension_dir");')" \
     && docker-php-ext-enable rdkafka \
-    && echo 'alias valgrind="valgrind --suppressions=/php-rdkafka/.travis/default.supp $@"' >> ~/.bashrc
+    && cp /usr/bin/valgrind /usr/bin/vvalgrind \
+    && cp /php-rdkafka/.travis/valgrind /usr/bin/valgrind
 
 WORKDIR /php-rdkafka
