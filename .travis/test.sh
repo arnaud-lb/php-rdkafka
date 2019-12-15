@@ -3,7 +3,7 @@ set -xve
 
 if grep -q 'cfgfiles.*mem' ${TRAVIS_BUILD_DIR}/run-tests.php; then
     echo "Will enable the --show-mem flag"
-    exprt SHOWMEM=--show-mem
+    export SHOWMEM=--show-mem
 fi
 
 docker run \
