@@ -31,7 +31,7 @@ if ($producer->addBrokers(getenv('TEST_KAFKA_BROKERS')) < 1) {
     exit;
 }
 
-$topicName = sprintf("test_rdkafka_%s", uniqid());
+$topicName = sprintf("test_rdkafka_%s", uniqid('', true));
 
 $topic = $producer->newTopic($topicName);
 
@@ -51,10 +51,9 @@ $headers = [
     ['key'],
 ];
 
-$key = uniqid('', true);
-
 foreach ($headers as $index => $header) {
-    $topic->producev(0, 0, "message $index", $key.$index, $header);
+    $topic->producev(0, 0, "message $index", NULL, $header);
+    $producer->poll(0);
 }
 
 while ($producer->getOutQLen()) {
@@ -72,18 +71,14 @@ $topic->consumeStart(0, RD_KAFKA_OFFSET_BEGINNING);
 $messages = [];
 
 while (true) {
-    $msg = $topic->consume(0, 1000);
+    $msg = $topic->consume(0, 5000);
 
     if ($msg->err === RD_KAFKA_RESP_ERR__PARTITION_EOF) {
         break;
     }
-
+    
     if (RD_KAFKA_RESP_ERR_NO_ERROR !== $msg->err) {
         throw new Exception($msg->errstr(), $msg->err);
-    }
-
-    if (false === strpos($msg->headers, $key)) {
-        continue;
     }
 
     $headersString = isset($msg->headers) ? $msg->headers : [];
