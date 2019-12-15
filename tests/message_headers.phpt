@@ -49,8 +49,10 @@ $headers = [
     ['key'],
 ];
 
+$key = uniqid();
+
 foreach ($headers as $index => $header) {
-    $topic->producev(0, 0, "message $index", null, $header);
+    $topic->producev(0, 0, "message $index", $key, $header);
     $producer->poll(0);
 }
 
@@ -70,6 +72,11 @@ $messages = [];
 
 while (true) {
     $msg = $topic->consume(0, 1000);
+
+    if ($key !== $msg->key) {
+        continue;
+    }
+
     if (!$msg || $msg->err === RD_KAFKA_RESP_ERR__PARTITION_EOF) {
         break;
     }
