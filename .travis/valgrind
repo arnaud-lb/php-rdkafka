@@ -1,0 +1,2 @@
+#!/bin/bash
+/usr/bin/vvalgrind --suppressions="/php-rdkafka/.travis/default.supp" "$@"
