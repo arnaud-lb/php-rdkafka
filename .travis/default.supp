@@ -1,5 +1,6 @@
 {
     String_Equality_Intentionally_Reads_Uninit_Memory
     Memcheck:Cond
+    Memcheck:Free
     fun:zend_string_equal_val
 }
