@@ -52,7 +52,7 @@ $headers = [
 ];
 
 foreach ($headers as $index => $header) {
-    $topic->producev(0, 0, "message $index", NULL, $header);
+    $topic->producev(0, 0, "message $index", strval($index), $header);
     $producer->poll(0);
 }
 
@@ -68,7 +68,7 @@ $consumer->addBrokers(getenv('TEST_KAFKA_BROKERS'));
 $topic = $consumer->newTopic($topicName);
 $topic->consumeStart(0, RD_KAFKA_OFFSET_BEGINNING);
 
-$messages = [];
+$headerResults = [];
 
 while (true) {
     $msg = $topic->consume(0, 5000);
@@ -76,22 +76,22 @@ while (true) {
     if ($msg->err === RD_KAFKA_RESP_ERR__PARTITION_EOF) {
         break;
     }
-    
+
     if (RD_KAFKA_RESP_ERR_NO_ERROR !== $msg->err) {
         throw new Exception($msg->errstr(), $msg->err);
     }
 
-    $headersString = isset($msg->headers) ? $msg->headers : [];
-    array_walk($headersString, function(&$value, $key) {
-        $value = "{$key}: {$value}";
-    });
-    if (empty($headersString)) {
-        $headersString = "none";
-    } else {
-        $headersString = implode(", ", $headersString);
+    $headerMessage = 'none';
+
+    if (isset($msg->headers) && $headers[intval($msg->key)] === $msg->headers) {
+        $headerResults[intval($msg->key)] = 'Headers matched';
     }
-    printf("Got message: %s | Headers: %s\n", $msg->payload, $headersString);
 }
+
+foreach ($headerResults as $index => $headerMessage) {
+    printf('Header for message %d | Headers %s', $index, $headerMessage);
+}
+
 --EXPECT--
 5 messages delivered
 Got message: message 0 | Headers: key: value
