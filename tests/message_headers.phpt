@@ -11,6 +11,7 @@ require __DIR__ . '/integration-tests-check.php';
 $delivered = 0;
 
 $conf = new RdKafka\Conf();
+$conf->set('auto.offset.reset', 'earliest');
 $conf->setErrorCb(function ($producer, $err, $errstr) {
     printf("%s: %s\n", rd_kafka_err2str($err), $errstr);
     exit;
@@ -73,16 +74,16 @@ $messages = [];
 while (true) {
     $msg = $topic->consume(0, 1000);
 
-    if ($key !== $msg->key) {
-        continue;
-    }
-
     if (!$msg || $msg->err === RD_KAFKA_RESP_ERR__PARTITION_EOF) {
         break;
     }
 
     if (RD_KAFKA_RESP_ERR_NO_ERROR !== $msg->err) {
         throw new Exception($msg->errstr(), $msg->err);
+    }
+
+    if ($key !== $msg->key) {
+        continue;
     }
 
     $headersString = isset($msg->headers) ? $msg->headers : [];
