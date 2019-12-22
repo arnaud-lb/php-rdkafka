@@ -84,18 +84,18 @@ while (true) {
     $headerMessage = 'none';
 
     if (isset($msg->headers) && $headers[intval($msg->key)] === $msg->headers) {
-        $headerResults[intval($msg->key)] = 'Headers matched';
+        $headerResults[intval($msg->key)] = 'matched';
     }
 }
 
 foreach ($headerResults as $index => $headerMessage) {
-    printf('Header for message %d | Headers %s', $index, $headerMessage);
+    printf('Header for message %d | Headers: %s', $index, $headerMessage);
 }
 
 --EXPECT--
 5 messages delivered
-Got message: message 0 | Headers: key: value
-Got message: message 1 | Headers: key1: value1, key2: value2, key3: value3
-Got message: message 2 | Headers: none
-Got message: message 3 | Headers: none
-Got message: message 4 | Headers: none
+Header for message 0 | Headers: matched
+Header for message 1 | Headers: matched
+Header for message 2 | Headers: none
+Header for message 3 | Headers: none
+Header for message 4 | Headers: none
