@@ -31,11 +31,11 @@ The source of the documentation can be found [here](https://github.com/arnaud-lb
 
 ## Installation
 
-https://arnaud-lb.github.io/php-rdkafka/phpdoc/rdkafka.setup.html
+https://arnaud-lb.github.io/php-rdkafka-doc/phpdoc/rdkafka.setup.html
 
 ## Examples
 
-https://arnaud-lb.github.io/php-rdkafka/phpdoc/rdkafka.examples.html
+https://arnaud-lb.github.io/php-rdkafka-doc/phpdoc/rdkafka.examples.html
 
 ## Usage
 
@@ -101,7 +101,7 @@ $rk->flush($timeout_ms);
 
 ### High-level consuming
 
-The RdKafka\KafkaConsumer class supports automatic partition assignment/revocation. See the example [here](https://arnaud-lb.github.io/php-rdkafka/phpdoc/rdkafka.examples.html#example-1).
+The RdKafka\KafkaConsumer class supports automatic partition assignment/revocation. See the example [here](https://arnaud-lb.github.io/php-rdkafka-doc/phpdoc/rdkafka.examples.html#example-1).
 
 ### Low-level consuming
 
@@ -302,7 +302,7 @@ while ($producer->getOutQLen() > 0) {
 
 ## Documentation
 
-https://arnaud-lb.github.io/php-rdkafka/phpdoc/book.rdkafka.html  
+https://arnaud-lb.github.io/php-rdkafka-doc/phpdoc/book.rdkafka.html  
 The source of the documentation can be found [here](https://github.com/arnaud-lb/php-rdkafka-doc)
 
 ## Asking for Help

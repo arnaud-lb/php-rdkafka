@@ -10,10 +10,10 @@
   <email>arnaud.lb@gmail.com</email>
   <active>yes</active>
  </lead>
- <date>2019-12-08</date>
+ <date>2019-12-15</date>
  <time>12:00:00</time>
  <version>
-  <release>4.0.1</release>
+  <release>4.0.2</release>
   <api>4.0.0</api>
  </version>
  <stability>
@@ -30,25 +30,10 @@
   Starting from 4.0, programs MUST call flush() before shutting down, otherwise
   some messages and callbacks may be lost.
 
-  ## Features
-
-  * Added RdKafka\ConsumerTopic::consumeCallback() (#310, @nick-zh)
-
-  ## Enhancements
-
-  * Run integration tests in CI (#223, @Steveb-p)
-  * Improved README (#295 #297 #298, #307 @Steveb-p @sndsgd @nick-zh)
-  * Fix windows test cases (#296, @cmb69)
-  * Add testsuite in pecl archive (#291, @remicollet)
-  * Add editor config (#308, @Steveb-p)
-
   ## Bugfixes
 
-  * Fix build (#290, @nick-zh)
-  * Fix segfault during module shutdown (#293, @arnaud-lb @nick-zh)
-  * Fix RdKafka\Topic visibility in PHP 7.4 (#316, @nick-zh)
-  * Fix headers memory management in producev (#318 , @nick-zh)
-  * Fix partition number in error (#321, @nick-zh)
+  * Fix partition 0 exposed as NULL in Message (#327 reverts #321, @arnaud-lb @nick-zh)
+  * Fix memory leak in consume() when messages have headers (#323, @nick-zh)
  </notes>
  <contents>
   <dir name="/">
@@ -127,6 +112,48 @@
  <providesextension>rdkafka</providesextension>
  <extsrcrelease/>
  <changelog>
+  <release>
+   <date>2019-12-08</date>
+   <time>12:00:00</time>
+   <version>
+    <release>4.0.1</release>
+    <api>4.0.0</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <license uri="http://opensource.org/licenses/mit-license.php">MIT License</license>
+   <notes>
+    BREAKING CHANGE: Since version 4.0, the client no longer polls for network
+    events at shutdown (during object destructor). This behaviour didn't give
+    enough control to the user in case of server issue, and could cause the script
+    to hang while terminating.
+
+    Starting from 4.0, programs MUST call flush() before shutting down, otherwise
+    some messages and callbacks may be lost.
+
+    ## Features
+
+    * Added RdKafka\ConsumerTopic::consumeCallback() (#310, @nick-zh)
+
+    ## Enhancements
+
+    * Run integration tests in CI (#223, @Steveb-p)
+    * Improved README (#295 #297 #298, #307 @Steveb-p @sndsgd @nick-zh)
+    * Fix windows test cases (#296, @cmb69)
+    * Add testsuite in pecl archive (#291, @remicollet)
+    * Add editor config (#308, @Steveb-p)
+
+    ## Bugfixes
+
+    * Fix build (#290, @nick-zh)
+    * Fix segfault during module shutdown (#293, @arnaud-lb @nick-zh)
+    * Fix RdKafka\Topic visibility in PHP 7.4 (#316, @nick-zh)
+    * Fix headers memory management in producev (#318 , @nick-zh)
+    * Fix partition number in error (#321, @nick-zh)
+   </notes>
+  </release>
   <release>
    <date>2019-10-04</date>
    <time>12:00:00</time>
