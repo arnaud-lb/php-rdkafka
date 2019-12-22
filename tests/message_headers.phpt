@@ -83,7 +83,7 @@ while (true) {
 
     $headerResults[intval($msg->key)] = 'none';
 
-    if (isset($msg->headers) && $headers[intval($msg->key)] == $msg->headers) {
+    if (isset($msg->headers) && $headers[intval($msg->key)] === $msg->headers) {
         $headerResults[intval($msg->key)] = 'matched';
     }
 }
