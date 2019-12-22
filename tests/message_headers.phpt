@@ -81,7 +81,7 @@ while (true) {
         throw new Exception($msg->errstr(), $msg->err);
     }
 
-    $headerMessage = 'none';
+    $headerResults[intval($msg->key)] = 'none';
 
     if (isset($msg->headers) && $headers[intval($msg->key)] === $msg->headers) {
         $headerResults[intval($msg->key)] = 'matched';
@@ -89,7 +89,7 @@ while (true) {
 }
 
 foreach ($headerResults as $index => $headerMessage) {
-    printf('Header for message %d | Headers: %s', $index, $headerMessage);
+    printf('Header for message %d | Headers: %s' . PHP_EOL, $index, $headerMessage);
 }
 
 --EXPECT--
