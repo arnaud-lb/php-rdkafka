@@ -582,66 +582,6 @@ PHP_METHOD(RdKafka__KafkaConsumer, getMetadata)
 }
 /* }}} */
 
-/* {{{ proto RdKafka\KafkaConsumerTopic RdKafka\KafkaConsumer::newTopic(string $topic)
-   Returns a RdKafka\KafkaConsumerTopic object */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_kafka_consumer_new_topic, 0, 0, 1)
-    ZEND_ARG_INFO(0, topic_name)
-    ZEND_ARG_INFO(0, topic_conf)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__KafkaConsumer, newTopic)
-{
-    char *topic;
-    arglen_t topic_len;
-    rd_kafka_topic_t *rkt;
-    object_intern *intern;
-    kafka_topic_object *topic_intern;
-    zval *zconf = NULL;
-    rd_kafka_topic_conf_t *conf = NULL;
-    kafka_conf_object *conf_intern;
-
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s|O!", &topic, &topic_len, &zconf, ce_kafka_topic_conf) == FAILURE) {
-        return;
-    }
-
-    intern = get_object(getThis() TSRMLS_CC);
-    if (!intern) {
-        return;
-    }
-
-    if (zconf) {
-        conf_intern = get_kafka_conf_object(zconf TSRMLS_CC);
-        if (conf_intern) {
-            conf = rd_kafka_topic_conf_dup(conf_intern->u.topic_conf);
-        }
-    }
-
-    rkt = rd_kafka_topic_new(intern->rk, topic, conf);
-
-    if (!rkt) {
-        return;
-    }
-
-    if (object_init_ex(return_value, ce_kafka_kafka_consumer_topic) != SUCCESS) {
-        return;
-    }
-
-    topic_intern = get_custom_object_zval(kafka_topic_object, return_value);
-    if (!topic_intern) {
-        return;
-    }
-
-    topic_intern->rkt = rkt;
-#if PHP_MAJOR_VERSION >= 7
-    topic_intern->zrk = *getThis();
-#else
-    topic_intern->zrk = getThis();
-#endif
-    Z_ADDREF_P(P_ZEVAL(topic_intern->zrk));
-}
-/* }}} */
-
 /* {{{ proto array RdKafka\KafkaConsumer::getCommittedOffsets(array $topics, int timeout_ms)
    Retrieve committed offsets for topics+partitions */
 
@@ -823,7 +763,6 @@ static const zend_function_entry fe[] = { /* {{{ */
     PHP_ME(RdKafka__KafkaConsumer, getSubscription, arginfo_kafka_kafka_consumer_getSubscription, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__KafkaConsumer, unsubscribe, arginfo_kafka_kafka_consumer_unsubscribe, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__KafkaConsumer, getMetadata, arginfo_kafka_kafka_consumer_getMetadata, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__KafkaConsumer, newTopic, arginfo_kafka_kafka_consumer_new_topic, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__KafkaConsumer, getCommittedOffsets, arginfo_kafka_kafka_consumer_get_committed_offsets, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__KafkaConsumer, getOffsetPositions, arginfo_kafka_kafka_consumer_get_offset_positions, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__KafkaConsumer, queryWatermarkOffsets, arginfo_kafka_kafka_consumer_query_watermark_offsets, ZEND_ACC_PUBLIC)
