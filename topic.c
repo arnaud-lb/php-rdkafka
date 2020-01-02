@@ -447,6 +447,11 @@ PHP_METHOD(RdKafka__ConsumerTopic, offsetStore)
         return;
     }
 
+    if (partition < 0 || partition > 0x7FFFFFFF) {
+        zend_throw_exception_ex(spl_ce_InvalidArgumentException, 0 TSRMLS_CC, "Out of range value '%ld' for $partition", partition TSRMLS_CC);
+        return;
+    }
+
     intern = get_kafka_topic_object(getThis() TSRMLS_CC);
     if (!intern) {
         return;
