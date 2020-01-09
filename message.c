@@ -77,11 +77,7 @@ void kafka_message_new(zval *return_value, const rd_kafka_message_t *message TSR
                 if (header_response != RD_KAFKA_RESP_ERR_NO_ERROR) {
                     break;
                 }
-#if PHP_MAJOR_VERSION >= 7
-    add_assoc_stringl(&headers_array, header_name, (const char*)header_value, header_size);
-#else
-    add_assoc_stringl(&headers_array, header_name, (const char*)header_value, header_size, 1);
-#endif
+                rdkafka_add_assoc_stringl(&headers_array, header_name, (const char*)header_value, header_size);
             }
             zend_update_property(NULL, return_value, ZEND_STRL("headers"), &headers_array TSRMLS_CC);
             zval_ptr_dtor(&headers_array);
