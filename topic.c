@@ -48,8 +48,8 @@ static void kafka_topic_free(zend_object *object TSRMLS_DC) /* {{{ */
     kafka_topic_object *intern = get_custom_object(kafka_topic_object, object);
 
     if (ZE_ISDEF(intern->zrk)) {
-        kafka_object *kafka_intern = get_custom_object_zval(kafka_object, P_ZEVAL(intern->zrk));
-        if (kafka_intern->rk) {
+        kafka_object *kafka_intern = get_kafka_object(P_ZEVAL(intern->zrk) TSRMLS_CC);
+        if (kafka_intern) {
             zend_hash_index_del(&kafka_intern->topics, (zend_ulong)intern);
         }
     }
