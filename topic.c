@@ -599,7 +599,7 @@ PHP_METHOD(RdKafka__ProducerTopic, producev)
                 header_key,
                 -1, // Auto detect header title length
                 Z_STRVAL_P(ZEVAL(header_value)),
-                -1 // Auto detect header value length
+                Z_STRLEN_P(ZEVAL(header_value))
             );
         }
     } else {
