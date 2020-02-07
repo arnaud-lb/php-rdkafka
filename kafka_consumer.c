@@ -633,12 +633,6 @@ PHP_METHOD(RdKafka__KafkaConsumer, newTopic)
     }
 
     topic_intern->rkt = rkt;
-#if PHP_MAJOR_VERSION >= 7
-    topic_intern->zrk = *getThis();
-#else
-    topic_intern->zrk = getThis();
-#endif
-    Z_ADDREF_P(P_ZEVAL(topic_intern->zrk));
 }
 /* }}} */
 
