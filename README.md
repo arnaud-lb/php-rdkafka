@@ -239,7 +239,7 @@ librdkafka will buffer up to 1GB of messages for each consumed partition by defa
 
 ### topic.metadata.refresh.sparse and topic.metadata.refresh.interval.ms
 
-Each consumer and procuder instance will fetch topics metadata at an interval defined by the ``topic.metadata.refresh.interval.ms`` parameter. Depending on your librdkafka version, the parameter defaults to 10 seconds, or 600 seconds.
+Each consumer and producer instance will fetch topics metadata at an interval defined by the ``topic.metadata.refresh.interval.ms`` parameter. Depending on your librdkafka version, the parameter defaults to 10 seconds, or 600 seconds.
 
 librdkafka fetches the metadata for all topics of the cluster by default. Setting ``topic.metadata.refresh.sparse`` to the string ``"true"`` makes sure that librdkafka fetches only the topics he uses.
 
