@@ -3,7 +3,6 @@ RdKafka\Conf
 --SKIPIF--
 <?php
 RD_KAFKA_VERSION >= 0x090000 || die("skip librdkafka too old");
-(!isset($_ENV['TESTS_DONT_SKIP_RISKY']) || $_ENV['TESTS_DONT_SKIP_RISKY']) && die("skip Callbacks often fail and are skipped by default");
 require __DIR__ . '/integration-tests-check.php';
 --FILE--
 <?php
@@ -38,6 +37,7 @@ $conf->set('auto.offset.reset', 'earliest');
 $conf->set('metadata.broker.list', getenv('TEST_KAFKA_BROKERS'));
 $conf->set('group.id', sprintf("test_rdkafka_group_%s", uniqid()));
 $conf->set('statistics.interval.ms', 10);
+$conf->set('enable.partition.eof', 'true');
 
 $conf->setOffsetCommitCb(function ($consumer, $error, $topicPartitions) {
     echo "Offset " . $topicPartitions[0]->getOffset() . " committed.\n";
