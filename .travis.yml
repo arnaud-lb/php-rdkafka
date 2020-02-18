@@ -23,13 +23,17 @@ jobs:
               apt:
                   packages:
                       - valgrind
-        - env:
+        - stage: test
+          env:
             - LIBRDKAFKA_VERSION=0.11.x
+        - env:
             - LIBRDKAFKA_VERSION=v1.0.1
+        - env:
             - LIBRDKAFKA_VERSION=v1.1.0
+        - env:
             - LIBRDKAFKA_VERSION=v1.2.2
+        - env:
             - LIBRDKAFKA_VERSION=master
-          stage: test
 env:
     global:
         - TEST_KAFKA_BROKERS=kafka:9092
