@@ -164,4 +164,14 @@ script:
     ### Issues with environmental variables causes this copy to be required
     - cp tests/test_env.php.sample tests/test_env.php
     - PHP=$(which php)
-    - REPORT_EXIT_STATUS=1 TEST_PHP_EXECUTABLE="$PHP" "$PHP" run-tests.php -q --show-diff
+    - |
+      showmem=
+      checkmem=
+      if [ $MEMORY_CHECK ] && [ grep -q 'cfgfiles.*mem' run-tests.php ]; then
+          echo "Will enable the --show-mem flag"
+          showmem=--show-mem
+      fi
+      if [ $MEMORY_CHECK ]; then
+          checkmem=-m
+      fi
+    - REPORT_EXIT_STATUS=1 TEST_PHP_EXECUTABLE="$PHP" "$PHP" run-tests.php $checmmem -q --show-diff $showmem
