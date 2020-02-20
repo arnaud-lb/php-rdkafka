@@ -381,7 +381,7 @@ PHP_METHOD(RdKafka__KafkaConsumer, consume)
 {
     object_intern *intern;
     zend_long timeout_ms;
-    rd_kafka_message_t *rkmessage;
+    rd_kafka_message_t *rkmessage, rkmessage_tmp = {0};
 
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &timeout_ms) == FAILURE) {
         return;
@@ -395,12 +395,17 @@ PHP_METHOD(RdKafka__KafkaConsumer, consume)
     rkmessage = rd_kafka_consumer_poll(intern->rk, timeout_ms);
 
     if (!rkmessage) {
-        RETURN_NULL()
+        rkmessage_tmp.err = rd_kafka_last_error();
+        if (rkmessage_tmp.err != 0) {
+            rkmessage = &rkmessage_tmp;
+        }
     }
 
     kafka_message_new(return_value, rkmessage TSRMLS_CC);
 
-    rd_kafka_message_destroy(rkmessage);
+    if (rkmessage != &rkmessage_tmp) {
+        rd_kafka_message_destroy(rkmessage);
+    }
 }
 /* }}} */
 
