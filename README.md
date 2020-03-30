@@ -291,7 +291,9 @@ $producer = new \RdKafka\Producer($conf);
 $consumer = new \RdKafka\Consumer($conf);
 ```
 
-Polling after producing can also be important to reduce termination times:
+It is advised to call poll at regular intervals to serve callbacks. In `php-rdkafka:3.x`  
+poll was also called during shutdown, so not calling it in regular intervals might  
+lead to a slightly longer shutdown. The example below polls until there are no more events in the queue:
 
 ```
 $producer->produce(...);
