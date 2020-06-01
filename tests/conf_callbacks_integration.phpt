@@ -12,7 +12,11 @@ require __DIR__ . '/integration-tests-check.php';
 $conf = new RdKafka\Conf();
 
 $conf->set('auto.offset.reset', 'earliest');
-$conf->set('metadata.broker.list', getenv('TEST_KAFKA_BROKERS'));
+if (RD_KAFKA_VERSION >= 0x150000) {
+    $conf->set('bootstrap.servers', getenv('TEST_KAFKA_BROKERS'));
+} else {
+    $conf->set('metadata.broker.list', getenv('TEST_KAFKA_BROKERS'));
+}
 $conf->set('group.id', sprintf("test_rdkafka_group_%s", uniqid()));
 
 $producer = new RdKafka\Producer($conf);
@@ -35,7 +39,11 @@ sleep(1);
 $conf = new RdKafka\Conf();
 
 $conf->set('auto.offset.reset', 'earliest');
-$conf->set('metadata.broker.list', getenv('TEST_KAFKA_BROKERS'));
+if (RD_KAFKA_VERSION >= 0x150000) {
+    $conf->set('boostrap.servers', getenv('TEST_KAFKA_BROKERS'));
+} else {
+    $conf->set('metadata.broker.list', getenv('TEST_KAFKA_BROKERS'));
+}
 $conf->set('group.id', sprintf("test_rdkafka_group_%s", uniqid()));
 $conf->set('statistics.interval.ms', 10);
 

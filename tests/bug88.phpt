@@ -8,7 +8,11 @@ if (!class_exists("RdKafka\\KafkaConsumer")) {
 --FILE--
 <?php
 $conf = new RdKafka\Conf();
-$conf->set('metadata.broker.list', '127.0.0.1:9092');
+if (RD_KAFKA_VERSION >= 0x150000) {
+    $conf->set('boostrap.servers', '127.0.0.1:9092');
+} else {
+    $conf->set('metadata.broker.list', '127.0.0.1:9092');
+}
 $consumer = new RdKafka\KafkaConsumer($conf);
 echo "ok\n";
 --EXPECTF--
