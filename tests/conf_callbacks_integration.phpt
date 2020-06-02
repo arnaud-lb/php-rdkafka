@@ -12,7 +12,7 @@ require __DIR__ . '/integration-tests-check.php';
 $conf = new RdKafka\Conf();
 
 $conf->set('auto.offset.reset', 'earliest');
-if (RD_KAFKA_VERSION >= 0x150000) {
+if (RD_KAFKA_VERSION <= 0x150000) {
     $conf->set('bootstrap.servers', getenv('TEST_KAFKA_BROKERS'));
 } else {
     $conf->set('metadata.broker.list', getenv('TEST_KAFKA_BROKERS'));
@@ -39,7 +39,7 @@ sleep(1);
 $conf = new RdKafka\Conf();
 
 $conf->set('auto.offset.reset', 'earliest');
-if (RD_KAFKA_VERSION >= 0x150000) {
+if (RD_KAFKA_VERSION <= 0x150000) {
     $conf->set('boostrap.servers', getenv('TEST_KAFKA_BROKERS'));
 } else {
     $conf->set('metadata.broker.list', getenv('TEST_KAFKA_BROKERS'));
