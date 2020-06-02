@@ -21,8 +21,7 @@ while ($producer->getOutQLen() > 0) {
     $producer->poll(50);
 }
 
-$consumer = new RdKafka\Consumer();
-$consumer->addBrokers(getenv('TEST_KAFKA_BROKERS'));
+$consumer = new RdKafka\Consumer($conf);
 
 $topic = $consumer->newTopic($topicName);
 $topic->consumeStart(0, RD_KAFKA_OFFSET_BEGINNING);

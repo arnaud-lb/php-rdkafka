@@ -36,11 +36,7 @@ sleep(1);
 $conf = new RdKafka\Conf();
 
 $conf->set('auto.offset.reset', 'earliest');
-if (RD_KAFKA_VERSION >= 0x01050001) {
-    $conf->set('boostrap.servers', getenv('TEST_KAFKA_BROKERS'));
-} else {
-    $conf->set('metadata.broker.list', getenv('TEST_KAFKA_BROKERS'));
-}
+$conf->set('metadata.broker.list', getenv('TEST_KAFKA_BROKERS'));
 $conf->set('group.id', sprintf("test_rdkafka_group_%s", uniqid()));
 $conf->set('statistics.interval.ms', 10);
 
