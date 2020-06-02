@@ -4,7 +4,7 @@ Bug 74
 <?php
 
 $conf = new RdKafka\Conf();
-$conf->set('metadata.broker.list', getenv('TEST_KAFKA_BROKERS'));
+$conf->set('metadata.broker.list', 'localhost:9092');
 
 $consumer = new RdKafka\Consumer($conf);
 $topic = $consumer->newTopic("batman", null);
