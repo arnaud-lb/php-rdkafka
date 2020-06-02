@@ -7,10 +7,12 @@ require __DIR__ . '/integration-tests-check.php';
 <?php
 require __DIR__ . '/integration-tests-check.php';
 
+$conf = new RdKafka\Conf();
+$conf->set('metadata.broker.list', getenv('TEST_KAFKA_BROKERS'));
+
 $topicName = sprintf('test_rdkafka_%s', uniqid());
 
-$producer = new RdKafka\Producer();
-$producer->addBrokers(getenv('TEST_KAFKA_BROKERS'));
+$producer = new RdKafka\Producer($conf);
 $topic = $producer->newTopic($topicName);
 
 $topic->produce(0, 0, NULL, 'message_key_1');
