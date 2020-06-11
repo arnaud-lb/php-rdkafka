@@ -209,7 +209,6 @@ name based on the topic and the partition. The directory can be changed by setti
 [configuration property](https://github.com/edenhill/librdkafka/blob/master/CONFIGURATION.md).
 
 ### Consumer settings
-Settings of interest are: ``auto.commit.interval.ms``, ``auto.commit.enable``, ``group.id``, ``max.poll.interval.ms``.
 
 #### Low-level consumer: auto commit settings
 To manually control the offset, set `enable.auto.offset.store` to `false`.
