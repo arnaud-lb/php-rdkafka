@@ -211,7 +211,7 @@ name based on the topic and the partition. The directory can be changed by setti
 ### Consumer settings
 
 #### Low-level consumer: auto commit settings
-To manually control the offset, set `enable.auto.offset.store` to `false`.
+To manually control the offset, set `enable.auto.offset.store` to `false`.  
 The settings `auto.commit.interval.ms` and `auto.commit.enable` will control  
 if the stored offsets will be auto committed to the broker and in which interval.
 
