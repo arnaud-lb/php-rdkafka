@@ -211,12 +211,12 @@ name based on the topic and the partition. The directory can be changed by setti
 ### Consumer settings
 Settings of interest are: ``auto.commit.interval.ms``, ``auto.commit.enable``, ``group.id``, ``max.poll.interval.ms``.
 
-#### Offset settings Low-level consumer
-`auto.commit.interval.ms` and `auto.commit.enable` work in tandem: unless you specify otherwise, consumers **WILL**
-commit automatically in the background (at least high-level ones). If you need control and want to commit manually,
-then you want to set `auto.commit.enable` to `'false'`.
+#### Low-level consumer: auto commit settings
+To manually control the offset, set `enable.auto.offset.store` to `false`.
+The settings `auto.commit.interval.ms` and `auto.commit.enable` will control  
+if the stored offsets will be auto committed to the broker and in which interval.
 
-#### Offset settings High-level consumer
+#### High-level consumer: auto commit settings
 To manually control the offset, set `enable.auto.commit` to `false`.
 
 #### High level consumer: max.poll.interval.ms
