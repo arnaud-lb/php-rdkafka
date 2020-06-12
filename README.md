@@ -208,13 +208,22 @@ If you're using local file for offset storage, then by default the file is creat
 name based on the topic and the partition. The directory can be changed by setting the ``offset.store.path``
 [configuration property](https://github.com/edenhill/librdkafka/blob/master/CONFIGURATION.md).
 
-#### Useful offset settings
-Other interesting properties are: ``auto.commit.interval.ms``, ``auto.commit.enable``, ``group.id``, ``max.poll.interval.ms``.
+### Consumer settings
 
-`auto.commit.interval.ms` and `auto.commit.enable` work in tandem: unless you specify otherwise, consumers **WILL**
-commit automatically in the background (at least high-level ones). If you need control and want to commit manually,
-then you want to set `auto.commit.enable` to `'false'`.
+#### Low-level consumer: auto commit settings
+To manually control the offset, set `enable.auto.offset.store` to `false`.  
+The settings `auto.commit.interval.ms` and `auto.commit.enable` will control  
+if the stored offsets will be auto committed to the broker and in which interval.
 
+#### High-level consumer: auto commit settings
+To manually control the offset, set `enable.auto.commit` to `false`.
+
+#### High level consumer: max.poll.interval.ms
+Maximum allowed time between calls to consume messages for high-level consumers.  
+If this interval is exceeded the consumer is considered failed and the group will  
+rebalance in order to reassign the partitions to another consumer group member.
+
+#### Consumer group id (general)
 `group.id` is responsible for setting your consumer group ID and it should be unique (and should
 not change). Kafka uses it to recognize applications and store offsets for them.
 
