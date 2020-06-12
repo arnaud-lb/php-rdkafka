@@ -13,6 +13,7 @@ $conf = new RdKafka\Conf();
 
 $conf->set('auto.offset.reset', 'earliest');
 $conf->set('metadata.broker.list', getenv('TEST_KAFKA_BROKERS'));
+
 $conf->set('group.id', sprintf("test_rdkafka_group_%s", uniqid()));
 
 $producer = new RdKafka\Producer($conf);
