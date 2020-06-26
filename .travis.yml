@@ -26,8 +26,6 @@ jobs:
           env: LIBRDKAFKA_VERSION=master
     include:
         - env: LIBRDKAFKA_VERSION=v1.2.2 MEMORY_CHECK=1 PHP_VERSION=7.4.0
-          stage: master_test
-          name: Master Test
           addons:
               apt:
                   packages:
@@ -36,7 +34,6 @@ jobs:
                       - libzip-dev
 
         - php: 5.6
-          stage: test
           env: LIBRDKAFKA_VERSION=0.11.x
         - php: 7.0
           env: LIBRDKAFKA_VERSION=0.11.x
@@ -132,7 +129,7 @@ install:
     - echo "extension = $(pwd)/modules/rdkafka.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
     - phpenv config-rm xdebug.ini || true
     - phpize
-    - CFLAGS='-Werror=implicit-function-declaration' ./configure && make
+    - CFLAGS='-Wall -Werror -Wno-deprecated-declarations' ./configure && make
 before_script:
     - |
       export TEST_KAFKA_BROKERS=kafka:9092
@@ -146,11 +143,9 @@ script:
     - |
       showmem=
       checkmem=
-      if [ -n "$MEMORY_CHECK" ] && [ grep -q 'cfgfiles.*mem' run-tests.php ]; then
-          echo "Will enable the --show-mem flag"
-          showmem=--show-mem
-      fi
       if [ -n "$MEMORY_CHECK" ]; then
+          echo "Enabling memory checking"
+          showmem=--show-mem
           checkmem=-m
       fi
     - REPORT_EXIT_STATUS=1 TEST_PHP_EXECUTABLE="$PHP" "$PHP" run-tests.php $checmmem -q --show-diff $showmem
