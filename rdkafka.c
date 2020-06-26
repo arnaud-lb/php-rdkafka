@@ -783,7 +783,6 @@ PHP_METHOD(RdKafka__Producer, initTransactions)
     kafka_object *intern;
     zend_long timeout_ms;
     const rd_kafka_error_t *error;
-    long errorCode;
 
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &timeout_ms) == FAILURE) {
         return;
@@ -815,7 +814,6 @@ PHP_METHOD(RdKafka__Producer, beginTransaction)
 {
     kafka_object *intern;
     const rd_kafka_error_t *error;
-    long errorCode;
 
     intern = get_kafka_object(getThis() TSRMLS_CC);
     if (!intern) {
@@ -845,7 +843,6 @@ PHP_METHOD(RdKafka__Producer, commitTransaction)
     kafka_object *intern;
     zend_long timeout_ms;
     const rd_kafka_error_t *error;
-    long errorCode;
 
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &timeout_ms) == FAILURE) {
         return;
@@ -879,7 +876,6 @@ PHP_METHOD(RdKafka__Producer, abortTransaction)
     kafka_object *intern;
     zend_long timeout_ms;
     const rd_kafka_error_t *error;
-    long errorCode;
 
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &timeout_ms) == FAILURE) {
         return;
