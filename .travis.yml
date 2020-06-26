@@ -25,8 +25,7 @@ jobs:
           php: nightly
           env: LIBRDKAFKA_VERSION=master
     include:
-          env:
-            - LIBRDKAFKA_VERSION=v1.2.2 MEMORY_CHECK=1 PHP_VERSION=7.4.0
+        - env: LIBRDKAFKA_VERSION=v1.2.2 MEMORY_CHECK=1 PHP_VERSION=7.4.0
           stage: master_test
           name: Master Test
           addons:
@@ -35,101 +34,72 @@ jobs:
                       - valgrind
                       - libonig-dev
                       - libzip-dev
+
         - php: 5.6
           stage: test
-          env:
-            - LIBRDKAFKA_VERSION=0.11.x
+          env: LIBRDKAFKA_VERSION=0.11.x
         - php: 7.0
-          env:
-            - LIBRDKAFKA_VERSION=0.11.x
+          env: LIBRDKAFKA_VERSION=0.11.x
         - php: 7.1
-          env:
-            - LIBRDKAFKA_VERSION=0.11.x
+          env: LIBRDKAFKA_VERSION=0.11.x
         - php: 7.2
-          env:
-            - LIBRDKAFKA_VERSION=0.11.x
+          env: LIBRDKAFKA_VERSION=0.11.x
         - php: 7.3
-          env:
-            - LIBRDKAFKA_VERSION=0.11.x
+          env: LIBRDKAFKA_VERSION=0.11.x
         - php: 7.4
-          env:
-            - LIBRDKAFKA_VERSION=0.11.x
+          env: LIBRDKAFKA_VERSION=0.11.x
 
         - php: 5.6
-          env:
-            - LIBRDKAFKA_VERSION=v1.0.1
+          env: LIBRDKAFKA_VERSION=v1.0.1
         - php: 7.0
-          env:
-            - LIBRDKAFKA_VERSION=v1.0.1
+          env: LIBRDKAFKA_VERSION=v1.0.1
         - php: 7.1
-          env:
-            - LIBRDKAFKA_VERSION=v1.0.1
+          env: LIBRDKAFKA_VERSION=v1.0.1
         - php: 7.2
-          env:
-            - LIBRDKAFKA_VERSION=v1.0.1
+          env: LIBRDKAFKA_VERSION=v1.0.1
         - php: 7.3
-          env:
-            - LIBRDKAFKA_VERSION=v1.0.1
+          env: LIBRDKAFKA_VERSION=v1.0.1
         - php: 7.4
-          env:
-            - LIBRDKAFKA_VERSION=v1.0.1
+          env: LIBRDKAFKA_VERSION=v1.0.1
 
         - php: 5.6
-          env:
-            - LIBRDKAFKA_VERSION=v1.1.0
+          env: LIBRDKAFKA_VERSION=v1.1.0
         - php: 7.0
-          env:
-            - LIBRDKAFKA_VERSION=v1.1.0
+          env: LIBRDKAFKA_VERSION=v1.1.0
         - php: 7.1
-          env:
-            - LIBRDKAFKA_VERSION=v1.1.0
+          env: LIBRDKAFKA_VERSION=v1.1.0
         - php: 7.2
-          env:
-            - LIBRDKAFKA_VERSION=v1.1.0
+          env: LIBRDKAFKA_VERSION=v1.1.0
         - php: 7.3
-          env:
-            - LIBRDKAFKA_VERSION=v1.1.0
+          env: LIBRDKAFKA_VERSION=v1.1.0
         - php: 7.4
-          env:
-            - LIBRDKAFKA_VERSION=v1.1.0
+          env: LIBRDKAFKA_VERSION=v1.1.0
 
         - php: 5.6
-          env:
-            - LIBRDKAFKA_VERSION=v1.2.2
+          env: LIBRDKAFKA_VERSION=v1.2.2
         - php: 7.0
-          env:
-            - LIBRDKAFKA_VERSION=v1.2.2
+          env: LIBRDKAFKA_VERSION=v1.2.2
         - php: 7.1
-          env:
-            - LIBRDKAFKA_VERSION=v1.2.2
+          env: LIBRDKAFKA_VERSION=v1.2.2
         - php: 7.2
-          env:
-            - LIBRDKAFKA_VERSION=v1.2.2
+          env: LIBRDKAFKA_VERSION=v1.2.2
         - php: 7.3
-          env:
-            - LIBRDKAFKA_VERSION=v1.2.2
+          env: LIBRDKAFKA_VERSION=v1.2.2
         - php: 7.4
-          env:
-            - LIBRDKAFKA_VERSION=v1.2.2
+          env: LIBRDKAFKA_VERSION=v1.2.2
 
         - php: 5.6
-          env:
-            - LIBRDKAFKA_VERSION=master
+          env: LIBRDKAFKA_VERSION=master
         - php: 7.0
-          env:
-            - LIBRDKAFKA_VERSION=master
+          env: LIBRDKAFKA_VERSION=master
         - php: 7.1
-          env:
-            - LIBRDKAFKA_VERSION=master
+          env: LIBRDKAFKA_VERSION=master
         - php: 7.2
-          env:
-            - LIBRDKAFKA_VERSION=master
+          env: LIBRDKAFKA_VERSION=master
         - php: 7.3
-          env:
-            - LIBRDKAFKA_VERSION=master
+          env: LIBRDKAFKA_VERSION=master
         - php: 7.4
-          env:
-            - LIBRDKAFKA_VERSION=master
+          env: LIBRDKAFKA_VERSION=master
 
 before_install:
     - |
