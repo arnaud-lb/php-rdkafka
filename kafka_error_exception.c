@@ -32,15 +32,10 @@ zend_class_entry * ce_kafka_error;
 
 void create_kafka_error(zval *return_value, const rd_kafka_error_t *error TSRMLS_DC) /* {{{ */
 {
-    zval errorCode, message;
-
-    ZVAL_LONG(&errorCode, rd_kafka_error_code(error));
-    RDKAFKA_ZVAL_STRING(&message, rd_kafka_error_name(error));
-
     object_init_ex(return_value, ce_kafka_error);
 
-    zend_update_property_string(ce_kafka_error, return_value, ZEND_STRL("message"), &message TSRMLS_CC);
-    zend_update_property_long(ce_kafka_error, return_value, ZEND_STRL("code"), &errorCode TSRMLS_CC);
+    zend_update_property_string(ce_kafka_error, return_value, ZEND_STRL("message"), rd_kafka_error_name(error) TSRMLS_CC);
+    zend_update_property_long(ce_kafka_error, return_value, ZEND_STRL("code"), rd_kafka_error_code(error) TSRMLS_CC);
     zend_update_property_string(ce_kafka_error, return_value, ZEND_STRL("error_string"), rd_kafka_error_string(error) TSRMLS_CC);
     zend_update_property_bool(ce_kafka_error, return_value, ZEND_STRL("isFatal"), rd_kafka_error_is_fatal(error) TSRMLS_CC);
     zend_update_property_bool(ce_kafka_error, return_value, ZEND_STRL("isRetriable"), rd_kafka_error_is_retriable(error) TSRMLS_CC);
