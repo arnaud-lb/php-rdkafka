@@ -28,24 +28,10 @@
 #include "kafka_error_exception.h"
 #include "zeval.h"
 
-typedef struct _object_intern {
-    zend_object std;
-} object_intern;
-
 zend_class_entry * ce_kafka_error;
 static zend_object_handlers handlers;
 
-static void kafka_error_free(zend_object *object TSRMLS_DC) /* {{{ */
-{
-    object_intern *intern = get_custom_object(object_intern, object);
-
-    zend_object_std_dtor(&intern->std TSRMLS_CC);
-
-    free_custom_object(intern);
-}
-/* }}} */
-
-void kafka_error_new(zval *return_value, const rd_kafka_error_t *error TSRMLS_DC) /* {{{ */
+void create_kafka_error(zval *return_value, const rd_kafka_error_t *error TSRMLS_DC) /* {{{ */
 {
     zval errorCode, message;
 
@@ -54,20 +40,12 @@ void kafka_error_new(zval *return_value, const rd_kafka_error_t *error TSRMLS_DC
 
     object_init_ex(return_value, ce_kafka_error);
 
-    zend_call_method_with_2_params(return_value, ce_kafka_exception, NULL, "__construct", NULL, &message, &errorCode);
-
+    zend_update_property_string(ce_kafka_error, return_value, ZEND_STRL("message"), &message TSRMLS_CC);
+    zend_update_property_long(ce_kafka_error, return_value, ZEND_STRL("code"), &errorCode TSRMLS_CC);
     zend_update_property_string(ce_kafka_error, return_value, ZEND_STRL("error_string"), rd_kafka_error_string(error) TSRMLS_CC);
     zend_update_property_bool(ce_kafka_error, return_value, ZEND_STRL("isFatal"), rd_kafka_error_is_fatal(error) TSRMLS_CC);
     zend_update_property_bool(ce_kafka_error, return_value, ZEND_STRL("isRetriable"), rd_kafka_error_is_retriable(error) TSRMLS_CC);
     zend_update_property_bool(ce_kafka_error, return_value, ZEND_STRL("transactionRequiresAbort"), rd_kafka_error_txn_requires_abort(error) TSRMLS_CC);
-}
-/* }}} */
-
-object_intern * get_object(zval *zerr TSRMLS_DC) /* {{{ */
-{
-    object_intern *oerr = get_custom_object_zval(object_intern, zerr);
-
-    return oerr;
 }
 /* }}} */
 
@@ -112,16 +90,9 @@ ZEND_END_ARG_INFO()
 
 PHP_METHOD(RdKafka__KafkaErrorException, getErrorString)
 {
-    object_intern *intern;
     zval *res;
 
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "") == FAILURE) {
-        return;
-    }
-
-    intern = get_object(getThis() TSRMLS_CC);
-
-    if (!intern) {
         return;
     }
 
@@ -145,16 +116,9 @@ ZEND_END_ARG_INFO()
 
 PHP_METHOD(RdKafka__KafkaErrorException, isFatal)
 {
-    object_intern *intern;
     zval *res;
 
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "") == FAILURE) {
-        return;
-    }
-
-    intern = get_object(getThis() TSRMLS_CC);
-
-    if (!intern) {
         return;
     }
 
@@ -177,16 +141,9 @@ ZEND_END_ARG_INFO()
 
 PHP_METHOD(RdKafka__KafkaErrorException, isRetriable)
 {
-    object_intern *intern;
     zval *res;
 
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "") == FAILURE) {
-        return;
-    }
-
-    intern = get_object(getThis() TSRMLS_CC);
-
-    if (!intern) {
         return;
     }
 
@@ -209,16 +166,9 @@ ZEND_END_ARG_INFO()
 
 PHP_METHOD(RdKafka__KafkaErrorException, transactionRequiresAbort)
 {
-    object_intern *intern;
     zval *res;
 
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "") == FAILURE) {
-        return;
-    }
-
-    intern = get_object(getThis() TSRMLS_CC);
-
-    if (!intern) {
         return;
     }
 
@@ -245,10 +195,6 @@ static const zend_function_entry kafka_error_fe[] = { /* {{{ */
 void kafka_error_minit(TSRMLS_D) /* {{{ */
 {
     zend_class_entry ce;
-
-    handlers = kafka_default_object_handlers;
-    set_object_handler_free_obj(&handlers, kafka_error_free);
-    set_object_handler_offset(&handlers, XtOffsetOf(object_intern, std));
 
     INIT_NS_CLASS_ENTRY(ce, "RdKafka", "KafkaErrorException", kafka_error_fe);
     ce_kafka_error = rdkafka_register_internal_class_ex(&ce, ce_kafka_exception TSRMLS_CC);

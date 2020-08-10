@@ -21,5 +21,5 @@
 #include "librdkafka/rdkafka.h"
 extern zend_class_entry * ce_kafka_error;
 void kafka_error_minit(TSRMLS_D);
-void kafka_error_new(zval *return_value, const rd_kafka_error_t *error TSRMLS_DC);
+void create_kafka_error(zval *return_value, const rd_kafka_error_t *error TSRMLS_DC);
 #endif
