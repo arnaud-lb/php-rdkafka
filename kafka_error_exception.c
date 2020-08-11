@@ -59,16 +59,13 @@ PHP_METHOD(RdKafka__KafkaErrorException, __construct)
     arglen_t message_length = 0, error_string_length = 0;
     zend_bool isFatal = 0, isRetriable = 0, transactionRequiresAbort = 0;
     zend_long code = 0;
-    zval errorCode, errorMessage;
 
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "sl|sbbb", &message, &message_length, &code, &error_string, &error_string_length, &isFatal, &isRetriable, &transactionRequiresAbort) == FAILURE) {
         return;
     }
 
-    ZVAL_LONG(&errorCode, code);
-    RDKAFKA_ZVAL_STRING(&errorMessage, message);
-    zend_call_method_with_2_params(getThis(), ce_kafka_exception, NULL, "__construct", NULL, &errorMessage, &errorCode);
-
+    zend_update_property_string(ce_kafka_error, getThis(), ZEND_STRL("message"), message TSRMLS_CC);
+    zend_update_property_long(ce_kafka_error, getThis(), ZEND_STRL("code"), code TSRMLS_CC);
     zend_update_property_string(ce_kafka_error, getThis(), ZEND_STRL("error_string"), error_string TSRMLS_CC);
     zend_update_property_bool(ce_kafka_error, getThis(), ZEND_STRL("isFatal"), isFatal TSRMLS_CC);
     zend_update_property_bool(ce_kafka_error, getThis(), ZEND_STRL("isRetriable"), isRetriable TSRMLS_CC);
