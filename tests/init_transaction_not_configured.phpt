@@ -19,10 +19,17 @@ $conf->set('metadata.broker.list', getenv('TEST_KAFKA_BROKERS'));
 
 $producer = new RdKafka\Producer($conf);
 
-$producer->initTransactions(10000);
+try {
+    $producer->initTransactions(10000);
+} catch (RdKafka\KafkaErrorException $e) {
+    echo $e->getMessage() . PHP_EOL;
+    echo $e->getCode() . PHP_EOL;
+    echo $e->getFile() . PHP_EOL;
+    echo $e->getLine() . PHP_EOL;
+}
+
 --EXPECTF--
-Fatal error: Uncaught RdKafka\KafkaErrorException: _NOT_CONFIGURED in %s/tests/init_transaction_not_configured.php:13
-Stack trace:
-#0 %s/tests/init_transaction_not_configured.php(13): RdKafka\Producer->initTransactions(10000)
-#1 {main}
-  thrown in %s/tests/init_transaction_not_configured.php on line 13
+_NOT_CONFIGURED
+-145
+%s/tests/init_transaction_not_configured.php
+14
