@@ -40,6 +40,8 @@ void create_kafka_error(zval *return_value, const rd_kafka_error_t *error TSRMLS
     zend_update_property_bool(ce_kafka_error, return_value, ZEND_STRL("isFatal"), rd_kafka_error_is_fatal(error) TSRMLS_CC);
     zend_update_property_bool(ce_kafka_error, return_value, ZEND_STRL("isRetriable"), rd_kafka_error_is_retriable(error) TSRMLS_CC);
     zend_update_property_bool(ce_kafka_error, return_value, ZEND_STRL("transactionRequiresAbort"), rd_kafka_error_txn_requires_abort(error) TSRMLS_CC);
+
+    Z_ADDREF_P(return_value);
 }
 /* }}} */
 
