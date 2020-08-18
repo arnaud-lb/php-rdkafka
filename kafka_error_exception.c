@@ -121,11 +121,11 @@ PHP_METHOD(RdKafka__KafkaErrorException, isFatal)
 
     res = rdkafka_read_property(ce_kafka_error, getThis(), ZEND_STRL("isFatal"), 0 TSRMLS_CC);
 
+#if PHP_MAJOR_VERSION >= 7
     if (!res || (Z_TYPE_P(res) != IS_TRUE && Z_TYPE_P(res) != IS_FALSE)) {
         return;
     }
 
-#if PHP_MAJOR_VERSION >= 7
     ZVAL_DEREF(res);
     ZVAL_COPY(return_value, res);
 #else
@@ -150,11 +150,11 @@ PHP_METHOD(RdKafka__KafkaErrorException, isRetriable)
 
     res = rdkafka_read_property(ce_kafka_error, getThis(), ZEND_STRL("isRetriable"), 0 TSRMLS_CC);
 
+#if PHP_MAJOR_VERSION >= 7
     if (!res || (Z_TYPE_P(res) != IS_TRUE && Z_TYPE_P(res) != IS_FALSE)) {
         return;
     }
 
-#if PHP_MAJOR_VERSION >= 7
     ZVAL_DEREF(res);
     ZVAL_COPY(return_value, res);
 #else
@@ -179,11 +179,11 @@ PHP_METHOD(RdKafka__KafkaErrorException, transactionRequiresAbort)
 
     res = rdkafka_read_property(ce_kafka_error, getThis(), ZEND_STRL("transactionRequiresAbort"), 0 TSRMLS_CC);
 
+#if PHP_MAJOR_VERSION >= 7
     if (!res || (Z_TYPE_P(res) != IS_TRUE && Z_TYPE_P(res) != IS_FALSE)) {
         return;
     }
 
-#if PHP_MAJOR_VERSION >= 7
     ZVAL_DEREF(res);
     ZVAL_COPY(return_value, res);
 #else
