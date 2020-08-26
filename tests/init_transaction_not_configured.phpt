@@ -1,11 +1,5 @@
 --TEST--
 initTransaction() not configured
---SKIPIF--
-<?php
-require __DIR__ . '/integration-tests-check.php';
-if (!class_exists("RdKafka\\KafkaErrorException")) {
-    echo "skip";
-}
 --FILE--
 <?php
 require __DIR__ . '/integration-tests-check.php';

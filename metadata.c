@@ -29,101 +29,93 @@
 #include "metadata_broker.h"
 #include "metadata_partition.h"
 #include "Zend/zend_exceptions.h"
-#include "zeval.h"
 
 typedef struct _object_intern {
-#if PHP_MAJOR_VERSION < 7
-    zend_object               std;
-#endif
     const rd_kafka_metadata_t *metadata;
-#if PHP_MAJOR_VERSION >= 7
     zend_object               std;
-#endif
 } object_intern;
 
-static HashTable *get_debug_info(zval *object, int *is_temp TSRMLS_DC);
+static HashTable *get_debug_info(Z_RDKAFKA_OBJ *object, int *is_temp);
 
 static zend_class_entry * ce;
 static zend_object_handlers handlers;
 
-static void brokers_collection(zval *return_value, zval *parent, object_intern *intern TSRMLS_DC) { /* {{{ */
-    kafka_metadata_collection_init(return_value, parent, intern->metadata->brokers, intern->metadata->broker_cnt, sizeof(*intern->metadata->brokers), kafka_metadata_broker_ctor TSRMLS_CC);
+static void brokers_collection(zval *return_value, Z_RDKAFKA_OBJ *parent, object_intern *intern) { /* {{{ */
+    kafka_metadata_collection_init(return_value, parent, intern->metadata->brokers, intern->metadata->broker_cnt, sizeof(*intern->metadata->brokers), kafka_metadata_broker_ctor);
 }
 /* }}} */
 
-static void topics_collection(zval *return_value, zval *parent, object_intern *intern TSRMLS_DC) { /* {{{ */
-    kafka_metadata_collection_init(return_value, parent, intern->metadata->topics, intern->metadata->topic_cnt, sizeof(*intern->metadata->topics), kafka_metadata_topic_ctor TSRMLS_CC);
+static void topics_collection(zval *return_value, Z_RDKAFKA_OBJ *parent, object_intern *intern) { /* {{{ */
+    kafka_metadata_collection_init(return_value, parent, intern->metadata->topics, intern->metadata->topic_cnt, sizeof(*intern->metadata->topics), kafka_metadata_topic_ctor);
 }
 /* }}} */
 
-static void kafka_metadata_free(zend_object *object TSRMLS_DC) /* {{{ */
+static void kafka_metadata_free(zend_object *object) /* {{{ */
 {
-    object_intern *intern = get_custom_object(object_intern, object);
+    object_intern *intern = php_kafka_from_obj(object_intern, object);
 
     if (intern->metadata) {
         rd_kafka_metadata_destroy(intern->metadata);
     }
 
-    zend_object_std_dtor(&intern->std TSRMLS_CC);
-
-    free_custom_object(intern);
+    zend_object_std_dtor(&intern->std);
 }
 /* }}} */
 
-static zend_object_value kafka_metadata_new(zend_class_entry *class_type TSRMLS_DC) /* {{{ */
+static zend_object *kafka_metadata_new(zend_class_entry *class_type) /* {{{ */
 {
-    zend_object_value retval;
+    zend_object* retval;
     object_intern *intern;
 
-    intern = alloc_object(intern, class_type);
-    zend_object_std_init(&intern->std, class_type TSRMLS_CC);
+    intern = ecalloc(1, sizeof(object_intern)+ zend_object_properties_size(class_type));
+    zend_object_std_init(&intern->std, class_type);
     object_properties_init(&intern->std, class_type);
 
-    STORE_OBJECT(retval, intern, (zend_objects_store_dtor_t) zend_objects_destroy_object, kafka_metadata_free, NULL);
-    SET_OBJECT_HANDLERS(retval, &handlers);
+    retval = &intern->std;
+    retval->handlers = &handlers;
 
     return retval;
 }
 /* }}} */
 
-static object_intern * get_object(zval *zmetadata TSRMLS_DC)
+static object_intern * get_object(zval *zmetadata)
 {
-    object_intern *ometadata = get_custom_object_zval(object_intern, zmetadata);
+    object_intern *ometadata = Z_RDKAFKA_P(object_intern, zmetadata);
 
     if (!ometadata->metadata) {
-        zend_throw_exception_ex(NULL, 0 TSRMLS_CC, "RdKafka\\Metadata::__construct() has not been called");
+        zend_throw_exception_ex(NULL, 0, "RdKafka\\Metadata::__construct() has not been called");
         return NULL;
     }
 
     return ometadata;
 }
 
-static HashTable *get_debug_info(zval *object, int *is_temp TSRMLS_DC) /* {{{ */
+static HashTable *get_debug_info(Z_RDKAFKA_OBJ *object, int *is_temp) /* {{{ */
 {
     zval ary;
     object_intern *intern;
-    zeval brokers;
-    zeval topics;
+    zval brokers;
+    zval topics;
 
     *is_temp = 1;
 
     array_init(&ary);
 
-    intern = get_object(object TSRMLS_CC);
+    intern = rdkafka_get_debug_object(object_intern, object);
     if (!intern) {
         return Z_ARRVAL(ary);
     }
 
-    MAKE_STD_ZEVAL(brokers);
-    brokers_collection(P_ZEVAL(brokers), object, intern TSRMLS_CC);
-    add_assoc_zval(&ary, "brokers", P_ZEVAL(brokers));
+    ZVAL_NULL(&brokers);
+    brokers_collection(&brokers, object, intern);
+    add_assoc_zval(&ary, "brokers", &brokers);
 
-    MAKE_STD_ZEVAL(topics);
-    topics_collection(P_ZEVAL(topics), object, intern TSRMLS_CC);
-    add_assoc_zval(&ary, "topics", P_ZEVAL(topics));
+    ZVAL_NULL(&topics);
+    topics_collection(&topics, object, intern);
+    add_assoc_zval(&ary, "topics", &topics);
 
     add_assoc_long(&ary, "orig_broker_id", intern->metadata->orig_broker_id);
-    rdkafka_add_assoc_string(&ary, "orig_broker_name", intern->metadata->orig_broker_name);
+    add_assoc_string(&ary, "orig_broker_name", intern->metadata->orig_broker_name);
 
     return Z_ARRVAL(ary);
 }
@@ -143,7 +135,7 @@ PHP_METHOD(RdKafka__Metadata, getOrigBrokerId)
         return;
     }
 
-    intern = get_object(getThis() TSRMLS_CC);
+    intern = get_object(getThis());
     if (!intern) {
         return;
     }
@@ -166,12 +158,12 @@ PHP_METHOD(RdKafka__Metadata, getOrigBrokerName)
         return;
     }
 
-    intern = get_object(getThis() TSRMLS_CC);
+    intern = get_object(getThis());
     if (!intern) {
         return;
     }
 
-    RDKAFKA_RETURN_STRING(intern->metadata->orig_broker_name);
+    RETURN_STRING(intern->metadata->orig_broker_name);
 }
 /* }}} */
 
@@ -189,12 +181,12 @@ PHP_METHOD(RdKafka__Metadata, getBrokers)
         return;
     }
 
-    intern = get_object(getThis() TSRMLS_CC);
+    intern = get_object(getThis());
     if (!intern) {
         return;
     }
 
-    brokers_collection(return_value, getThis(), intern TSRMLS_CC);
+    brokers_collection(return_value, Z_RDKAFKA_PROP_OBJ(getThis()), intern);
 }
 /* }}} */
 
@@ -212,12 +204,12 @@ PHP_METHOD(RdKafka__Metadata, getTopics)
         return;
     }
 
-    intern = get_object(getThis() TSRMLS_CC);
+    intern = get_object(getThis());
     if (!intern) {
         return;
     }
 
-    topics_collection(return_value, getThis(), intern TSRMLS_CC);
+    topics_collection(return_value, Z_RDKAFKA_PROP_OBJ(getThis()), intern);
 }
 /* }}} */
 
@@ -229,26 +221,26 @@ static const zend_function_entry kafka_metadata_fe[] = {
     PHP_FE_END
 };
 
-void kafka_metadata_minit(TSRMLS_D)
+void kafka_metadata_minit(INIT_FUNC_ARGS)
 {
     zend_class_entry tmpce;
 
     INIT_NS_CLASS_ENTRY(tmpce, "RdKafka", "Metadata", kafka_metadata_fe);
-    ce = zend_register_internal_class(&tmpce TSRMLS_CC);
+    ce = zend_register_internal_class(&tmpce);
     ce->create_object = kafka_metadata_new;
 
     handlers = kafka_default_object_handlers;
     handlers.get_debug_info = get_debug_info;
-    set_object_handler_free_obj(&handlers, kafka_metadata_free);
-    set_object_handler_offset(&handlers, XtOffsetOf(object_intern, std));
+    handlers.free_obj = kafka_metadata_free;
+    handlers.offset = XtOffsetOf(object_intern, std);
 
-    kafka_metadata_topic_minit(TSRMLS_C);
-    kafka_metadata_broker_minit(TSRMLS_C);
-    kafka_metadata_partition_minit(TSRMLS_C);
-    kafka_metadata_collection_minit(TSRMLS_C);
+    kafka_metadata_topic_minit(INIT_FUNC_ARGS_PASSTHRU);
+    kafka_metadata_broker_minit(INIT_FUNC_ARGS_PASSTHRU);
+    kafka_metadata_partition_minit(INIT_FUNC_ARGS_PASSTHRU);
+    kafka_metadata_collection_minit(INIT_FUNC_ARGS_PASSTHRU);
 }
 
-void kafka_metadata_init(zval *return_value, const rd_kafka_metadata_t *metadata TSRMLS_DC)
+void kafka_metadata_init(zval *return_value, const rd_kafka_metadata_t *metadata)
 {
     object_intern *intern;
 
@@ -256,7 +248,7 @@ void kafka_metadata_init(zval *return_value, const rd_kafka_metadata_t *metadata
         return;
     }
 
-    intern = get_custom_object_zval(object_intern, return_value);
+    intern = Z_RDKAFKA_P(object_intern, return_value);
     if (!intern) {
         return;
     }

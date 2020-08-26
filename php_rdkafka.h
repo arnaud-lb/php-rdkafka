@@ -22,7 +22,6 @@
 #define PHP_RDKAFKA_H
 
 #include "librdkafka/rdkafka.h"
-#include "compat.h"
 #include "conf.h"
 
 #ifndef PHP_FE_END
@@ -30,18 +29,13 @@
 #endif
 
 typedef struct _kafka_object {
-#if PHP_MAJOR_VERSION < 7
-    zend_object             std;
-#endif
     rd_kafka_type_t         type;
     rd_kafka_t              *rk;
     kafka_conf_callbacks    cbs;
     HashTable               consuming;
 	HashTable				topics;
 	HashTable				queues;
-#if PHP_MAJOR_VERSION >= 7
     zend_object             std;
-#endif
 } kafka_object;
 
 PHP_METHOD(RdKafka, __construct);
@@ -60,10 +54,6 @@ extern zend_class_entry * ce_kafka_exception;
 #	define PHP_RDKAFKA_API __attribute__ ((visibility("default")))
 #else
 #	define PHP_RDKAFKA_API
-#endif
-
-#ifdef ZTS
-#include "TSRM.h"
 #endif
 
 #endif	/* PHP_RDKAFKA_H */

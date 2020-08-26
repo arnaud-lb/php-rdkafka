@@ -1,10 +1,5 @@
 --TEST--
 rd_kafka_get_err_descs()
---SKIPIF--
-<?php
-if (!function_exists('rd_kafka_get_err_descs')) {
-    echo "skip";
-}
 --FILE--
 <?php
 $descs = rd_kafka_get_err_descs();

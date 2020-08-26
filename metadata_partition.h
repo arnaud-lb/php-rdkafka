@@ -16,5 +16,5 @@
   +----------------------------------------------------------------------+
 */
 
-void kafka_metadata_partition_minit(TSRMLS_D);
-void kafka_metadata_partition_ctor(zval *return_value, zval *zmetadata, const void *metadata_partition TSRMLS_DC);
+void kafka_metadata_partition_minit(INIT_FUNC_ARGS);
+void kafka_metadata_partition_ctor(zval *return_value, zval *zmetadata, const void *metadata_partition);

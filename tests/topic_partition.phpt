@@ -1,11 +1,5 @@
 --TEST--
 RdKafka\TopicPartition
---SKIPIF--
-<?php
-if (!class_exists('RdKafka\TopicPartition')) {
-    echo 'skip';
-}
-?>
 --FILE--
 <?php
 

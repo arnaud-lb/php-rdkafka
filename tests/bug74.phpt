@@ -1,10 +1,14 @@
 --TEST--
 Bug 74
+--SKIPIF--
+<?php
+require __DIR__ . '/integration-tests-check.php';
 --FILE--
 <?php
+require __DIR__ . '/integration-tests-check.php';
 
 $conf = new RdKafka\Conf();
-$conf->set('metadata.broker.list', 'localhost:9092');
+$conf->set('metadata.broker.list', getenv('TEST_KAFKA_BROKERS'));
 
 $consumer = new RdKafka\Consumer($conf);
 $topic = $consumer->newTopic("batman", null);

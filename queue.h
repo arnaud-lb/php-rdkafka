@@ -17,17 +17,12 @@
 */
 
 typedef struct _kafka_queue_object {
-#if PHP_MAJOR_VERSION < 7
-    zend_object         std;
-#endif
     rd_kafka_queue_t    *rkqu;
-    zeval               zrk;
-#if PHP_MAJOR_VERSION >= 7
+    zval               zrk;
     zend_object         std;
-#endif
 } kafka_queue_object;
 
-void kafka_queue_minit(TSRMLS_D);
-kafka_queue_object * get_kafka_queue_object(zval *zrkqu TSRMLS_DC);
+void kafka_queue_minit(INIT_FUNC_ARGS);
+kafka_queue_object * get_kafka_queue_object(zval *zrkqu);
 
 extern zend_class_entry * ce_kafka_queue;
