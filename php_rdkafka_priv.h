@@ -23,9 +23,13 @@
 
 #define Z_RDKAFKA_PROP_OBJ(object) Z_OBJ_P(object)
 
+#define rdkafka_get_debug_object(type, object) php_kafka_from_obj(type, object)
+
 #else // PHP 7
 
 #define Z_RDKAFKA_PROP_OBJ(object) object
+
+#define rdkafka_get_debug_object(type, object) get_object(object)
 
 #endif
 

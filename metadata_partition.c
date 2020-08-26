@@ -89,7 +89,7 @@ static HashTable *get_debug_info(zval *object, int *is_temp) /* {{{ */
 
     array_init(&ary);
 
-    intern = get_object(object);
+    intern = rdkafka_get_debug_object(object_intern, object);
     if (!intern) {
         return Z_ARRVAL(ary);
     }
