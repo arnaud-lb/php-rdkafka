@@ -48,8 +48,6 @@ static void free_object(zend_object *object) /* {{{ */
     }
 
     zend_object_std_dtor(&intern->std);
-
-    free_custom_object(intern);
 }
 /* }}} */
 

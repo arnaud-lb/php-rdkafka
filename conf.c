@@ -138,7 +138,6 @@ static void kafka_conf_error_cb(rd_kafka_t *rk, int err, const char *reason, voi
 {
     kafka_conf_callbacks *cbs = (kafka_conf_callbacks*) opaque;
     zeval args[3];
-    TSRMLS_FETCH();
 
     if (!opaque) {
         return;
@@ -167,7 +166,6 @@ static void kafka_conf_dr_msg_cb(rd_kafka_t *rk, const rd_kafka_message_t *msg, 
 {
     kafka_conf_callbacks *cbs = (kafka_conf_callbacks*) opaque;
     zeval args[2];
-    TSRMLS_FETCH();
 
     if (!opaque) {
         return;
@@ -193,7 +191,6 @@ static int kafka_conf_stats_cb(rd_kafka_t *rk, char *json, size_t json_len, void
 {
     kafka_conf_callbacks *cbs = (kafka_conf_callbacks*) opaque;
     zeval args[3];
-    TSRMLS_FETCH();
 
     if (!opaque) {
         return 0;
@@ -224,7 +221,6 @@ static void kafka_conf_rebalance_cb(rd_kafka_t *rk, rd_kafka_resp_err_t err, rd_
 {
     kafka_conf_callbacks *cbs = (kafka_conf_callbacks*) opaque;
     zeval args[3];
-    TSRMLS_FETCH();
 
     if (!opaque) {
         return;
@@ -260,7 +256,6 @@ static void kafka_conf_consume_cb(rd_kafka_message_t *msg, void *opaque)
 {
     kafka_conf_callbacks *cbs = (kafka_conf_callbacks*) opaque;
     zeval args[2];
-    TSRMLS_FETCH();
 
     if (!opaque) {
         return;
@@ -287,7 +282,6 @@ static void kafka_conf_offset_commit_cb(rd_kafka_t *rk, rd_kafka_resp_err_t err,
 {
     kafka_conf_callbacks *cbs = (kafka_conf_callbacks*) opaque;
     zeval args[3];
-    TSRMLS_FETCH();
 
     if (!opaque) {
         return;
@@ -315,7 +309,6 @@ static void kafka_conf_offset_commit_cb(rd_kafka_t *rk, rd_kafka_resp_err_t err,
 static void kafka_conf_log_cb(const rd_kafka_t *rk, int level, const char *facility, const char *message)
 {
     zeval args[4];
-    TSRMLS_FETCH();
 
     kafka_conf_callbacks *cbs = (kafka_conf_callbacks*) rd_kafka_opaque(rk);
 

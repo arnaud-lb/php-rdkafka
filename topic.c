@@ -55,8 +55,6 @@ static void kafka_topic_free(zend_object *object) /* {{{ */
     }
 
     zend_object_std_dtor(&intern->std);
-
-    free_custom_object(intern);
 }
 /* }}} */
 
@@ -81,7 +79,6 @@ static void consume_callback(rd_kafka_message_t *msg, void *opaque)
 {
     php_callback *cb = (php_callback*) opaque;
     zeval args[1];
-    TSRMLS_FETCH();
 
     if (!opaque) {
         return;

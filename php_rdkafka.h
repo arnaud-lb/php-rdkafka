@@ -56,8 +56,4 @@ extern zend_class_entry * ce_kafka_exception;
 #	define PHP_RDKAFKA_API
 #endif
 
-#ifdef ZTS
-#include "TSRM.h"
-#endif
-
 #endif	/* PHP_RDKAFKA_H */
