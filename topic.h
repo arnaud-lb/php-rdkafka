@@ -19,14 +19,9 @@
 #include "zeval.h"
 
 typedef struct _kafka_topic_object {
-#if PHP_MAJOR_VERSION < 7
-    zend_object         std;
-#endif
     rd_kafka_topic_t    *rkt;
     zeval               zrk;
-#if PHP_MAJOR_VERSION >= 7
     zend_object         std;
-#endif
 } kafka_topic_object;
 
 void kafka_topic_minit(TSRMLS_D);

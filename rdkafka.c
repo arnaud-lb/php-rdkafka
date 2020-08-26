@@ -305,11 +305,8 @@ PHP_METHOD(RdKafka__Consumer, newQueue)
     // Keep a reference to the parent Kafka object, attempts to ensure that
     // the Queue object is destroyed before the Kafka object.
     // This avoids rd_kafka_destroy() hanging.
-#if PHP_MAJOR_VERSION >= 7
     queue_intern->zrk = *getThis();
-#else
-    queue_intern->zrk = getThis();
-#endif
+
     Z_ADDREF_P(P_ZEVAL(queue_intern->zrk));
 
     zend_hash_index_add_ptr(&intern->queues, (zend_ulong)queue_intern, queue_intern);
@@ -481,11 +478,8 @@ PHP_METHOD(RdKafka__Kafka, newTopic)
     }
 
     topic_intern->rkt = rkt;
-#if PHP_MAJOR_VERSION >= 7
     topic_intern->zrk = *getThis();
-#else
-    topic_intern->zrk = getThis();
-#endif
+
     Z_ADDREF_P(P_ZEVAL(topic_intern->zrk));
 
     zend_hash_index_add_ptr(&intern->topics, (zend_ulong)topic_intern, topic_intern);
@@ -793,10 +787,6 @@ void register_err_constants(INIT_FUNC_ARGS) /* {{{ */
         if ((size_t)len >= sizeof(buf)) {
             len = sizeof(buf)-1;
         }
-
-#if PHP_MAJOR_VERSION < 7
-		len += 1;
-#endif
 
         zend_register_long_constant(buf, len, desc->code, CONST_CS | CONST_PERSISTENT, module_number);
     }

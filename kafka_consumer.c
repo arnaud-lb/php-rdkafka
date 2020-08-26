@@ -33,14 +33,9 @@
 #include "metadata.h"
 
 typedef struct _object_intern {
-#if PHP_MAJOR_VERSION < 7
-    zend_object             std;
-#endif
     rd_kafka_t              *rk;
     kafka_conf_callbacks    cbs;
-#if PHP_MAJOR_VERSION >= 7
     zend_object             std;
-#endif
 } object_intern;
 
 static zend_class_entry * ce;

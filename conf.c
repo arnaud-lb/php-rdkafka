@@ -69,11 +69,7 @@ static void kafka_conf_callback_copy(kafka_conf_callback **to, kafka_conf_callba
     if (from) {
         *to = emalloc(sizeof(**to));
         **to = *from;
-#if PHP_MAJOR_VERSION >= 7
         zval_copy_ctor(&(*to)->fci.function_name);
-#else
-        Z_ADDREF_P((*to)->fci.function_name);
-#endif
     }
 } /* }}} */
 

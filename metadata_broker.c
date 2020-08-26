@@ -30,14 +30,9 @@
 #include "zeval.h"
 
 typedef struct _object_intern {
-#if PHP_MAJOR_VERSION < 7
-    zend_object                     std;
-#endif
     zval                            zmetadata;
     const rd_kafka_metadata_broker_t *metadata_broker;
-#if PHP_MAJOR_VERSION >= 7
     zend_object                     std;
-#endif
 } object_intern;
 
 static HashTable *get_debug_info(zval *object, int *is_temp TSRMLS_DC);
