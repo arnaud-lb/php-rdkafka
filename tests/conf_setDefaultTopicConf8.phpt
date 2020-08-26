@@ -15,7 +15,14 @@ echo "Setting valid topic conf\n";
 $conf->setDefaultTopicConf(new RdKafka\TopicConf());
 
 echo "Setting invalid topic conf\n";
-$conf->setDefaultTopicConf($conf);
+try {
+    $conf->setDefaultTopicConf($conf);
+} catch(TypeError $error) {
+    echo $error->getMessage() . PHP_EOL;
+    echo $error->getFile() . PHP_EOL;
+    echo $error->getLine() . PHP_EOL;
+    echo $error->getCode();
+}
 
 --EXPECTF--
 Setting valid topic conf
@@ -24,6 +31,8 @@ Deprecated: Method RdKafka\Conf::setDefaultTopicConf() is deprecated in %s%econf
 Setting invalid topic conf
 
 Deprecated: Method RdKafka\Conf::setDefaultTopicConf() is deprecated in %s%econf_setDefaultTopicConf8.php on line 9
-
-Fatal error: Uncaught TypeError: RdKafka\Conf::setDefaultTopicConf(): Argument #1 ($topic_conf) must be of type RdKafka\TopicConf, RdKafka\Conf given in %s%econf_setDefaultTopicConf8.php on line 9
+Argument #1 ($topic_conf) must be of type RdKafka\TopicConf, RdKafka\Conf given
+%s%econf_setDefaultTopicConf8.php
+9
+0
 
