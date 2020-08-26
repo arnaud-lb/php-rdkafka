@@ -1,4 +1,4 @@
-dist: xenial
+dist: bionic
 language: php
 compiler:
     - gcc
@@ -7,7 +7,7 @@ services:
 env:
     global:
         - TEST_KAFKA_BROKERS=kafka:9092
-        - TEST_KAFKA_BROKER_VERSION=2.3
+        - TEST_KAFKA_BROKER_VERSION=2.6
         - LIBRDKAFKA_REPOSITORY_URL=https://github.com/edenhill/librdkafka.git
         - PHP_RDKAFKA_CFLAGS='-Wall -Werror=implicit-function-declaration'
 jobs:
@@ -17,7 +17,7 @@ jobs:
     include:
         # Slow tests
         - php: 7.4
-          env: LIBRDKAFKA_VERSION=v1.4.4 MEMORY_CHECK=1 PHP_VERSION=7.4.0 PHP_RDKAFKA_CFLAGS='-Wall -Werror -Wno-deprecated-declarations'
+          env: LIBRDKAFKA_VERSION=v1.5.0 MEMORY_CHECK=1 PHP_VERSION=7.4.0 PHP_RDKAFKA_CFLAGS='-Wall -Werror -Wno-deprecated-declarations'
           addons:
               apt:
                   packages:
@@ -25,74 +25,28 @@ jobs:
                       - libonig-dev
                       - libzip-dev
 
+        # librdkafka 1.5.0
+        -   php: nightly
+                env: LIBRDKAFKA_VERSION=v1.5.0
+        -   php: 7.4
+            env: LIBRDKAFKA_VERSION=v1.5.0
+        -   php: 7.3
+            env: LIBRDKAFKA_VERSION=v1.5.0
+
         # librdkafka 1.4.4
-        - php: 7.4
-          env: LIBRDKAFKA_VERSION=v1.4.4
-        - php: 7.3
-          env: LIBRDKAFKA_VERSION=v1.4.4
-        - php: 7.2
-          env: LIBRDKAFKA_VERSION=v1.4.4
-        - php: 7.1
-          env: LIBRDKAFKA_VERSION=v1.4.4
-        - php: 7.0
-          env: LIBRDKAFKA_VERSION=v1.4.4
-        - php: 5.6
-          env: LIBRDKAFKA_VERSION=v1.4.4
-
-        # librdkafka 1.1.0
-        - php: 7.4
-          env: LIBRDKAFKA_VERSION=v1.1.0
-        - php: 7.3
-          env: LIBRDKAFKA_VERSION=v1.1.0
-        - php: 7.2
-          env: LIBRDKAFKA_VERSION=v1.1.0
-        - php: 7.1
-          env: LIBRDKAFKA_VERSION=v1.1.0
-        - php: 7.0
-          env: LIBRDKAFKA_VERSION=v1.1.0
-        - php: 5.6
-          env: LIBRDKAFKA_VERSION=v1.1.0
-
-        # librdkafka 1.0.1
-        - php: 7.4
-          env: LIBRDKAFKA_VERSION=v1.0.1
-        - php: 7.3
-          env: LIBRDKAFKA_VERSION=v1.0.1
-        - php: 7.2
-          env: LIBRDKAFKA_VERSION=v1.0.1
-        - php: 7.1
-          env: LIBRDKAFKA_VERSION=v1.0.1
-        - php: 7.0
-          env: LIBRDKAFKA_VERSION=v1.0.1
-        - php: 5.6
-          env: LIBRDKAFKA_VERSION=v1.0.1
-
-        # librdkafka 0.11.x
-        - php: 7.4
-          env: LIBRDKAFKA_VERSION=0.11.x
-        - php: 7.3
-          env: LIBRDKAFKA_VERSION=0.11.x
-        - php: 7.2
-          env: LIBRDKAFKA_VERSION=0.11.x
-        - php: 7.1
-          env: LIBRDKAFKA_VERSION=0.11.x
-        - php: 7.0
-          env: LIBRDKAFKA_VERSION=0.11.x
-        - php: 5.6
-          env: LIBRDKAFKA_VERSION=0.11.x
+        -   php: nightly
+                env: LIBRDKAFKA_VERSION=v1.4.4
+        -   php: 7.4
+            env: LIBRDKAFKA_VERSION=v1.4.4
+        -   php: 7.3
+            env: LIBRDKAFKA_VERSION=v1.4.4
 
         # librdkafka master
+        - php: nightly
+          env: LIBRDKAFKA_VERSION=master
         - php: 7.4
           env: LIBRDKAFKA_VERSION=master
         - php: 7.3
-          env: LIBRDKAFKA_VERSION=master
-        - php: 7.2
-          env: LIBRDKAFKA_VERSION=master
-        - php: 7.1
-          env: LIBRDKAFKA_VERSION=master
-        - php: 7.0
-          env: LIBRDKAFKA_VERSION=master
-        - php: 5.6
           env: LIBRDKAFKA_VERSION=master
 
 before_install:
@@ -111,8 +65,8 @@ before_install:
         docker network create kafka_network
         docker pull wurstmeister/zookeeper:3.4.6
         docker run -d --network kafka_network --name zookeeper wurstmeister/zookeeper:3.4.6
-        docker pull wurstmeister/kafka:2.12-2.3.1
-        docker run -d -p 9092:9092 --network kafka_network -e "KAFKA_AUTO_CREATE_TOPICS_ENABLE=true" -e "KAFKA_CREATE_TOPICS=test-topic:1:1:compact" -e "KAFKA_ADVERTISED_HOST_NAME=kafka" -e "KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181" -e "KAFKA_ADVERTISED_PORT=9092" --name kafka wurstmeister/kafka:2.12-2.3.1
+        docker pull wurstmeister/kafka:2.13-2.6.0
+        docker run -d -p 9092:9092 --network kafka_network -e "KAFKA_AUTO_CREATE_TOPICS_ENABLE=true" -e "KAFKA_CREATE_TOPICS=test-topic:1:1:compact" -e "KAFKA_ADVERTISED_HOST_NAME=kafka" -e "KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181" -e "KAFKA_ADVERTISED_PORT=9092" --name kafka wurstmeister/kafka:2.13-2.6.0
         export KAFKA_BROKER=kafka:9092
         sudo sh -c 'echo "\n127.0.0.1  kafka\n" >> /etc/hosts'
 install:
