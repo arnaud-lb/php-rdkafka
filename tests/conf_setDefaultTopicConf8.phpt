@@ -2,7 +2,7 @@
 RdKafka\Conf::setDefaultTopicConf()
 --SKIPIF--
 <?php
-if (!method_exists('RdKafka\Conf', 'setDefaultTopicConf') || 8 < PHP_MAJOR_VERSION) {
+if (!method_exists('RdKafka\Conf', 'setDefaultTopicConf') || 8 > PHP_MAJOR_VERSION) {
     echo "skip";
 }
 ?>
@@ -20,10 +20,10 @@ $conf->setDefaultTopicConf($conf);
 --EXPECTF--
 Setting valid topic conf
 
-Deprecated: Method RdKafka\Conf::setDefaultTopicConf() is deprecated in %s%econf_setDefaultTopicConf.php on line 6
+Deprecated: Method RdKafka\Conf::setDefaultTopicConf() is deprecated in %s%econf_setDefaultTopicConf8.php on line 6
 Setting invalid topic conf
 
-Deprecated: Method RdKafka\Conf::setDefaultTopicConf() is deprecated in %s%econf_setDefaultTopicConf.php on line 9
+Deprecated: Method RdKafka\Conf::setDefaultTopicConf() is deprecated in %s%econf_setDefaultTopicConf8.php on line 9
 
-Fatal error: Uncaught TypeError: RdKafka\Conf::setDefaultTopicConf(): Argument #1 ($topic_conf) must be of type RdKafka\TopicConf, RdKafka\Conf given in %s%econf_setDefaultTopicConf.php on line 9
+Fatal error: Uncaught TypeError: RdKafka\Conf::setDefaultTopicConf(): Argument #1 ($topic_conf) must be of type RdKafka\TopicConf, RdKafka\Conf given in %s%econf_setDefaultTopicConf8.php on line 9
 
