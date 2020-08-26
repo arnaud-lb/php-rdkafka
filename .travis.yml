@@ -16,8 +16,8 @@ jobs:
     fast_finish: true
     include:
         # Slow tests
-        - php: nightly
-          env: LIBRDKAFKA_VERSION=v1.5.0 MEMORY_CHECK=1 PHP_VERSION=8.0.0 PHP_RDKAFKA_CFLAGS='-Wall -Werror -Wno-deprecated-declarations'
+        - php: 7.4
+          env: LIBRDKAFKA_VERSION=v1.5.0 MEMORY_CHECK=1 PHP_VERSION=7.4.0 PHP_RDKAFKA_CFLAGS='-Wall -Werror -Wno-deprecated-declarations'
           addons:
               apt:
                   packages:
