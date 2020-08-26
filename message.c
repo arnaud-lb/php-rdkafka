@@ -41,7 +41,6 @@ void kafka_message_new(zval *return_value, const rd_kafka_message_t *message)
 
     timestamp = rd_kafka_message_timestamp(message, &tstype);
 
-#ifdef HAVE_RD_KAFKA_MESSAGE_HEADERS
     rd_kafka_headers_t *message_headers = NULL;
     rd_kafka_resp_err_t header_response;
     const char *header_name = NULL;
@@ -49,7 +48,6 @@ void kafka_message_new(zval *return_value, const rd_kafka_message_t *message)
     size_t header_size = 0;
     zval headers_array;
     uint i;
-#endif /* HAVE_RD_KAFKA_MESSAGE_HEADERS */
 
     zend_update_property_long(NULL, return_value, ZEND_STRL("err"), message->err);
 
@@ -67,7 +65,6 @@ void kafka_message_new(zval *return_value, const rd_kafka_message_t *message)
     }
     zend_update_property_long(NULL, return_value, ZEND_STRL("offset"), message->offset);
 
-#ifdef HAVE_RD_KAFKA_MESSAGE_HEADERS
     if (message->err == RD_KAFKA_RESP_ERR_NO_ERROR) {
         rd_kafka_message_headers(message, &message_headers);
         if (message_headers != NULL) {
@@ -83,7 +80,6 @@ void kafka_message_new(zval *return_value, const rd_kafka_message_t *message)
             zval_ptr_dtor(&headers_array);
         }
     }
-#endif
 }
 
 void kafka_message_list_to_array(zval *return_value, rd_kafka_message_t **messages, long size) /* {{{ */
@@ -158,7 +154,5 @@ void kafka_message_minit(INIT_FUNC_ARGS) { /* {{{ */
     zend_declare_property_null(ce_kafka_message, ZEND_STRL("len"), ZEND_ACC_PUBLIC);
     zend_declare_property_null(ce_kafka_message, ZEND_STRL("key"), ZEND_ACC_PUBLIC);
     zend_declare_property_null(ce_kafka_message, ZEND_STRL("offset"), ZEND_ACC_PUBLIC);
-#ifdef HAVE_RD_KAFKA_MESSAGE_HEADERS
     zend_declare_property_null(ce_kafka_message, ZEND_STRL("headers"), ZEND_ACC_PUBLIC);
-#endif
 } /* }}} */

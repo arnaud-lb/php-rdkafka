@@ -54,27 +54,9 @@ if test "$PHP_RDKAFKA" != "no"; then
   yes
 #endif
   ],[
-    AC_MSG_RESULT([>= 0.11.0])
+    AC_MSG_RESULT([>= 1.4.0])
   ],[
-    AC_MSG_ERROR([librdkafka version 0.11.0 or greater required.])
-  ])
-
-  AC_CHECK_LIB($LIBNAME,[rd_kafka_message_headers],[
-    AC_DEFINE(HAVE_RD_KAFKA_MESSAGE_HEADERS,1,[ ])
-  ],[
-    AC_MSG_WARN([no rd_kafka_message_headers, headers support will not be available])
-  ])
-
-  AC_CHECK_LIB($LIBNAME,[rd_kafka_purge],[
-    AC_DEFINE(HAS_RD_KAFKA_PURGE,1,[ ])
-  ],[
-    AC_MSG_WARN([purge is not available])
-  ])
-
-  AC_CHECK_LIB($LIBNAME,[rd_kafka_msg_partitioner_murmur2],[
-    AC_DEFINE(HAS_RD_KAFKA_PARTITIONER_MURMUR2,1,[ ])
-  ],[
-    AC_MSG_WARN([murmur2 partitioner is not available])
+    AC_MSG_ERROR([librdkafka version 1.4.0 or greater required.])
   ])
 
   LDFLAGS="$ORIG_LDFLAGS"

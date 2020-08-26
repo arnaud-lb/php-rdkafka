@@ -181,13 +181,6 @@ kafka_object * get_kafka_object(zval *zrk)
     return ork;
 }
 
-static void kafka_log_syslog_print(const rd_kafka_t *rk, int level, const char *fac, const char *buf) {
-    rd_kafka_log_print(rk, level, fac, buf);
-#ifndef _MSC_VER
-    rd_kafka_log_syslog(rk, level, fac, buf);
-#endif
-}
-
 void add_consuming_toppar(kafka_object * intern, rd_kafka_topic_t * rkt, int32_t partition) {
     char *key = NULL;
     int key_len;
@@ -534,7 +527,6 @@ PHP_METHOD(RdKafka__Kafka, flush)
 }
 /* }}} */
 
-#ifdef HAS_RD_KAFKA_PURGE
 /* {{{ proto int RdKafka\Kafka::purge(int $purge_flags)
    Purge messages that are in queue or in flight */
 
@@ -559,7 +551,6 @@ PHP_METHOD(RdKafka__Kafka, purge)
     RETURN_LONG(rd_kafka_purge(intern->rk, purge_flags));
 }
 /* }}} */
-#endif
 
 /* {{{ proto void RdKafka\Kafka::queryWatermarkOffsets(string $topic, int $partition, int &$low, int &$high, int $timeout_ms)
    Query broker for low (oldest/beginning) or high (newest/end) offsets for partition */
@@ -653,9 +644,7 @@ static const zend_function_entry kafka_fe[] = {
     PHP_ME(RdKafka__Kafka, newTopic, arginfo_kafka_new_topic, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__Kafka, poll, arginfo_kafka_poll, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__Kafka, flush, arginfo_kafka_flush, ZEND_ACC_PUBLIC)
-#ifdef HAS_RD_KAFKA_PURGE
     PHP_ME(RdKafka__Kafka, purge, arginfo_kafka_purge, ZEND_ACC_PUBLIC)
-#endif
     PHP_ME(RdKafka__Kafka, queryWatermarkOffsets, arginfo_kafka_query_watermark_offsets, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__Kafka, offsetsForTimes, arginfo_kafka_offsets_for_times, ZEND_ACC_PUBLIC)
     PHP_FE_END
@@ -730,11 +719,9 @@ PHP_MINIT_FUNCTION(rdkafka)
     COPY_CONSTANT(RD_KAFKA_PARTITION_UA);
     COPY_CONSTANT(RD_KAFKA_PRODUCER);
     COPY_CONSTANT(RD_KAFKA_MSG_F_BLOCK);
-#ifdef HAS_RD_KAFKA_PURGE
     COPY_CONSTANT(RD_KAFKA_PURGE_F_QUEUE);
     COPY_CONSTANT(RD_KAFKA_PURGE_F_INFLIGHT);
     COPY_CONSTANT(RD_KAFKA_PURGE_F_NON_BLOCKING);
-#endif
     REGISTER_LONG_CONSTANT("RD_KAFKA_VERSION", rd_kafka_version(), CONST_CS | CONST_PERSISTENT);
     REGISTER_LONG_CONSTANT("RD_KAFKA_BUILD_VERSION", RD_KAFKA_VERSION, CONST_CS | CONST_PERSISTENT);
 
@@ -747,10 +734,8 @@ PHP_MINIT_FUNCTION(rdkafka)
     REGISTER_LONG_CONSTANT("RD_KAFKA_MSG_PARTITIONER_RANDOM", MSG_PARTITIONER_RANDOM, CONST_CS | CONST_PERSISTENT);
     REGISTER_LONG_CONSTANT("RD_KAFKA_MSG_PARTITIONER_CONSISTENT", MSG_PARTITIONER_CONSISTENT, CONST_CS | CONST_PERSISTENT);
     REGISTER_LONG_CONSTANT("RD_KAFKA_MSG_PARTITIONER_CONSISTENT_RANDOM", MSG_PARTITIONER_CONSISTENT_RANDOM, CONST_CS | CONST_PERSISTENT);
-#ifdef HAS_RD_KAFKA_PARTITIONER_MURMUR2
     REGISTER_LONG_CONSTANT("RD_KAFKA_MSG_PARTITIONER_MURMUR2", MSG_PARTITIONER_MURMUR2, CONST_CS | CONST_PERSISTENT);
     REGISTER_LONG_CONSTANT("RD_KAFKA_MSG_PARTITIONER_MURMUR2_RANDOM", MSG_PARTITIONER_MURMUR2_RANDOM, CONST_CS | CONST_PERSISTENT);
-#endif
 
     REGISTER_LONG_CONSTANT("RD_KAFKA_LOG_PRINT", RD_KAFKA_LOG_PRINT, CONST_CS | CONST_PERSISTENT);
     REGISTER_LONG_CONSTANT("RD_KAFKA_LOG_SYSLOG", RD_KAFKA_LOG_SYSLOG, CONST_CS | CONST_PERSISTENT);
