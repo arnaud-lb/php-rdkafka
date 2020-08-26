@@ -19,6 +19,16 @@
 #ifndef PHP_RDKAFKA_PRIV_H
 #define PHP_RDKAFKA_PRIV_H
 
+#if PHP_MAJOR_VERSION >= 8
+
+#define Z_RDKAFKA_PROP_OBJ(object) Z_OBJ_P(object)
+
+#else // PHP 7
+
+#define Z_RDKAFKA_PROP_OBJ(object) object
+
+#endif
+
 #define Z_RDKAFKA_P(php_kafka_type, zobject) \
     ((php_kafka_type*)((char *)Z_OBJ_P(zobject) - XtOffsetOf(php_kafka_type, std)))
 
