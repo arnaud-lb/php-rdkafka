@@ -29,8 +29,7 @@
 
 #endif
 
-#define Z_RDKAFKA_P(php_kafka_type, zobject) \
-    ((php_kafka_type*)((char *)Z_OBJ_P(zobject) - XtOffsetOf(php_kafka_type, std)))
+#define Z_RDKAFKA_P(php_kafka_type, zobject) php_kafka_from_obj(php_kafka_type, Z_OBJ_P(zobject))
 
 #define php_kafka_from_obj(php_kafka_type, object) \
     ((php_kafka_type*)((char *)(object) - XtOffsetOf(php_kafka_type, std)))
