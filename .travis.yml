@@ -26,20 +26,20 @@ jobs:
                       - libzip-dev
 
         # librdkafka 1.5.0
-        -   php: nightly
-                env: LIBRDKAFKA_VERSION=v1.5.0
-        -   php: 7.4
-            env: LIBRDKAFKA_VERSION=v1.5.0
-        -   php: 7.3
-            env: LIBRDKAFKA_VERSION=v1.5.0
+        - php: nightly
+          env: LIBRDKAFKA_VERSION=v1.5.0
+        - php: 7.4
+          env: LIBRDKAFKA_VERSION=v1.5.0
+        - php: 7.3
+          env: LIBRDKAFKA_VERSION=v1.5.0
 
         # librdkafka 1.4.4
-        -   php: nightly
-                env: LIBRDKAFKA_VERSION=v1.4.4
-        -   php: 7.4
-            env: LIBRDKAFKA_VERSION=v1.4.4
-        -   php: 7.3
-            env: LIBRDKAFKA_VERSION=v1.4.4
+        - php: nightly
+          env: LIBRDKAFKA_VERSION=v1.4.4
+        - php: 7.4
+          env: LIBRDKAFKA_VERSION=v1.4.4
+        - php: 7.3
+          env: LIBRDKAFKA_VERSION=v1.4.4
 
         # librdkafka master
         - php: nightly
