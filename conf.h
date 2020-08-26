@@ -63,11 +63,11 @@ typedef struct _kafka_conf_object {
 #endif
 } kafka_conf_object;
 
-kafka_conf_object * get_kafka_conf_object(zval *zconf TSRMLS_DC);
-void kafka_conf_minit(TSRMLS_D);
+kafka_conf_object * get_kafka_conf_object(zval *zconf);
+void kafka_conf_minit();
 
-void kafka_conf_callbacks_dtor(kafka_conf_callbacks *cbs TSRMLS_DC);
-void kafka_conf_callbacks_copy(kafka_conf_callbacks *to, kafka_conf_callbacks *from TSRMLS_DC);
+void kafka_conf_callbacks_dtor(kafka_conf_callbacks *cbs);
+void kafka_conf_callbacks_copy(kafka_conf_callbacks *to, kafka_conf_callbacks *from);
 
 extern zend_class_entry * ce_kafka_conf;
 extern zend_class_entry * ce_kafka_topic_conf;

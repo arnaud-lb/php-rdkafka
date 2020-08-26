@@ -40,12 +40,12 @@ typedef struct _object_intern {
 #endif
 } object_intern;
 
-static HashTable *get_debug_info(zval *object, int *is_temp TSRMLS_DC);
+static HashTable *get_debug_info(zval *object, int *is_temp);
 
 static zend_class_entry * ce;
 static zend_object_handlers handlers;
 
-static void free_object(zend_object *object TSRMLS_DC) /* {{{ */
+static void free_object(zend_object *object) /* {{{ */
 {
     object_intern *intern = get_custom_object(object_intern, object);
 
@@ -53,19 +53,19 @@ static void free_object(zend_object *object TSRMLS_DC) /* {{{ */
         zval_dtor(&intern->zmetadata);
     }
 
-    zend_object_std_dtor(&intern->std TSRMLS_CC);
+    zend_object_std_dtor(&intern->std);
 
     free_custom_object(intern);
 }
 /* }}} */
 
-static zend_object_value create_object(zend_class_entry *class_type TSRMLS_DC) /* {{{ */
+static zend_object_value create_object(zend_class_entry *class_type) /* {{{ */
 {
     zend_object_value retval;
     object_intern *intern;
 
     intern = alloc_object(intern, class_type);
-    zend_object_std_init(&intern->std, class_type TSRMLS_CC);
+    zend_object_std_init(&intern->std, class_type);
     object_properties_init(&intern->std, class_type);
 
     STORE_OBJECT(retval, intern, (zend_objects_store_dtor_t) zend_objects_destroy_object, free_object, NULL);
@@ -75,19 +75,19 @@ static zend_object_value create_object(zend_class_entry *class_type TSRMLS_DC) /
 }
 /* }}} */
 
-static object_intern * get_object(zval *zmt TSRMLS_DC)
+static object_intern * get_object(zval *zmt)
 {
     object_intern *omt = get_custom_object_zval(object_intern, zmt);
 
     if (!omt->metadata_partition) {
-        zend_throw_exception_ex(NULL, 0 TSRMLS_CC, "RdKafka\\Metadata\\Partition::__construct() has not been called");
+        zend_throw_exception_ex(NULL, 0, "RdKafka\\Metadata\\Partition::__construct() has not been called");
         return NULL;
     }
 
     return omt;
 }
 
-static HashTable *get_debug_info(zval *object, int *is_temp TSRMLS_DC) /* {{{ */
+static HashTable *get_debug_info(zval *object, int *is_temp) /* {{{ */
 {
     zval ary;
     object_intern *intern;
@@ -96,7 +96,7 @@ static HashTable *get_debug_info(zval *object, int *is_temp TSRMLS_DC) /* {{{ */
 
     array_init(&ary);
 
-    intern = get_object(object TSRMLS_CC);
+    intern = get_object(object);
     if (!intern) {
         return Z_ARRVAL(ary);
     }
@@ -125,7 +125,7 @@ PHP_METHOD(RdKafka__Metadata__Partition, getId)
         return;
     }
 
-    intern = get_object(getThis() TSRMLS_CC);
+    intern = get_object(getThis());
     if (!intern) {
         return;
     }
@@ -148,7 +148,7 @@ PHP_METHOD(RdKafka__Metadata__Partition, getErr)
         return;
     }
 
-    intern = get_object(getThis() TSRMLS_CC);
+    intern = get_object(getThis());
     if (!intern) {
         return;
     }
@@ -171,7 +171,7 @@ PHP_METHOD(RdKafka__Metadata__Partition, getLeader)
         return;
     }
 
-    intern = get_object(getThis() TSRMLS_CC);
+    intern = get_object(getThis());
     if (!intern) {
         return;
     }
@@ -180,7 +180,7 @@ PHP_METHOD(RdKafka__Metadata__Partition, getLeader)
 }
 /* }}} */
 
-void int32_ctor(zval *return_value, zval *zmetadata, const void *data TSRMLS_DC) {
+void int32_ctor(zval *return_value, zval *zmetadata, const void *data) {
     ZVAL_LONG(return_value, *(int32_t*)data);
 }
 
@@ -198,12 +198,12 @@ PHP_METHOD(RdKafka__Metadata__Partition, getReplicas)
         return;
     }
 
-    intern = get_object(getThis() TSRMLS_CC);
+    intern = get_object(getThis());
     if (!intern) {
         return;
     }
 
-    kafka_metadata_collection_init(return_value, getThis(), intern->metadata_partition->replicas, intern->metadata_partition->replica_cnt, sizeof(*intern->metadata_partition->replicas), int32_ctor TSRMLS_CC);
+    kafka_metadata_collection_init(return_value, getThis(), intern->metadata_partition->replicas, intern->metadata_partition->replica_cnt, sizeof(*intern->metadata_partition->replicas), int32_ctor);
 }
 /* }}} */
 
@@ -221,12 +221,12 @@ PHP_METHOD(RdKafka__Metadata__Partition, getIsrs)
         return;
     }
 
-    intern = get_object(getThis() TSRMLS_CC);
+    intern = get_object(getThis());
     if (!intern) {
         return;
     }
 
-    kafka_metadata_collection_init(return_value, getThis(), intern->metadata_partition->isrs, intern->metadata_partition->isr_cnt, sizeof(*intern->metadata_partition->isrs), int32_ctor TSRMLS_CC);
+    kafka_metadata_collection_init(return_value, getThis(), intern->metadata_partition->isrs, intern->metadata_partition->isr_cnt, sizeof(*intern->metadata_partition->isrs), int32_ctor);
 }
 /* }}} */
 
@@ -239,12 +239,12 @@ static const zend_function_entry fe[] = {
     PHP_FE_END
 };
 
-void kafka_metadata_partition_minit(TSRMLS_D)
+void kafka_metadata_partition_minit()
 {
     zend_class_entry tmpce;
 
     INIT_NS_CLASS_ENTRY(tmpce, "RdKafka", "Metadata\\Partition", fe);
-    ce = zend_register_internal_class(&tmpce TSRMLS_CC);
+    ce = zend_register_internal_class(&tmpce);
     ce->create_object = create_object;
 
     handlers = kafka_default_object_handlers;
@@ -253,7 +253,7 @@ void kafka_metadata_partition_minit(TSRMLS_D)
     set_object_handler_offset(&handlers, XtOffsetOf(object_intern, std));
 }
 
-void kafka_metadata_partition_ctor(zval *return_value, zval *zmetadata, const void *data TSRMLS_DC)
+void kafka_metadata_partition_ctor(zval *return_value, zval *zmetadata, const void *data)
 {
     rd_kafka_metadata_partition_t *metadata_partition = (rd_kafka_metadata_partition_t*)data;
     object_intern *intern;

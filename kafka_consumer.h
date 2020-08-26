@@ -16,4 +16,4 @@
   +----------------------------------------------------------------------+
 */
 
-void kafka_kafka_consumer_minit(TSRMLS_D);
+void kafka_kafka_consumer_minit();

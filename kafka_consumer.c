@@ -46,11 +46,11 @@ typedef struct _object_intern {
 static zend_class_entry * ce;
 static zend_object_handlers handlers;
 
-static void kafka_consumer_free(zend_object *object TSRMLS_DC) /* {{{ */
+static void kafka_consumer_free(zend_object *object) /* {{{ */
 {
     object_intern *intern = get_custom_object(object_intern, object);
     rd_kafka_resp_err_t err;
-    kafka_conf_callbacks_dtor(&intern->cbs TSRMLS_CC);
+    kafka_conf_callbacks_dtor(&intern->cbs);
 
     if (intern->rk) {
         err = rd_kafka_consumer_close(intern->rk);
@@ -63,21 +63,21 @@ static void kafka_consumer_free(zend_object *object TSRMLS_DC) /* {{{ */
         intern->rk = NULL;
     }
 
-    kafka_conf_callbacks_dtor(&intern->cbs TSRMLS_CC);
+    kafka_conf_callbacks_dtor(&intern->cbs);
 
-    zend_object_std_dtor(&intern->std TSRMLS_CC);
+    zend_object_std_dtor(&intern->std);
 
     free_custom_object(intern);
 }
 /* }}} */
 
-static zend_object_value kafka_consumer_new(zend_class_entry *class_type TSRMLS_DC) /* {{{ */
+static zend_object_value kafka_consumer_new(zend_class_entry *class_type) /* {{{ */
 {
     zend_object_value retval;
     object_intern *intern;
 
     intern = alloc_object(intern, class_type);
-    zend_object_std_init(&intern->std, class_type TSRMLS_CC);
+    zend_object_std_init(&intern->std, class_type);
     object_properties_init(&intern->std, class_type);
 
     STORE_OBJECT(retval, intern, (zend_objects_store_dtor_t) zend_objects_destroy_object, kafka_consumer_free, NULL);
@@ -87,12 +87,12 @@ static zend_object_value kafka_consumer_new(zend_class_entry *class_type TSRMLS_
 }
 /* }}} */
 
-static object_intern * get_object(zval *zconsumer TSRMLS_DC) /* {{{ */
+static object_intern * get_object(zval *zconsumer) /* {{{ */
 {
     object_intern *oconsumer = get_custom_object_zval(object_intern, zconsumer);
 
     if (!oconsumer->rk) {
-        zend_throw_exception_ex(NULL, 0 TSRMLS_CC, "RdKafka\\KafkaConsumer::__construct() has not been called");
+        zend_throw_exception_ex(NULL, 0, "RdKafka\\KafkaConsumer::__construct() has not been called");
         return NULL;
     }
 
@@ -134,19 +134,19 @@ PHP_METHOD(RdKafka__KafkaConsumer, __construct)
     kafka_conf_object *conf_intern;
     rd_kafka_conf_t *conf = NULL;
 
-    zend_replace_error_handling(EH_THROW, spl_ce_InvalidArgumentException, &error_handling TSRMLS_CC);
+    zend_replace_error_handling(EH_THROW, spl_ce_InvalidArgumentException, &error_handling);
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "O", &zconf, ce_kafka_conf) == FAILURE) {
-        zend_restore_error_handling(&error_handling TSRMLS_CC);
+    if (zend_parse_parameters(ZEND_NUM_ARGS(), "O", &zconf, ce_kafka_conf) == FAILURE) {
+        zend_restore_error_handling(&error_handling);
         return;
     }
 
     intern = get_custom_object_zval(object_intern, getThis());
 
-    conf_intern = get_kafka_conf_object(zconf TSRMLS_CC);
+    conf_intern = get_kafka_conf_object(zconf);
     if (conf_intern) {
         conf = rd_kafka_conf_dup(conf_intern->u.conf);
-        kafka_conf_callbacks_copy(&intern->cbs, &conf_intern->cbs TSRMLS_CC);
+        kafka_conf_callbacks_copy(&intern->cbs, &conf_intern->cbs);
         intern->cbs.zrk = *getThis();
         rd_kafka_conf_set_opaque(conf, &intern->cbs);
     }
@@ -155,15 +155,15 @@ PHP_METHOD(RdKafka__KafkaConsumer, __construct)
         if (conf) {
             rd_kafka_conf_destroy(conf);
         }
-        zend_throw_exception(ce_kafka_exception, "\"group.id\" must be configured", 0 TSRMLS_CC);
+        zend_throw_exception(ce_kafka_exception, "\"group.id\" must be configured", 0);
         return;
     }
 
     rk = rd_kafka_new(RD_KAFKA_CONSUMER, conf, errstr, sizeof(errstr));
 
     if (rk == NULL) {
-        zend_restore_error_handling(&error_handling TSRMLS_CC);
-        zend_throw_exception(ce_kafka_exception, errstr, 0 TSRMLS_CC);
+        zend_restore_error_handling(&error_handling);
+        zend_throw_exception(ce_kafka_exception, errstr, 0);
         return;
     }
 
@@ -175,7 +175,7 @@ PHP_METHOD(RdKafka__KafkaConsumer, __construct)
 
     rd_kafka_poll_set_consumer(rk);
 
-    zend_restore_error_handling(&error_handling TSRMLS_CC);
+    zend_restore_error_handling(&error_handling);
 }
 /* }}} */
 
@@ -193,17 +193,17 @@ PHP_METHOD(RdKafka__KafkaConsumer, assign)
     rd_kafka_resp_err_t err;
     object_intern *intern;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|h!", &htopars) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS(), "|h!", &htopars) == FAILURE) {
         return;
     }
 
-    intern = get_object(getThis() TSRMLS_CC);
+    intern = get_object(getThis());
     if (!intern) {
         return;
     }
 
     if (htopars) {
-        topics = array_arg_to_kafka_topic_partition_list(1, htopars TSRMLS_CC);
+        topics = array_arg_to_kafka_topic_partition_list(1, htopars);
         if (!topics) {
             return;
         }
@@ -218,7 +218,7 @@ PHP_METHOD(RdKafka__KafkaConsumer, assign)
     }
 
     if (err != RD_KAFKA_RESP_ERR_NO_ERROR) {
-        zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err TSRMLS_CC);
+        zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err);
         return;
     }
 }
@@ -236,11 +236,11 @@ PHP_METHOD(RdKafka__KafkaConsumer, getAssignment)
     rd_kafka_topic_partition_list_t *topics;
     object_intern *intern;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "") == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS(), "") == FAILURE) {
         return;
     }
 
-    intern = get_object(getThis() TSRMLS_CC);
+    intern = get_object(getThis());
     if (!intern) {
         return;
     }
@@ -248,11 +248,11 @@ PHP_METHOD(RdKafka__KafkaConsumer, getAssignment)
     err = rd_kafka_assignment(intern->rk, &topics);
 
     if (err != RD_KAFKA_RESP_ERR_NO_ERROR) {
-        zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err TSRMLS_CC);
+        zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err);
         return;
     }
 
-    kafka_topic_partition_list_to_array(return_value, topics TSRMLS_CC);
+    kafka_topic_partition_list_to_array(return_value, topics);
     rd_kafka_topic_partition_list_destroy(topics);
 }
 /* }}} */
@@ -273,11 +273,11 @@ PHP_METHOD(RdKafka__KafkaConsumer, subscribe)
     rd_kafka_resp_err_t err;
     zeval *zv;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "h", &htopics) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS(), "h", &htopics) == FAILURE) {
         return;
     }
 
-    intern = get_object(getThis() TSRMLS_CC);
+    intern = get_object(getThis());
     if (!intern) {
         return;
     }
@@ -296,7 +296,7 @@ PHP_METHOD(RdKafka__KafkaConsumer, subscribe)
     rd_kafka_topic_partition_list_destroy(topics);
 
     if (err != RD_KAFKA_RESP_ERR_NO_ERROR) {
-        zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err TSRMLS_CC);
+        zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err);
         return;
     }
 }
@@ -315,11 +315,11 @@ PHP_METHOD(RdKafka__KafkaConsumer, getSubscription)
     object_intern *intern;
     int i;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "") == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS(), "") == FAILURE) {
         return;
     }
 
-    intern = get_object(getThis() TSRMLS_CC);
+    intern = get_object(getThis());
     if (!intern) {
         return;
     }
@@ -327,7 +327,7 @@ PHP_METHOD(RdKafka__KafkaConsumer, getSubscription)
     err = rd_kafka_subscription(intern->rk, &topics);
 
     if (err != RD_KAFKA_RESP_ERR_NO_ERROR) {
-        zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err TSRMLS_CC);
+        zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err);
         return;
     }
 
@@ -352,11 +352,11 @@ PHP_METHOD(RdKafka__KafkaConsumer, unsubscribe)
     object_intern *intern;
     rd_kafka_resp_err_t err;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "") == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS(), "") == FAILURE) {
         return;
     }
 
-    intern = get_object(getThis() TSRMLS_CC);
+    intern = get_object(getThis());
     if (!intern) {
         return;
     }
@@ -364,7 +364,7 @@ PHP_METHOD(RdKafka__KafkaConsumer, unsubscribe)
     err = rd_kafka_unsubscribe(intern->rk);
 
     if (err != RD_KAFKA_RESP_ERR_NO_ERROR) {
-        zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err TSRMLS_CC);
+        zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err);
         return;
     }
 }
@@ -383,11 +383,11 @@ PHP_METHOD(RdKafka__KafkaConsumer, consume)
     zend_long timeout_ms;
     rd_kafka_message_t *rkmessage, rkmessage_tmp = {0};
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &timeout_ms) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS(), "l", &timeout_ms) == FAILURE) {
         return;
     }
 
-    intern = get_object(getThis() TSRMLS_CC);
+    intern = get_object(getThis());
     if (!intern) {
         return;
     }
@@ -399,7 +399,7 @@ PHP_METHOD(RdKafka__KafkaConsumer, consume)
         rkmessage = &rkmessage_tmp;
     }
 
-    kafka_message_new(return_value, rkmessage TSRMLS_CC);
+    kafka_message_new(return_value, rkmessage);
 
     if (rkmessage != &rkmessage_tmp) {
         rd_kafka_message_destroy(rkmessage);
@@ -414,44 +414,44 @@ static void consumer_commit(int async, INTERNAL_FUNCTION_PARAMETERS) /* {{{ */
     rd_kafka_topic_partition_list_t *offsets = NULL;
     rd_kafka_resp_err_t err;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|z!", &zarg) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS(), "|z!", &zarg) == FAILURE) {
         return;
     }
 
-    intern = get_object(getThis() TSRMLS_CC);
+    intern = get_object(getThis());
     if (!intern) {
         return;
     }
 
     if (zarg) {
-        if (Z_TYPE_P(zarg) == IS_OBJECT && instanceof_function(Z_OBJCE_P(zarg), ce_kafka_message TSRMLS_CC)) {
+        if (Z_TYPE_P(zarg) == IS_OBJECT && instanceof_function(Z_OBJCE_P(zarg), ce_kafka_message)) {
             zval *zerr;
             zval *ztopic;
             zval *zpartition;
             zval *zoffset;
             rd_kafka_topic_partition_t *rktpar;
 
-            zerr = rdkafka_read_property(NULL, zarg, ZEND_STRL("err"), 0 TSRMLS_CC);
+            zerr = rdkafka_read_property(NULL, zarg, ZEND_STRL("err"), 0);
             if (zerr && Z_TYPE_P(zerr) != IS_NULL && (Z_TYPE_P(zerr) != IS_LONG || Z_LVAL_P(zerr) != RD_KAFKA_RESP_ERR_NO_ERROR)) {
-                zend_throw_exception(ce_kafka_exception, "Invalid argument: Specified Message has an error", RD_KAFKA_RESP_ERR__INVALID_ARG TSRMLS_CC);
+                zend_throw_exception(ce_kafka_exception, "Invalid argument: Specified Message has an error", RD_KAFKA_RESP_ERR__INVALID_ARG);
                 return;
             }
 
-            ztopic = rdkafka_read_property(NULL, zarg, ZEND_STRL("topic_name"), 0 TSRMLS_CC);
+            ztopic = rdkafka_read_property(NULL, zarg, ZEND_STRL("topic_name"), 0);
             if (!ztopic || Z_TYPE_P(ztopic) != IS_STRING) {
-                zend_throw_exception(ce_kafka_exception, "Invalid argument: Specified Message's topic_name is not a string", RD_KAFKA_RESP_ERR__INVALID_ARG TSRMLS_CC);
+                zend_throw_exception(ce_kafka_exception, "Invalid argument: Specified Message's topic_name is not a string", RD_KAFKA_RESP_ERR__INVALID_ARG);
                 return;
             }
 
-            zpartition = rdkafka_read_property(NULL, zarg, ZEND_STRL("partition"), 0 TSRMLS_CC);
+            zpartition = rdkafka_read_property(NULL, zarg, ZEND_STRL("partition"), 0);
             if (!zpartition || Z_TYPE_P(zpartition) != IS_LONG) {
-                zend_throw_exception(ce_kafka_exception, "Invalid argument: Specified Message's partition is not an int", RD_KAFKA_RESP_ERR__INVALID_ARG TSRMLS_CC);
+                zend_throw_exception(ce_kafka_exception, "Invalid argument: Specified Message's partition is not an int", RD_KAFKA_RESP_ERR__INVALID_ARG);
                 return;
             }
 
-            zoffset = rdkafka_read_property(NULL, zarg, ZEND_STRL("offset"), 0 TSRMLS_CC);
+            zoffset = rdkafka_read_property(NULL, zarg, ZEND_STRL("offset"), 0);
             if (!zoffset || Z_TYPE_P(zoffset) != IS_LONG) {
-                zend_throw_exception(ce_kafka_exception, "Invalid argument: Specified Message's offset is not an int", RD_KAFKA_RESP_ERR__INVALID_ARG TSRMLS_CC);
+                zend_throw_exception(ce_kafka_exception, "Invalid argument: Specified Message's offset is not an int", RD_KAFKA_RESP_ERR__INVALID_ARG);
                 return;
             }
 
@@ -463,14 +463,14 @@ static void consumer_commit(int async, INTERNAL_FUNCTION_PARAMETERS) /* {{{ */
 
         } else if (Z_TYPE_P(zarg) == IS_ARRAY) {
             HashTable *ary = Z_ARRVAL_P(zarg);
-            offsets = array_arg_to_kafka_topic_partition_list(1, ary TSRMLS_CC);
+            offsets = array_arg_to_kafka_topic_partition_list(1, ary);
             if (!offsets) {
                 return;
             }
         } else if (Z_TYPE_P(zarg) != IS_NULL) {
             php_error(E_ERROR,
                     "RdKafka\\KafkaConsumer::%s() expects parameter %d to be %s, %s given",
-                    get_active_function_name(TSRMLS_C),
+                    get_active_function_name(),
                     1,
                     "an instance of RdKafka\\Message or an array of RdKafka\\TopicPartition",
                     zend_zval_type_name(zarg));
@@ -485,7 +485,7 @@ static void consumer_commit(int async, INTERNAL_FUNCTION_PARAMETERS) /* {{{ */
     }
 
     if (err != RD_KAFKA_RESP_ERR_NO_ERROR) {
-        zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err TSRMLS_CC);
+        zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err);
         return;
     }
 }
@@ -527,7 +527,7 @@ PHP_METHOD(RdKafka__KafkaConsumer, close)
 {
     object_intern *intern;
 
-    intern = get_object(getThis() TSRMLS_CC);
+    intern = get_object(getThis());
     if (!intern) {
         return;
     }
@@ -555,17 +555,17 @@ PHP_METHOD(RdKafka__KafkaConsumer, getMetadata)
     const rd_kafka_metadata_t *metadata;
     kafka_topic_object *only_orkt = NULL;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "bO!l", &all_topics, &only_zrkt, ce_kafka_topic, &timeout_ms) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS(), "bO!l", &all_topics, &only_zrkt, ce_kafka_topic, &timeout_ms) == FAILURE) {
         return;
     }
 
-    intern = get_object(getThis() TSRMLS_CC);
+    intern = get_object(getThis());
     if (!intern) {
         return;
     }
 
     if (only_zrkt) {
-        only_orkt = get_kafka_topic_object(only_zrkt TSRMLS_CC);
+        only_orkt = get_kafka_topic_object(only_zrkt);
         if (!only_orkt) {
             return;
         }
@@ -574,11 +574,11 @@ PHP_METHOD(RdKafka__KafkaConsumer, getMetadata)
     err = rd_kafka_metadata(intern->rk, all_topics, only_orkt ? only_orkt->rkt : NULL, &metadata, timeout_ms);
 
     if (err != RD_KAFKA_RESP_ERR_NO_ERROR) {
-        zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err TSRMLS_CC);
+        zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err);
         return;
     }
 
-    kafka_metadata_init(return_value, metadata TSRMLS_CC);
+    kafka_metadata_init(return_value, metadata);
 }
 /* }}} */
 
@@ -601,17 +601,17 @@ PHP_METHOD(RdKafka__KafkaConsumer, newTopic)
     rd_kafka_topic_conf_t *conf = NULL;
     kafka_conf_object *conf_intern;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s|O!", &topic, &topic_len, &zconf, ce_kafka_topic_conf) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS(), "s|O!", &topic, &topic_len, &zconf, ce_kafka_topic_conf) == FAILURE) {
         return;
     }
 
-    intern = get_object(getThis() TSRMLS_CC);
+    intern = get_object(getThis());
     if (!intern) {
         return;
     }
 
     if (zconf) {
-        conf_intern = get_kafka_conf_object(zconf TSRMLS_CC);
+        conf_intern = get_kafka_conf_object(zconf);
         if (conf_intern) {
             conf = rd_kafka_topic_conf_dup(conf_intern->u.topic_conf);
         }
@@ -652,16 +652,16 @@ PHP_METHOD(RdKafka__KafkaConsumer, getCommittedOffsets)
     rd_kafka_resp_err_t err;
     rd_kafka_topic_partition_list_t *topics;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "hl", &htopars, &timeout_ms) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS(), "hl", &htopars, &timeout_ms) == FAILURE) {
         return;
     }
 
-    intern = get_object(getThis() TSRMLS_CC);
+    intern = get_object(getThis());
     if (!intern) {
         return;
     }
 
-    topics = array_arg_to_kafka_topic_partition_list(1, htopars TSRMLS_CC);
+    topics = array_arg_to_kafka_topic_partition_list(1, htopars);
     if (!topics) {
         return;
     }
@@ -670,10 +670,10 @@ PHP_METHOD(RdKafka__KafkaConsumer, getCommittedOffsets)
 
     if (err != RD_KAFKA_RESP_ERR_NO_ERROR) {
         rd_kafka_topic_partition_list_destroy(topics);
-        zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err TSRMLS_CC);
+        zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err);
         return;
     }
-    kafka_topic_partition_list_to_array(return_value, topics TSRMLS_CC);
+    kafka_topic_partition_list_to_array(return_value, topics);
     rd_kafka_topic_partition_list_destroy(topics);
 }
 /* }}} */
@@ -694,16 +694,16 @@ PHP_METHOD(RdKafka__KafkaConsumer, getOffsetPositions)
     rd_kafka_resp_err_t err;
     rd_kafka_topic_partition_list_t *topics;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "h", &htopars) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS(), "h", &htopars) == FAILURE) {
         return;
     }
 
-    intern = get_object(getThis() TSRMLS_CC);
+    intern = get_object(getThis());
     if (!intern) {
         return;
     }
 
-    topics = array_arg_to_kafka_topic_partition_list(1, htopars TSRMLS_CC);
+    topics = array_arg_to_kafka_topic_partition_list(1, htopars);
     if (!topics) {
         return;
     }
@@ -712,10 +712,10 @@ PHP_METHOD(RdKafka__KafkaConsumer, getOffsetPositions)
 
     if (err != RD_KAFKA_RESP_ERR_NO_ERROR) {
         rd_kafka_topic_partition_list_destroy(topics);
-        zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err TSRMLS_CC);
+        zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err);
         return;
     }
-    kafka_topic_partition_list_to_array(return_value, topics TSRMLS_CC);
+    kafka_topic_partition_list_to_array(return_value, topics);
     rd_kafka_topic_partition_list_destroy(topics);
 }
 /* }}} */
@@ -734,16 +734,16 @@ PHP_METHOD(RdKafka__KafkaConsumer, offsetsForTimes)
     zend_long timeout_ms;
     rd_kafka_resp_err_t err;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "hl", &htopars, &timeout_ms) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS(), "hl", &htopars, &timeout_ms) == FAILURE) {
         return;
     }
 
-    intern = get_object(getThis() TSRMLS_CC);
+    intern = get_object(getThis());
     if (!intern) {
         return;
     }
 
-    topicPartitions = array_arg_to_kafka_topic_partition_list(1, htopars TSRMLS_CC);
+    topicPartitions = array_arg_to_kafka_topic_partition_list(1, htopars);
     if (!topicPartitions) {
         return;
     }
@@ -752,10 +752,10 @@ PHP_METHOD(RdKafka__KafkaConsumer, offsetsForTimes)
 
     if (err != RD_KAFKA_RESP_ERR_NO_ERROR) {
         rd_kafka_topic_partition_list_destroy(topicPartitions);
-        zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err TSRMLS_CC);
+        zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err);
         return;
     }
-    kafka_topic_partition_list_to_array(return_value, topicPartitions TSRMLS_CC);
+    kafka_topic_partition_list_to_array(return_value, topicPartitions);
     rd_kafka_topic_partition_list_destroy(topicPartitions);
 }
 /* }}} */
@@ -781,14 +781,14 @@ PHP_METHOD(RdKafka__KafkaConsumer, queryWatermarkOffsets)
     zval *lowResult, *highResult;
     rd_kafka_resp_err_t err;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "slzzl", &topic, &topic_length, &partition, &lowResult, &highResult, &timeout) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS(), "slzzl", &topic, &topic_length, &partition, &lowResult, &highResult, &timeout) == FAILURE) {
         return;
     }
 
     ZEVAL_DEREF(lowResult);
     ZEVAL_DEREF(highResult);
 
-    intern = get_object(getThis() TSRMLS_CC);
+    intern = get_object(getThis());
     if (!intern) {
         return;
     }
@@ -796,7 +796,7 @@ PHP_METHOD(RdKafka__KafkaConsumer, queryWatermarkOffsets)
     err = rd_kafka_query_watermark_offsets(intern->rk, topic, partition, &low, &high, timeout);
 
     if (err != RD_KAFKA_RESP_ERR_NO_ERROR) {
-        zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err TSRMLS_CC);
+        zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err);
         return;
     }
 
@@ -825,19 +825,19 @@ static const zend_function_entry fe[] = { /* {{{ */
     PHP_FE_END
 }; /* }}} */
 
-void kafka_kafka_consumer_minit(TSRMLS_D) /* {{{ */
+void kafka_kafka_consumer_minit() /* {{{ */
 {
     zend_class_entry tmpce;
 
     INIT_NS_CLASS_ENTRY(tmpce, "RdKafka", "KafkaConsumer", fe);
-    ce = zend_register_internal_class(&tmpce TSRMLS_CC);
+    ce = zend_register_internal_class(&tmpce);
     ce->create_object = kafka_consumer_new;
 
     handlers = kafka_default_object_handlers;
     set_object_handler_free_obj(&handlers, kafka_consumer_free);
     set_object_handler_offset(&handlers, XtOffsetOf(object_intern, std));
 
-    zend_declare_property_null(ce, ZEND_STRL("error_cb"), ZEND_ACC_PRIVATE TSRMLS_CC);
-    zend_declare_property_null(ce, ZEND_STRL("rebalance_cb"), ZEND_ACC_PRIVATE TSRMLS_CC);
-    zend_declare_property_null(ce, ZEND_STRL("dr_msg_cb"), ZEND_ACC_PRIVATE TSRMLS_CC);
+    zend_declare_property_null(ce, ZEND_STRL("error_cb"), ZEND_ACC_PRIVATE);
+    zend_declare_property_null(ce, ZEND_STRL("rebalance_cb"), ZEND_ACC_PRIVATE);
+    zend_declare_property_null(ce, ZEND_STRL("dr_msg_cb"), ZEND_ACC_PRIVATE);
 } /* }}} */

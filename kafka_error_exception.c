@@ -30,16 +30,16 @@
 
 zend_class_entry * ce_kafka_error;
 
-void create_kafka_error(zval *return_value, const rd_kafka_error_t *error TSRMLS_DC) /* {{{ */
+void create_kafka_error(zval *return_value, const rd_kafka_error_t *error) /* {{{ */
 {
     object_init_ex(return_value, ce_kafka_error);
 
-    zend_update_property_string(ce_kafka_error, return_value, ZEND_STRL("message"), rd_kafka_error_name(error) TSRMLS_CC);
-    zend_update_property_long(ce_kafka_error, return_value, ZEND_STRL("code"), rd_kafka_error_code(error) TSRMLS_CC);
-    zend_update_property_string(ce_kafka_error, return_value, ZEND_STRL("error_string"), rd_kafka_error_string(error) TSRMLS_CC);
-    zend_update_property_bool(ce_kafka_error, return_value, ZEND_STRL("isFatal"), rd_kafka_error_is_fatal(error) TSRMLS_CC);
-    zend_update_property_bool(ce_kafka_error, return_value, ZEND_STRL("isRetriable"), rd_kafka_error_is_retriable(error) TSRMLS_CC);
-    zend_update_property_bool(ce_kafka_error, return_value, ZEND_STRL("transactionRequiresAbort"), rd_kafka_error_txn_requires_abort(error) TSRMLS_CC);
+    zend_update_property_string(ce_kafka_error, return_value, ZEND_STRL("message"), rd_kafka_error_name(error));
+    zend_update_property_long(ce_kafka_error, return_value, ZEND_STRL("code"), rd_kafka_error_code(error));
+    zend_update_property_string(ce_kafka_error, return_value, ZEND_STRL("error_string"), rd_kafka_error_string(error));
+    zend_update_property_bool(ce_kafka_error, return_value, ZEND_STRL("isFatal"), rd_kafka_error_is_fatal(error));
+    zend_update_property_bool(ce_kafka_error, return_value, ZEND_STRL("isRetriable"), rd_kafka_error_is_retriable(error));
+    zend_update_property_bool(ce_kafka_error, return_value, ZEND_STRL("transactionRequiresAbort"), rd_kafka_error_txn_requires_abort(error));
 
     Z_ADDREF_P(return_value);
 }
@@ -62,16 +62,16 @@ PHP_METHOD(RdKafka__KafkaErrorException, __construct)
     zend_bool isFatal = 0, isRetriable = 0, transactionRequiresAbort = 0;
     zend_long code = 0;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "sl|sbbb", &message, &message_length, &code, &error_string, &error_string_length, &isFatal, &isRetriable, &transactionRequiresAbort) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS(), "sl|sbbb", &message, &message_length, &code, &error_string, &error_string_length, &isFatal, &isRetriable, &transactionRequiresAbort) == FAILURE) {
         return;
     }
 
-    zend_update_property_string(ce_kafka_error, getThis(), ZEND_STRL("message"), message TSRMLS_CC);
-    zend_update_property_long(ce_kafka_error, getThis(), ZEND_STRL("code"), code TSRMLS_CC);
-    zend_update_property_string(ce_kafka_error, getThis(), ZEND_STRL("error_string"), error_string TSRMLS_CC);
-    zend_update_property_bool(ce_kafka_error, getThis(), ZEND_STRL("isFatal"), isFatal TSRMLS_CC);
-    zend_update_property_bool(ce_kafka_error, getThis(), ZEND_STRL("isRetriable"), isRetriable TSRMLS_CC);
-    zend_update_property_bool(ce_kafka_error, getThis(), ZEND_STRL("transactionRequiresAbort"), transactionRequiresAbort TSRMLS_CC);
+    zend_update_property_string(ce_kafka_error, getThis(), ZEND_STRL("message"), message);
+    zend_update_property_long(ce_kafka_error, getThis(), ZEND_STRL("code"), code);
+    zend_update_property_string(ce_kafka_error, getThis(), ZEND_STRL("error_string"), error_string);
+    zend_update_property_bool(ce_kafka_error, getThis(), ZEND_STRL("isFatal"), isFatal);
+    zend_update_property_bool(ce_kafka_error, getThis(), ZEND_STRL("isRetriable"), isRetriable);
+    zend_update_property_bool(ce_kafka_error, getThis(), ZEND_STRL("transactionRequiresAbort"), transactionRequiresAbort);
 }
 /* }}} */
 
@@ -85,11 +85,11 @@ PHP_METHOD(RdKafka__KafkaErrorException, getErrorString)
 {
     zval *res;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "") == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS(), "") == FAILURE) {
         return;
     }
 
-    res = rdkafka_read_property(ce_kafka_error, getThis(), ZEND_STRL("error_string"), 0 TSRMLS_CC);
+    res = rdkafka_read_property(ce_kafka_error, getThis(), ZEND_STRL("error_string"), 0);
 
     if (!res || Z_TYPE_P(res) != IS_STRING) {
         return;
@@ -115,11 +115,11 @@ PHP_METHOD(RdKafka__KafkaErrorException, isFatal)
 {
     zval *res;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "") == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS(), "") == FAILURE) {
         return;
     }
 
-    res = rdkafka_read_property(ce_kafka_error, getThis(), ZEND_STRL("isFatal"), 0 TSRMLS_CC);
+    res = rdkafka_read_property(ce_kafka_error, getThis(), ZEND_STRL("isFatal"), 0);
 
 #if PHP_MAJOR_VERSION >= 7
     if (!res || (Z_TYPE_P(res) != IS_TRUE && Z_TYPE_P(res) != IS_FALSE)) {
@@ -144,11 +144,11 @@ PHP_METHOD(RdKafka__KafkaErrorException, isRetriable)
 {
     zval *res;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "") == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS(), "") == FAILURE) {
         return;
     }
 
-    res = rdkafka_read_property(ce_kafka_error, getThis(), ZEND_STRL("isRetriable"), 0 TSRMLS_CC);
+    res = rdkafka_read_property(ce_kafka_error, getThis(), ZEND_STRL("isRetriable"), 0);
 
 #if PHP_MAJOR_VERSION >= 7
     if (!res || (Z_TYPE_P(res) != IS_TRUE && Z_TYPE_P(res) != IS_FALSE)) {
@@ -173,11 +173,11 @@ PHP_METHOD(RdKafka__KafkaErrorException, transactionRequiresAbort)
 {
     zval *res;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "") == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS(), "") == FAILURE) {
         return;
     }
 
-    res = rdkafka_read_property(ce_kafka_error, getThis(), ZEND_STRL("transactionRequiresAbort"), 0 TSRMLS_CC);
+    res = rdkafka_read_property(ce_kafka_error, getThis(), ZEND_STRL("transactionRequiresAbort"), 0);
 
 #if PHP_MAJOR_VERSION >= 7
     if (!res || (Z_TYPE_P(res) != IS_TRUE && Z_TYPE_P(res) != IS_FALSE)) {
@@ -201,15 +201,15 @@ static const zend_function_entry kafka_error_fe[] = { /* {{{ */
     PHP_FE_END
 }; /* }}} */
 
-void kafka_error_minit(TSRMLS_D) /* {{{ */
+void kafka_error_minit() /* {{{ */
 {
     zend_class_entry ce;
 
     INIT_NS_CLASS_ENTRY(ce, "RdKafka", "KafkaErrorException", kafka_error_fe);
-    ce_kafka_error = rdkafka_register_internal_class_ex(&ce, ce_kafka_exception TSRMLS_CC);
+    ce_kafka_error = rdkafka_register_internal_class_ex(&ce, ce_kafka_exception);
 
-    zend_declare_property_null(ce_kafka_error, ZEND_STRL("error_string"), ZEND_ACC_PRIVATE TSRMLS_CC);
-    zend_declare_property_bool(ce_kafka_error, ZEND_STRL("isFatal"), 0, ZEND_ACC_PRIVATE TSRMLS_CC);
-    zend_declare_property_bool(ce_kafka_error, ZEND_STRL("isRetriable"), 0, ZEND_ACC_PRIVATE TSRMLS_CC);
-    zend_declare_property_bool(ce_kafka_error, ZEND_STRL("transactionRequiresAbort"), 0, ZEND_ACC_PRIVATE TSRMLS_CC);
+    zend_declare_property_null(ce_kafka_error, ZEND_STRL("error_string"), ZEND_ACC_PRIVATE);
+    zend_declare_property_bool(ce_kafka_error, ZEND_STRL("isFatal"), 0, ZEND_ACC_PRIVATE);
+    zend_declare_property_bool(ce_kafka_error, ZEND_STRL("isRetriable"), 0, ZEND_ACC_PRIVATE);
+    zend_declare_property_bool(ce_kafka_error, ZEND_STRL("transactionRequiresAbort"), 0, ZEND_ACC_PRIVATE);
 } /* }}} */

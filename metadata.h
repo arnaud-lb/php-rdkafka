@@ -16,5 +16,5 @@
   +----------------------------------------------------------------------+
 */
 
-void kafka_metadata_minit(TSRMLS_D);
-void kafka_metadata_init(zval *return_value, const rd_kafka_metadata_t *metadata TSRMLS_DC);
+void kafka_metadata_minit();
+void kafka_metadata_init(zval *return_value, const rd_kafka_metadata_t *metadata);
