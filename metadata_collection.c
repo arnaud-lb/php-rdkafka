@@ -280,8 +280,8 @@ void kafka_metadata_collection_minit(INIT_FUNC_ARGS)
 
     handlers = kafka_default_object_handlers;
     handlers.get_debug_info = get_debug_info;
-    handlers->free_obj = free_object;
-    handlers->offset = XtOffsetOf(object_intern, std);
+    handlers.free_obj = free_object;
+    handlers.offset = XtOffsetOf(object_intern, std);
 }
 
 void kafka_metadata_collection_init(zval *return_value, zval *zmetadata, const void * items, size_t item_cnt, size_t item_size, kafka_metadata_collection_ctor_t ctor)

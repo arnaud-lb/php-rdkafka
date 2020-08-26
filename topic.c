@@ -70,7 +70,7 @@ static zend_object *kafka_topic_new(zend_class_entry *class_type) /* {{{ */
     object_properties_init(&intern->std, class_type);
 
     retval = &intern->std;
-    retval->handlers = &handlers;
+    retval->handlers = &object_handlers;
 
     return retval;
 }
@@ -674,8 +674,8 @@ void kafka_topic_minit(INIT_FUNC_ARGS) { /* {{{ */
 
     memcpy(&object_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
     object_handlers.clone_obj = NULL;
-    object_handlers->free_obj = kafka_topic_free;
-    object_handlers->offset = XtOffsetOf(kafka_topic_object, std);
+    object_handlers.free_obj = kafka_topic_free;
+    object_handlers.offset = XtOffsetOf(kafka_topic_object, std);
 
     INIT_NS_CLASS_ENTRY(ce, "RdKafka", "Topic", kafka_topic_fe);
     ce_kafka_topic = zend_register_internal_class(&ce);

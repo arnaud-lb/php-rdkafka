@@ -463,7 +463,7 @@ static void consumer_commit(int async, INTERNAL_FUNCTION_PARAMETERS) /* {{{ */
         } else if (Z_TYPE_P(zarg) != IS_NULL) {
             php_error(E_ERROR,
                     "RdKafka\\KafkaConsumer::%s() expects parameter %d to be %s, %s given",
-                    get_active_function_name(TSRMLS_C),
+                    get_active_function_name(),
                     1,
                     "an instance of RdKafka\\Message or an array of RdKafka\\TopicPartition",
                     zend_zval_type_name(zarg));
@@ -827,8 +827,8 @@ void kafka_kafka_consumer_minit(INIT_FUNC_ARGS) /* {{{ */
     ce->create_object = kafka_consumer_new;
 
     handlers = kafka_default_object_handlers;
-    handlers->free_obj = kafka_conf_free;
-    handlers->offset = XtOffsetOf(object_intern, std);
+    handlers.free_obj = kafka_consumer_free;
+    handlers.offset = XtOffsetOf(object_intern, std);
 
     zend_declare_property_null(ce, ZEND_STRL("error_cb"), ZEND_ACC_PRIVATE);
     zend_declare_property_null(ce, ZEND_STRL("rebalance_cb"), ZEND_ACC_PRIVATE);

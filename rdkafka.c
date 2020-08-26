@@ -163,7 +163,7 @@ static zend_object *kafka_new(zend_class_entry *class_type) /* {{{ */
     object_properties_init(&intern->std, class_type);
 
     retval = &intern->std;
-    retval->handlers = &handlers;
+    retval->handlers = &kafka_object_handlers;
 
     return retval;
 }
@@ -387,31 +387,6 @@ PHP_METHOD(RdKafka__Kafka, getMetadata)
     }
 
     kafka_metadata_init(return_value, metadata);
-}
-/* }}} */
-
-/* {{{ proto void RdKafka\Kafka::setLogLevel(int $level)
-   Specifies the maximum logging level produced by internal kafka logging and debugging */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_set_log_level, 0, 0, 1)
-    ZEND_ARG_INFO(0, level)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__Kafka, setLogLevel)
-{
-    kafka_object *intern;
-    zend_long level;
-
-    if (zend_parse_parameters(ZEND_NUM_ARGS(), "l", &level) == FAILURE) {
-        return;
-    }
-
-    intern = get_kafka_object(getThis());
-    if (!intern) {
-        return;
-    }
-
-    rd_kafka_set_log_level(intern->rk, level);
 }
 /* }}} */
 
@@ -671,64 +646,16 @@ PHP_METHOD(RdKafka__Kafka, offsetsForTimes)
 }
 /* }}} */
 
-
-/* {{{ proto void RdKafka::setLogger(mixed $logger)
-   Sets the log callback */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_set_logger, 0, 0, 1)
-    ZEND_ARG_INFO(0, logger)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__Kafka, setLogger)
-{
-    kafka_object *intern;
-    zend_long id;
-    void (*logger) (const rd_kafka_t * rk, int level, const char *fac, const char *buf);
-
-    if (zend_parse_parameters(ZEND_NUM_ARGS(), "l", &id) == FAILURE) {
-        return;
-    }
-
-    intern = get_kafka_object(getThis());
-    if (!intern) {
-        return;
-    }
-
-    switch (id) {
-        case RD_KAFKA_LOG_PRINT:
-            logger = rd_kafka_log_print;
-            break;
-#ifndef _MSC_VER
-        case RD_KAFKA_LOG_SYSLOG:
-            logger = rd_kafka_log_syslog;
-            break;
-#endif
-        case RD_KAFKA_LOG_SYSLOG_PRINT:
-            logger = kafka_log_syslog_print;
-            break;
-        default:
-            zend_throw_exception_ex(NULL, 0, "Invalid logger");
-            return;
-    }
-
-    rd_kafka_set_logger(intern->rk, logger);
-}
-/* }}} */
-
 static const zend_function_entry kafka_fe[] = {
     PHP_ME(RdKafka__Kafka, addBrokers, arginfo_kafka_add_brokers, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__Kafka, getMetadata, arginfo_kafka_get_metadata, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__Kafka, getOutQLen, arginfo_kafka_get_outq_len, ZEND_ACC_PUBLIC)
-    PHP_MALIAS(RdKafka__Kafka, metadata, getMetadata, arginfo_kafka_get_metadata, ZEND_ACC_PUBLIC | ZEND_ACC_DEPRECATED)
-    PHP_ME(RdKafka__Kafka, setLogLevel, arginfo_kafka_set_log_level, ZEND_ACC_PUBLIC | ZEND_ACC_DEPRECATED)
     PHP_ME(RdKafka__Kafka, newTopic, arginfo_kafka_new_topic, ZEND_ACC_PUBLIC)
-    PHP_MALIAS(RdKafka__Kafka, outqLen, getOutQLen, arginfo_kafka_get_outq_len, ZEND_ACC_PUBLIC | ZEND_ACC_DEPRECATED)
     PHP_ME(RdKafka__Kafka, poll, arginfo_kafka_poll, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__Kafka, flush, arginfo_kafka_flush, ZEND_ACC_PUBLIC)
 #ifdef HAS_RD_KAFKA_PURGE
     PHP_ME(RdKafka__Kafka, purge, arginfo_kafka_purge, ZEND_ACC_PUBLIC)
 #endif
-    PHP_ME(RdKafka__Kafka, setLogger, arginfo_kafka_set_logger, ZEND_ACC_PUBLIC | ZEND_ACC_DEPRECATED)
     PHP_ME(RdKafka__Kafka, queryWatermarkOffsets, arginfo_kafka_query_watermark_offsets, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__Kafka, offsetsForTimes, arginfo_kafka_offsets_for_times, ZEND_ACC_PUBLIC)
     PHP_FE_END
@@ -834,8 +761,8 @@ PHP_MINIT_FUNCTION(rdkafka)
     kafka_default_object_handlers.clone_obj = NULL;
 
 	kafka_object_handlers = kafka_default_object_handlers;
-    kafka_object_handlers->free_obj = kafka_free;
-    kafka_object_handlers->offset = XtOffsetOf(kafka_object, std);
+    kafka_object_handlers.free_obj = kafka_free;
+    kafka_object_handlers.offset = XtOffsetOf(kafka_object, std);
 
     INIT_CLASS_ENTRY(ce, "RdKafka", kafka_fe);
     ce_kafka = zend_register_internal_class(&ce);
@@ -852,7 +779,7 @@ PHP_MINIT_FUNCTION(rdkafka)
     ce_kafka_producer = zend_register_internal_class_ex(&ce, ce_kafka);
 
     INIT_NS_CLASS_ENTRY(ce, "RdKafka", "Exception", NULL);
-    ce_kafka_exception = rdkafka_register_internal_class_ex(&ce, zend_exception_get_default(TSRMLS_C));
+    ce_kafka_exception = zend_register_internal_class_ex(&ce, zend_ce_exception);
 
     kafka_conf_minit(INIT_FUNC_ARGS_PASSTHRU);
     kafka_kafka_consumer_minit(INIT_FUNC_ARGS_PASSTHRU);

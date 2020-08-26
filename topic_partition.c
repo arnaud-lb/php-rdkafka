@@ -170,7 +170,7 @@ rd_kafka_topic_partition_list_t * array_arg_to_kafka_topic_partition_list(int ar
                     "Argument %d passed to %s%s%s() must be an array of RdKafka\\TopicPartition, at least one element is a(n) %s",
                     argnum,
                     class_name, space,
-                    get_active_function_name(TSRMLS_C),
+                    get_active_function_name(),
                     zend_zval_type_name(ZEVAL(zv)));
             return NULL;
         }
@@ -399,6 +399,6 @@ void kafka_metadata_topic_partition_minit(INIT_FUNC_ARGS) /* {{{ */
 
     handlers = kafka_default_object_handlers;
     handlers.get_debug_info = get_debug_info;
-    handlers->free_obj = free_object;
-    handlers->offset = XtOffsetOf(object_intern, std);
+    handlers.free_obj = free_object;
+    handlers.offset = XtOffsetOf(object_intern, std);
 } /* }}} */

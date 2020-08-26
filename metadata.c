@@ -232,13 +232,13 @@ void kafka_metadata_minit(INIT_FUNC_ARGS)
 
     handlers = kafka_default_object_handlers;
     handlers.get_debug_info = get_debug_info;
-    handlers->free_obj = kafka_metadata_free;
-    handlers->offset = XtOffsetOf(object_intern, std);
+    handlers.free_obj = kafka_metadata_free;
+    handlers.offset = XtOffsetOf(object_intern, std);
 
-    kafka_metadata_topic_minit(TSRMLS_C);
-    kafka_metadata_broker_minit(TSRMLS_C);
-    kafka_metadata_partition_minit(TSRMLS_C);
-    kafka_metadata_collection_minit(TSRMLS_C);
+    kafka_metadata_topic_minit(INIT_FUNC_ARGS_PASSTHRU);
+    kafka_metadata_broker_minit(INIT_FUNC_ARGS_PASSTHRU);
+    kafka_metadata_partition_minit(INIT_FUNC_ARGS_PASSTHRU);
+    kafka_metadata_collection_minit(INIT_FUNC_ARGS_PASSTHRU);
 }
 
 void kafka_metadata_init(zval *return_value, const rd_kafka_metadata_t *metadata)
