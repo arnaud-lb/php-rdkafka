@@ -151,7 +151,7 @@ static void kafka_conf_error_cb(rd_kafka_t *rk, int err, const char *reason, voi
     MAKE_STD_ZEVAL(args[1]);
     MAKE_STD_ZEVAL(args[2]);
 
-    KAFKA_ZVAL_ZVAL(P_ZEVAL(args[0]), &cbs->zrk, 1, 0);
+    ZVAL_ZVAL(P_ZEVAL(args[0]), &cbs->zrk, 1, 0);
     ZVAL_LONG(P_ZEVAL(args[1]), err);
     ZVAL_STRING(P_ZEVAL(args[2]), reason);
 
@@ -178,7 +178,7 @@ static void kafka_conf_dr_msg_cb(rd_kafka_t *rk, const rd_kafka_message_t *msg, 
     MAKE_STD_ZEVAL(args[0]);
     MAKE_STD_ZEVAL(args[1]);
 
-    KAFKA_ZVAL_ZVAL(P_ZEVAL(args[0]), &cbs->zrk, 1, 0);
+    ZVAL_ZVAL(P_ZEVAL(args[0]), &cbs->zrk, 1, 0);
     kafka_message_new(P_ZEVAL(args[1]), msg);
 
     rdkafka_call_function(&cbs->dr_msg->fci, &cbs->dr_msg->fcc, NULL, 2, args);
@@ -204,7 +204,7 @@ static int kafka_conf_stats_cb(rd_kafka_t *rk, char *json, size_t json_len, void
     MAKE_STD_ZEVAL(args[1]);
     MAKE_STD_ZEVAL(args[2]);
 
-    KAFKA_ZVAL_ZVAL(P_ZEVAL(args[0]), &cbs->zrk, 1, 0);
+    ZVAL_ZVAL(P_ZEVAL(args[0]), &cbs->zrk, 1, 0);
     ZVAL_STRING(P_ZEVAL(args[1]), json);
     ZVAL_LONG(P_ZEVAL(args[2]), json_len);
 
@@ -241,7 +241,7 @@ static void kafka_conf_rebalance_cb(rd_kafka_t *rk, rd_kafka_resp_err_t err, rd_
     MAKE_STD_ZEVAL(args[1]);
     MAKE_STD_ZEVAL(args[2]);
 
-    KAFKA_ZVAL_ZVAL(P_ZEVAL(args[0]), &cbs->zrk, 1, 0);
+    ZVAL_ZVAL(P_ZEVAL(args[0]), &cbs->zrk, 1, 0);
     ZVAL_LONG(P_ZEVAL(args[1]), err);
     kafka_topic_partition_list_to_array(P_ZEVAL(args[2]), partitions);
 
@@ -269,7 +269,7 @@ static void kafka_conf_consume_cb(rd_kafka_message_t *msg, void *opaque)
     MAKE_STD_ZEVAL(args[1]);
 
     kafka_message_new(P_ZEVAL(args[0]), msg);
-    KAFKA_ZVAL_ZVAL(P_ZEVAL(args[1]), &cbs->zrk, 1, 0);
+    ZVAL_ZVAL(P_ZEVAL(args[1]), &cbs->zrk, 1, 0);
 
 
     rdkafka_call_function(&cbs->consume->fci, &cbs->consume->fcc, NULL, 2, args);
@@ -295,7 +295,7 @@ static void kafka_conf_offset_commit_cb(rd_kafka_t *rk, rd_kafka_resp_err_t err,
     MAKE_STD_ZEVAL(args[1]);
     MAKE_STD_ZEVAL(args[2]);
 
-    KAFKA_ZVAL_ZVAL(P_ZEVAL(args[0]), &cbs->zrk, 1, 0);
+    ZVAL_ZVAL(P_ZEVAL(args[0]), &cbs->zrk, 1, 0);
     ZVAL_LONG(P_ZEVAL(args[1]), err);
     kafka_topic_partition_list_to_array(P_ZEVAL(args[2]), partitions);
 
@@ -321,7 +321,7 @@ static void kafka_conf_log_cb(const rd_kafka_t *rk, int level, const char *facil
     MAKE_STD_ZEVAL(args[2]);
     MAKE_STD_ZEVAL(args[3]);
 
-    KAFKA_ZVAL_ZVAL(P_ZEVAL(args[0]), &cbs->zrk, 1, 0);
+    ZVAL_ZVAL(P_ZEVAL(args[0]), &cbs->zrk, 1, 0);
     ZVAL_LONG(P_ZEVAL(args[1]), level);
     ZVAL_STRING(P_ZEVAL(args[2]), facility);
     ZVAL_STRING(P_ZEVAL(args[3]), message);
