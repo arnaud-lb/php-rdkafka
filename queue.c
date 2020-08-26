@@ -37,32 +37,30 @@ static zend_object_handlers handlers;
 
 static void kafka_queue_free(zend_object *object TSRMLS_DC) /* {{{ */
 {
-    kafka_queue_object *intern = get_custom_object(kafka_queue_object, object);
+    kafka_queue_object *intern = php_kafka_from_obj(kafka_queue_object, object);
 
     if (intern->rkqu) {
-        kafka_object *kafka_intern = get_kafka_object(P_ZEVAL(intern->zrk) TSRMLS_CC);
+        kafka_object *kafka_intern = get_kafka_object(P_ZEVAL(intern->zrk));
         if (kafka_intern) {
             zend_hash_index_del(&kafka_intern->queues, (zend_ulong)intern);
         }
     }
 
-    zend_object_std_dtor(&intern->std TSRMLS_CC);
-
-    free_custom_object(intern);
+    zend_object_std_dtor(&intern->std);
 }
 /* }}} */
 
-static zend_object_value kafka_queue_new(zend_class_entry *class_type TSRMLS_DC) /* {{{ */
+static zend_object *kafka_queue_new(zend_class_entry *class_type TSRMLS_DC) /* {{{ */
 {
-    zend_object_value retval;
+    zend_object* retval;
     kafka_queue_object *intern;
 
-    intern = alloc_object(intern, class_type);
-    zend_object_std_init(&intern->std, class_type TSRMLS_CC);
+    intern = ecalloc(1, sizeof(kafka_queue_object));
+    zend_object_std_init(&intern->std, class_type);
     object_properties_init(&intern->std, class_type);
 
-    STORE_OBJECT(retval, intern, (zend_objects_store_dtor_t) zend_objects_destroy_object, kafka_queue_free, NULL);
-    SET_OBJECT_HANDLERS(retval, &handlers);
+    retval = &intern->std;
+    retval->handlers = &handlers;
 
     return retval;
 }
@@ -70,10 +68,10 @@ static zend_object_value kafka_queue_new(zend_class_entry *class_type TSRMLS_DC)
 
 kafka_queue_object * get_kafka_queue_object(zval *zrkqu TSRMLS_DC)
 {
-    kafka_queue_object *orkqu = get_custom_object_zval(kafka_queue_object, zrkqu);
+    kafka_queue_object *orkqu = Z_RDKAFKA_P(kafka_queue_object, zrkqu);
 
     if (!orkqu->rkqu) {
-        zend_throw_exception_ex(NULL, 0 TSRMLS_CC, "RdKafka\\Queue::__construct() has not been called" TSRMLS_CC);
+        zend_throw_exception_ex(NULL, 0, "RdKafka\\Queue::__construct() has not been called");
         return NULL;
     }
 
@@ -94,11 +92,11 @@ PHP_METHOD(RdKafka__Queue, consume)
     rd_kafka_message_t *message;
     rd_kafka_resp_err_t err;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &timeout_ms) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS(), "l", &timeout_ms) == FAILURE) {
         return;
     }
 
-    intern = get_kafka_queue_object(getThis() TSRMLS_CC);
+    intern = get_kafka_queue_object(getThis());
     if (!intern) {
         return;
     }
@@ -110,11 +108,11 @@ PHP_METHOD(RdKafka__Queue, consume)
         if (err == RD_KAFKA_RESP_ERR__TIMED_OUT) {
             return;
         }
-        zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err TSRMLS_CC);
+        zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err);
         return;
     }
 
-    kafka_message_new(return_value, message TSRMLS_CC);
+    kafka_message_new(return_value, message);
 
     rd_kafka_message_destroy(message);
 }
@@ -134,10 +132,10 @@ void kafka_queue_minit(TSRMLS_D) { /* {{{ */
     zend_class_entry ce;
 
     handlers = kafka_default_object_handlers;
-    set_object_handler_free_obj(&handlers, kafka_queue_free);
-    set_object_handler_offset(&handlers, XtOffsetOf(kafka_queue_object, std));
+    handlers->free_obj = kafka_queue_free;
+    handlers->offset = XtOffsetOf(kafka_queue_object, std);
 
     INIT_NS_CLASS_ENTRY(ce, "RdKafka", "Queue", kafka_queue_fe);
-    ce_kafka_queue = zend_register_internal_class(&ce TSRMLS_CC);
+    ce_kafka_queue = zend_register_internal_class(&ce);
     ce_kafka_queue->create_object = kafka_queue_new;
 } /* }}} */

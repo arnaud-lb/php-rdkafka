@@ -84,12 +84,12 @@ PHP_FUNCTION(rd_kafka_get_err_descs)
         array_init(P_ZEVAL(el));
         add_assoc_long(P_ZEVAL(el), "code", desc->code);
         if (desc->name) {
-            rdkafka_add_assoc_string(P_ZEVAL(el), "name", (char*) desc->name);
+            add_assoc_string(P_ZEVAL(el), "name", (char*) desc->name);
         } else {
             add_assoc_null(P_ZEVAL(el), "name");
         }
         if (desc->desc) {
-            rdkafka_add_assoc_string(P_ZEVAL(el), "desc", (char*) desc->desc);
+            add_assoc_string(P_ZEVAL(el), "desc", (char*) desc->desc);
         }else {
             add_assoc_null(P_ZEVAL(el), "desc");
         }
@@ -106,14 +106,14 @@ PHP_FUNCTION(rd_kafka_err2str)
     zend_long err;
     const char *errstr;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &err) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS(), "l", &err) == FAILURE) {
         return;
     }
 
     errstr = rd_kafka_err2str(err);
 
     if (errstr) {
-        RDKAFKA_RETURN_STRING(errstr);
+        RETURN_STRING(errstr);
     }
 }
 /* }}} */
@@ -122,7 +122,7 @@ PHP_FUNCTION(rd_kafka_err2str)
  * Returns `errno` */
 PHP_FUNCTION(rd_kafka_errno)
 {
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "") == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS(), "") == FAILURE) {
         return;
     }
 
@@ -136,7 +136,7 @@ PHP_FUNCTION(rd_kafka_errno2err)
 {
     zend_long errnox;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &errnox) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS(), "l", &errnox) == FAILURE) {
         return;
     }
 
@@ -164,7 +164,7 @@ PHP_FUNCTION(rd_kafka_offset_tail)
 {
     zend_long cnt;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &cnt) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS(), "l", &cnt) == FAILURE) {
         return;
     }
 
