@@ -63,7 +63,7 @@ static zend_object *kafka_topic_new(zend_class_entry *class_type) /* {{{ */
     zend_object* retval;
     kafka_topic_object *intern;
 
-    intern = ecalloc(1, sizeof(kafka_topic_object));
+    intern = ecalloc(1, sizeof(kafka_topic_object)+ zend_object_properties_size(class_type));
     zend_object_std_init(&intern->std, class_type);
     object_properties_init(&intern->std, class_type);
 

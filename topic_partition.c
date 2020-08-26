@@ -56,7 +56,7 @@ static zend_object *create_object(zend_class_entry *class_type) /* {{{ */
     zend_object* retval;
     object_intern *intern;
 
-    intern = ecalloc(1, sizeof(*intern));
+    intern = ecalloc(1, sizeof(*intern)+ zend_object_properties_size(class_type));
     zend_object_std_init(&intern->std, class_type);
     object_properties_init(&intern->std, class_type);
 
