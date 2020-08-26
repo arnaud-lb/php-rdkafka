@@ -30,9 +30,9 @@ Setting valid topic conf
 Deprecated: Method RdKafka\Conf::setDefaultTopicConf() is deprecated in %s%econf_setDefaultTopicConf8.php on line 6
 Setting invalid topic conf
 
-Deprecated: Method RdKafka\Conf::setDefaultTopicConf() is deprecated in %s%econf_setDefaultTopicConf8.php on line 9
-Argument #1 ($topic_conf) must be of type RdKafka\TopicConf, RdKafka\Conf given
+Deprecated: Method RdKafka\Conf::setDefaultTopicConf() is deprecated in %s%econf_setDefaultTopicConf8.php on line 10
+RdKafka\Conf::setDefaultTopicConf(): Argument #1 ($topic_conf) must be of type RdKafka\TopicConf, RdKafka\Conf given
 %s%econf_setDefaultTopicConf8.php
-9
+10
 0
 
