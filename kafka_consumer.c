@@ -41,7 +41,7 @@ typedef struct _object_intern {
 static zend_class_entry * ce;
 static zend_object_handlers handlers;
 
-static void kafka_consumer_free(zend_object *object TSRMLS_DC) /* {{{ */
+static void kafka_consumer_free(zend_object *object) /* {{{ */
 {
     object_intern *intern = php_kafka_from_obj(object_intern, object);
     rd_kafka_resp_err_t err;
@@ -64,7 +64,7 @@ static void kafka_consumer_free(zend_object *object TSRMLS_DC) /* {{{ */
 }
 /* }}} */
 
-static zend_object *kafka_consumer_new(zend_class_entry *class_type TSRMLS_DC) /* {{{ */
+static zend_object *kafka_consumer_new(zend_class_entry *class_type) /* {{{ */
 {
     zend_object* retval;
     object_intern *intern;
@@ -80,7 +80,7 @@ static zend_object *kafka_consumer_new(zend_class_entry *class_type TSRMLS_DC) /
 }
 /* }}} */
 
-static object_intern * get_object(zval *zconsumer TSRMLS_DC) /* {{{ */
+static object_intern * get_object(zval *zconsumer) /* {{{ */
 {
     object_intern *oconsumer = Z_RDKAFKA_P(object_intern, zconsumer);
 
@@ -818,7 +818,7 @@ static const zend_function_entry fe[] = { /* {{{ */
     PHP_FE_END
 }; /* }}} */
 
-void kafka_kafka_consumer_minit(TSRMLS_D) /* {{{ */
+void kafka_kafka_consumer_minit(INIT_FUNC_ARGS) /* {{{ */
 {
     zend_class_entry tmpce;
 

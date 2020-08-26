@@ -40,12 +40,12 @@ typedef struct _object_intern {
     zend_object                      std;
 } object_intern;
 
-static HashTable *get_debug_info(zval *object, int *is_temp TSRMLS_DC);
+static HashTable *get_debug_info(zval *object, int *is_temp);
 
 static zend_class_entry *ce;
 static zend_object_handlers handlers;
 
-static void free_object(zend_object *object TSRMLS_DC) /* {{{ */
+static void free_object(zend_object *object) /* {{{ */
 {
     object_intern *intern = php_kafka_from_obj(object_intern, object);
 
@@ -57,7 +57,7 @@ static void free_object(zend_object *object TSRMLS_DC) /* {{{ */
 }
 /* }}} */
 
-static zend_object *create_object(zend_class_entry *class_type TSRMLS_DC) /* {{{ */
+static zend_object *create_object(zend_class_entry *class_type) /* {{{ */
 {
     zend_object* retval;
     object_intern *intern;
@@ -73,7 +73,7 @@ static zend_object *create_object(zend_class_entry *class_type TSRMLS_DC) /* {{{
 }
 /* }}} */
 
-static object_intern * get_object(zval *zmti TSRMLS_DC)
+static object_intern * get_object(zval *zmti)
 {
     object_intern *omti = Z_RDKAFKA_P(object_intern, zmti);
 
@@ -85,7 +85,7 @@ static object_intern * get_object(zval *zmti TSRMLS_DC)
     return omti;
 }
 
-static HashTable *get_debug_info(zval *object, int *is_temp TSRMLS_DC) /* {{{ */
+static HashTable *get_debug_info(zval *object, int *is_temp) /* {{{ */
 {
     zval ary;
     object_intern *intern;
@@ -269,7 +269,7 @@ static const zend_function_entry fe[] = {
     PHP_FE_END
 };
 
-void kafka_metadata_collection_minit(TSRMLS_D)
+void kafka_metadata_collection_minit(INIT_FUNC_ARGS)
 {
     zend_class_entry tmpce;
 
@@ -284,7 +284,7 @@ void kafka_metadata_collection_minit(TSRMLS_D)
     handlers->offset = XtOffsetOf(object_intern, std);
 }
 
-void kafka_metadata_collection_init(zval *return_value, zval *zmetadata, const void * items, size_t item_cnt, size_t item_size, kafka_metadata_collection_ctor_t ctor TSRMLS_DC)
+void kafka_metadata_collection_init(zval *return_value, zval *zmetadata, const void * items, size_t item_cnt, size_t item_size, kafka_metadata_collection_ctor_t ctor)
 {
     object_intern *intern;
 

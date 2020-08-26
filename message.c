@@ -32,7 +32,7 @@
 
 zend_class_entry * ce_kafka_message;
 
-void kafka_message_new(zval *return_value, const rd_kafka_message_t *message TSRMLS_DC)
+void kafka_message_new(zval *return_value, const rd_kafka_message_t *message)
 {
     object_init_ex(return_value, ce_kafka_message);
 
@@ -86,7 +86,7 @@ void kafka_message_new(zval *return_value, const rd_kafka_message_t *message TSR
 #endif
 }
 
-void kafka_message_list_to_array(zval *return_value, rd_kafka_message_t **messages, long size TSRMLS_DC) /* {{{ */
+void kafka_message_list_to_array(zval *return_value, rd_kafka_message_t **messages, long size) /* {{{ */
 {
     rd_kafka_message_t *msg;
     zeval zmsg;
@@ -144,7 +144,7 @@ static const zend_function_entry kafka_message_fe[] = {
     PHP_FE_END
 };
 
-void kafka_message_minit(TSRMLS_D) { /* {{{ */
+void kafka_message_minit(INIT_FUNC_ARGS) { /* {{{ */
     zend_class_entry ce;
 
     INIT_NS_CLASS_ENTRY(ce, "RdKafka", "Message", kafka_message_fe);

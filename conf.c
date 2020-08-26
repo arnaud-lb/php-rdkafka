@@ -38,7 +38,7 @@ zend_class_entry * ce_kafka_topic_conf;
 
 static zend_object_handlers handlers;
 
-static void kafka_conf_callback_dtor(kafka_conf_callback *cb TSRMLS_DC) /* {{{ */
+static void kafka_conf_callback_dtor(kafka_conf_callback *cb) /* {{{ */
 {
     if (cb) {
         zval_ptr_dtor(&cb->fci.function_name);
@@ -46,7 +46,7 @@ static void kafka_conf_callback_dtor(kafka_conf_callback *cb TSRMLS_DC) /* {{{ *
     }
 } /* }}} */
 
-void kafka_conf_callbacks_dtor(kafka_conf_callbacks *cbs TSRMLS_DC) /* {{{ */
+void kafka_conf_callbacks_dtor(kafka_conf_callbacks *cbs) /* {{{ */
 {
     kafka_conf_callback_dtor(cbs->error);
     cbs->error = NULL;
@@ -64,7 +64,7 @@ void kafka_conf_callbacks_dtor(kafka_conf_callbacks *cbs TSRMLS_DC) /* {{{ */
     cbs->log = NULL;
 } /* }}} */
 
-static void kafka_conf_callback_copy(kafka_conf_callback **to, kafka_conf_callback *from TSRMLS_DC) /* {{{ */
+static void kafka_conf_callback_copy(kafka_conf_callback **to, kafka_conf_callback *from) /* {{{ */
 {
     if (from) {
         *to = emalloc(sizeof(**to));
@@ -73,7 +73,7 @@ static void kafka_conf_callback_copy(kafka_conf_callback **to, kafka_conf_callba
     }
 } /* }}} */
 
-void kafka_conf_callbacks_copy(kafka_conf_callbacks *to, kafka_conf_callbacks *from TSRMLS_DC) /* {{{ */
+void kafka_conf_callbacks_copy(kafka_conf_callbacks *to, kafka_conf_callbacks *from) /* {{{ */
 {
     kafka_conf_callback_copy(&to->error, from->error);
     kafka_conf_callback_copy(&to->rebalance, from->rebalance);
@@ -84,7 +84,7 @@ void kafka_conf_callbacks_copy(kafka_conf_callbacks *to, kafka_conf_callbacks *f
     kafka_conf_callback_copy(&to->log, from->log);
 } /* }}} */
 
-static void kafka_conf_free(zend_object *object TSRMLS_DC) /* {{{ */
+static void kafka_conf_free(zend_object *object) /* {{{ */
 {
     kafka_conf_object *intern = php_kafka_from_obj(kafka_conf_object, object);
 
@@ -106,7 +106,7 @@ static void kafka_conf_free(zend_object *object TSRMLS_DC) /* {{{ */
 }
 /* }}} */
 
-static zend_object *kafka_conf_new(zend_class_entry *class_type TSRMLS_DC) /* {{{ */
+static zend_object *kafka_conf_new(zend_class_entry *class_type) /* {{{ */
 {
     zend_object* retval;
     kafka_conf_object *intern;
@@ -122,7 +122,7 @@ static zend_object *kafka_conf_new(zend_class_entry *class_type TSRMLS_DC) /* {{
 }
 /* }}} */
 
-kafka_conf_object * get_kafka_conf_object(zval *zconf TSRMLS_DC)
+kafka_conf_object * get_kafka_conf_object(zval *zconf)
 {
     kafka_conf_object *oconf = Z_RDKAFKA_P(kafka_conf_object, zconf);
 
@@ -848,7 +848,7 @@ static const zend_function_entry kafka_conf_fe[] = {
     PHP_FE_END
 };
 
-void kafka_conf_minit(TSRMLS_D)
+void kafka_conf_minit(INIT_FUNC_ARGS)
 {
     zend_class_entry tmpce;
 

@@ -24,8 +24,8 @@ typedef struct _kafka_topic_object {
     zend_object         std;
 } kafka_topic_object;
 
-void kafka_topic_minit(TSRMLS_D);
-kafka_topic_object * get_kafka_topic_object(zval *zrkt TSRMLS_DC);
+void kafka_topic_minit(INIT_FUNC_ARGS);
+kafka_topic_object * get_kafka_topic_object(zval *zrkt);
 
 extern zend_class_entry * ce_kafka_consumer_topic;
 extern zend_class_entry * ce_kafka_kafka_consumer_topic;

@@ -37,17 +37,17 @@ typedef struct _object_intern {
     zend_object                     std;
 } object_intern;
 
-static HashTable *get_debug_info(zval *object, int *is_temp TSRMLS_DC);
+static HashTable *get_debug_info(zval *object, int *is_temp);
 
 static zend_class_entry * ce;
 static zend_object_handlers handlers;
 
-static void partitions_collection(zval *return_value, zval *parent, object_intern *intern TSRMLS_DC) { /* {{{ */
+static void partitions_collection(zval *return_value, zval *parent, object_intern *intern) { /* {{{ */
     kafka_metadata_collection_init(return_value, parent, intern->metadata_topic->partitions, intern->metadata_topic->partition_cnt, sizeof(*intern->metadata_topic->partitions), kafka_metadata_partition_ctor);
 }
 /* }}} */
 
-static void free_object(zend_object *object TSRMLS_DC) /* {{{ */
+static void free_object(zend_object *object) /* {{{ */
 {
     object_intern *intern = php_kafka_from_obj(object_intern, object);
 
@@ -59,7 +59,7 @@ static void free_object(zend_object *object TSRMLS_DC) /* {{{ */
 }
 /* }}} */
 
-static zend_object *create_object(zend_class_entry *class_type TSRMLS_DC) /* {{{ */
+static zend_object *create_object(zend_class_entry *class_type) /* {{{ */
 {
     zend_object* retval;
     object_intern *intern;
@@ -75,7 +75,7 @@ static zend_object *create_object(zend_class_entry *class_type TSRMLS_DC) /* {{{
 }
 /* }}} */
 
-static object_intern * get_object(zval *zmt TSRMLS_DC)
+static object_intern * get_object(zval *zmt)
 {
     object_intern *omt = Z_RDKAFKA_P(object_intern, zmt);
 
@@ -87,7 +87,7 @@ static object_intern * get_object(zval *zmt TSRMLS_DC)
     return omt;
 }
 
-static HashTable *get_debug_info(zval *object, int *is_temp TSRMLS_DC) /* {{{ */
+static HashTable *get_debug_info(zval *object, int *is_temp) /* {{{ */
 {
     zval ary;
     object_intern *intern;
@@ -191,7 +191,7 @@ static const zend_function_entry fe[] = {
     PHP_FE_END
 };
 
-void kafka_metadata_topic_minit(TSRMLS_D)
+void kafka_metadata_topic_minit(INIT_FUNC_ARGS)
 {
     zend_class_entry tmpce;
 
@@ -205,7 +205,7 @@ void kafka_metadata_topic_minit(TSRMLS_D)
     handlers->offset = XtOffsetOf(object_intern, std);
 }
 
-void kafka_metadata_topic_ctor(zval *return_value, zval *zmetadata, const void *data TSRMLS_DC)
+void kafka_metadata_topic_ctor(zval *return_value, zval *zmetadata, const void *data)
 {
     rd_kafka_metadata_topic_t *metadata_topic = (rd_kafka_metadata_topic_t*)data;
     object_intern *intern;

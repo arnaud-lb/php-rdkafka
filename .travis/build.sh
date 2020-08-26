@@ -3,7 +3,7 @@
 set -xve
 
 if ! [ -d "librdkafka" ]; then
-  git clone --depth 1 --branch "${LIBRDKAFKA_VERSION:-v1.2.2}" "${LIBRDKAFKA_REPOSITORY_URL:-https://github.com/edenhill/librdkafka.git}"
+  git clone --depth 1 --branch "${LIBRDKAFKA_VERSION:-v1.5.0}" "${LIBRDKAFKA_REPOSITORY_URL:-https://github.com/edenhill/librdkafka.git}"
 fi
 
 (

@@ -22,7 +22,7 @@ typedef struct _kafka_queue_object {
     zend_object         std;
 } kafka_queue_object;
 
-void kafka_queue_minit(TSRMLS_D);
-kafka_queue_object * get_kafka_queue_object(zval *zrkqu TSRMLS_DC);
+void kafka_queue_minit(INIT_FUNC_ARGS);
+kafka_queue_object * get_kafka_queue_object(zval *zrkqu);
 
 extern zend_class_entry * ce_kafka_queue;

@@ -66,11 +66,11 @@ static void stop_consuming_toppar_pp(toppar ** tp) {
     rd_kafka_consume_stop((*tp)->rkt, (*tp)->partition);
 }
 
-static void stop_consuming(kafka_object * intern TSRMLS_DC) {
+static void stop_consuming(kafka_object * intern) {
     zend_hash_apply(&intern->consuming, (apply_func_t)stop_consuming_toppar_pp);
 }
 
-static void kafka_free(zend_object *object TSRMLS_DC) /* {{{ */
+static void kafka_free(zend_object *object) /* {{{ */
 {
     kafka_object *intern = php_kafka_from_obj(kafka_object, object);
 
@@ -110,7 +110,7 @@ static void kafka_topic_object_pre_free(kafka_topic_object ** pp) {
     zval_ptr_dtor(&intern->zrk);
 }
 
-static void kafka_init(zval *this_ptr, rd_kafka_type_t type, zval *zconf TSRMLS_DC) /* {{{ */
+static void kafka_init(zval *this_ptr, rd_kafka_type_t type, zval *zconf) /* {{{ */
 {
     char errstr[512];
     rd_kafka_t *rk;
@@ -153,7 +153,7 @@ static void kafka_init(zval *this_ptr, rd_kafka_type_t type, zval *zconf TSRMLS_
 }
 /* }}} */
 
-static zend_object *kafka_new(zend_class_entry *class_type TSRMLS_DC) /* {{{ */
+static zend_object *kafka_new(zend_class_entry *class_type) /* {{{ */
 {
     zend_object* retval;
     kafka_object *intern;
@@ -169,7 +169,7 @@ static zend_object *kafka_new(zend_class_entry *class_type TSRMLS_DC) /* {{{ */
 }
 /* }}} */
 
-kafka_object * get_kafka_object(zval *zrk TSRMLS_DC)
+kafka_object * get_kafka_object(zval *zrk)
 {
     kafka_object *ork = Z_RDKAFKA_P(kafka_object, zrk);
 
@@ -854,13 +854,13 @@ PHP_MINIT_FUNCTION(rdkafka)
     INIT_NS_CLASS_ENTRY(ce, "RdKafka", "Exception", NULL);
     ce_kafka_exception = rdkafka_register_internal_class_ex(&ce, zend_exception_get_default(TSRMLS_C));
 
-    kafka_conf_minit(TSRMLS_C);
-    kafka_kafka_consumer_minit(TSRMLS_C);
-    kafka_message_minit(TSRMLS_C);
-    kafka_metadata_minit(TSRMLS_C);
-    kafka_metadata_topic_partition_minit(TSRMLS_C);
-    kafka_queue_minit(TSRMLS_C);
-    kafka_topic_minit(TSRMLS_C);
+    kafka_conf_minit(INIT_FUNC_ARGS_PASSTHRU);
+    kafka_kafka_consumer_minit(INIT_FUNC_ARGS_PASSTHRU);
+    kafka_message_minit(INIT_FUNC_ARGS_PASSTHRU);
+    kafka_metadata_minit(INIT_FUNC_ARGS_PASSTHRU);
+    kafka_metadata_topic_partition_minit(INIT_FUNC_ARGS_PASSTHRU);
+    kafka_queue_minit(INIT_FUNC_ARGS_PASSTHRU);
+    kafka_topic_minit(INIT_FUNC_ARGS_PASSTHRU);
 
     return SUCCESS;
 }

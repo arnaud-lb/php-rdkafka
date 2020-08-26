@@ -36,22 +36,22 @@ typedef struct _object_intern {
     zend_object               std;
 } object_intern;
 
-static HashTable *get_debug_info(zval *object, int *is_temp TSRMLS_DC);
+static HashTable *get_debug_info(zval *object, int *is_temp);
 
 static zend_class_entry * ce;
 static zend_object_handlers handlers;
 
-static void brokers_collection(zval *return_value, zval *parent, object_intern *intern TSRMLS_DC) { /* {{{ */
+static void brokers_collection(zval *return_value, zval *parent, object_intern *intern) { /* {{{ */
     kafka_metadata_collection_init(return_value, parent, intern->metadata->brokers, intern->metadata->broker_cnt, sizeof(*intern->metadata->brokers), kafka_metadata_broker_ctor);
 }
 /* }}} */
 
-static void topics_collection(zval *return_value, zval *parent, object_intern *intern TSRMLS_DC) { /* {{{ */
+static void topics_collection(zval *return_value, zval *parent, object_intern *intern) { /* {{{ */
     kafka_metadata_collection_init(return_value, parent, intern->metadata->topics, intern->metadata->topic_cnt, sizeof(*intern->metadata->topics), kafka_metadata_topic_ctor);
 }
 /* }}} */
 
-static void kafka_metadata_free(zend_object *object TSRMLS_DC) /* {{{ */
+static void kafka_metadata_free(zend_object *object) /* {{{ */
 {
     object_intern *intern = php_kafka_from_obj(object_intern, object);
 
@@ -63,7 +63,7 @@ static void kafka_metadata_free(zend_object *object TSRMLS_DC) /* {{{ */
 }
 /* }}} */
 
-static zend_object *kafka_metadata_new(zend_class_entry *class_type TSRMLS_DC) /* {{{ */
+static zend_object *kafka_metadata_new(zend_class_entry *class_type) /* {{{ */
 {
     zend_object* retval;
     object_intern *intern;
@@ -79,7 +79,7 @@ static zend_object *kafka_metadata_new(zend_class_entry *class_type TSRMLS_DC) /
 }
 /* }}} */
 
-static object_intern * get_object(zval *zmetadata TSRMLS_DC)
+static object_intern * get_object(zval *zmetadata)
 {
     object_intern *ometadata = Z_RDKAFKA_P(object_intern, zmetadata);
 
@@ -91,7 +91,7 @@ static object_intern * get_object(zval *zmetadata TSRMLS_DC)
     return ometadata;
 }
 
-static HashTable *get_debug_info(zval *object, int *is_temp TSRMLS_DC) /* {{{ */
+static HashTable *get_debug_info(zval *object, int *is_temp) /* {{{ */
 {
     zval ary;
     object_intern *intern;
@@ -222,7 +222,7 @@ static const zend_function_entry kafka_metadata_fe[] = {
     PHP_FE_END
 };
 
-void kafka_metadata_minit(TSRMLS_D)
+void kafka_metadata_minit(INIT_FUNC_ARGS)
 {
     zend_class_entry tmpce;
 
@@ -241,7 +241,7 @@ void kafka_metadata_minit(TSRMLS_D)
     kafka_metadata_collection_minit(TSRMLS_C);
 }
 
-void kafka_metadata_init(zval *return_value, const rd_kafka_metadata_t *metadata TSRMLS_DC)
+void kafka_metadata_init(zval *return_value, const rd_kafka_metadata_t *metadata)
 {
     object_intern *intern;
 

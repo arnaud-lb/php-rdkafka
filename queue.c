@@ -35,7 +35,7 @@ zend_class_entry * ce_kafka_queue;
 
 static zend_object_handlers handlers;
 
-static void kafka_queue_free(zend_object *object TSRMLS_DC) /* {{{ */
+static void kafka_queue_free(zend_object *object) /* {{{ */
 {
     kafka_queue_object *intern = php_kafka_from_obj(kafka_queue_object, object);
 
@@ -50,7 +50,7 @@ static void kafka_queue_free(zend_object *object TSRMLS_DC) /* {{{ */
 }
 /* }}} */
 
-static zend_object *kafka_queue_new(zend_class_entry *class_type TSRMLS_DC) /* {{{ */
+static zend_object *kafka_queue_new(zend_class_entry *class_type) /* {{{ */
 {
     zend_object* retval;
     kafka_queue_object *intern;
@@ -66,7 +66,7 @@ static zend_object *kafka_queue_new(zend_class_entry *class_type TSRMLS_DC) /* {
 }
 /* }}} */
 
-kafka_queue_object * get_kafka_queue_object(zval *zrkqu TSRMLS_DC)
+kafka_queue_object * get_kafka_queue_object(zval *zrkqu)
 {
     kafka_queue_object *orkqu = Z_RDKAFKA_P(kafka_queue_object, zrkqu);
 
@@ -127,7 +127,7 @@ static const zend_function_entry kafka_queue_fe[] = {
     PHP_FE_END
 };
 
-void kafka_queue_minit(TSRMLS_D) { /* {{{ */
+void kafka_queue_minit(INIT_FUNC_ARGS) { /* {{{ */
 
     zend_class_entry ce;
 

@@ -43,7 +43,7 @@ typedef struct _php_callback {
     zend_fcall_info_cache fcc;
 } php_callback;
 
-static void kafka_topic_free(zend_object *object TSRMLS_DC) /* {{{ */
+static void kafka_topic_free(zend_object *object) /* {{{ */
 {
     kafka_topic_object *intern = php_kafka_from_obj(kafka_topic_object, object);
 
@@ -60,7 +60,7 @@ static void kafka_topic_free(zend_object *object TSRMLS_DC) /* {{{ */
 }
 /* }}} */
 
-static zend_object *kafka_topic_new(zend_class_entry *class_type TSRMLS_DC) /* {{{ */
+static zend_object *kafka_topic_new(zend_class_entry *class_type) /* {{{ */
 {
     zend_object* retval;
     kafka_topic_object *intern;
@@ -100,7 +100,7 @@ static void consume_callback(rd_kafka_message_t *msg, void *opaque)
     zval_ptr_dtor(&args[0]);
 }
 
-kafka_topic_object * get_kafka_topic_object(zval *zrkt TSRMLS_DC)
+kafka_topic_object * get_kafka_topic_object(zval *zrkt)
 {
     kafka_topic_object *orkt = Z_RDKAFKA_P(kafka_topic_object, zrkt);
 
@@ -668,7 +668,7 @@ static const zend_function_entry kafka_topic_fe[] = {
     PHP_FE_END
 };
 
-void kafka_topic_minit(TSRMLS_D) { /* {{{ */
+void kafka_topic_minit(INIT_FUNC_ARGS) { /* {{{ */
 
     zend_class_entry ce;
 

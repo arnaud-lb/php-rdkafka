@@ -33,13 +33,13 @@
 
 typedef kafka_topic_partition_intern object_intern;
 
-static HashTable *get_debug_info(zval *object, int *is_temp TSRMLS_DC);
+static HashTable *get_debug_info(zval *object, int *is_temp);
 
 zend_class_entry * ce_kafka_topic_partition;
 
 static zend_object_handlers handlers;
 
-static void free_object(zend_object *object TSRMLS_DC) /* {{{ */
+static void free_object(zend_object *object) /* {{{ */
 {
     object_intern *intern = php_kafka_from_obj(object_intern, object);
 
@@ -53,7 +53,7 @@ static void free_object(zend_object *object TSRMLS_DC) /* {{{ */
 }
 /* }}} */
 
-static zend_object *create_object(zend_class_entry *class_type TSRMLS_DC) /* {{{ */
+static zend_object *create_object(zend_class_entry *class_type) /* {{{ */
 {
     zend_object* retval;
     object_intern *intern;
@@ -69,7 +69,7 @@ static zend_object *create_object(zend_class_entry *class_type TSRMLS_DC) /* {{{
 }
 /* }}} */
 
-static object_intern * get_object(zval *z TSRMLS_DC) /* {{{ */
+static object_intern * get_object(zval *z) /* {{{ */
 {
     object_intern * intern = Z_RDKAFKA_P(object_intern, z);
 
@@ -81,12 +81,12 @@ static object_intern * get_object(zval *z TSRMLS_DC) /* {{{ */
     return intern;
 } /* }}} */
 
-kafka_topic_partition_intern * get_topic_partition_object(zval *z TSRMLS_DC) /* {{{ */
+kafka_topic_partition_intern * get_topic_partition_object(zval *z) /* {{{ */
 {
     return get_object(z);
 } /* }}} */
 
-static HashTable *get_debug_info(zval *object, int *is_temp TSRMLS_DC) /* {{{ */
+static HashTable *get_debug_info(zval *object, int *is_temp) /* {{{ */
 {
     zval ary;
     object_intern *intern;
@@ -113,7 +113,7 @@ static HashTable *get_debug_info(zval *object, int *is_temp TSRMLS_DC) /* {{{ */
 }
 /* }}} */
 
-void kafka_topic_partition_init(zval *zobj, char * topic, int32_t partition, int64_t offset TSRMLS_DC) /* {{{ */
+void kafka_topic_partition_init(zval *zobj, char * topic, int32_t partition, int64_t offset) /* {{{ */
 {
     object_intern *intern;
 
@@ -131,7 +131,7 @@ void kafka_topic_partition_init(zval *zobj, char * topic, int32_t partition, int
     intern->offset = offset;
 } /* }}} */
 
-void kafka_topic_partition_list_to_array(zval *return_value, rd_kafka_topic_partition_list_t *list TSRMLS_DC) /* {{{ */
+void kafka_topic_partition_list_to_array(zval *return_value, rd_kafka_topic_partition_list_t *list) /* {{{ */
 {
     rd_kafka_topic_partition_t *topar;
     zeval ztopar;
@@ -148,7 +148,7 @@ void kafka_topic_partition_list_to_array(zval *return_value, rd_kafka_topic_part
     }
 } /* }}} */
 
-rd_kafka_topic_partition_list_t * array_arg_to_kafka_topic_partition_list(int argnum, HashTable *ary TSRMLS_DC) { /* {{{ */
+rd_kafka_topic_partition_list_t * array_arg_to_kafka_topic_partition_list(int argnum, HashTable *ary) { /* {{{ */
 
     HashPosition pos;
     rd_kafka_topic_partition_list_t *list;
@@ -389,7 +389,7 @@ static const zend_function_entry fe[] = { /* {{{ */
     PHP_FE_END
 }; /* }}} */
 
-void kafka_metadata_topic_partition_minit(TSRMLS_D) /* {{{ */
+void kafka_metadata_topic_partition_minit(INIT_FUNC_ARGS) /* {{{ */
 {
     zend_class_entry tmpce;
 
