@@ -10,8 +10,6 @@ require __DIR__ . '/integration-tests-check.php';
 $delivered = 0;
 
 $conf = new RdKafka\Conf();
-// Required to detect actual reaching of partition EOF for both topics
-$conf->set('enable.partition.eof', 'true');
 if (RD_KAFKA_VERSION >= 0x090000 && false !== getenv('TEST_KAFKA_BROKER_VERSION')) {
     $conf->set('broker.version.fallback', getenv('TEST_KAFKA_BROKER_VERSION'));
 }
