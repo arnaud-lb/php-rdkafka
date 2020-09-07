@@ -13,15 +13,9 @@ $conf = new RdKafka\Conf();
 if (RD_KAFKA_VERSION >= 0x090000 && false !== getenv('TEST_KAFKA_BROKER_VERSION')) {
     $conf->set('broker.version.fallback', getenv('TEST_KAFKA_BROKER_VERSION'));
 }
-$conf->setErrorCb(function ($producer, $err, $errstr) {
+$conf->setErrorCb(function ($rdKafka, $err, $errstr) {
     printf("%s: %s\n", rd_kafka_err2str($err), $errstr);
     exit;
-});
-$conf->setDrMsgCb(function ($producer, $msg) use (&$delivered) {
-    if ($msg->err) {
-        throw new Exception("Message delivery failed: " . $msg->errstr());
-    }
-    $delivered++;
 });
 $conf->set('metadata.broker.list', getenv('TEST_KAFKA_BROKERS'));
 

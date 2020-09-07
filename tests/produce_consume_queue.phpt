@@ -53,6 +53,19 @@ while ($producer->getOutQLen()) {
 
 printf("%d messages delivered\n", $delivered);
 
+$conf = new RdKafka\Conf();
+// Required to detect actual reaching of partition EOF for both topics
+$conf->set('enable.partition.eof', 'true');
+if (RD_KAFKA_VERSION >= 0x090000 && false !== getenv('TEST_KAFKA_BROKER_VERSION')) {
+    $conf->set('broker.version.fallback', getenv('TEST_KAFKA_BROKER_VERSION'));
+}
+$conf->setErrorCb(function ($producer, $err, $errstr) {
+    printf("%s: %s\n", rd_kafka_err2str($err), $errstr);
+    exit;
+});
+
+$conf->set('metadata.broker.list', getenv('TEST_KAFKA_BROKERS'));
+
 $consumer = new RdKafka\Consumer($conf);
 
 $queue = $consumer->newQueue();
