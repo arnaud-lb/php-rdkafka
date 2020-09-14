@@ -34,36 +34,6 @@ typedef zval zeval;
 #define ZEVAL_DEREF(v) ZVAL_DEREF(v)
 
 /***************************************************************************/
-#elif defined(ZEND_ENGINE_2)
-
-typedef zval* zeval;
-
-#define ZEVAL(v)    (*(v))
-#define P_ZEVAL(v)    (v)
-
-#define MAKE_STD_ZEVAL(v) MAKE_STD_ZVAL(v)
-#define ZEVAL_UNINIT(v) (v = NULL)
-
-#define ZE_ISDEF(v)  (v)
-#define IS_TRUE      14
-#define IS_FALSE     15
-#define ZE_TYPE(v)   ((Z_TYPE_P(v) == IS_BOOL) \
-                      ? (Z_BVAL_P(v) ? IS_TRUE : IS_FALSE) \
-                      : Z_TYPE_P(v))
-#define ZE_BVAL(v)   Z_BVAL_P(v)
-#define ZE_LVAL(V)   Z_LVAL_P(v)
-#define ZE_DVAL(v)   Z_DVAL_P(v)
-#define ZE_STRVAL(v) Z_STRVAL_P(v)
-#define ZE_STRLEN(v) Z_STRLEN_P(v)
-#define ZE_ARRVAL(v) Z_ARRVAL_P(v)
-#define ZE_OBJCE(v)  Z_OBJCE_P(v)
-
-#define ZEVAL_DUP_C    1
-#define ZEVAL_DUP_CC , 1
-
-#define ZEVAL_DEREF(v) (v)
-
-/***************************************************************************/
 #else
 # error "Unknown Zend Engine version"
 #endif
