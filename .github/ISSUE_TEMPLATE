@@ -16,6 +16,7 @@ If possible, add debug logs from librdkafka, which you can obtain by adjusting y
 ```php
 <?php
 $conf = new RdKafka\Conf();
+// Add the two settings below for a more verbose output
 $conf->set('log_level', (string) LOG_DEBUG);
 $conf->set('debug', 'all');
 $rk = new RdKafka\Producer($conf);
