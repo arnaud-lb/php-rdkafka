@@ -41,12 +41,12 @@ static HashTable *get_debug_info(Z_RDKAFKA_OBJ *object, int *is_temp);
 static zend_class_entry * ce;
 static zend_object_handlers handlers;
 
-static void brokers_collection(Z_RDKAFKA_OBJ *return_value, zval *parent, object_intern *intern) { /* {{{ */
+static void brokers_collection(zval *return_value, Z_RDKAFKA_OBJ *parent, object_intern *intern) { /* {{{ */
     kafka_metadata_collection_init(return_value, parent, intern->metadata->brokers, intern->metadata->broker_cnt, sizeof(*intern->metadata->brokers), kafka_metadata_broker_ctor);
 }
 /* }}} */
 
-static void topics_collection(Z_RDKAFKA_OBJ *return_value, zval *parent, object_intern *intern) { /* {{{ */
+static void topics_collection(zval *return_value, Z_RDKAFKA_OBJ *parent, object_intern *intern) { /* {{{ */
     kafka_metadata_collection_init(return_value, parent, intern->metadata->topics, intern->metadata->topic_cnt, sizeof(*intern->metadata->topics), kafka_metadata_topic_ctor);
 }
 /* }}} */
@@ -187,7 +187,7 @@ PHP_METHOD(RdKafka__Metadata, getBrokers)
         return;
     }
 
-    brokers_collection(return_value, getThis(), intern);
+    brokers_collection(return_value, Z_RDKAFKA_PROP_OBJ(getThis()), intern);
 }
 /* }}} */
 
@@ -210,7 +210,7 @@ PHP_METHOD(RdKafka__Metadata, getTopics)
         return;
     }
 
-    topics_collection(return_value, getThis(), intern);
+    topics_collection(return_value, Z_RDKAFKA_PROP_OBJ(getThis()), intern);
 }
 /* }}} */
 

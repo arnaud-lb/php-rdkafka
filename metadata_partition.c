@@ -196,7 +196,7 @@ PHP_METHOD(RdKafka__Metadata__Partition, getReplicas)
         return;
     }
 
-    kafka_metadata_collection_init(return_value, getThis(), intern->metadata_partition->replicas, intern->metadata_partition->replica_cnt, sizeof(*intern->metadata_partition->replicas), int32_ctor);
+    kafka_metadata_collection_init(return_value, Z_RDKAFKA_PROP_OBJ(getThis()), intern->metadata_partition->replicas, intern->metadata_partition->replica_cnt, sizeof(*intern->metadata_partition->replicas), int32_ctor);
 }
 /* }}} */
 
@@ -219,7 +219,7 @@ PHP_METHOD(RdKafka__Metadata__Partition, getIsrs)
         return;
     }
 
-    kafka_metadata_collection_init(return_value, getThis(), intern->metadata_partition->isrs, intern->metadata_partition->isr_cnt, sizeof(*intern->metadata_partition->isrs), int32_ctor);
+    kafka_metadata_collection_init(return_value, Z_RDKAFKA_PROP_OBJ(getThis()), intern->metadata_partition->isrs, intern->metadata_partition->isr_cnt, sizeof(*intern->metadata_partition->isrs), int32_ctor);
 }
 /* }}} */
 

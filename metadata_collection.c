@@ -284,7 +284,7 @@ void kafka_metadata_collection_minit(INIT_FUNC_ARGS)
     handlers.offset = XtOffsetOf(object_intern, std);
 }
 
-void kafka_metadata_collection_init(zval *return_value, zval *zmetadata, const void * items, size_t item_cnt, size_t item_size, kafka_metadata_collection_ctor_t ctor)
+void kafka_metadata_collection_init(zval *return_value, Z_RDKAFKA_OBJ *zmetadata, const void * items, size_t item_cnt, size_t item_size, kafka_metadata_collection_ctor_t ctor)
 {
     object_intern *intern;
 

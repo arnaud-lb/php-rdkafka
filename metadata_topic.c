@@ -42,7 +42,7 @@ static HashTable *get_debug_info(Z_RDKAFKA_OBJ *object, int *is_temp);
 static zend_class_entry * ce;
 static zend_object_handlers handlers;
 
-static void partitions_collection(zval *return_value, zval *parent, object_intern *intern) { /* {{{ */
+static void partitions_collection(zval *return_value, Z_RDKAFKA_OBJ *parent, object_intern *intern) { /* {{{ */
     kafka_metadata_collection_init(return_value, parent, intern->metadata_topic->partitions, intern->metadata_topic->partition_cnt, sizeof(*intern->metadata_topic->partitions), kafka_metadata_partition_ctor);
 }
 /* }}} */
@@ -180,7 +180,7 @@ PHP_METHOD(RdKafka__Metadata__Topic, getPartitions)
         return;
     }
 
-    partitions_collection(return_value, getThis(), intern);
+    partitions_collection(return_value, Z_RDKAFKA_PROP_OBJ(getThis()), intern);
 }
 /* }}} */
 
