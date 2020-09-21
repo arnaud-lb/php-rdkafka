@@ -264,7 +264,7 @@ PHP_METHOD(RdKafka__KafkaConsumer, subscribe)
     object_intern *intern;
     rd_kafka_topic_partition_list_t *topics;
     rd_kafka_resp_err_t err;
-    zeval *zv;
+    zval *zv;
 
     if (zend_parse_parameters(ZEND_NUM_ARGS(), "h", &htopics) == FAILURE) {
         return;
@@ -281,7 +281,7 @@ PHP_METHOD(RdKafka__KafkaConsumer, subscribe)
             (zv = zend_hash_get_current_data_ex(htopics, &pos)) != NULL;
             zend_hash_move_forward_ex(htopics, &pos)) {
         convert_to_string_ex(zv);
-        rd_kafka_topic_partition_list_add(topics, Z_STRVAL_P(ZEVAL(zv)), RD_KAFKA_PARTITION_UA);
+        rd_kafka_topic_partition_list_add(topics, Z_STRVAL_P(zv), RD_KAFKA_PARTITION_UA);
     }
 
     err = rd_kafka_subscribe(intern->rk, topics);
@@ -327,7 +327,7 @@ PHP_METHOD(RdKafka__KafkaConsumer, getSubscription)
     array_init_size(return_value, topics->cnt);
 
     for (i = 0; i < topics->cnt; i++) {
-        add_next_index_string(return_value, topics->elems[i].topic ZEVAL_DUP_CC);
+        add_next_index_string(return_value, topics->elems[i].topic);
     }
 
     rd_kafka_topic_partition_list_destroy(topics);
@@ -424,25 +424,25 @@ static void consumer_commit(int async, INTERNAL_FUNCTION_PARAMETERS) /* {{{ */
             zval *zoffset;
             rd_kafka_topic_partition_t *rktpar;
 
-            zerr = rdkafka_read_property(NULL, zarg, ZEND_STRL("err"), 0);
+            zerr = rdkafka_read_property(NULL, Z_RDKAFKA_PROP_OBJ(zarg), ZEND_STRL("err"), 0);
             if (zerr && Z_TYPE_P(zerr) != IS_NULL && (Z_TYPE_P(zerr) != IS_LONG || Z_LVAL_P(zerr) != RD_KAFKA_RESP_ERR_NO_ERROR)) {
                 zend_throw_exception(ce_kafka_exception, "Invalid argument: Specified Message has an error", RD_KAFKA_RESP_ERR__INVALID_ARG);
                 return;
             }
 
-            ztopic = rdkafka_read_property(NULL, zarg, ZEND_STRL("topic_name"), 0);
+            ztopic = rdkafka_read_property(NULL, Z_RDKAFKA_PROP_OBJ(zarg), ZEND_STRL("topic_name"), 0);
             if (!ztopic || Z_TYPE_P(ztopic) != IS_STRING) {
                 zend_throw_exception(ce_kafka_exception, "Invalid argument: Specified Message's topic_name is not a string", RD_KAFKA_RESP_ERR__INVALID_ARG);
                 return;
             }
 
-            zpartition = rdkafka_read_property(NULL, zarg, ZEND_STRL("partition"), 0);
+            zpartition = rdkafka_read_property(NULL, Z_RDKAFKA_PROP_OBJ(zarg), ZEND_STRL("partition"), 0);
             if (!zpartition || Z_TYPE_P(zpartition) != IS_LONG) {
                 zend_throw_exception(ce_kafka_exception, "Invalid argument: Specified Message's partition is not an int", RD_KAFKA_RESP_ERR__INVALID_ARG);
                 return;
             }
 
-            zoffset = rdkafka_read_property(NULL, zarg, ZEND_STRL("offset"), 0);
+            zoffset = rdkafka_read_property(NULL, Z_RDKAFKA_PROP_OBJ(zarg), ZEND_STRL("offset"), 0);
             if (!zoffset || Z_TYPE_P(zoffset) != IS_LONG) {
                 zend_throw_exception(ce_kafka_exception, "Invalid argument: Specified Message's offset is not an int", RD_KAFKA_RESP_ERR__INVALID_ARG);
                 return;
@@ -778,8 +778,8 @@ PHP_METHOD(RdKafka__KafkaConsumer, queryWatermarkOffsets)
         return;
     }
 
-    ZEVAL_DEREF(lowResult);
-    ZEVAL_DEREF(highResult);
+    ZVAL_DEREF(lowResult);
+    ZVAL_DEREF(highResult);
 
     intern = get_object(getThis());
     if (!intern) {

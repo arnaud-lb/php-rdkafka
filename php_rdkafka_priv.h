@@ -21,11 +21,15 @@
 
 #if PHP_MAJOR_VERSION >= 8
 
+#define Z_RDKAFKA_OBJ zend_object
+
 #define Z_RDKAFKA_PROP_OBJ(object) Z_OBJ_P(object)
 
 #define rdkafka_get_debug_object(type, object) php_kafka_from_obj(type, object)
 
 #else // PHP 7
+
+#define Z_RDKAFKA_OBJ zval
 
 #define Z_RDKAFKA_PROP_OBJ(object) object
 
@@ -61,7 +65,7 @@ static inline void rdkafka_call_function(zend_fcall_info *fci, zend_fcall_info_c
     }
 }
 
-static inline zval *rdkafka_read_property(zend_class_entry *scope, zval *object, const char *name, size_t name_length, zend_bool silent)
+static inline zval *rdkafka_read_property(zend_class_entry *scope, Z_RDKAFKA_OBJ *object, const char *name, size_t name_length, zend_bool silent)
 {
     zval rv;
     return zend_read_property(scope, object, name, name_length, silent, &rv);

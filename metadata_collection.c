@@ -40,7 +40,7 @@ typedef struct _object_intern {
     zend_object                      std;
 } object_intern;
 
-static HashTable *get_debug_info(zval *object, int *is_temp);
+static HashTable *get_debug_info(Z_RDKAFKA_OBJ *object, int *is_temp);
 
 static zend_class_entry *ce;
 static zend_object_handlers handlers;
@@ -85,12 +85,12 @@ static object_intern * get_object(zval *zmti)
     return omti;
 }
 
-static HashTable *get_debug_info(zval *object, int *is_temp) /* {{{ */
+static HashTable *get_debug_info(Z_RDKAFKA_OBJ *object, int *is_temp) /* {{{ */
 {
     zval ary;
     object_intern *intern;
     size_t i;
-    zeval item;
+    zval item;
 
     *is_temp = 1;
 
@@ -102,9 +102,9 @@ static HashTable *get_debug_info(zval *object, int *is_temp) /* {{{ */
     }
     
     for (i = 0; i < intern->item_cnt; i++) {
-        MAKE_STD_ZEVAL(item);
-        intern->ctor(P_ZEVAL(item), &intern->zmetadata, (char *)intern->items + i * intern->item_size);
-        add_next_index_zval(&ary, P_ZEVAL(item));
+        ZVAL_NULL(&item);
+        intern->ctor(&item, &intern->zmetadata, (char *)intern->items + i * intern->item_size);
+        add_next_index_zval(&ary, &item);
     }
 
     return Z_ARRVAL(ary);

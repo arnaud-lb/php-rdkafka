@@ -20,7 +20,7 @@
 
 typedef struct _kafka_topic_object {
     rd_kafka_topic_t    *rkt;
-    zeval               zrk;
+    zval               zrk;
     zend_object         std;
 } kafka_topic_object;
 

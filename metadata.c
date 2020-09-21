@@ -36,17 +36,17 @@ typedef struct _object_intern {
     zend_object               std;
 } object_intern;
 
-static HashTable *get_debug_info(zval *object, int *is_temp);
+static HashTable *get_debug_info(Z_RDKAFKA_OBJ *object, int *is_temp);
 
 static zend_class_entry * ce;
 static zend_object_handlers handlers;
 
-static void brokers_collection(zval *return_value, zval *parent, object_intern *intern) { /* {{{ */
+static void brokers_collection(Z_RDKAFKA_OBJ *return_value, zval *parent, object_intern *intern) { /* {{{ */
     kafka_metadata_collection_init(return_value, parent, intern->metadata->brokers, intern->metadata->broker_cnt, sizeof(*intern->metadata->brokers), kafka_metadata_broker_ctor);
 }
 /* }}} */
 
-static void topics_collection(zval *return_value, zval *parent, object_intern *intern) { /* {{{ */
+static void topics_collection(Z_RDKAFKA_OBJ *return_value, zval *parent, object_intern *intern) { /* {{{ */
     kafka_metadata_collection_init(return_value, parent, intern->metadata->topics, intern->metadata->topic_cnt, sizeof(*intern->metadata->topics), kafka_metadata_topic_ctor);
 }
 /* }}} */
@@ -91,12 +91,12 @@ static object_intern * get_object(zval *zmetadata)
     return ometadata;
 }
 
-static HashTable *get_debug_info(zval *object, int *is_temp) /* {{{ */
+static HashTable *get_debug_info(Z_RDKAFKA_OBJ *object, int *is_temp) /* {{{ */
 {
     zval ary;
     object_intern *intern;
-    zeval brokers;
-    zeval topics;
+    zval brokers;
+    zval topics;
 
     *is_temp = 1;
 
@@ -107,13 +107,13 @@ static HashTable *get_debug_info(zval *object, int *is_temp) /* {{{ */
         return Z_ARRVAL(ary);
     }
 
-    MAKE_STD_ZEVAL(brokers);
-    brokers_collection(P_ZEVAL(brokers), object, intern);
-    add_assoc_zval(&ary, "brokers", P_ZEVAL(brokers));
+    ZVAL_NULL(&brokers);
+    brokers_collection(&brokers, object, intern);
+    add_assoc_zval(&ary, "brokers", &brokers);
 
-    MAKE_STD_ZEVAL(topics);
-    topics_collection(P_ZEVAL(topics), object, intern);
-    add_assoc_zval(&ary, "topics", P_ZEVAL(topics));
+    ZVAL_NULL(&topics);
+    topics_collection(&topics, object, intern);
+    add_assoc_zval(&ary, "topics", &topics);
 
     add_assoc_long(&ary, "orig_broker_id", intern->metadata->orig_broker_id);
     add_assoc_string(&ary, "orig_broker_name", intern->metadata->orig_broker_name);

@@ -85,16 +85,16 @@ void kafka_message_new(zval *return_value, const rd_kafka_message_t *message)
 void kafka_message_list_to_array(zval *return_value, rd_kafka_message_t **messages, long size) /* {{{ */
 {
     rd_kafka_message_t *msg;
-    zeval zmsg;
+    zval *zmsg;
     int i;
 
     array_init_size(return_value, size);
 
     for (i = 0; i < size; i++) {
         msg = messages[i];
-        MAKE_STD_ZEVAL(zmsg);
-        kafka_message_new(P_ZEVAL(zmsg), msg);
-        add_next_index_zval(return_value, P_ZEVAL(zmsg));
+        ZVAL_NULL(zmsg);
+        kafka_message_new(zmsg, msg);
+        add_next_index_zval(return_value, zmsg);
     }
 } /* }}} */
 
@@ -115,7 +115,7 @@ PHP_METHOD(RdKafka__Message, errstr)
         return;
     }
 
-    zerr = rdkafka_read_property(NULL, getThis(), ZEND_STRL("err"), 0);
+    zerr = rdkafka_read_property(NULL, Z_RDKAFKA_PROP_OBJ(getThis()), ZEND_STRL("err"), 0);
 
     if (!zerr || Z_TYPE_P(zerr) != IS_LONG) {
         return;
@@ -127,7 +127,7 @@ PHP_METHOD(RdKafka__Message, errstr)
         RETURN_STRING(errstr);
     }
 
-    zpayload = rdkafka_read_property(NULL, getThis(), ZEND_STRL("payload"), 0);
+    zpayload = rdkafka_read_property(NULL, Z_RDKAFKA_PROP_OBJ(getThis()), ZEND_STRL("payload"), 0);
 
     if (zpayload && Z_TYPE_P(zpayload) == IS_STRING) {
         RETURN_ZVAL(zpayload, 1, 0);

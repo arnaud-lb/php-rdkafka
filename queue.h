@@ -18,7 +18,7 @@
 
 typedef struct _kafka_queue_object {
     rd_kafka_queue_t    *rkqu;
-    zeval               zrk;
+    zval               zrk;
     zend_object         std;
 } kafka_queue_object;
 

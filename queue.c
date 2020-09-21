@@ -40,7 +40,7 @@ static void kafka_queue_free(zend_object *object) /* {{{ */
     kafka_queue_object *intern = php_kafka_from_obj(kafka_queue_object, object);
 
     if (intern->rkqu) {
-        kafka_object *kafka_intern = get_kafka_object(P_ZEVAL(intern->zrk));
+        kafka_object *kafka_intern = get_kafka_object(&intern->zrk);
         if (kafka_intern) {
             zend_hash_index_del(&kafka_intern->queues, (zend_ulong)intern);
         }

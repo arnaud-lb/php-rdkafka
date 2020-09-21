@@ -47,8 +47,8 @@ static void kafka_topic_free(zend_object *object) /* {{{ */
 {
     kafka_topic_object *intern = php_kafka_from_obj(kafka_topic_object, object);
 
-    if (ZE_ISDEF(intern->zrk) && intern->rkt) {
-        kafka_object *kafka_intern = get_kafka_object(P_ZEVAL(intern->zrk));
+    if (Z_TYPE(intern->zrk) != IS_UNDEF && intern->rkt) {
+        kafka_object *kafka_intern = get_kafka_object(&intern->zrk);
         if (kafka_intern) {
             zend_hash_index_del(&kafka_intern->topics, (zend_ulong)intern);
         }
@@ -78,7 +78,7 @@ static zend_object *kafka_topic_new(zend_class_entry *class_type) /* {{{ */
 static void consume_callback(rd_kafka_message_t *msg, void *opaque)
 {
     php_callback *cb = (php_callback*) opaque;
-    zeval args[1];
+    zval args[1];
 
     if (!opaque) {
         return;
@@ -88,9 +88,9 @@ static void consume_callback(rd_kafka_message_t *msg, void *opaque)
         return;
     }
 
-    MAKE_STD_ZEVAL(args[0]);
+    ZVAL_NULL(&args[0]);
 
-    kafka_message_new(P_ZEVAL(args[0]), msg);
+    kafka_message_new(&args[0], msg);
 
     rdkafka_call_function(&cb->fci, &cb->fcc, NULL, 1, args);
 
@@ -139,7 +139,7 @@ PHP_METHOD(RdKafka__ConsumerTopic, consumeCallback)
         return;
     }
 
-    Z_ADDREF_P(P_ZEVAL(cb.fci.function_name));
+    Z_ADDREF_P(&cb.fci.function_name);
 
     result = rd_kafka_consume_callback(intern->rkt, partition, timeout_ms, consume_callback, &cb);
 
@@ -188,7 +188,7 @@ PHP_METHOD(RdKafka__ConsumerTopic, consumeQueueStart)
         return;
     }
 
-    kafka_intern = get_kafka_object(P_ZEVAL(intern->zrk));
+    kafka_intern = get_kafka_object(&intern->zrk);
     if (!kafka_intern) {
         return;
     }
@@ -247,7 +247,7 @@ PHP_METHOD(RdKafka__ConsumerTopic, consumeStart)
         return;
     }
 
-    kafka_intern = get_kafka_object(P_ZEVAL(intern->zrk));
+    kafka_intern = get_kafka_object(&intern->zrk);
     if (!kafka_intern) {
         return;
     }
@@ -304,7 +304,7 @@ PHP_METHOD(RdKafka__ConsumerTopic, consumeStop)
         return;
     }
 
-    kafka_intern = get_kafka_object(P_ZEVAL(intern->zrk));
+    kafka_intern = get_kafka_object(&intern->zrk);
     if (!kafka_intern) {
         return;
     }
@@ -558,7 +558,7 @@ PHP_METHOD(RdKafka__ProducerTopic, producev)
     HashTable *headersParam = NULL;
     HashPosition headersParamPos;
     char *header_key;
-    zeval *header_value;
+    zval *header_value;
     rd_kafka_headers_t *headers;
     zend_long timestamp_ms = 0;
     zend_bool timestamp_ms_is_null = 0;
@@ -594,15 +594,15 @@ PHP_METHOD(RdKafka__ProducerTopic, producev)
                 headers,
                 header_key,
                 -1, // Auto detect header title length
-                Z_STRVAL_P(ZEVAL(header_value)),
-                Z_STRLEN_P(ZEVAL(header_value))
+                Z_STRVAL_P(header_value),
+                Z_STRLEN_P(header_value)
             );
         }
     } else {
         headers = rd_kafka_headers_new(0);
     }
 
-    kafka_intern = get_kafka_object(P_ZEVAL(intern->zrk));
+    kafka_intern = get_kafka_object(&intern->zrk);
     if (!kafka_intern) {
         return;
     }
