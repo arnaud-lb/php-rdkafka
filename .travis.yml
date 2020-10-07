@@ -24,7 +24,17 @@ jobs:
                       - valgrind
                       - libonig-dev
                       - libzip-dev
-
+        
+        # librdkafka 1.5.0
+        - php: 7.4
+          env: LIBRDKAFKA_VERSION=v1.5.0
+        - php: 7.3
+          env: LIBRDKAFKA_VERSION=v1.5.0
+        - php: 7.2
+          env: LIBRDKAFKA_VERSION=v1.5.0
+        - php: 7.1
+          env: LIBRDKAFKA_VERSION=v1.5.0
+          
         # librdkafka 1.4.4
         - php: 7.4
           env: LIBRDKAFKA_VERSION=v1.4.4
