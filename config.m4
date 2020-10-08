@@ -71,6 +71,13 @@ if test "$PHP_RDKAFKA" != "no"; then
     AC_MSG_WARN([purge is not available])
   ])
 
+  AC_CHECK_LIB($LIBNAME,[rd_kafka_init_transactions],[
+    AC_DEFINE(HAS_RD_KAFKA_TRANSACTIONS,1,[ ])
+    SOURCES="$SOURCES kafka_error_exception.c"
+  ],[
+    AC_MSG_WARN([transactions are not available])
+  ])
+
   AC_CHECK_LIB($LIBNAME,[rd_kafka_msg_partitioner_murmur2],[
     AC_DEFINE(HAS_RD_KAFKA_PARTITIONER_MURMUR2,1,[ ])
   ],[

@@ -54,6 +54,8 @@
    <file role="src" name="fun.h"/>
    <file role="src" name="kafka_consumer.c"/>
    <file role="src" name="kafka_consumer.h"/>
+   <file role="src" name="kafka_error_exception.c"/>
+   <file role="src" name="kafka_error_exception.h"/>
    <file role="src" name="message.c"/>
    <file role="src" name="message.h"/>
    <file role="src" name="metadata.c"/>
