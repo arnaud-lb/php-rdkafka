@@ -4,7 +4,8 @@ compiler:
     - gcc
 cache:
     directories:
-        - /home/travis/.phpenv/
+        - /home/travis/librdkafka-build/
+        - /home/travis/php-build/
 services:
     - docker
 env:
@@ -103,18 +104,23 @@ before_install:
         # Use a debug php build when MEMORY_CHECK=1
         set -e
         if [ -n "$MEMORY_CHECK" ]; then
-            if ! [ -f $HOME/.phpenv/rdkafka-travis-cached ]; then
+            if ! [ -d $HOME/php-build/.phpenv/versions/$PHP_VERSION ]; then
                 echo "Building PHP with --enable-debug"
                 export PHP_BUILD_CONFIGURE_OPTS="--enable-debug"
+                export PHP_BUILD_XDEBUG_ENABLE="no"
                 git clone git://github.com/php-build/php-build.git $HOME/.phpenv/plugins/php-build
                 phpenv install --verbose --force $PHP_VERSION
-                rm -rf $HOME/.phpenv/plugins/php-build
-                touch $HOME/.phpenv/rdkafka-travis-cached
+                phpenv rehash
+                phpenv global $PHP_VERSION
+                mkdir -p $HOME/php-build/.phpenv/versions/$PHP_VERSION
+                rsync -a $HOME/.phpenv/versions/$PHP_VERSION/ $HOME/php-build/.phpenv/versions/$PHP_VERSION/
+                rsync -a $HOME/.pearrc $HOME/php-build/
             else
                 echo "PHP with --enable-debug already built"
+                rsync -a $HOME/php-build/ $HOME/
+                phpenv rehash
+                phpenv global $PHP_VERSION
             fi
-            phpenv rehash
-            phpenv global $PHP_VERSION
         fi
     - |
         # Start Kafka and install an up-to-date librdkafka
@@ -130,3 +136,5 @@ install:
 script:
     - cp tests/test_env.php.sample tests/test_env.php
     - .travis/test.sh
+before_cache:
+    sed -i '/rdkafka/d' /home/travis/.phpenv/versions/$(phpenv version-name)/etc/php.ini || true
