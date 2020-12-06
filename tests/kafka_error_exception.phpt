@@ -1,5 +1,10 @@
 --TEST--
 KafkaErrorException
+--SKIPIF--
+<?php
+if (!class_exists("RdKafka\\KafkaErrorException")) {
+    echo "skip";
+}
 --FILE--
 <?php
 

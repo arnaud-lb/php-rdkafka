@@ -27,7 +27,7 @@ if test "$PHP_RDKAFKA" != "no"; then
 
   PHP_ADD_INCLUDE($RDKAFKA_DIR/include)
 
-  SOURCES="rdkafka.c metadata.c metadata_broker.c metadata_topic.c metadata_partition.c metadata_collection.c conf.c topic.c queue.c message.c fun.c kafka_consumer.c topic_partition.c kafka_error_exception.c"
+  SOURCES="rdkafka.c metadata.c metadata_broker.c metadata_topic.c metadata_partition.c metadata_collection.c conf.c topic.c queue.c message.c fun.c kafka_consumer.c topic_partition.c"
 
   LIBNAME=rdkafka
   LIBSYMBOL=rd_kafka_new
@@ -54,9 +54,34 @@ if test "$PHP_RDKAFKA" != "no"; then
   yes
 #endif
   ],[
-    AC_MSG_RESULT([>= 1.4.0])
+    AC_MSG_RESULT([>= 0.11.0])
   ],[
-    AC_MSG_ERROR([librdkafka version 1.4.0 or greater required.])
+    AC_MSG_ERROR([librdkafka version 0.11.0 or greater required.])
+  ])
+
+  AC_CHECK_LIB($LIBNAME,[rd_kafka_message_headers],[
+    AC_DEFINE(HAVE_RD_KAFKA_MESSAGE_HEADERS,1,[ ])
+  ],[
+    AC_MSG_WARN([no rd_kafka_message_headers, headers support will not be available])
+  ])
+
+  AC_CHECK_LIB($LIBNAME,[rd_kafka_purge],[
+    AC_DEFINE(HAS_RD_KAFKA_PURGE,1,[ ])
+  ],[
+    AC_MSG_WARN([purge is not available])
+  ])
+
+  AC_CHECK_LIB($LIBNAME,[rd_kafka_init_transactions],[
+    AC_DEFINE(HAS_RD_KAFKA_TRANSACTIONS,1,[ ])
+    SOURCES="$SOURCES kafka_error_exception.c"
+  ],[
+    AC_MSG_WARN([transactions are not available])
+  ])
+
+  AC_CHECK_LIB($LIBNAME,[rd_kafka_msg_partitioner_murmur2],[
+    AC_DEFINE(HAS_RD_KAFKA_PARTITIONER_MURMUR2,1,[ ])
+  ],[
+    AC_MSG_WARN([murmur2 partitioner is not available])
   ])
 
   LDFLAGS="$ORIG_LDFLAGS"

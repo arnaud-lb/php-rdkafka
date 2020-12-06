@@ -16,9 +16,12 @@
   +----------------------------------------------------------------------+
 */
 
+#ifdef HAS_RD_KAFKA_TRANSACTIONS
+
 #include "librdkafka/rdkafka.h"
 #include "Zend/zend_interfaces.h"
 
 extern zend_class_entry * ce_kafka_error;
 void kafka_error_minit();
 void create_kafka_error(zval *return_value, const rd_kafka_error_t *error);
+#endif
