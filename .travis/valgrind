@@ -1,2 +1,0 @@
-#!/bin/bash
-/usr/bin/valgrind --suppressions="$TRAVIS_BUILD_DIR/.travis/default.supp" "$@"
