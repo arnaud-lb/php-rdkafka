@@ -51,21 +51,21 @@ void kafka_message_new(zval *return_value, const rd_kafka_message_t *message)
     uint i;
 #endif /* HAVE_RD_KAFKA_MESSAGE_HEADERS */
 
-    zend_update_property_long(NULL, return_value, ZEND_STRL("err"), message->err);
+    zend_update_property_long(NULL, Z_RDKAFKA_PROP_OBJ(return_value), ZEND_STRL("err"), message->err);
 
     if (message->rkt) {
-        zend_update_property_string(NULL, return_value, ZEND_STRL("topic_name"), rd_kafka_topic_name(message->rkt));
+        zend_update_property_string(NULL, Z_RDKAFKA_PROP_OBJ(return_value), ZEND_STRL("topic_name"), rd_kafka_topic_name(message->rkt));
     }
-    zend_update_property_long(NULL, return_value, ZEND_STRL("partition"), message->partition);
+    zend_update_property_long(NULL, Z_RDKAFKA_PROP_OBJ(return_value), ZEND_STRL("partition"), message->partition);
     if (message->payload) {
-        zend_update_property_long(NULL, return_value, ZEND_STRL("timestamp"), timestamp);
-        zend_update_property_stringl(NULL, return_value, ZEND_STRL("payload"), message->payload, message->len);
-        zend_update_property_long(NULL, return_value, ZEND_STRL("len"), message->len);
+        zend_update_property_long(NULL, Z_RDKAFKA_PROP_OBJ(return_value), ZEND_STRL("timestamp"), timestamp);
+        zend_update_property_stringl(NULL, Z_RDKAFKA_PROP_OBJ(return_value), ZEND_STRL("payload"), message->payload, message->len);
+        zend_update_property_long(NULL, Z_RDKAFKA_PROP_OBJ(return_value), ZEND_STRL("len"), message->len);
     }
     if (message->key) {
-        zend_update_property_stringl(NULL, return_value, ZEND_STRL("key"), message->key, message->key_len);
+        zend_update_property_stringl(NULL, Z_RDKAFKA_PROP_OBJ(return_value), ZEND_STRL("key"), message->key, message->key_len);
     }
-    zend_update_property_long(NULL, return_value, ZEND_STRL("offset"), message->offset);
+    zend_update_property_long(NULL, Z_RDKAFKA_PROP_OBJ(return_value), ZEND_STRL("offset"), message->offset);
 
 #ifdef HAVE_RD_KAFKA_MESSAGE_HEADERS
     if (message->err == RD_KAFKA_RESP_ERR_NO_ERROR) {
@@ -79,7 +79,7 @@ void kafka_message_new(zval *return_value, const rd_kafka_message_t *message)
                 }
                 add_assoc_stringl(&headers_array, header_name, (const char*)header_value, header_size);
             }
-            zend_update_property(NULL, return_value, ZEND_STRL("headers"), &headers_array);
+            zend_update_property(NULL, Z_RDKAFKA_PROP_OBJ(return_value), ZEND_STRL("headers"), &headers_array);
             zval_ptr_dtor(&headers_array);
         }
     }
@@ -119,7 +119,7 @@ PHP_METHOD(RdKafka__Message, errstr)
         return;
     }
 
-    zerr = rdkafka_read_property(NULL, getThis(), ZEND_STRL("err"), 0);
+    zerr = rdkafka_read_property(NULL, Z_RDKAFKA_PROP_OBJ(getThis()), ZEND_STRL("err"), 0);
 
     if (!zerr || Z_TYPE_P(zerr) != IS_LONG) {
         return;
@@ -131,7 +131,7 @@ PHP_METHOD(RdKafka__Message, errstr)
         RETURN_STRING(errstr);
     }
 
-    zpayload = rdkafka_read_property(NULL, getThis(), ZEND_STRL("payload"), 0);
+    zpayload = rdkafka_read_property(NULL, Z_RDKAFKA_PROP_OBJ(getThis()), ZEND_STRL("payload"), 0);
 
     if (zpayload && Z_TYPE_P(zpayload) == IS_STRING) {
         RETURN_ZVAL(zpayload, 1, 0);
@@ -144,7 +144,7 @@ static const zend_function_entry kafka_message_fe[] = {
     PHP_FE_END
 };
 
-void kafka_message_minit() { /* {{{ */
+void kafka_message_minit(INIT_FUNC_ARGS) { /* {{{ */
     zend_class_entry ce;
 
     INIT_NS_CLASS_ENTRY(ce, "RdKafka", "Message", kafka_message_fe);

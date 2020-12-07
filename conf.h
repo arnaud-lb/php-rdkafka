@@ -59,7 +59,7 @@ typedef struct _kafka_conf_object {
 } kafka_conf_object;
 
 kafka_conf_object * get_kafka_conf_object(zval *zconf);
-void kafka_conf_minit();
+void kafka_conf_minit(INIT_FUNC_ARGS);
 
 void kafka_conf_callbacks_dtor(kafka_conf_callbacks *cbs);
 void kafka_conf_callbacks_copy(kafka_conf_callbacks *to, kafka_conf_callbacks *from);

@@ -43,7 +43,7 @@ static zend_object_handlers handlers;
 
 static void kafka_consumer_free(zend_object *object) /* {{{ */
 {
-    object_intern *intern = get_custom_object(object_intern, object);
+    object_intern *intern = php_kafka_from_obj(object_intern, object);
     rd_kafka_resp_err_t err;
     kafka_conf_callbacks_dtor(&intern->cbs);
 
@@ -82,7 +82,7 @@ static zend_object *kafka_consumer_new(zend_class_entry *class_type) /* {{{ */
 
 static object_intern * get_object(zval *zconsumer) /* {{{ */
 {
-    object_intern *oconsumer = get_custom_object_zval(object_intern, zconsumer);
+    object_intern *oconsumer = Z_RDKAFKA_P(object_intern, zconsumer);
 
     if (!oconsumer->rk) {
         zend_throw_exception_ex(NULL, 0, "RdKafka\\KafkaConsumer::__construct() has not been called");
@@ -134,7 +134,7 @@ PHP_METHOD(RdKafka__KafkaConsumer, __construct)
         return;
     }
 
-    intern = get_custom_object_zval(object_intern, getThis());
+    intern = Z_RDKAFKA_P(object_intern, getThis());
 
     conf_intern = get_kafka_conf_object(zconf);
     if (conf_intern) {
@@ -424,25 +424,25 @@ static void consumer_commit(int async, INTERNAL_FUNCTION_PARAMETERS) /* {{{ */
             zval *zoffset;
             rd_kafka_topic_partition_t *rktpar;
 
-            zerr = rdkafka_read_property(NULL, zarg, ZEND_STRL("err"), 0);
+            zerr = rdkafka_read_property(NULL, Z_RDKAFKA_PROP_OBJ(zarg), ZEND_STRL("err"), 0);
             if (zerr && Z_TYPE_P(zerr) != IS_NULL && (Z_TYPE_P(zerr) != IS_LONG || Z_LVAL_P(zerr) != RD_KAFKA_RESP_ERR_NO_ERROR)) {
                 zend_throw_exception(ce_kafka_exception, "Invalid argument: Specified Message has an error", RD_KAFKA_RESP_ERR__INVALID_ARG);
                 return;
             }
 
-            ztopic = rdkafka_read_property(NULL, zarg, ZEND_STRL("topic_name"), 0);
+            ztopic = rdkafka_read_property(NULL, Z_RDKAFKA_PROP_OBJ(zarg), ZEND_STRL("topic_name"), 0);
             if (!ztopic || Z_TYPE_P(ztopic) != IS_STRING) {
                 zend_throw_exception(ce_kafka_exception, "Invalid argument: Specified Message's topic_name is not a string", RD_KAFKA_RESP_ERR__INVALID_ARG);
                 return;
             }
 
-            zpartition = rdkafka_read_property(NULL, zarg, ZEND_STRL("partition"), 0);
+            zpartition = rdkafka_read_property(NULL, Z_RDKAFKA_PROP_OBJ(zarg), ZEND_STRL("partition"), 0);
             if (!zpartition || Z_TYPE_P(zpartition) != IS_LONG) {
                 zend_throw_exception(ce_kafka_exception, "Invalid argument: Specified Message's partition is not an int", RD_KAFKA_RESP_ERR__INVALID_ARG);
                 return;
             }
 
-            zoffset = rdkafka_read_property(NULL, zarg, ZEND_STRL("offset"), 0);
+            zoffset = rdkafka_read_property(NULL, Z_RDKAFKA_PROP_OBJ(zarg), ZEND_STRL("offset"), 0);
             if (!zoffset || Z_TYPE_P(zoffset) != IS_LONG) {
                 zend_throw_exception(ce_kafka_exception, "Invalid argument: Specified Message's offset is not an int", RD_KAFKA_RESP_ERR__INVALID_ARG);
                 return;
@@ -620,7 +620,7 @@ PHP_METHOD(RdKafka__KafkaConsumer, newTopic)
         return;
     }
 
-    topic_intern = get_custom_object_zval(kafka_topic_object, return_value);
+    topic_intern = Z_RDKAFKA_P(kafka_topic_object, return_value);
     if (!topic_intern) {
         return;
     }
@@ -818,7 +818,7 @@ static const zend_function_entry fe[] = { /* {{{ */
     PHP_FE_END
 }; /* }}} */
 
-void kafka_kafka_consumer_minit() /* {{{ */
+void kafka_kafka_consumer_minit(INIT_FUNC_ARGS) /* {{{ */
 {
     zend_class_entry tmpce;
 

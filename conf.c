@@ -85,7 +85,7 @@ void kafka_conf_callbacks_copy(kafka_conf_callbacks *to, kafka_conf_callbacks *f
 
 static void kafka_conf_free(zend_object *object) /* {{{ */
 {
-    kafka_conf_object *intern = get_custom_object(kafka_conf_object, object);
+    kafka_conf_object *intern = php_kafka_from_obj(kafka_conf_object, object);
 
     switch (intern->type) {
         case KAFKA_CONF:
@@ -123,7 +123,7 @@ static zend_object *kafka_conf_new(zend_class_entry *class_type) /* {{{ */
 
 kafka_conf_object * get_kafka_conf_object(zval *zconf)
 {
-    kafka_conf_object *oconf = get_custom_object_zval(kafka_conf_object, zconf);
+    kafka_conf_object *oconf = Z_RDKAFKA_P(kafka_conf_object, zconf);
 
     if (!oconf->type) {
         zend_throw_exception_ex(NULL, 0, "RdKafka\\Conf::__construct() has not been called");
@@ -350,7 +350,7 @@ PHP_METHOD(RdKafka__Conf, __construct)
         return;
     }
 
-    intern = get_custom_object_zval(kafka_conf_object, getThis());
+    intern = Z_RDKAFKA_P(kafka_conf_object, getThis());
     intern->type = KAFKA_CONF;
     intern->u.conf = rd_kafka_conf_new();
 
@@ -761,7 +761,7 @@ PHP_METHOD(RdKafka__TopicConf, __construct)
         return;
     }
 
-    intern = get_custom_object_zval(kafka_conf_object, getThis());
+    intern = Z_RDKAFKA_P(kafka_conf_object, getThis());
     intern->type = KAFKA_TOPIC_CONF;
     intern->u.topic_conf = rd_kafka_topic_conf_new();
 
@@ -840,7 +840,7 @@ static const zend_function_entry kafka_conf_fe[] = {
     PHP_FE_END
 };
 
-void kafka_conf_minit()
+void kafka_conf_minit(INIT_FUNC_ARGS)
 {
     zend_class_entry tmpce;
 

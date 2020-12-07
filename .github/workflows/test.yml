@@ -17,28 +17,24 @@ jobs:
                 memcheck: '1'
               - php: '8.0.0'
                 librdkafka: 'v1.5.0'
-                experimental: true
               - php: '7.4.0'
                 librdkafka: 'v1.5.0'
               - php: '7.3.0'
                 librdkafka: 'v1.5.0'
               - php: '8.0.0'
                 librdkafka: 'v1.4.4'
-                experimental: true
               - php: '7.4.0'
                 librdkafka: 'v1.4.4'
               - php: '7.3.0'
                 librdkafka: 'v1.4.4'
               - php: '8.0.0'
                 librdkafka: 'v1.0.1'
-                experimental: true
               - php: '7.4.0'
                 librdkafka: 'v1.0.1'
               - php: '7.3.0'
                 librdkafka: 'v1.0.1'
               - php: '8.0.0'
                 librdkafka: 'v0.11.6'
-                experimental: true
               - php: '7.4.0'
                 librdkafka: 'v0.11.6'
               - php: '7.3.0'

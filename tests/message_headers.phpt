@@ -15,13 +15,16 @@ $conf->setErrorCb(function ($producer, $err, $errstr) {
     printf("%s: %s\n", rd_kafka_err2str($err), $errstr);
     exit;
 });
+$conf->set('metadata.broker.list', getenv('TEST_KAFKA_BROKERS'));
+
+$consumer = new RdKafka\Consumer($conf);
+
 $conf->setDrMsgCb(function ($producer, $msg) use (&$delivered) {
     if ($msg->err) {
         throw new Exception("Message delivery failed: " . $msg->errstr());
     }
     $delivered++;
 });
-$conf->set('metadata.broker.list', getenv('TEST_KAFKA_BROKERS'));
 
 $producer = new RdKafka\Producer($conf);
 
@@ -56,8 +59,6 @@ while ($producer->getOutQLen()) {
 }
 
 printf("%d messages delivered\n", $delivered);
-
-$consumer = new RdKafka\Consumer($conf);
 
 $topic = $consumer->newTopic($topicName);
 $topic->consumeStart(0, RD_KAFKA_OFFSET_BEGINNING);

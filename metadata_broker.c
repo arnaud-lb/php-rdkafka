@@ -34,14 +34,14 @@ typedef struct _object_intern {
     zend_object                     std;
 } object_intern;
 
-static HashTable *get_debug_info(zval *object, int *is_temp);
+static HashTable *get_debug_info(Z_RDKAFKA_OBJ *object, int *is_temp);
 
 static zend_class_entry * ce;
 static zend_object_handlers handlers;
 
 static void free_object(zend_object *object) /* {{{ */
 {
-    object_intern *intern = get_custom_object(object_intern, object);
+    object_intern *intern = php_kafka_from_obj(object_intern, object);
 
     if (intern->metadata_broker) {
         zval_dtor(&intern->zmetadata);
@@ -60,7 +60,6 @@ static zend_object *create_object(zend_class_entry *class_type) /* {{{ */
     zend_object_std_init(&intern->std, class_type);
     object_properties_init(&intern->std, class_type);
 
-
     retval = &intern->std;
     retval->handlers = &handlers;
 
@@ -70,7 +69,7 @@ static zend_object *create_object(zend_class_entry *class_type) /* {{{ */
 
 static object_intern * get_object(zval *zmt)
 {
-    object_intern *omt = get_custom_object_zval(object_intern, zmt);
+    object_intern *omt = Z_RDKAFKA_P(object_intern, zmt);
 
     if (!omt->metadata_broker) {
         zend_throw_exception_ex(NULL, 0, "RdKafka\\Metadata\\Broker::__construct() has not been called");
@@ -80,7 +79,7 @@ static object_intern * get_object(zval *zmt)
     return omt;
 }
 
-static HashTable *get_debug_info(zval *object, int *is_temp) /* {{{ */
+static HashTable *get_debug_info(Z_RDKAFKA_OBJ *object, int *is_temp) /* {{{ */
 {
     zval ary;
     object_intern *intern;
@@ -89,7 +88,7 @@ static HashTable *get_debug_info(zval *object, int *is_temp) /* {{{ */
 
     array_init(&ary);
 
-    intern = get_object(object);
+    intern = rdkafka_get_debug_object(object_intern, object);
     if (!intern) {
         return Z_ARRVAL(ary);
     }
@@ -178,7 +177,7 @@ static const zend_function_entry fe[] = {
     PHP_FE_END
 };
 
-void kafka_metadata_broker_minit()
+void kafka_metadata_broker_minit(INIT_FUNC_ARGS)
 {
     zend_class_entry tmpce;
 
@@ -201,7 +200,7 @@ void kafka_metadata_broker_ctor(zval *return_value, zval *zmetadata, const void 
         return;
     }
 
-    intern = get_custom_object_zval(object_intern, return_value);
+    intern = Z_RDKAFKA_P(object_intern, return_value);
     if (!intern) {
         return;
     }

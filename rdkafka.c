@@ -76,7 +76,7 @@ static void stop_consuming(kafka_object * intern) {
 
 static void kafka_free(zend_object *object) /* {{{ */
 {
-    kafka_object *intern = get_custom_object(kafka_object, object);
+    kafka_object *intern = php_kafka_from_obj(kafka_object, object);
 
     if (intern->rk) {
         if (intern->type == RD_KAFKA_CONSUMER) {
@@ -122,7 +122,7 @@ static void kafka_init(zval *this_ptr, rd_kafka_type_t type, zval *zconf) /* {{{
     kafka_conf_object *conf_intern;
     rd_kafka_conf_t *conf = NULL;
 
-    intern = get_custom_object_zval(kafka_object, this_ptr);
+    intern = Z_RDKAFKA_P(kafka_object, this_ptr);
     intern->type = type;
 
     if (zconf) {
@@ -175,7 +175,7 @@ static zend_object *kafka_new(zend_class_entry *class_type) /* {{{ */
 
 kafka_object * get_kafka_object(zval *zrk)
 {
-    kafka_object *ork = get_custom_object_zval(kafka_object, zrk);
+    kafka_object *ork = Z_RDKAFKA_P(kafka_object, zrk);
 
     if (!ork->rk) {
         zend_throw_exception_ex(NULL, 0, "RdKafka\\Kafka::__construct() has not been called");
@@ -299,7 +299,7 @@ PHP_METHOD(RdKafka__Consumer, newQueue)
         return;
     }
 
-    queue_intern = get_custom_object_zval(kafka_queue_object, return_value);
+    queue_intern = Z_RDKAFKA_P(kafka_queue_object, return_value);
     if (!queue_intern) {
         return;
     }
@@ -310,6 +310,7 @@ PHP_METHOD(RdKafka__Consumer, newQueue)
     // the Queue object is destroyed before the Kafka object.
     // This avoids rd_kafka_destroy() hanging.
     queue_intern->zrk = *getThis();
+
     Z_ADDREF_P(&queue_intern->zrk);
 
     zend_hash_index_add_ptr(&intern->queues, (zend_ulong)queue_intern, queue_intern);
@@ -392,7 +393,7 @@ PHP_METHOD(RdKafka__Kafka, getMetadata)
     kafka_metadata_init(return_value, metadata);
 }
 /* }}} */
-
+ 
 /* {{{ proto void RdKafka\Kafka::setLogLevel(int $level)
    Specifies the maximum logging level produced by internal kafka logging and debugging */
 
@@ -475,13 +476,14 @@ PHP_METHOD(RdKafka__Kafka, newTopic)
         return;
     }
 
-    topic_intern = get_custom_object_zval(kafka_topic_object, return_value);
+    topic_intern = Z_RDKAFKA_P(kafka_topic_object, return_value);
     if (!topic_intern) {
         return;
     }
 
     topic_intern->rkt = rkt;
     topic_intern->zrk = *getThis();
+
     Z_ADDREF_P(&topic_intern->zrk);
 
     zend_hash_index_add_ptr(&intern->topics, (zend_ulong)topic_intern, topic_intern);
@@ -673,7 +675,6 @@ PHP_METHOD(RdKafka__Kafka, offsetsForTimes)
 }
 /* }}} */
 
-
 /* {{{ proto void RdKafka::setLogger(mixed $logger)
    Sets the log callback */
 
@@ -761,7 +762,6 @@ PHP_METHOD(RdKafka__Producer, __construct)
 /* }}} */
 
 #ifdef HAS_RD_KAFKA_TRANSACTIONS
-
 /* {{{ proto int RdKafka\Producer::initTransactions(int timeout_ms)
    Initializes transactions, needs to be done before producing and starting a transaction */
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_init_transactions, 0, 0, 1)
@@ -886,7 +886,6 @@ PHP_METHOD(RdKafka__Producer, abortTransaction)
     zend_throw_exception_object(return_value);
 }
 /* }}} */
-
 #endif
 
 static const zend_function_entry kafka_producer_fe[] = {
@@ -989,18 +988,18 @@ PHP_MINIT_FUNCTION(rdkafka)
     ce_kafka_producer = zend_register_internal_class_ex(&ce, ce_kafka);
 
     INIT_NS_CLASS_ENTRY(ce, "RdKafka", "Exception", NULL);
-    ce_kafka_exception = zend_register_internal_class_ex(&ce, zend_exception_get_default());
+    ce_kafka_exception = zend_register_internal_class_ex(&ce, zend_ce_exception);
 
-    kafka_conf_minit();
+    kafka_conf_minit(INIT_FUNC_ARGS_PASSTHRU);
 #ifdef HAS_RD_KAFKA_TRANSACTIONS
     kafka_error_minit();
 #endif
-    kafka_kafka_consumer_minit();
-    kafka_message_minit();
-    kafka_metadata_minit();
-    kafka_metadata_topic_partition_minit();
-    kafka_queue_minit();
-    kafka_topic_minit();
+    kafka_kafka_consumer_minit(INIT_FUNC_ARGS_PASSTHRU);
+    kafka_message_minit(INIT_FUNC_ARGS_PASSTHRU);
+    kafka_metadata_minit(INIT_FUNC_ARGS_PASSTHRU);
+    kafka_metadata_topic_partition_minit(INIT_FUNC_ARGS_PASSTHRU);
+    kafka_queue_minit(INIT_FUNC_ARGS_PASSTHRU);
+    kafka_topic_minit(INIT_FUNC_ARGS_PASSTHRU);
 
     return SUCCESS;
 }

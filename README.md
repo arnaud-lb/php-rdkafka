@@ -2,9 +2,9 @@
 
 [![Join the chat at https://gitter.im/arnaud-lb/php-rdkafka](https://badges.gitter.im/arnaud-lb/php-rdkafka.svg)](https://gitter.im/arnaud-lb/php-rdkafka?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-[![Supported librdkafka versions: >= 0.11](https://img.shields.io/badge/librdkafka-%3E%3D%200.11-blue.svg)](https://github.com/edenhill/librdkafka/releases) [![Supported Kafka versions: >= 0.8](https://img.shields.io/badge/kafka-%3E%3D%200.8-blue.svg)](https://github.com/edenhill/librdkafka/wiki/Broker-version-compatibility) ![Supported PHP versions: 5.6 .. 7.x](https://img.shields.io/badge/php-5.6%20..%207.x-blue.svg) [![Build Status](https://travis-ci.org/arnaud-lb/php-rdkafka.svg)](https://travis-ci.org/arnaud-lb/php-rdkafka)
+[![Supported librdkafka versions: >= 0.11](https://img.shields.io/badge/librdkafka-%3E%3D%200.11-blue.svg)](https://github.com/edenhill/librdkafka/releases) [![Supported Kafka versions: >= 0.8](https://img.shields.io/badge/kafka-%3E%3D%200.8-blue.svg)]()https://github.com/edenhill/librdkafka/blob/master/INTRODUCTION.md#broker-version-compatibility ![Supported PHP versions: 7.x .. 8.x](https://img.shields.io/badge/php-7.x%20..%208.x-blue.svg)
 
-PHP-rdkafka is a thin [librdkafka](https://github.com/edenhill/librdkafka) binding providing a working PHP 5 / PHP 7 [Kafka](https://kafka.apache.org/) client.
+PHP-rdkafka is a thin [librdkafka](https://github.com/edenhill/librdkafka) binding providing a working PHP 7 / PHP 8 [Kafka](https://kafka.apache.org/) client.
 
 It supports the high level and low level *consumers*, *producer*, and *metadata* APIs.
 

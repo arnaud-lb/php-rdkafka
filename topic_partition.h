@@ -23,7 +23,7 @@ typedef struct _kafka_topic_partition_intern {
     zend_object std;
 } kafka_topic_partition_intern;
 
-void kafka_metadata_topic_partition_minit();
+void kafka_metadata_topic_partition_minit(INIT_FUNC_ARGS);
 
 kafka_topic_partition_intern * get_topic_partition_object(zval *z);
 void kafka_topic_partition_init(zval *z, char *topic, int32_t partition, int64_t offset);

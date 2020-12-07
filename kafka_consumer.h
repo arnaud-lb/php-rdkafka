@@ -16,4 +16,4 @@
   +----------------------------------------------------------------------+
 */
 
-void kafka_kafka_consumer_minit();
+void kafka_kafka_consumer_minit(INIT_FUNC_ARGS);

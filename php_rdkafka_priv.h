@@ -19,19 +19,28 @@
 #ifndef PHP_RDKAFKA_PRIV_H
 #define PHP_RDKAFKA_PRIV_H
 
-static inline zval * is_zval(zval * zv) {
-    return zv;
-}
+#if PHP_MAJOR_VERSION >= 8
 
-#define get_custom_object_zval(type, zobject) \
-    ((type*)((char *)Z_OBJ_P(is_zval(zobject)) - XtOffsetOf(type, std)))
+#define Z_RDKAFKA_OBJ zend_object
 
-static inline zend_object * is_zend_object(zend_object * object) {
-    return object;
-}
+#define Z_RDKAFKA_PROP_OBJ(object) Z_OBJ_P(object)
 
-#define get_custom_object(type, object) \
-    ((type*)((char *)is_zend_object(object) - XtOffsetOf(type, std)))
+#define rdkafka_get_debug_object(type, object) php_kafka_from_obj(type, object)
+
+#else // PHP 7
+
+#define Z_RDKAFKA_OBJ zval
+
+#define Z_RDKAFKA_PROP_OBJ(object) object
+
+#define rdkafka_get_debug_object(type, object) get_object(object)
+
+#endif
+
+#define Z_RDKAFKA_P(php_kafka_type, zobject) php_kafka_from_obj(php_kafka_type, Z_OBJ_P(zobject))
+
+#define php_kafka_from_obj(php_kafka_type, object) \
+    ((php_kafka_type*)((char *)(object) - XtOffsetOf(php_kafka_type, std)))
 
 static inline void rdkafka_call_function(zend_fcall_info *fci, zend_fcall_info_cache *fci_cache, zval *retval, uint32_t param_count, zval params[])
 {
@@ -56,11 +65,12 @@ static inline void rdkafka_call_function(zend_fcall_info *fci, zend_fcall_info_c
     }
 }
 
-static inline zval *rdkafka_read_property(zend_class_entry *scope, zval *object, const char *name, size_t name_length, zend_bool silent)
+static inline zval *rdkafka_read_property(zend_class_entry *scope, Z_RDKAFKA_OBJ *object, const char *name, size_t name_length, zend_bool silent)
 {
     zval rv;
     return zend_read_property(scope, object, name, name_length, silent, &rv);
 }
+
 
 static inline char *rdkafka_hash_get_current_key_ex(HashTable *ht, HashPosition *pos)
 {

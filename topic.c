@@ -45,7 +45,7 @@ typedef struct _php_callback {
 
 static void kafka_topic_free(zend_object *object) /* {{{ */
 {
-    kafka_topic_object *intern = get_custom_object(kafka_topic_object, object);
+    kafka_topic_object *intern = php_kafka_from_obj(kafka_topic_object, object);
 
     if (Z_TYPE(intern->zrk) != IS_UNDEF && intern->rkt) {
         kafka_object *kafka_intern = get_kafka_object(&intern->zrk);
@@ -99,7 +99,7 @@ static void consume_callback(rd_kafka_message_t *msg, void *opaque)
 
 kafka_topic_object * get_kafka_topic_object(zval *zrkt)
 {
-    kafka_topic_object *orkt = get_custom_object_zval(kafka_topic_object, zrkt);
+    kafka_topic_object *orkt = Z_RDKAFKA_P(kafka_topic_object, zrkt);
 
     if (!orkt->rkt) {
         zend_throw_exception_ex(NULL, 0, "RdKafka\\Topic::__construct() has not been called");
@@ -665,7 +665,7 @@ static const zend_function_entry kafka_topic_fe[] = {
     PHP_FE_END
 };
 
-void kafka_topic_minit() { /* {{{ */
+void kafka_topic_minit(INIT_FUNC_ARGS) { /* {{{ */
 
     zend_class_entry ce;
 
