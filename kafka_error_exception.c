@@ -20,6 +20,7 @@
 #include "config.h"
 #endif
 
+#ifdef HAS_RD_KAFKA_TRANSACTIONS
 #include "php.h"
 #include "php_rdkafka.h"
 #include "php_rdkafka_priv.h"
@@ -196,3 +197,5 @@ void kafka_error_minit() /* {{{ */
     zend_declare_property_bool(ce_kafka_error, ZEND_STRL("isRetriable"), 0, ZEND_ACC_PRIVATE);
     zend_declare_property_bool(ce_kafka_error, ZEND_STRL("transactionRequiresAbort"), 0, ZEND_ACC_PRIVATE);
 } /* }}} */
+#endif
+
