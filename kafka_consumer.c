@@ -33,14 +33,9 @@
 #include "metadata.h"
 
 typedef struct _object_intern {
-#if PHP_MAJOR_VERSION < 7
-    zend_object             std;
-#endif
     rd_kafka_t              *rk;
     kafka_conf_callbacks    cbs;
-#if PHP_MAJOR_VERSION >= 7
     zend_object             std;
-#endif
 } object_intern;
 
 static zend_class_entry * ce;
@@ -66,22 +61,20 @@ static void kafka_consumer_free(zend_object *object) /* {{{ */
     kafka_conf_callbacks_dtor(&intern->cbs);
 
     zend_object_std_dtor(&intern->std);
-
-    free_custom_object(intern);
 }
 /* }}} */
 
-static zend_object_value kafka_consumer_new(zend_class_entry *class_type) /* {{{ */
+static zend_object *kafka_consumer_new(zend_class_entry *class_type) /* {{{ */
 {
-    zend_object_value retval;
+    zend_object* retval;
     object_intern *intern;
 
-    intern = alloc_object(intern, class_type);
+    intern = zend_object_alloc(sizeof(*intern), class_type);
     zend_object_std_init(&intern->std, class_type);
     object_properties_init(&intern->std, class_type);
 
-    STORE_OBJECT(retval, intern, (zend_objects_store_dtor_t) zend_objects_destroy_object, kafka_consumer_free, NULL);
-    SET_OBJECT_HANDLERS(retval, &handlers);
+    retval = &intern->std;
+    retval->handlers = &handlers;
 
     return retval;
 }
@@ -285,7 +278,7 @@ PHP_METHOD(RdKafka__KafkaConsumer, subscribe)
     topics = rd_kafka_topic_partition_list_new(zend_hash_num_elements(htopics));
 
     for (zend_hash_internal_pointer_reset_ex(htopics, &pos);
-            (zv = rdkafka_hash_get_current_data_ex(htopics, &pos)) != NULL;
+            (zv = zend_hash_get_current_data_ex(htopics, &pos)) != NULL;
             zend_hash_move_forward_ex(htopics, &pos)) {
         convert_to_string_ex(zv);
         rd_kafka_topic_partition_list_add(topics, Z_STRVAL_P(zv), RD_KAFKA_PARTITION_UA);
@@ -593,7 +586,7 @@ ZEND_END_ARG_INFO()
 PHP_METHOD(RdKafka__KafkaConsumer, newTopic)
 {
     char *topic;
-    arglen_t topic_len;
+    size_t topic_len;
     rd_kafka_topic_t *rkt;
     object_intern *intern;
     kafka_topic_object *topic_intern;
@@ -775,7 +768,7 @@ PHP_METHOD(RdKafka__KafkaConsumer, queryWatermarkOffsets)
 {
     object_intern *intern;
     char *topic;
-    arglen_t topic_length;
+    size_t topic_length;
     long low, high;
     zend_long partition, timeout;
     zval *lowResult, *highResult;
@@ -834,8 +827,8 @@ void kafka_kafka_consumer_minit() /* {{{ */
     ce->create_object = kafka_consumer_new;
 
     handlers = kafka_default_object_handlers;
-    set_object_handler_free_obj(&handlers, kafka_consumer_free);
-    set_object_handler_offset(&handlers, XtOffsetOf(object_intern, std));
+    handlers.free_obj = kafka_consumer_free;
+    handlers.offset = XtOffsetOf(object_intern, std);
 
     zend_declare_property_null(ce, ZEND_STRL("error_cb"), ZEND_ACC_PRIVATE);
     zend_declare_property_null(ce, ZEND_STRL("rebalance_cb"), ZEND_ACC_PRIVATE);

@@ -68,11 +68,7 @@ static void kafka_conf_callback_copy(kafka_conf_callback **to, kafka_conf_callba
     if (from) {
         *to = emalloc(sizeof(**to));
         **to = *from;
-#if PHP_MAJOR_VERSION >= 7
         zval_copy_ctor(&(*to)->fci.function_name);
-#else
-        Z_ADDREF_P((*to)->fci.function_name);
-#endif
     }
 } /* }}} */
 
@@ -106,22 +102,20 @@ static void kafka_conf_free(zend_object *object) /* {{{ */
     }
 
     zend_object_std_dtor(&intern->std);
-
-    free_custom_object(intern);
 }
 /* }}} */
 
-static zend_object_value kafka_conf_new(zend_class_entry *class_type) /* {{{ */
+static zend_object *kafka_conf_new(zend_class_entry *class_type) /* {{{ */
 {
-    zend_object_value retval;
+    zend_object* retval;
     kafka_conf_object *intern;
 
-    intern = alloc_object(intern, class_type);
+    intern = zend_object_alloc(sizeof(*intern), class_type);
     zend_object_std_init(&intern->std, class_type);
     object_properties_init(&intern->std, class_type);
 
-    STORE_OBJECT(retval, intern, (zend_objects_store_dtor_t) zend_objects_destroy_object, kafka_conf_free, NULL);
-    SET_OBJECT_HANDLERS(retval, &handlers);
+    retval = &intern->std;
+    retval->handlers = &handlers;
 
     return retval;
 }
@@ -143,7 +137,6 @@ static void kafka_conf_error_cb(rd_kafka_t *rk, int err, const char *reason, voi
 {
     kafka_conf_callbacks *cbs = (kafka_conf_callbacks*) opaque;
     zval args[3];
-    TSRMLS_FETCH();
 
     if (!opaque) {
         return;
@@ -157,9 +150,9 @@ static void kafka_conf_error_cb(rd_kafka_t *rk, int err, const char *reason, voi
     ZVAL_NULL(&args[1]);
     ZVAL_NULL(&args[2]);
 
-    KAFKA_ZVAL_ZVAL(&args[0], &cbs->zrk, 1, 0);
+    ZVAL_ZVAL(&args[0], &cbs->zrk, 1, 0);
     ZVAL_LONG(&args[1], err);
-    RDKAFKA_ZVAL_STRING(&args[2], reason);
+    ZVAL_STRING(&args[2], reason);
 
     rdkafka_call_function(&cbs->error->fci, &cbs->error->fcc, NULL, 3, args);
 
@@ -172,7 +165,6 @@ static void kafka_conf_dr_msg_cb(rd_kafka_t *rk, const rd_kafka_message_t *msg, 
 {
     kafka_conf_callbacks *cbs = (kafka_conf_callbacks*) opaque;
     zval args[2];
-    TSRMLS_FETCH();
 
     if (!opaque) {
         return;
@@ -185,7 +177,7 @@ static void kafka_conf_dr_msg_cb(rd_kafka_t *rk, const rd_kafka_message_t *msg, 
     ZVAL_NULL(&args[0]);
     ZVAL_NULL(&args[1]);
 
-    KAFKA_ZVAL_ZVAL(&args[0], &cbs->zrk, 1, 0);
+    ZVAL_ZVAL(&args[0], &cbs->zrk, 1, 0);
     kafka_message_new(&args[1], msg);
 
     rdkafka_call_function(&cbs->dr_msg->fci, &cbs->dr_msg->fcc, NULL, 2, args);
@@ -198,7 +190,6 @@ static int kafka_conf_stats_cb(rd_kafka_t *rk, char *json, size_t json_len, void
 {
     kafka_conf_callbacks *cbs = (kafka_conf_callbacks*) opaque;
     zval args[3];
-    TSRMLS_FETCH();
 
     if (!opaque) {
         return 0;
@@ -212,8 +203,8 @@ static int kafka_conf_stats_cb(rd_kafka_t *rk, char *json, size_t json_len, void
     ZVAL_NULL(&args[1]);
     ZVAL_NULL(&args[2]);
 
-    KAFKA_ZVAL_ZVAL(&args[0], &cbs->zrk, 1, 0);
-    RDKAFKA_ZVAL_STRING(&args[1], json);
+    ZVAL_ZVAL(&args[0], &cbs->zrk, 1, 0);
+    ZVAL_STRING(&args[1], json);
     ZVAL_LONG(&args[2], json_len);
 
     rdkafka_call_function(&cbs->stats->fci, &cbs->stats->fcc, NULL, 3, args);
@@ -229,7 +220,6 @@ static void kafka_conf_rebalance_cb(rd_kafka_t *rk, rd_kafka_resp_err_t err, rd_
 {
     kafka_conf_callbacks *cbs = (kafka_conf_callbacks*) opaque;
     zval args[3];
-    TSRMLS_FETCH();
 
     if (!opaque) {
         return;
@@ -250,7 +240,7 @@ static void kafka_conf_rebalance_cb(rd_kafka_t *rk, rd_kafka_resp_err_t err, rd_
     ZVAL_NULL(&args[1]);
     ZVAL_NULL(&args[2]);
 
-    KAFKA_ZVAL_ZVAL(&args[0], &cbs->zrk, 1, 0);
+    ZVAL_ZVAL(&args[0], &cbs->zrk, 1, 0);
     ZVAL_LONG(&args[1], err);
     kafka_topic_partition_list_to_array(&args[2], partitions);
 
@@ -265,7 +255,6 @@ static void kafka_conf_consume_cb(rd_kafka_message_t *msg, void *opaque)
 {
     kafka_conf_callbacks *cbs = (kafka_conf_callbacks*) opaque;
     zval args[2];
-    TSRMLS_FETCH();
 
     if (!opaque) {
         return;
@@ -279,7 +268,7 @@ static void kafka_conf_consume_cb(rd_kafka_message_t *msg, void *opaque)
     ZVAL_NULL(&args[1]);
 
     kafka_message_new(&args[0], msg);
-    KAFKA_ZVAL_ZVAL(&args[1], &cbs->zrk, 1, 0);
+    ZVAL_ZVAL(&args[1], &cbs->zrk, 1, 0);
 
 
     rdkafka_call_function(&cbs->consume->fci, &cbs->consume->fcc, NULL, 2, args);
@@ -292,7 +281,6 @@ static void kafka_conf_offset_commit_cb(rd_kafka_t *rk, rd_kafka_resp_err_t err,
 {
     kafka_conf_callbacks *cbs = (kafka_conf_callbacks*) opaque;
     zval args[3];
-    TSRMLS_FETCH();
 
     if (!opaque) {
         return;
@@ -306,7 +294,7 @@ static void kafka_conf_offset_commit_cb(rd_kafka_t *rk, rd_kafka_resp_err_t err,
     ZVAL_NULL(&args[1]);
     ZVAL_NULL(&args[2]);
 
-    KAFKA_ZVAL_ZVAL(&args[0], &cbs->zrk, 1, 0);
+    ZVAL_ZVAL(&args[0], &cbs->zrk, 1, 0);
     ZVAL_LONG(&args[1], err);
     kafka_topic_partition_list_to_array(&args[2], partitions);
 
@@ -320,7 +308,6 @@ static void kafka_conf_offset_commit_cb(rd_kafka_t *rk, rd_kafka_resp_err_t err,
 static void kafka_conf_log_cb(const rd_kafka_t *rk, int level, const char *facility, const char *message)
 {
     zval args[4];
-    TSRMLS_FETCH();
 
     kafka_conf_callbacks *cbs = (kafka_conf_callbacks*) rd_kafka_opaque(rk);
 
@@ -333,10 +320,10 @@ static void kafka_conf_log_cb(const rd_kafka_t *rk, int level, const char *facil
     ZVAL_NULL(&args[2]);
     ZVAL_NULL(&args[3]);
 
-    KAFKA_ZVAL_ZVAL(&args[0], &cbs->zrk, 1, 0);
+    ZVAL_ZVAL(&args[0], &cbs->zrk, 1, 0);
     ZVAL_LONG(&args[1], level);
-    RDKAFKA_ZVAL_STRING(&args[2], facility);
-    RDKAFKA_ZVAL_STRING(&args[3], message);
+    ZVAL_STRING(&args[2], facility);
+    ZVAL_STRING(&args[3], message);
 
     rdkafka_call_function(&cbs->log->fci, &cbs->log->fcc, NULL, 4, args);
 
@@ -409,7 +396,7 @@ PHP_METHOD(RdKafka__Conf, dump)
     for (i = 0; i < cntp; i+=2) {
         const char *key = dump[i];
         const char *value = dump[i+1];
-        rdkafka_add_assoc_string(return_value, (char*)key, (char*)value);
+        add_assoc_string(return_value, (char*)key, (char*)value);
     }
 
     rd_kafka_conf_dump_free(dump, cntp);
@@ -427,9 +414,9 @@ ZEND_END_ARG_INFO()
 PHP_METHOD(RdKafka__Conf, set)
 {
     char *name;
-    arglen_t name_len;
+    size_t name_len;
     char *value;
-    arglen_t value_len;
+    size_t value_len;
     kafka_conf_object *intern;
     rd_kafka_conf_res_t ret = 0;
     char errstr[512];
@@ -858,8 +845,8 @@ void kafka_conf_minit()
     zend_class_entry tmpce;
 
     handlers = kafka_default_object_handlers;
-    set_object_handler_free_obj(&handlers, kafka_conf_free);
-    set_object_handler_offset(&handlers, XtOffsetOf(kafka_conf_object, std));
+    handlers.free_obj = kafka_conf_free;
+    handlers.offset = XtOffsetOf(kafka_conf_object, std);
 
     INIT_NS_CLASS_ENTRY(tmpce, "RdKafka", "Conf", kafka_conf_fe);
     ce_kafka_conf = zend_register_internal_class(&tmpce);

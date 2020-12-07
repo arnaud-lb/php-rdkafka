@@ -93,8 +93,6 @@ static void kafka_free(zend_object *object) /* {{{ */
     kafka_conf_callbacks_dtor(&intern->cbs);
 
     zend_object_std_dtor(&intern->std);
-
-    free_custom_object(intern);
 }
 /* }}} */
 
@@ -159,17 +157,17 @@ static void kafka_init(zval *this_ptr, rd_kafka_type_t type, zval *zconf) /* {{{
 }
 /* }}} */
 
-static zend_object_value kafka_new(zend_class_entry *class_type) /* {{{ */
+static zend_object *kafka_new(zend_class_entry *class_type) /* {{{ */
 {
-    zend_object_value retval;
+    zend_object* retval;
     kafka_object *intern;
 
-    intern = alloc_object(intern, class_type);
+    intern = zend_object_alloc(sizeof(*intern), class_type);
     zend_object_std_init(&intern->std, class_type);
     object_properties_init(&intern->std, class_type);
 
-    STORE_OBJECT(retval, intern, (zend_objects_store_dtor_t) zend_objects_destroy_object, kafka_free, NULL);
-    SET_OBJECT_HANDLERS(retval, &kafka_object_handlers);
+    retval = &intern->std;
+    retval->handlers = &kafka_object_handlers;
 
     return retval;
 }
@@ -311,11 +309,7 @@ PHP_METHOD(RdKafka__Consumer, newQueue)
     // Keep a reference to the parent Kafka object, attempts to ensure that
     // the Queue object is destroyed before the Kafka object.
     // This avoids rd_kafka_destroy() hanging.
-#if PHP_MAJOR_VERSION >= 7
     queue_intern->zrk = *getThis();
-#else
-    queue_intern->zrk = getThis();
-#endif
     Z_ADDREF_P(&queue_intern->zrk);
 
     zend_hash_index_add_ptr(&intern->queues, (zend_ulong)queue_intern, queue_intern);
@@ -338,7 +332,7 @@ ZEND_END_ARG_INFO()
 PHP_METHOD(RdKafka__Kafka, addBrokers)
 {
     char *broker_list;
-    arglen_t broker_list_len;
+    size_t broker_list_len;
     kafka_object *intern;
 
     if (zend_parse_parameters(ZEND_NUM_ARGS(), "s", &broker_list, &broker_list_len) == FAILURE) {
@@ -435,7 +429,7 @@ ZEND_END_ARG_INFO()
 PHP_METHOD(RdKafka__Kafka, newTopic)
 {
     char *topic;
-    arglen_t topic_len;
+    size_t topic_len;
     rd_kafka_topic_t *rkt;
     kafka_object *intern;
     kafka_topic_object *topic_intern;
@@ -487,11 +481,7 @@ PHP_METHOD(RdKafka__Kafka, newTopic)
     }
 
     topic_intern->rkt = rkt;
-#if PHP_MAJOR_VERSION >= 7
     topic_intern->zrk = *getThis();
-#else
-    topic_intern->zrk = getThis();
-#endif
     Z_ADDREF_P(&topic_intern->zrk);
 
     zend_hash_index_add_ptr(&intern->topics, (zend_ulong)topic_intern, topic_intern);
@@ -613,7 +603,7 @@ PHP_METHOD(RdKafka__Kafka, queryWatermarkOffsets)
 {
     kafka_object *intern;
     char *topic;
-    arglen_t topic_length;
+    size_t topic_length;
     long low, high;
     zend_long partition, timeout;
     zval *lowResult, *highResult;
@@ -935,10 +925,6 @@ void register_err_constants(INIT_FUNC_ARGS) /* {{{ */
             len = sizeof(buf)-1;
         }
 
-#if PHP_MAJOR_VERSION < 7
-		len += 1;
-#endif
-
         zend_register_long_constant(buf, len, desc->code, CONST_CS | CONST_PERSISTENT, module_number);
     }
 } /* }}} */
@@ -985,8 +971,8 @@ PHP_MINIT_FUNCTION(rdkafka)
     kafka_default_object_handlers.clone_obj = NULL;
 
 	kafka_object_handlers = kafka_default_object_handlers;
-    set_object_handler_free_obj(&kafka_object_handlers, kafka_free);
-    set_object_handler_offset(&kafka_object_handlers, XtOffsetOf(kafka_object, std));
+    kafka_object_handlers.free_obj = kafka_free;
+    kafka_object_handlers.offset = XtOffsetOf(kafka_object, std);
 
     INIT_CLASS_ENTRY(ce, "RdKafka", kafka_fe);
     ce_kafka = zend_register_internal_class(&ce);
@@ -997,13 +983,13 @@ PHP_MINIT_FUNCTION(rdkafka)
     zend_declare_property_null(ce_kafka, ZEND_STRL("dr_cb"), ZEND_ACC_PRIVATE);
 
     INIT_NS_CLASS_ENTRY(ce, "RdKafka", "Consumer", kafka_consumer_fe);
-    ce_kafka_consumer = rdkafka_register_internal_class_ex(&ce, ce_kafka);
+    ce_kafka_consumer = zend_register_internal_class_ex(&ce, ce_kafka);
 
     INIT_NS_CLASS_ENTRY(ce, "RdKafka", "Producer", kafka_producer_fe);
-    ce_kafka_producer = rdkafka_register_internal_class_ex(&ce, ce_kafka);
+    ce_kafka_producer = zend_register_internal_class_ex(&ce, ce_kafka);
 
     INIT_NS_CLASS_ENTRY(ce, "RdKafka", "Exception", NULL);
-    ce_kafka_exception = rdkafka_register_internal_class_ex(&ce, zend_exception_get_default());
+    ce_kafka_exception = zend_register_internal_class_ex(&ce, zend_exception_get_default());
 
     kafka_conf_minit();
 #ifdef HAS_RD_KAFKA_TRANSACTIONS

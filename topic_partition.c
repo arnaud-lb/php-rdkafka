@@ -47,22 +47,20 @@ static void free_object(zend_object *object) /* {{{ */
     }
 
     zend_object_std_dtor(&intern->std);
-
-    free_custom_object(intern);
 }
 /* }}} */
 
-static zend_object_value create_object(zend_class_entry *class_type) /* {{{ */
+static zend_object *create_object(zend_class_entry *class_type) /* {{{ */
 {
-    zend_object_value retval;
+    zend_object* retval;
     object_intern *intern;
 
     intern = ecalloc(1, sizeof(*intern));
     zend_object_std_init(&intern->std, class_type);
     object_properties_init(&intern->std, class_type);
 
-    STORE_OBJECT(retval, intern, (zend_objects_store_dtor_t) zend_objects_destroy_object, free_object, NULL);
-    SET_OBJECT_HANDLERS(retval, &handlers);
+    retval = &intern->std;
+    retval->handlers = &handlers;
 
     return retval;
 }
@@ -100,7 +98,7 @@ static HashTable *get_debug_info(zval *object, int *is_temp) /* {{{ */
     }
 
     if (intern->topic) {
-        rdkafka_add_assoc_string(&ary, "topic", intern->topic);
+        add_assoc_string(&ary, "topic", intern->topic);
     } else {
         add_assoc_null(&ary, "topic");
     }
@@ -156,7 +154,7 @@ rd_kafka_topic_partition_list_t * array_arg_to_kafka_topic_partition_list(int ar
     list = rd_kafka_topic_partition_list_new(zend_hash_num_elements(ary));
 
     for (zend_hash_internal_pointer_reset_ex(ary, &pos);
-            (zv = rdkafka_hash_get_current_data_ex(ary, &pos)) != NULL;
+            (zv = zend_hash_get_current_data_ex(ary, &pos)) != NULL;
             zend_hash_move_forward_ex(ary, &pos)) {
         kafka_topic_partition_intern *topar_intern;
         rd_kafka_topic_partition_t *topar;
@@ -200,7 +198,7 @@ ZEND_END_ARG_INFO()
 PHP_METHOD(RdKafka__TopicPartition, __construct)
 {
     char *topic;
-    arglen_t topic_len;
+    size_t topic_len;
     zend_long partition;
     zend_long offset = 0;
     zend_error_handling error_handling;
@@ -238,7 +236,7 @@ PHP_METHOD(RdKafka__TopicPartition, getTopic)
     }
 
     if (intern->topic) {
-        RDKAFKA_RETURN_STRING(intern->topic);
+        RETURN_STRING(intern->topic);
     } else {
         RETURN_NULL();
     }
@@ -255,7 +253,7 @@ ZEND_END_ARG_INFO()
 PHP_METHOD(RdKafka__TopicPartition, setTopic)
 {
     char * topic;
-    arglen_t topic_len;
+    size_t topic_len;
     object_intern *intern;
 
     if (zend_parse_parameters(ZEND_NUM_ARGS(), "s", &topic, &topic_len) == FAILURE) {
@@ -398,6 +396,6 @@ void kafka_metadata_topic_partition_minit() /* {{{ */
 
     handlers = kafka_default_object_handlers;
     handlers.get_debug_info = get_debug_info;
-    set_object_handler_free_obj(&handlers, free_object);
-    set_object_handler_offset(&handlers, XtOffsetOf(object_intern, std));
+    handlers.free_obj = free_object;
+    handlers.offset = XtOffsetOf(object_intern, std);
 } /* }}} */

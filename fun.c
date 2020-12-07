@@ -83,12 +83,12 @@ PHP_FUNCTION(rd_kafka_get_err_descs)
         array_init(&el);
         add_assoc_long(&el, "code", desc->code);
         if (desc->name) {
-            rdkafka_add_assoc_string(&el, "name", (char*) desc->name);
+            add_assoc_string(&el, "name", (char*) desc->name);
         } else {
             add_assoc_null(&el, "name");
         }
         if (desc->desc) {
-            rdkafka_add_assoc_string(&el, "desc", (char*) desc->desc);
+            add_assoc_string(&el, "desc", (char*) desc->desc);
         }else {
             add_assoc_null(&el, "desc");
         }
@@ -112,7 +112,7 @@ PHP_FUNCTION(rd_kafka_err2str)
     errstr = rd_kafka_err2str(err);
 
     if (errstr) {
-        RDKAFKA_RETURN_STRING(errstr);
+        RETURN_STRING(errstr);
     }
 }
 /* }}} */

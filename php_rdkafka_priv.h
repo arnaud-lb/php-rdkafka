@@ -19,22 +19,6 @@
 #ifndef PHP_RDKAFKA_PRIV_H
 #define PHP_RDKAFKA_PRIV_H
 
-#if PHP_MAJOR_VERSION >= 7
-
-typedef zend_object* zend_object_value;
-
-typedef size_t arglen_t;
-
-#define STORE_OBJECT(retval, intern, dtor, free, clone) do { \
-    retval = &intern->std; \
-} while (0)
-
-#define SET_OBJECT_HANDLERS(retval, _handlers) do { \
-    retval->handlers = _handlers; \
-} while (0)
-
-#define alloc_object(intern, ce) ecalloc(1, sizeof(*intern) + zend_object_properties_size(ce))
-
 static inline zval * is_zval(zval * zv) {
     return zv;
 }
@@ -48,22 +32,6 @@ static inline zend_object * is_zend_object(zend_object * object) {
 
 #define get_custom_object(type, object) \
     ((type*)((char *)is_zend_object(object) - XtOffsetOf(type, std)))
-
-#define free_custom_object(object) /* no-op */
-
-static inline zend_class_entry *rdkafka_register_internal_class_ex(zend_class_entry *class_entry, zend_class_entry *parent_ce)
-{
-    return zend_register_internal_class_ex(class_entry, parent_ce);
-}
-
-static inline void set_object_handler_free_obj(zend_object_handlers * handlers, zend_object_free_obj_t free_obj)
-{
-    handlers->free_obj = free_obj;
-}
-static inline void set_object_handler_offset(zend_object_handlers * handlers, size_t offset)
-{
-    handlers->offset = offset;
-}
 
 static inline void rdkafka_call_function(zend_fcall_info *fci, zend_fcall_info_cache *fci_cache, zval *retval, uint32_t param_count, zval params[])
 {
@@ -94,11 +62,6 @@ static inline zval *rdkafka_read_property(zend_class_entry *scope, zval *object,
     return zend_read_property(scope, object, name, name_length, silent, &rv);
 }
 
-static inline zval *rdkafka_hash_get_current_data_ex(HashTable *ht, HashPosition *pos)
-{
-    return zend_hash_get_current_data_ex(ht, pos);
-}
-
 static inline char *rdkafka_hash_get_current_key_ex(HashTable *ht, HashPosition *pos)
 {
     zend_string* key;
@@ -110,147 +73,6 @@ static inline char *rdkafka_hash_get_current_key_ex(HashTable *ht, HashPosition 
 
     return NULL;
 }
-
-#define rdkafka_add_assoc_string(arg, key, str) add_assoc_string(arg, key, str)
-
-#define rdkafka_add_assoc_stringl(arg, key, str, str_length) add_assoc_stringl(arg, key, str, str_length)
-
-#define RDKAFKA_RETURN_STRING(str) RETURN_STRING(str)
-#define RDKAFKA_ZVAL_STRING(zv, str) ZVAL_STRING(zv, str)
-#else /* PHP < 7 */
-
-typedef long zend_long;
-#define ZEND_LONG_FMT "%ld"
-
-typedef int arglen_t;
-
-#define STORE_OBJECT(retval, intern, dtor, free, clone) do { \
-    void (*___free_object_storage)(zend_object *object) = free; \
-    retval.handle = zend_objects_store_put(&intern->std, dtor, (zend_objects_free_object_storage_t)___free_object_storage, clone); \
-} while (0)
-
-#define SET_OBJECT_HANDLERS(retval, _handlers) do { \
-    retval.handlers = _handlers; \
-} while (0)
-
-#define alloc_object(intern, ce) ecalloc(1, sizeof(*intern))
-
-#define get_custom_object_zval(type, zobject) \
-    ((type*)zend_object_store_get_object(zobject))
-
-#define get_custom_object(type, object) \
-    ((type*)object)
-
-#define free_custom_object(object) efree(object)
-
-static inline void *zend_hash_str_add_ptr(HashTable *ht, const char *str, size_t len, void *pData)
-{
-    void *pDest;
-    zend_hash_add(ht, str, len, &pData, sizeof(pData), &pDest);
-    return pDest;
-}
-
-static inline int zend_hash_str_del(HashTable *ht, const char *str, size_t len)
-{
-	return zend_hash_del(ht, str, len);
-}
-
-static inline zend_bool zend_hash_str_exists(const HashTable *ht, const char *str, size_t len)
-{
-    return zend_hash_exists(ht, str, len);
-}
-
-static inline void *zend_hash_index_add_ptr(HashTable *ht, zend_ulong h, void *pData)
-{
-    void *pDest;
-    zend_hash_index_update(ht, h, &pData, sizeof(pData), &pDest);
-    return pDest;
-}
-
-static inline zend_class_entry *rdkafka_register_internal_class_ex(zend_class_entry *class_entry, zend_class_entry *parent_ce)
-{
-    return zend_register_internal_class_ex(class_entry, parent_ce, NULL);
-}
-
-typedef void (*zend_object_free_obj_t)(zend_object *object);
-static inline void set_object_handler_free_obj(zend_object_handlers * handlers, zend_object_free_obj_t free_obj)
-{
-    /* no-op */
-}
-
-static inline void set_object_handler_offset(zend_object_handlers * handlers, size_t offset)
-{
-    /* no-op */
-}
-
-static inline void rdkafka_call_function(zend_fcall_info *fci, zend_fcall_info_cache *fci_cache, zval **retval, uint32_t param_count, zval *params[])
-{
-    uint32_t i;
-    int local_retval;
-    zval *local_retval_zv;
-    zval ***params_array;
-
-    if (retval) {
-        local_retval = 0;
-    } else {
-        local_retval = 1;
-        retval = &local_retval_zv;
-    }
-
-    params_array = (zval ***) emalloc(sizeof(zval **)*param_count);
-	for (i = 0; i < param_count; i++) {
-        params_array[i] = &params[i];
-    }
-
-    fci->retval_ptr_ptr = retval;
-    fci->params = params_array;
-    fci->param_count = param_count;
-
-    zend_call_function(fci, fci_cache);
-
-    if (local_retval && *retval) {
-        zval_ptr_dtor(retval);
-    }
-
-    efree(params_array);
-}
-
-static inline zval *rdkafka_read_property(zend_class_entry *scope, zval *object, const char *name, size_t name_length, zend_bool silent)
-{
-    return zend_read_property(scope, object, name, name_length, silent);
-}
-
-static inline zval **rdkafka_hash_get_current_data_ex(HashTable *ht, HashPosition *pos)
-{
-    zval **zv;
-
-    if (zend_hash_get_current_data_ex(ht, (void**)&zv, pos) == SUCCESS) {
-        return zv;
-    }
-
-    return NULL;
-}
-
-static inline char **rdkafka_hash_get_current_key_ex(HashTable *ht, HashPosition *pos)
-{
-    char *key = NULL;
-    uint  klen;
-    ulong index;
-
-    if (zend_hash_get_current_key_ex(ht, &key, &klen, &index, 0, pos) == HASH_KEY_IS_STRING) {
-        return key;
-    }
-
-    return NULL;
-}
-
-#define rdkafka_add_assoc_string(arg, key, str) add_assoc_string(arg, key, str, 1)
-
-#define rdkafka_add_assoc_stringl(arg, key, str, str_length) add_assoc_stringl(arg, key, str, str_length, 1)
-
-#define RDKAFKA_RETURN_STRING(str) RETURN_STRING(str, 1)
-#define RDKAFKA_ZVAL_STRING(zv, str) ZVAL_STRING(zv, str, 1)
-#endif
 
 kafka_object * get_kafka_object(zval *zrk);
 void add_consuming_toppar(kafka_object * intern, rd_kafka_topic_t * rkt, int32_t partition);
