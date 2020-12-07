@@ -27,7 +27,6 @@
 #include "ext/spl/spl_iterators.h"
 #include "Zend/zend_interfaces.h"
 #include "Zend/zend_exceptions.h"
-#include "zeval.h"
 
 typedef struct _object_intern {
 #if PHP_MAJOR_VERSION < 7

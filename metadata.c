@@ -29,7 +29,6 @@
 #include "metadata_broker.h"
 #include "metadata_partition.h"
 #include "Zend/zend_exceptions.h"
-#include "zeval.h"
 
 typedef struct _object_intern {
 #if PHP_MAJOR_VERSION < 7
@@ -102,8 +101,8 @@ static HashTable *get_debug_info(zval *object, int *is_temp) /* {{{ */
 {
     zval ary;
     object_intern *intern;
-    zeval brokers;
-    zeval topics;
+    zval brokers;
+    zval topics;
 
     *is_temp = 1;
 
@@ -114,13 +113,13 @@ static HashTable *get_debug_info(zval *object, int *is_temp) /* {{{ */
         return Z_ARRVAL(ary);
     }
 
-    MAKE_STD_ZEVAL(brokers);
-    brokers_collection(P_ZEVAL(brokers), object, intern);
-    add_assoc_zval(&ary, "brokers", P_ZEVAL(brokers));
+    ZVAL_NULL(&brokers);
+    brokers_collection(&brokers, object, intern);
+    add_assoc_zval(&ary, "brokers", &brokers);
 
-    MAKE_STD_ZEVAL(topics);
-    topics_collection(P_ZEVAL(topics), object, intern);
-    add_assoc_zval(&ary, "topics", P_ZEVAL(topics));
+    ZVAL_NULL(&topics);
+    topics_collection(&topics, object, intern);
+    add_assoc_zval(&ary, "topics", &topics);
 
     add_assoc_long(&ary, "orig_broker_id", intern->metadata->orig_broker_id);
     rdkafka_add_assoc_string(&ary, "orig_broker_name", intern->metadata->orig_broker_name);

@@ -316,7 +316,7 @@ PHP_METHOD(RdKafka__Consumer, newQueue)
 #else
     queue_intern->zrk = getThis();
 #endif
-    Z_ADDREF_P(P_ZEVAL(queue_intern->zrk));
+    Z_ADDREF_P(&queue_intern->zrk);
 
     zend_hash_index_add_ptr(&intern->queues, (zend_ulong)queue_intern, queue_intern);
 }
@@ -492,7 +492,7 @@ PHP_METHOD(RdKafka__Kafka, newTopic)
 #else
     topic_intern->zrk = getThis();
 #endif
-    Z_ADDREF_P(P_ZEVAL(topic_intern->zrk));
+    Z_ADDREF_P(&topic_intern->zrk);
 
     zend_hash_index_add_ptr(&intern->topics, (zend_ulong)topic_intern, topic_intern);
 }
@@ -623,8 +623,8 @@ PHP_METHOD(RdKafka__Kafka, queryWatermarkOffsets)
         return;
     }
 
-    ZEVAL_DEREF(lowResult);
-    ZEVAL_DEREF(highResult);
+    ZVAL_DEREF(lowResult);
+    ZVAL_DEREF(highResult);
 
     intern = get_kafka_object(getThis());
     if (!intern) {
