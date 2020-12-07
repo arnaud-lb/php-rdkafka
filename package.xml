@@ -10,10 +10,10 @@
   <email>arnaud.lb@gmail.com</email>
   <active>yes</active>
  </lead>
- <date>2020-12-06</date>
+ <date>2020-12-07</date>
  <time>12:00:00</time>
  <version>
-  <release>4.1.0</release>
+  <release>4.1.1</release>
   <api>4.0.0</api>
  </version>
  <stability>
@@ -30,8 +30,8 @@
   Starting from 4.0, programs MUST call flush() before shutting down, otherwise
   some messages and callbacks may be lost.
 
-  ## Features
-  - Add transactional producer support (#359, @nick-zh)
+  ## Bugfixes
+  - Fix windows pecl build (#402, @nick-zh)
  </notes>
  <contents>
   <dir name="/">
@@ -111,6 +111,31 @@
  <providesextension>rdkafka</providesextension>
  <extsrcrelease/>
  <changelog>
+  <release>
+   <date>2020-12-06</date>
+   <time>12:00:00</time>
+   <version>
+    <release>4.1.0</release>
+    <api>4.0.0</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <license uri="http://opensource.org/licenses/mit-license.php">MIT License</license>
+   <notes>
+    BREAKING CHANGE: Since version 4.0, the client no longer polls for network
+    events at shutdown (during object destructor). This behaviour didn't give
+    enough control to the user in case of server issue, and could cause the script
+    to hang while terminating.
+
+    Starting from 4.0, programs MUST call flush() before shutting down, otherwise
+    some messages and callbacks may be lost.
+
+    ## Features
+    - Add transactional producer support (#359, @nick-zh)
+   </notes>
+  </release>
   <release>
    <version>
     <release>4.0.4</release>
