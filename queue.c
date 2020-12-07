@@ -37,7 +37,7 @@ static zend_object_handlers handlers;
 
 static void kafka_queue_free(zend_object *object) /* {{{ */
 {
-    kafka_queue_object *intern = get_custom_object(kafka_queue_object, object);
+    kafka_queue_object *intern = php_kafka_from_obj(kafka_queue_object, object);
 
     if (intern->rkqu) {
         kafka_object *kafka_intern = get_kafka_object(&intern->zrk);
@@ -68,7 +68,7 @@ static zend_object *kafka_queue_new(zend_class_entry *class_type) /* {{{ */
 
 kafka_queue_object * get_kafka_queue_object(zval *zrkqu)
 {
-    kafka_queue_object *orkqu = get_custom_object_zval(kafka_queue_object, zrkqu);
+    kafka_queue_object *orkqu = Z_RDKAFKA_P(kafka_queue_object, zrkqu);
 
     if (!orkqu->rkqu) {
         zend_throw_exception_ex(NULL, 0, "RdKafka\\Queue::__construct() has not been called");
@@ -127,7 +127,7 @@ static const zend_function_entry kafka_queue_fe[] = {
     PHP_FE_END
 };
 
-void kafka_queue_minit() { /* {{{ */
+void kafka_queue_minit(INIT_FUNC_ARGS) { /* {{{ */
 
     zend_class_entry ce;
 

@@ -32,7 +32,7 @@
 
 typedef kafka_topic_partition_intern object_intern;
 
-static HashTable *get_debug_info(zval *object, int *is_temp);
+static HashTable *get_debug_info(Z_RDKAFKA_OBJ *object, int *is_temp);
 
 zend_class_entry * ce_kafka_topic_partition;
 
@@ -40,7 +40,7 @@ static zend_object_handlers handlers;
 
 static void free_object(zend_object *object) /* {{{ */
 {
-    object_intern *intern = get_custom_object(object_intern, object);
+    object_intern *intern = php_kafka_from_obj(object_intern, object);
 
     if (intern->topic) {
         efree(intern->topic);
@@ -68,7 +68,7 @@ static zend_object *create_object(zend_class_entry *class_type) /* {{{ */
 
 static object_intern * get_object(zval *z) /* {{{ */
 {
-    object_intern * intern = get_custom_object_zval(object_intern, z);
+    object_intern *intern = Z_RDKAFKA_P(object_intern, z);
 
     if (!intern->topic) {
         zend_throw_exception_ex(NULL, 0, "RdKafka\\TopicPartition::__construct() has not been called");
@@ -83,7 +83,7 @@ kafka_topic_partition_intern * get_topic_partition_object(zval *z) /* {{{ */
     return get_object(z);
 } /* }}} */
 
-static HashTable *get_debug_info(zval *object, int *is_temp) /* {{{ */
+static HashTable *get_debug_info(Z_RDKAFKA_OBJ *object, int *is_temp) /* {{{ */
 {
     zval ary;
     object_intern *intern;
@@ -92,7 +92,8 @@ static HashTable *get_debug_info(zval *object, int *is_temp) /* {{{ */
 
     array_init(&ary);
 
-    intern = get_object(object);
+    intern = rdkafka_get_debug_object(object_intern, object);
+
     if (!intern) {
         return Z_ARRVAL(ary);
     }
@@ -114,7 +115,7 @@ void kafka_topic_partition_init(zval *zobj, char * topic, int32_t partition, int
 {
     object_intern *intern;
 
-    intern = get_custom_object_zval(object_intern, zobj);
+    intern = Z_RDKAFKA_P(object_intern, zobj);
     if (!intern) {
         return;
     }
@@ -386,7 +387,7 @@ static const zend_function_entry fe[] = { /* {{{ */
     PHP_FE_END
 }; /* }}} */
 
-void kafka_metadata_topic_partition_minit() /* {{{ */
+void kafka_metadata_topic_partition_minit(INIT_FUNC_ARGS) /* {{{ */
 {
     zend_class_entry tmpce;
 

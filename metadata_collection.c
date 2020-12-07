@@ -39,14 +39,14 @@ typedef struct _object_intern {
     zend_object                      std;
 } object_intern;
 
-static HashTable *get_debug_info(zval *object, int *is_temp);
+static HashTable *get_debug_info(Z_RDKAFKA_OBJ *object, int *is_temp);
 
 static zend_class_entry *ce;
 static zend_object_handlers handlers;
 
 static void free_object(zend_object *object) /* {{{ */
 {
-    object_intern *intern = get_custom_object(object_intern, object);
+    object_intern *intern = php_kafka_from_obj(object_intern, object);
 
     if (intern->items) {
         zval_dtor(&intern->zmetadata);
@@ -74,7 +74,7 @@ static zend_object *create_object(zend_class_entry *class_type) /* {{{ */
 
 static object_intern * get_object(zval *zmti)
 {
-    object_intern *omti = get_custom_object_zval(object_intern, zmti);
+    object_intern *omti = Z_RDKAFKA_P(object_intern, zmti);
 
     if (!omti->items) {
         zend_throw_exception_ex(NULL, 0, "RdKafka\\Metadata\\Collection::__construct() has not been called");
@@ -84,7 +84,7 @@ static object_intern * get_object(zval *zmti)
     return omti;
 }
 
-static HashTable *get_debug_info(zval *object, int *is_temp) /* {{{ */
+static HashTable *get_debug_info(Z_RDKAFKA_OBJ *object, int *is_temp) /* {{{ */
 {
     zval ary;
     object_intern *intern;
@@ -95,7 +95,7 @@ static HashTable *get_debug_info(zval *object, int *is_temp) /* {{{ */
 
     array_init(&ary);
 
-    intern = get_object(object);
+    intern = rdkafka_get_debug_object(object_intern, object);
     if (!intern) {
         return Z_ARRVAL(ary);
     }
@@ -268,7 +268,7 @@ static const zend_function_entry fe[] = {
     PHP_FE_END
 };
 
-void kafka_metadata_collection_minit()
+void kafka_metadata_collection_minit(INIT_FUNC_ARGS)
 {
     zend_class_entry tmpce;
 
@@ -283,7 +283,7 @@ void kafka_metadata_collection_minit()
     handlers.offset = XtOffsetOf(object_intern, std);
 }
 
-void kafka_metadata_collection_init(zval *return_value, zval *zmetadata, const void * items, size_t item_cnt, size_t item_size, kafka_metadata_collection_ctor_t ctor)
+void kafka_metadata_collection_init(zval *return_value, Z_RDKAFKA_OBJ *zmetadata, const void * items, size_t item_cnt, size_t item_size, kafka_metadata_collection_ctor_t ctor)
 {
     object_intern *intern;
 
@@ -291,12 +291,14 @@ void kafka_metadata_collection_init(zval *return_value, zval *zmetadata, const v
         return;
     }
 
-    intern = get_custom_object_zval(object_intern, return_value);
+    intern = Z_RDKAFKA_P(object_intern, return_value);
     if (!intern) {
         return;
     }
 
+#if PHP_MAJOR_VERSION < 8
     ZVAL_ZVAL(&intern->zmetadata, zmetadata, 1, 0);
+#endif
     intern->items = items;
     intern->item_cnt = item_cnt;
     intern->item_size = item_size;

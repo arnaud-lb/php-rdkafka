@@ -16,5 +16,5 @@
   +----------------------------------------------------------------------+
 */
 
-void kafka_metadata_topic_minit();
+void kafka_metadata_topic_minit(INIT_FUNC_ARGS);
 void kafka_metadata_topic_ctor(zval *return_value, zval *zmetadata, const void *metadata_topic);

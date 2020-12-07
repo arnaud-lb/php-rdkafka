@@ -2,7 +2,7 @@
 RdKafka\Conf::setDefaultTopicConf()
 --SKIPIF--
 <?php
-if (!method_exists('RdKafka\Conf', 'setDefaultTopicConf')) {
+if (!method_exists('RdKafka\Conf', 'setDefaultTopicConf') || 7 < PHP_MAJOR_VERSION) {
     echo "skip";
 }
 ?>

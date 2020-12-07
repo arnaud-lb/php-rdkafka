@@ -56,6 +56,13 @@ $producer->commitTransaction(10000);
 
 printf("%d messages delivered\n", $delivered);
 
+$conf = new RdKafka\Conf();
+$conf->set('metadata.broker.list', getenv('TEST_KAFKA_BROKERS'));
+$conf->setErrorCb(function ($producer, $err, $errstr) {
+    printf("%s: %s\n", rd_kafka_err2str($err), $errstr);
+    exit;
+});
+
 $consumer = new RdKafka\Consumer($conf);
 
 $topic = $consumer->newTopic($topicName);

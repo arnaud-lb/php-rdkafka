@@ -15,10 +15,11 @@
   | Author: Arnaud Le Blanc <arnaud.lb@gmail.com>                        |
   +----------------------------------------------------------------------+
 */
+
 #ifdef HAS_RD_KAFKA_TRANSACTIONS
 
 #include "librdkafka/rdkafka.h"
-#include "php.h"
+#include "Zend/zend_interfaces.h"
 
 extern zend_class_entry * ce_kafka_error;
 void kafka_error_minit();
