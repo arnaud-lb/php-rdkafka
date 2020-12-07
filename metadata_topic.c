@@ -29,7 +29,6 @@
 #include "metadata_partition.h"
 #include "metadata_collection.h"
 #include "Zend/zend_exceptions.h"
-#include "zeval.h"
 
 typedef struct _object_intern {
 #if PHP_MAJOR_VERSION < 7
@@ -98,7 +97,7 @@ static HashTable *get_debug_info(zval *object, int *is_temp) /* {{{ */
 {
     zval ary;
     object_intern *intern;
-    zeval partitions;
+    zval partitions;
 
     *is_temp = 1;
 
@@ -111,9 +110,9 @@ static HashTable *get_debug_info(zval *object, int *is_temp) /* {{{ */
 
     rdkafka_add_assoc_string(&ary, "topic", intern->metadata_topic->topic);
 
-    MAKE_STD_ZEVAL(partitions);
-    partitions_collection(P_ZEVAL(partitions), object, intern);
-    add_assoc_zval(&ary, "partitions", P_ZEVAL(partitions));
+    ZVAL_NULL(&partitions);
+    partitions_collection(&partitions, object, intern);
+    add_assoc_zval(&ary, "partitions", &partitions);
 
     add_assoc_long(&ary, "err", intern->metadata_topic->err);
 

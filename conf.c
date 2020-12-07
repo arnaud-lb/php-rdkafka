@@ -31,7 +31,6 @@
 #include "conf.h"
 #include "topic_partition.h"
 #include "message.h"
-#include "zeval.h"
 
 zend_class_entry * ce_kafka_conf;
 zend_class_entry * ce_kafka_topic_conf;
@@ -143,7 +142,7 @@ kafka_conf_object * get_kafka_conf_object(zval *zconf)
 static void kafka_conf_error_cb(rd_kafka_t *rk, int err, const char *reason, void *opaque)
 {
     kafka_conf_callbacks *cbs = (kafka_conf_callbacks*) opaque;
-    zeval args[3];
+    zval args[3];
     TSRMLS_FETCH();
 
     if (!opaque) {
@@ -154,13 +153,13 @@ static void kafka_conf_error_cb(rd_kafka_t *rk, int err, const char *reason, voi
         return;
     }
 
-    MAKE_STD_ZEVAL(args[0]);
-    MAKE_STD_ZEVAL(args[1]);
-    MAKE_STD_ZEVAL(args[2]);
+    ZVAL_NULL(&args[0]);
+    ZVAL_NULL(&args[1]);
+    ZVAL_NULL(&args[2]);
 
-    KAFKA_ZVAL_ZVAL(P_ZEVAL(args[0]), &cbs->zrk, 1, 0);
-    ZVAL_LONG(P_ZEVAL(args[1]), err);
-    RDKAFKA_ZVAL_STRING(P_ZEVAL(args[2]), reason);
+    KAFKA_ZVAL_ZVAL(&args[0], &cbs->zrk, 1, 0);
+    ZVAL_LONG(&args[1], err);
+    RDKAFKA_ZVAL_STRING(&args[2], reason);
 
     rdkafka_call_function(&cbs->error->fci, &cbs->error->fcc, NULL, 3, args);
 
@@ -172,7 +171,7 @@ static void kafka_conf_error_cb(rd_kafka_t *rk, int err, const char *reason, voi
 static void kafka_conf_dr_msg_cb(rd_kafka_t *rk, const rd_kafka_message_t *msg, void *opaque)
 {
     kafka_conf_callbacks *cbs = (kafka_conf_callbacks*) opaque;
-    zeval args[2];
+    zval args[2];
     TSRMLS_FETCH();
 
     if (!opaque) {
@@ -183,11 +182,11 @@ static void kafka_conf_dr_msg_cb(rd_kafka_t *rk, const rd_kafka_message_t *msg, 
         return;
     }
 
-    MAKE_STD_ZEVAL(args[0]);
-    MAKE_STD_ZEVAL(args[1]);
+    ZVAL_NULL(&args[0]);
+    ZVAL_NULL(&args[1]);
 
-    KAFKA_ZVAL_ZVAL(P_ZEVAL(args[0]), &cbs->zrk, 1, 0);
-    kafka_message_new(P_ZEVAL(args[1]), msg);
+    KAFKA_ZVAL_ZVAL(&args[0], &cbs->zrk, 1, 0);
+    kafka_message_new(&args[1], msg);
 
     rdkafka_call_function(&cbs->dr_msg->fci, &cbs->dr_msg->fcc, NULL, 2, args);
 
@@ -198,7 +197,7 @@ static void kafka_conf_dr_msg_cb(rd_kafka_t *rk, const rd_kafka_message_t *msg, 
 static int kafka_conf_stats_cb(rd_kafka_t *rk, char *json, size_t json_len, void *opaque)
 {
     kafka_conf_callbacks *cbs = (kafka_conf_callbacks*) opaque;
-    zeval args[3];
+    zval args[3];
     TSRMLS_FETCH();
 
     if (!opaque) {
@@ -209,13 +208,13 @@ static int kafka_conf_stats_cb(rd_kafka_t *rk, char *json, size_t json_len, void
         return 0;
     }
 
-    MAKE_STD_ZEVAL(args[0]);
-    MAKE_STD_ZEVAL(args[1]);
-    MAKE_STD_ZEVAL(args[2]);
+    ZVAL_NULL(&args[0]);
+    ZVAL_NULL(&args[1]);
+    ZVAL_NULL(&args[2]);
 
-    KAFKA_ZVAL_ZVAL(P_ZEVAL(args[0]), &cbs->zrk, 1, 0);
-    RDKAFKA_ZVAL_STRING(P_ZEVAL(args[1]), json);
-    ZVAL_LONG(P_ZEVAL(args[2]), json_len);
+    KAFKA_ZVAL_ZVAL(&args[0], &cbs->zrk, 1, 0);
+    RDKAFKA_ZVAL_STRING(&args[1], json);
+    ZVAL_LONG(&args[2], json_len);
 
     rdkafka_call_function(&cbs->stats->fci, &cbs->stats->fcc, NULL, 3, args);
 
@@ -229,7 +228,7 @@ static int kafka_conf_stats_cb(rd_kafka_t *rk, char *json, size_t json_len, void
 static void kafka_conf_rebalance_cb(rd_kafka_t *rk, rd_kafka_resp_err_t err, rd_kafka_topic_partition_list_t *partitions, void *opaque)
 {
     kafka_conf_callbacks *cbs = (kafka_conf_callbacks*) opaque;
-    zeval args[3];
+    zval args[3];
     TSRMLS_FETCH();
 
     if (!opaque) {
@@ -247,13 +246,13 @@ static void kafka_conf_rebalance_cb(rd_kafka_t *rk, rd_kafka_resp_err_t err, rd_
         return;
     }
 
-    MAKE_STD_ZEVAL(args[0]);
-    MAKE_STD_ZEVAL(args[1]);
-    MAKE_STD_ZEVAL(args[2]);
+    ZVAL_NULL(&args[0]);
+    ZVAL_NULL(&args[1]);
+    ZVAL_NULL(&args[2]);
 
-    KAFKA_ZVAL_ZVAL(P_ZEVAL(args[0]), &cbs->zrk, 1, 0);
-    ZVAL_LONG(P_ZEVAL(args[1]), err);
-    kafka_topic_partition_list_to_array(P_ZEVAL(args[2]), partitions);
+    KAFKA_ZVAL_ZVAL(&args[0], &cbs->zrk, 1, 0);
+    ZVAL_LONG(&args[1], err);
+    kafka_topic_partition_list_to_array(&args[2], partitions);
 
     rdkafka_call_function(&cbs->rebalance->fci, &cbs->rebalance->fcc, NULL, 3, args);
 
@@ -265,7 +264,7 @@ static void kafka_conf_rebalance_cb(rd_kafka_t *rk, rd_kafka_resp_err_t err, rd_
 static void kafka_conf_consume_cb(rd_kafka_message_t *msg, void *opaque)
 {
     kafka_conf_callbacks *cbs = (kafka_conf_callbacks*) opaque;
-    zeval args[2];
+    zval args[2];
     TSRMLS_FETCH();
 
     if (!opaque) {
@@ -276,11 +275,11 @@ static void kafka_conf_consume_cb(rd_kafka_message_t *msg, void *opaque)
         return;
     }
 
-    MAKE_STD_ZEVAL(args[0]);
-    MAKE_STD_ZEVAL(args[1]);
+    ZVAL_NULL(&args[0]);
+    ZVAL_NULL(&args[1]);
 
-    kafka_message_new(P_ZEVAL(args[0]), msg);
-    KAFKA_ZVAL_ZVAL(P_ZEVAL(args[1]), &cbs->zrk, 1, 0);
+    kafka_message_new(&args[0], msg);
+    KAFKA_ZVAL_ZVAL(&args[1], &cbs->zrk, 1, 0);
 
 
     rdkafka_call_function(&cbs->consume->fci, &cbs->consume->fcc, NULL, 2, args);
@@ -292,7 +291,7 @@ static void kafka_conf_consume_cb(rd_kafka_message_t *msg, void *opaque)
 static void kafka_conf_offset_commit_cb(rd_kafka_t *rk, rd_kafka_resp_err_t err, rd_kafka_topic_partition_list_t *partitions, void *opaque)
 {
     kafka_conf_callbacks *cbs = (kafka_conf_callbacks*) opaque;
-    zeval args[3];
+    zval args[3];
     TSRMLS_FETCH();
 
     if (!opaque) {
@@ -303,13 +302,13 @@ static void kafka_conf_offset_commit_cb(rd_kafka_t *rk, rd_kafka_resp_err_t err,
         return;
     }
 
-    MAKE_STD_ZEVAL(args[0]);
-    MAKE_STD_ZEVAL(args[1]);
-    MAKE_STD_ZEVAL(args[2]);
+    ZVAL_NULL(&args[0]);
+    ZVAL_NULL(&args[1]);
+    ZVAL_NULL(&args[2]);
 
-    KAFKA_ZVAL_ZVAL(P_ZEVAL(args[0]), &cbs->zrk, 1, 0);
-    ZVAL_LONG(P_ZEVAL(args[1]), err);
-    kafka_topic_partition_list_to_array(P_ZEVAL(args[2]), partitions);
+    KAFKA_ZVAL_ZVAL(&args[0], &cbs->zrk, 1, 0);
+    ZVAL_LONG(&args[1], err);
+    kafka_topic_partition_list_to_array(&args[2], partitions);
 
     rdkafka_call_function(&cbs->offset_commit->fci, &cbs->offset_commit->fcc, NULL, 3, args);
 
@@ -320,7 +319,7 @@ static void kafka_conf_offset_commit_cb(rd_kafka_t *rk, rd_kafka_resp_err_t err,
 
 static void kafka_conf_log_cb(const rd_kafka_t *rk, int level, const char *facility, const char *message)
 {
-    zeval args[4];
+    zval args[4];
     TSRMLS_FETCH();
 
     kafka_conf_callbacks *cbs = (kafka_conf_callbacks*) rd_kafka_opaque(rk);
@@ -329,15 +328,15 @@ static void kafka_conf_log_cb(const rd_kafka_t *rk, int level, const char *facil
         return;
     }
 
-    MAKE_STD_ZEVAL(args[0]);
-    MAKE_STD_ZEVAL(args[1]);
-    MAKE_STD_ZEVAL(args[2]);
-    MAKE_STD_ZEVAL(args[3]);
+    ZVAL_NULL(&args[0]);
+    ZVAL_NULL(&args[1]);
+    ZVAL_NULL(&args[2]);
+    ZVAL_NULL(&args[3]);
 
-    KAFKA_ZVAL_ZVAL(P_ZEVAL(args[0]), &cbs->zrk, 1, 0);
-    ZVAL_LONG(P_ZEVAL(args[1]), level);
-    RDKAFKA_ZVAL_STRING(P_ZEVAL(args[2]), facility);
-    RDKAFKA_ZVAL_STRING(P_ZEVAL(args[3]), message);
+    KAFKA_ZVAL_ZVAL(&args[0], &cbs->zrk, 1, 0);
+    ZVAL_LONG(&args[1], level);
+    RDKAFKA_ZVAL_STRING(&args[2], facility);
+    RDKAFKA_ZVAL_STRING(&args[3], message);
 
     rdkafka_call_function(&cbs->log->fci, &cbs->log->fcc, NULL, 4, args);
 
@@ -523,7 +522,7 @@ PHP_METHOD(RdKafka__Conf, setErrorCb)
         return;
     }
 
-    Z_ADDREF_P(P_ZEVAL(fci.function_name));
+    Z_ADDREF_P(&fci.function_name);
 
     if (intern->cbs.error) {
         zval_ptr_dtor(&intern->cbs.error->fci.function_name);
@@ -560,7 +559,7 @@ PHP_METHOD(RdKafka__Conf, setDrMsgCb)
         return;
     }
 
-    Z_ADDREF_P(P_ZEVAL(fci.function_name));
+    Z_ADDREF_P(&fci.function_name);
 
     if (intern->cbs.dr_msg) {
         zval_ptr_dtor(&intern->cbs.dr_msg->fci.function_name);
@@ -597,7 +596,7 @@ PHP_METHOD(RdKafka__Conf, setStatsCb)
         return;
     }
 
-    Z_ADDREF_P(P_ZEVAL(fci.function_name));
+    Z_ADDREF_P(&fci.function_name);
 
     if (intern->cbs.stats) {
         zval_ptr_dtor(&intern->cbs.stats->fci.function_name);
@@ -634,7 +633,7 @@ PHP_METHOD(RdKafka__Conf, setRebalanceCb)
         return;
     }
 
-    Z_ADDREF_P(P_ZEVAL(fci.function_name));
+    Z_ADDREF_P(&fci.function_name);
 
     if (intern->cbs.rebalance) {
         zval_ptr_dtor(&intern->cbs.rebalance->fci.function_name);
@@ -671,7 +670,7 @@ PHP_METHOD(RdKafka__Conf, setConsumeCb)
         return;
     }
 
-    Z_ADDREF_P(P_ZEVAL(fci.function_name));
+    Z_ADDREF_P(&fci.function_name);
 
     if (intern->cbs.consume) {
         zval_ptr_dtor(&intern->cbs.consume->fci.function_name);
@@ -708,7 +707,7 @@ PHP_METHOD(RdKafka__Conf, setOffsetCommitCb)
         return;
     }
 
-    Z_ADDREF_P(P_ZEVAL(fci.function_name));
+    Z_ADDREF_P(&fci.function_name);
 
     if (intern->cbs.offset_commit) {
         zval_ptr_dtor(&intern->cbs.offset_commit->fci.function_name);
@@ -746,7 +745,7 @@ PHP_METHOD(RdKafka__Conf, setLogCb)
         return;
     }
 
-    Z_ADDREF_P(P_ZEVAL(fci.function_name));
+    Z_ADDREF_P(&fci.function_name);
 
     if (conf->cbs.log) {
         zval_ptr_dtor(&conf->cbs.log->fci.function_name);

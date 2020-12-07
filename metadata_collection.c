@@ -28,7 +28,6 @@
 #include "Zend/zend_interfaces.h"
 #include "metadata_collection.h"
 #include "Zend/zend_exceptions.h"
-#include "zeval.h"
 
 typedef struct _object_intern {
 #if PHP_MAJOR_VERSION < 7
@@ -97,7 +96,7 @@ static HashTable *get_debug_info(zval *object, int *is_temp) /* {{{ */
     zval ary;
     object_intern *intern;
     size_t i;
-    zeval item;
+    zval item;
 
     *is_temp = 1;
 
@@ -109,9 +108,9 @@ static HashTable *get_debug_info(zval *object, int *is_temp) /* {{{ */
     }
     
     for (i = 0; i < intern->item_cnt; i++) {
-        MAKE_STD_ZEVAL(item);
-        intern->ctor(P_ZEVAL(item), &intern->zmetadata, (char *)intern->items + i * intern->item_size);
-        add_next_index_zval(&ary, P_ZEVAL(item));
+        ZVAL_NULL(&item);
+        intern->ctor(&item, &intern->zmetadata, (char *)intern->items + i * intern->item_size);
+        add_next_index_zval(&ary, &item);
     }
 
     return Z_ARRVAL(ary);

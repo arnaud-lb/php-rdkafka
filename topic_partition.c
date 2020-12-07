@@ -29,7 +29,6 @@
 #include "Zend/zend_exceptions.h"
 #include "ext/spl/spl_exceptions.h"
 #include "topic_partition.h"
-#include "zeval.h"
 
 typedef kafka_topic_partition_intern object_intern;
 
@@ -134,17 +133,17 @@ void kafka_topic_partition_init(zval *zobj, char * topic, int32_t partition, int
 void kafka_topic_partition_list_to_array(zval *return_value, rd_kafka_topic_partition_list_t *list) /* {{{ */
 {
     rd_kafka_topic_partition_t *topar;
-    zeval ztopar;
+    zval ztopar;
     int i;
 
     array_init_size(return_value, list->cnt);
 
     for (i = 0; i < list->cnt; i++) {
         topar = &list->elems[i];
-        MAKE_STD_ZEVAL(ztopar);
-        object_init_ex(P_ZEVAL(ztopar), ce_kafka_topic_partition);
-        kafka_topic_partition_init(P_ZEVAL(ztopar), topar->topic, topar->partition, topar->offset);
-        add_next_index_zval(return_value, P_ZEVAL(ztopar));
+        ZVAL_NULL(&ztopar);
+        object_init_ex(&ztopar, ce_kafka_topic_partition);
+        kafka_topic_partition_init(&ztopar, topar->topic, topar->partition, topar->offset);
+        add_next_index_zval(return_value, &ztopar);
     }
 } /* }}} */
 
@@ -152,7 +151,7 @@ rd_kafka_topic_partition_list_t * array_arg_to_kafka_topic_partition_list(int ar
 
     HashPosition pos;
     rd_kafka_topic_partition_list_t *list;
-    zeval *zv;
+    zval *zv;
 
     list = rd_kafka_topic_partition_list_new(zend_hash_num_elements(ary));
 
@@ -162,7 +161,7 @@ rd_kafka_topic_partition_list_t * array_arg_to_kafka_topic_partition_list(int ar
         kafka_topic_partition_intern *topar_intern;
         rd_kafka_topic_partition_t *topar;
 
-        if (Z_TYPE_P(ZEVAL(zv)) != IS_OBJECT || !instanceof_function(Z_OBJCE_P(ZEVAL(zv)), ce_kafka_topic_partition)) {
+        if (Z_TYPE_P(zv) != IS_OBJECT || !instanceof_function(Z_OBJCE_P(zv), ce_kafka_topic_partition)) {
             const char *space;
             const char *class_name = get_active_class_name(&space);
             rd_kafka_topic_partition_list_destroy(list);
@@ -171,11 +170,11 @@ rd_kafka_topic_partition_list_t * array_arg_to_kafka_topic_partition_list(int ar
                     argnum,
                     class_name, space,
                     get_active_function_name(),
-                    zend_zval_type_name(ZEVAL(zv)));
+                    zend_zval_type_name(zv));
             return NULL;
         }
 
-        topar_intern = get_topic_partition_object(ZEVAL(zv));
+        topar_intern = get_topic_partition_object(zv);
         if (!topar_intern) {
             rd_kafka_topic_partition_list_destroy(list);
             return NULL;

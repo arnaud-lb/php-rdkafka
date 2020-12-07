@@ -271,7 +271,7 @@ PHP_METHOD(RdKafka__KafkaConsumer, subscribe)
     object_intern *intern;
     rd_kafka_topic_partition_list_t *topics;
     rd_kafka_resp_err_t err;
-    zeval *zv;
+    zval *zv;
 
     if (zend_parse_parameters(ZEND_NUM_ARGS(), "h", &htopics) == FAILURE) {
         return;
@@ -288,7 +288,7 @@ PHP_METHOD(RdKafka__KafkaConsumer, subscribe)
             (zv = rdkafka_hash_get_current_data_ex(htopics, &pos)) != NULL;
             zend_hash_move_forward_ex(htopics, &pos)) {
         convert_to_string_ex(zv);
-        rd_kafka_topic_partition_list_add(topics, Z_STRVAL_P(ZEVAL(zv)), RD_KAFKA_PARTITION_UA);
+        rd_kafka_topic_partition_list_add(topics, Z_STRVAL_P(zv), RD_KAFKA_PARTITION_UA);
     }
 
     err = rd_kafka_subscribe(intern->rk, topics);
@@ -334,7 +334,7 @@ PHP_METHOD(RdKafka__KafkaConsumer, getSubscription)
     array_init_size(return_value, topics->cnt);
 
     for (i = 0; i < topics->cnt; i++) {
-        add_next_index_string(return_value, topics->elems[i].topic ZEVAL_DUP_CC);
+        add_next_index_string(return_value, topics->elems[i].topic);
     }
 
     rd_kafka_topic_partition_list_destroy(topics);
@@ -785,8 +785,8 @@ PHP_METHOD(RdKafka__KafkaConsumer, queryWatermarkOffsets)
         return;
     }
 
-    ZEVAL_DEREF(lowResult);
-    ZEVAL_DEREF(highResult);
+    ZVAL_DEREF(lowResult);
+    ZVAL_DEREF(highResult);
 
     intern = get_object(getThis());
     if (!intern) {

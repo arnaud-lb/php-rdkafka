@@ -26,7 +26,6 @@
 #include "Zend/zend_interfaces.h"
 #include "Zend/zend_exceptions.h"
 #include "kafka_error_exception.h"
-#include "zeval.h"
 
 zend_class_entry * ce_kafka_error;
 
