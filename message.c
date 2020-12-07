@@ -77,7 +77,7 @@ void kafka_message_new(zval *return_value, const rd_kafka_message_t *message)
                 if (header_response != RD_KAFKA_RESP_ERR_NO_ERROR) {
                     break;
                 }
-                rdkafka_add_assoc_stringl(&headers_array, header_name, (const char*)header_value, header_size);
+                add_assoc_stringl(&headers_array, header_name, (const char*)header_value, header_size);
             }
             zend_update_property(NULL, return_value, ZEND_STRL("headers"), &headers_array);
             zval_ptr_dtor(&headers_array);
@@ -128,7 +128,7 @@ PHP_METHOD(RdKafka__Message, errstr)
     errstr = rd_kafka_err2str(Z_LVAL_P(zerr));
 
     if (errstr) {
-        RDKAFKA_RETURN_STRING(errstr);
+        RETURN_STRING(errstr);
     }
 
     zpayload = rdkafka_read_property(NULL, getThis(), ZEND_STRL("payload"), 0);

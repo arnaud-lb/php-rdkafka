@@ -31,13 +31,8 @@
 #include "Zend/zend_exceptions.h"
 
 typedef struct _object_intern {
-#if PHP_MAJOR_VERSION < 7
-    zend_object               std;
-#endif
     const rd_kafka_metadata_t *metadata;
-#if PHP_MAJOR_VERSION >= 7
     zend_object               std;
-#endif
 } object_intern;
 
 static HashTable *get_debug_info(zval *object, int *is_temp);
@@ -64,22 +59,20 @@ static void kafka_metadata_free(zend_object *object) /* {{{ */
     }
 
     zend_object_std_dtor(&intern->std);
-
-    free_custom_object(intern);
 }
 /* }}} */
 
-static zend_object_value kafka_metadata_new(zend_class_entry *class_type) /* {{{ */
+static zend_object *kafka_metadata_new(zend_class_entry *class_type) /* {{{ */
 {
-    zend_object_value retval;
+    zend_object* retval;
     object_intern *intern;
 
-    intern = alloc_object(intern, class_type);
+    intern = zend_object_alloc(sizeof(*intern), class_type);
     zend_object_std_init(&intern->std, class_type);
     object_properties_init(&intern->std, class_type);
 
-    STORE_OBJECT(retval, intern, (zend_objects_store_dtor_t) zend_objects_destroy_object, kafka_metadata_free, NULL);
-    SET_OBJECT_HANDLERS(retval, &handlers);
+    retval = &intern->std;
+    retval->handlers = &handlers;
 
     return retval;
 }
@@ -122,7 +115,7 @@ static HashTable *get_debug_info(zval *object, int *is_temp) /* {{{ */
     add_assoc_zval(&ary, "topics", &topics);
 
     add_assoc_long(&ary, "orig_broker_id", intern->metadata->orig_broker_id);
-    rdkafka_add_assoc_string(&ary, "orig_broker_name", intern->metadata->orig_broker_name);
+    add_assoc_string(&ary, "orig_broker_name", intern->metadata->orig_broker_name);
 
     return Z_ARRVAL(ary);
 }
@@ -170,7 +163,7 @@ PHP_METHOD(RdKafka__Metadata, getOrigBrokerName)
         return;
     }
 
-    RDKAFKA_RETURN_STRING(intern->metadata->orig_broker_name);
+    RETURN_STRING(intern->metadata->orig_broker_name);
 }
 /* }}} */
 
@@ -238,8 +231,8 @@ void kafka_metadata_minit()
 
     handlers = kafka_default_object_handlers;
     handlers.get_debug_info = get_debug_info;
-    set_object_handler_free_obj(&handlers, kafka_metadata_free);
-    set_object_handler_offset(&handlers, XtOffsetOf(object_intern, std));
+    handlers.free_obj = kafka_metadata_free;
+    handlers.offset = XtOffsetOf(object_intern, std);
 
     kafka_metadata_topic_minit();
     kafka_metadata_broker_minit();

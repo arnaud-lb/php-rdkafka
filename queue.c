@@ -47,22 +47,20 @@ static void kafka_queue_free(zend_object *object) /* {{{ */
     }
 
     zend_object_std_dtor(&intern->std);
-
-    free_custom_object(intern);
 }
 /* }}} */
 
-static zend_object_value kafka_queue_new(zend_class_entry *class_type) /* {{{ */
+static zend_object *kafka_queue_new(zend_class_entry *class_type) /* {{{ */
 {
-    zend_object_value retval;
+    zend_object* retval;
     kafka_queue_object *intern;
 
-    intern = alloc_object(intern, class_type);
+    intern = zend_object_alloc(sizeof(*intern), class_type);
     zend_object_std_init(&intern->std, class_type);
     object_properties_init(&intern->std, class_type);
 
-    STORE_OBJECT(retval, intern, (zend_objects_store_dtor_t) zend_objects_destroy_object, kafka_queue_free, NULL);
-    SET_OBJECT_HANDLERS(retval, &handlers);
+    retval = &intern->std;
+    retval->handlers = &handlers;
 
     return retval;
 }
@@ -134,8 +132,8 @@ void kafka_queue_minit() { /* {{{ */
     zend_class_entry ce;
 
     handlers = kafka_default_object_handlers;
-    set_object_handler_free_obj(&handlers, kafka_queue_free);
-    set_object_handler_offset(&handlers, XtOffsetOf(kafka_queue_object, std));
+    handlers.free_obj = kafka_queue_free;
+    handlers.offset = XtOffsetOf(kafka_queue_object, std);
 
     INIT_NS_CLASS_ENTRY(ce, "RdKafka", "Queue", kafka_queue_fe);
     ce_kafka_queue = zend_register_internal_class(&ce);

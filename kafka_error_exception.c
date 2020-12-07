@@ -57,7 +57,7 @@ ZEND_END_ARG_INFO()
 PHP_METHOD(RdKafka__KafkaErrorException, __construct)
 {
     char *message, *error_string = "";
-    arglen_t message_length = 0, error_string_length = 0;
+    size_t message_length = 0, error_string_length = 0;
     zend_bool isFatal = 0, isRetriable = 0, transactionRequiresAbort = 0;
     zend_long code = 0;
 
@@ -94,12 +94,8 @@ PHP_METHOD(RdKafka__KafkaErrorException, getErrorString)
         return;
     }
 
-#if PHP_MAJOR_VERSION >= 7
     ZVAL_DEREF(res);
     ZVAL_COPY(return_value, res);
-#else
-    RETURN_ZVAL(res, 1, 0)
-#endif
 }
 /* }}} */
 
@@ -120,16 +116,12 @@ PHP_METHOD(RdKafka__KafkaErrorException, isFatal)
 
     res = rdkafka_read_property(ce_kafka_error, getThis(), ZEND_STRL("isFatal"), 0);
 
-#if PHP_MAJOR_VERSION >= 7
     if (!res || (Z_TYPE_P(res) != IS_TRUE && Z_TYPE_P(res) != IS_FALSE)) {
         return;
     }
 
     ZVAL_DEREF(res);
     ZVAL_COPY(return_value, res);
-#else
-    RETURN_ZVAL(res, 1, 0)
-#endif
 }
 /* }}} */
 
@@ -149,16 +141,12 @@ PHP_METHOD(RdKafka__KafkaErrorException, isRetriable)
 
     res = rdkafka_read_property(ce_kafka_error, getThis(), ZEND_STRL("isRetriable"), 0);
 
-#if PHP_MAJOR_VERSION >= 7
     if (!res || (Z_TYPE_P(res) != IS_TRUE && Z_TYPE_P(res) != IS_FALSE)) {
         return;
     }
 
     ZVAL_DEREF(res);
     ZVAL_COPY(return_value, res);
-#else
-    RETURN_ZVAL(res, 1, 0)
-#endif
 }
 /* }}} */
 
@@ -178,16 +166,12 @@ PHP_METHOD(RdKafka__KafkaErrorException, transactionRequiresAbort)
 
     res = rdkafka_read_property(ce_kafka_error, getThis(), ZEND_STRL("transactionRequiresAbort"), 0);
 
-#if PHP_MAJOR_VERSION >= 7
     if (!res || (Z_TYPE_P(res) != IS_TRUE && Z_TYPE_P(res) != IS_FALSE)) {
         return;
     }
 
     ZVAL_DEREF(res);
     ZVAL_COPY(return_value, res);
-#else
-    RETURN_ZVAL(res, 1, 0)
-#endif
 }
 /* }}} */
 
@@ -205,7 +189,7 @@ void kafka_error_minit() /* {{{ */
     zend_class_entry ce;
 
     INIT_NS_CLASS_ENTRY(ce, "RdKafka", "KafkaErrorException", kafka_error_fe);
-    ce_kafka_error = rdkafka_register_internal_class_ex(&ce, ce_kafka_exception);
+    ce_kafka_error = zend_register_internal_class_ex(&ce, ce_kafka_exception);
 
     zend_declare_property_null(ce_kafka_error, ZEND_STRL("error_string"), ZEND_ACC_PRIVATE);
     zend_declare_property_bool(ce_kafka_error, ZEND_STRL("isFatal"), 0, ZEND_ACC_PRIVATE);
