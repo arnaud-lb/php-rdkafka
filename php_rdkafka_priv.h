@@ -51,7 +51,7 @@ static inline zend_object * is_zend_object(zend_object * object) {
 
 #define free_custom_object(object) /* no-op */
 
-static inline zend_class_entry *rdkafka_register_internal_class_ex(zend_class_entry *class_entry, zend_class_entry *parent_ce TSRMLS_DC)
+static inline zend_class_entry *rdkafka_register_internal_class_ex(zend_class_entry *class_entry, zend_class_entry *parent_ce)
 {
     return zend_register_internal_class_ex(class_entry, parent_ce);
 }
@@ -65,7 +65,7 @@ static inline void set_object_handler_offset(zend_object_handlers * handlers, si
     handlers->offset = offset;
 }
 
-static inline void rdkafka_call_function(zend_fcall_info *fci, zend_fcall_info_cache *fci_cache, zval *retval, uint32_t param_count, zval params[] TSRMLS_DC)
+static inline void rdkafka_call_function(zend_fcall_info *fci, zend_fcall_info_cache *fci_cache, zval *retval, uint32_t param_count, zval params[])
 {
     int local_retval;
     zval local_retval_zv;
@@ -81,17 +81,17 @@ static inline void rdkafka_call_function(zend_fcall_info *fci, zend_fcall_info_c
     fci->params = params;
     fci->param_count = param_count;
 
-    zend_call_function(fci, fci_cache TSRMLS_CC);
+    zend_call_function(fci, fci_cache);
 
     if (local_retval) {
         zval_ptr_dtor(retval);
     }
 }
 
-static inline zval *rdkafka_read_property(zend_class_entry *scope, zval *object, const char *name, size_t name_length, zend_bool silent TSRMLS_DC)
+static inline zval *rdkafka_read_property(zend_class_entry *scope, zval *object, const char *name, size_t name_length, zend_bool silent)
 {
     zval rv;
-    return zend_read_property(scope, object, name, name_length, silent, &rv TSRMLS_CC);
+    return zend_read_property(scope, object, name, name_length, silent, &rv);
 }
 
 static inline zval *rdkafka_hash_get_current_data_ex(HashTable *ht, HashPosition *pos)
@@ -125,8 +125,8 @@ typedef long zend_long;
 typedef int arglen_t;
 
 #define STORE_OBJECT(retval, intern, dtor, free, clone) do { \
-    void (*___free_object_storage)(zend_object *object TSRMLS_DC) = free; \
-    retval.handle = zend_objects_store_put(&intern->std, dtor, (zend_objects_free_object_storage_t)___free_object_storage, clone TSRMLS_CC); \
+    void (*___free_object_storage)(zend_object *object) = free; \
+    retval.handle = zend_objects_store_put(&intern->std, dtor, (zend_objects_free_object_storage_t)___free_object_storage, clone); \
 } while (0)
 
 #define SET_OBJECT_HANDLERS(retval, _handlers) do { \
@@ -136,7 +136,7 @@ typedef int arglen_t;
 #define alloc_object(intern, ce) ecalloc(1, sizeof(*intern))
 
 #define get_custom_object_zval(type, zobject) \
-    ((type*)zend_object_store_get_object(zobject TSRMLS_CC))
+    ((type*)zend_object_store_get_object(zobject))
 
 #define get_custom_object(type, object) \
     ((type*)object)
@@ -167,9 +167,9 @@ static inline void *zend_hash_index_add_ptr(HashTable *ht, zend_ulong h, void *p
     return pDest;
 }
 
-static inline zend_class_entry *rdkafka_register_internal_class_ex(zend_class_entry *class_entry, zend_class_entry *parent_ce TSRMLS_DC)
+static inline zend_class_entry *rdkafka_register_internal_class_ex(zend_class_entry *class_entry, zend_class_entry *parent_ce)
 {
-    return zend_register_internal_class_ex(class_entry, parent_ce, NULL TSRMLS_CC);
+    return zend_register_internal_class_ex(class_entry, parent_ce, NULL);
 }
 
 typedef void (*zend_object_free_obj_t)(zend_object *object);
@@ -183,7 +183,7 @@ static inline void set_object_handler_offset(zend_object_handlers * handlers, si
     /* no-op */
 }
 
-static inline void rdkafka_call_function(zend_fcall_info *fci, zend_fcall_info_cache *fci_cache, zval **retval, uint32_t param_count, zval *params[] TSRMLS_DC)
+static inline void rdkafka_call_function(zend_fcall_info *fci, zend_fcall_info_cache *fci_cache, zval **retval, uint32_t param_count, zval *params[])
 {
     uint32_t i;
     int local_retval;
@@ -206,7 +206,7 @@ static inline void rdkafka_call_function(zend_fcall_info *fci, zend_fcall_info_c
     fci->params = params_array;
     fci->param_count = param_count;
 
-    zend_call_function(fci, fci_cache TSRMLS_CC);
+    zend_call_function(fci, fci_cache);
 
     if (local_retval && *retval) {
         zval_ptr_dtor(retval);
@@ -215,9 +215,9 @@ static inline void rdkafka_call_function(zend_fcall_info *fci, zend_fcall_info_c
     efree(params_array);
 }
 
-static inline zval *rdkafka_read_property(zend_class_entry *scope, zval *object, const char *name, size_t name_length, zend_bool silent TSRMLS_DC)
+static inline zval *rdkafka_read_property(zend_class_entry *scope, zval *object, const char *name, size_t name_length, zend_bool silent)
 {
-    return zend_read_property(scope, object, name, name_length, silent TSRMLS_CC);
+    return zend_read_property(scope, object, name, name_length, silent);
 }
 
 static inline zval **rdkafka_hash_get_current_data_ex(HashTable *ht, HashPosition *pos)
@@ -252,7 +252,7 @@ static inline char **rdkafka_hash_get_current_key_ex(HashTable *ht, HashPosition
 #define RDKAFKA_ZVAL_STRING(zv, str) ZVAL_STRING(zv, str, 1)
 #endif
 
-kafka_object * get_kafka_object(zval *zrk TSRMLS_DC);
+kafka_object * get_kafka_object(zval *zrk);
 void add_consuming_toppar(kafka_object * intern, rd_kafka_topic_t * rkt, int32_t partition);
 void del_consuming_toppar(kafka_object * intern, rd_kafka_topic_t * rkt, int32_t partition);
 int is_consuming_toppar(kafka_object * intern, rd_kafka_topic_t * rkt, int32_t partition);

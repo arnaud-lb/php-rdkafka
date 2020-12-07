@@ -16,5 +16,5 @@
   +----------------------------------------------------------------------+
 */
 
-void kafka_metadata_broker_minit(TSRMLS_D);
-void kafka_metadata_broker_ctor(zval *return_value, zval *zmetadata, const void *metadata_broker TSRMLS_DC);
+void kafka_metadata_broker_minit();
+void kafka_metadata_broker_ctor(zval *return_value, zval *zmetadata, const void *metadata_broker);

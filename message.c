@@ -32,7 +32,7 @@
 
 zend_class_entry * ce_kafka_message;
 
-void kafka_message_new(zval *return_value, const rd_kafka_message_t *message TSRMLS_DC)
+void kafka_message_new(zval *return_value, const rd_kafka_message_t *message)
 {
     object_init_ex(return_value, ce_kafka_message);
 
@@ -51,21 +51,21 @@ void kafka_message_new(zval *return_value, const rd_kafka_message_t *message TSR
     uint i;
 #endif /* HAVE_RD_KAFKA_MESSAGE_HEADERS */
 
-    zend_update_property_long(NULL, return_value, ZEND_STRL("err"), message->err TSRMLS_CC);
+    zend_update_property_long(NULL, return_value, ZEND_STRL("err"), message->err);
 
     if (message->rkt) {
-        zend_update_property_string(NULL, return_value, ZEND_STRL("topic_name"), rd_kafka_topic_name(message->rkt) TSRMLS_CC);
+        zend_update_property_string(NULL, return_value, ZEND_STRL("topic_name"), rd_kafka_topic_name(message->rkt));
     }
-    zend_update_property_long(NULL, return_value, ZEND_STRL("partition"), message->partition TSRMLS_CC);
+    zend_update_property_long(NULL, return_value, ZEND_STRL("partition"), message->partition);
     if (message->payload) {
-        zend_update_property_long(NULL, return_value, ZEND_STRL("timestamp"), timestamp TSRMLS_CC);
-        zend_update_property_stringl(NULL, return_value, ZEND_STRL("payload"), message->payload, message->len TSRMLS_CC);
-        zend_update_property_long(NULL, return_value, ZEND_STRL("len"), message->len TSRMLS_CC);
+        zend_update_property_long(NULL, return_value, ZEND_STRL("timestamp"), timestamp);
+        zend_update_property_stringl(NULL, return_value, ZEND_STRL("payload"), message->payload, message->len);
+        zend_update_property_long(NULL, return_value, ZEND_STRL("len"), message->len);
     }
     if (message->key) {
-        zend_update_property_stringl(NULL, return_value, ZEND_STRL("key"), message->key, message->key_len TSRMLS_CC);
+        zend_update_property_stringl(NULL, return_value, ZEND_STRL("key"), message->key, message->key_len);
     }
-    zend_update_property_long(NULL, return_value, ZEND_STRL("offset"), message->offset TSRMLS_CC);
+    zend_update_property_long(NULL, return_value, ZEND_STRL("offset"), message->offset);
 
 #ifdef HAVE_RD_KAFKA_MESSAGE_HEADERS
     if (message->err == RD_KAFKA_RESP_ERR_NO_ERROR) {
@@ -79,14 +79,14 @@ void kafka_message_new(zval *return_value, const rd_kafka_message_t *message TSR
                 }
                 rdkafka_add_assoc_stringl(&headers_array, header_name, (const char*)header_value, header_size);
             }
-            zend_update_property(NULL, return_value, ZEND_STRL("headers"), &headers_array TSRMLS_CC);
+            zend_update_property(NULL, return_value, ZEND_STRL("headers"), &headers_array);
             zval_ptr_dtor(&headers_array);
         }
     }
 #endif
 }
 
-void kafka_message_list_to_array(zval *return_value, rd_kafka_message_t **messages, long size TSRMLS_DC) /* {{{ */
+void kafka_message_list_to_array(zval *return_value, rd_kafka_message_t **messages, long size) /* {{{ */
 {
     rd_kafka_message_t *msg;
     zeval zmsg;
@@ -97,7 +97,7 @@ void kafka_message_list_to_array(zval *return_value, rd_kafka_message_t **messag
     for (i = 0; i < size; i++) {
         msg = messages[i];
         MAKE_STD_ZEVAL(zmsg);
-        kafka_message_new(P_ZEVAL(zmsg), msg TSRMLS_CC);
+        kafka_message_new(P_ZEVAL(zmsg), msg);
         add_next_index_zval(return_value, P_ZEVAL(zmsg));
     }
 } /* }}} */
@@ -115,11 +115,11 @@ PHP_METHOD(RdKafka__Message, errstr)
     zval *zpayload;
     const char *errstr;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "") == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS(), "") == FAILURE) {
         return;
     }
 
-    zerr = rdkafka_read_property(NULL, getThis(), ZEND_STRL("err"), 0 TSRMLS_CC);
+    zerr = rdkafka_read_property(NULL, getThis(), ZEND_STRL("err"), 0);
 
     if (!zerr || Z_TYPE_P(zerr) != IS_LONG) {
         return;
@@ -131,7 +131,7 @@ PHP_METHOD(RdKafka__Message, errstr)
         RDKAFKA_RETURN_STRING(errstr);
     }
 
-    zpayload = rdkafka_read_property(NULL, getThis(), ZEND_STRL("payload"), 0 TSRMLS_CC);
+    zpayload = rdkafka_read_property(NULL, getThis(), ZEND_STRL("payload"), 0);
 
     if (zpayload && Z_TYPE_P(zpayload) == IS_STRING) {
         RETURN_ZVAL(zpayload, 1, 0);
@@ -144,21 +144,21 @@ static const zend_function_entry kafka_message_fe[] = {
     PHP_FE_END
 };
 
-void kafka_message_minit(TSRMLS_D) { /* {{{ */
+void kafka_message_minit() { /* {{{ */
     zend_class_entry ce;
 
     INIT_NS_CLASS_ENTRY(ce, "RdKafka", "Message", kafka_message_fe);
-    ce_kafka_message = zend_register_internal_class(&ce TSRMLS_CC);
+    ce_kafka_message = zend_register_internal_class(&ce);
 
-    zend_declare_property_null(ce_kafka_message, ZEND_STRL("err"), ZEND_ACC_PUBLIC TSRMLS_CC);
-    zend_declare_property_null(ce_kafka_message, ZEND_STRL("topic_name"), ZEND_ACC_PUBLIC TSRMLS_CC);
-    zend_declare_property_null(ce_kafka_message, ZEND_STRL("timestamp"), ZEND_ACC_PUBLIC TSRMLS_CC);
-    zend_declare_property_null(ce_kafka_message, ZEND_STRL("partition"), ZEND_ACC_PUBLIC TSRMLS_CC);
-    zend_declare_property_null(ce_kafka_message, ZEND_STRL("payload"), ZEND_ACC_PUBLIC TSRMLS_CC);
-    zend_declare_property_null(ce_kafka_message, ZEND_STRL("len"), ZEND_ACC_PUBLIC TSRMLS_CC);
-    zend_declare_property_null(ce_kafka_message, ZEND_STRL("key"), ZEND_ACC_PUBLIC TSRMLS_CC);
-    zend_declare_property_null(ce_kafka_message, ZEND_STRL("offset"), ZEND_ACC_PUBLIC TSRMLS_CC);
+    zend_declare_property_null(ce_kafka_message, ZEND_STRL("err"), ZEND_ACC_PUBLIC);
+    zend_declare_property_null(ce_kafka_message, ZEND_STRL("topic_name"), ZEND_ACC_PUBLIC);
+    zend_declare_property_null(ce_kafka_message, ZEND_STRL("timestamp"), ZEND_ACC_PUBLIC);
+    zend_declare_property_null(ce_kafka_message, ZEND_STRL("partition"), ZEND_ACC_PUBLIC);
+    zend_declare_property_null(ce_kafka_message, ZEND_STRL("payload"), ZEND_ACC_PUBLIC);
+    zend_declare_property_null(ce_kafka_message, ZEND_STRL("len"), ZEND_ACC_PUBLIC);
+    zend_declare_property_null(ce_kafka_message, ZEND_STRL("key"), ZEND_ACC_PUBLIC);
+    zend_declare_property_null(ce_kafka_message, ZEND_STRL("offset"), ZEND_ACC_PUBLIC);
 #ifdef HAVE_RD_KAFKA_MESSAGE_HEADERS
-    zend_declare_property_null(ce_kafka_message, ZEND_STRL("headers"), ZEND_ACC_PUBLIC TSRMLS_CC);
+    zend_declare_property_null(ce_kafka_message, ZEND_STRL("headers"), ZEND_ACC_PUBLIC);
 #endif
 } /* }}} */
