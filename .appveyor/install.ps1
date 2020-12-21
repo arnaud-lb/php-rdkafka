@@ -67,4 +67,5 @@ $bname = "$env:DEP-$env:VC-$env:ARCH.zip"
 if (-not (Test-Path "C:\build-cache\$bname")) {
     Invoke-WebRequest "http://windows.php.net/downloads/pecl/deps/$bname" -OutFile "C:\build-cache\$bname"
     Expand-Archive "C:\build-cache\$bname" 'C:\build-cache\deps'
+    Copy-Item "C:\build-cache\deps\LICENSE" "C:\build-cache\deps\LICENSE.LIBRDKAFKA"
 }
