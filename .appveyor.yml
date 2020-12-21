@@ -1,0 +1,38 @@
+# general configuration
+version: '{branch}.{build}'
+
+# environment configuration
+image: Visual Studio 2017
+clone_folder: C:\projects\rdkafka
+environment:
+  BIN_SDK_VER: 2.2.0
+  DEP: librdkafka-1.2.1
+  matrix:
+    - PHP_VER: 7.3
+      TS: 0
+      VC: vc15
+      ARCH: x64
+      OPCACHE: 0
+    - PHP_VER: 7.3
+      TS: 1
+      VC: vc15
+      ARCH: x64
+      OPCACHE: 1
+    - PHP_VER: 7.4
+      TS: 0
+      VC: vc15
+      ARCH: x64
+      OPCACHE: 0
+    - PHP_VER: 7.4
+      TS: 1
+      VC: vc15
+      ARCH: x64
+      OPCACHE: 1
+cache:
+  - C:\build-cache -> .appveyor.yml, .appveyor\install.ps1
+install:
+  - ps: .appveyor\install.ps1
+
+# build configuration
+build_script:
+  - ps: .appveyor\build.ps1
