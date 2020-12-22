@@ -9,7 +9,6 @@ if (PHP_RDKAFKA != "no") {
 
         AC_DEFINE('HAVE_RD_KAFKA_MESSAGE_HEADERS', 1, '');
         AC_DEFINE('HAS_RD_KAFKA_PURGE', 1, '');
-        AC_DEFINE('HAS_RD_KAFKA_TRANSACTIONS', 1, '');
         AC_DEFINE('HAS_RD_KAFKA_PARTITIONER_MURMUR2', 1, '');
 		EXTENSION("rdkafka", "rdkafka.c metadata.c metadata_broker.c metadata_topic.c \
 				metadata_partition.c metadata_collection.c compat.c conf.c \
