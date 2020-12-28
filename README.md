@@ -17,9 +17,9 @@ The source of the documentation can be found [here](https://github.com/arnaud-lb
 2. [Examples](#examples)
 3. [Usage](#usage)
    * [Producing](#producing)
-   * [High-level consuming](#high-level-consuming)
-   * [Low-level consuming](#low-level-consuming)
-   * [Low-level consuming from multiple topics / partitions](#low-level-consuming-from-multiple-topics--partitions)
+   * [High-level consuming](#high-level-consuming--legacy)
+   * [Low-level consuming (legacy)](#low-level-consuming--legacy)
+   * [Low-level consuming from multiple topics / partitions (legacy)](#low-level-consuming-from-multiple-topics--partitions)
    * [Using stored offsets](#using-stored-offsets)
    * [Interesting configuration parameters](#interesting-configuration-parameters)
      * [queued.max.messages.kbytes](#queuedmaxmessageskbytes)
@@ -103,7 +103,9 @@ $rk->flush($timeout_ms);
 
 The RdKafka\KafkaConsumer class supports automatic partition assignment/revocation. See the example [here](https://arnaud-lb.github.io/php-rdkafka-doc/phpdoc/rdkafka.examples.html#example-1).
 
-### Low-level consuming
+### Low-level consuming (legacy)
+
+> :information_source: The low-level consumer is a legacy API, please prefer using the high-level consumer
 
 We first need to create a low level consumer, and to add brokers (Kafka
 servers) to it:
@@ -152,7 +154,9 @@ while (true) {
 }
 ```
 
-### Low-level consuming from multiple topics / partitions
+### Low-level consuming from multiple topics / partitions (legacy)
+
+> :information_source: The low-level consumer is a legacy API, please prefer using the high-level consumer
 
 Consuming from multiple topics and/or partitions can be done by telling
 librdkafka to forward all messages from these topics/partitions to an internal
