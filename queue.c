@@ -112,7 +112,7 @@ PHP_METHOD(RdKafka__Queue, consume)
         return;
     }
 
-    kafka_message_new(return_value, message);
+    kafka_message_new(return_value, message, NULL);
 
     rd_kafka_message_destroy(message);
 }

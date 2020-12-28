@@ -17,7 +17,7 @@
 */
 
 void kafka_message_minit(INIT_FUNC_ARGS);
-void kafka_message_new(zval *return_value, const rd_kafka_message_t *message);
+void kafka_message_new(zval *return_value, const rd_kafka_message_t *message, zend_string *msg_opaque);
 void kafka_message_list_to_array(zval *return_value, rd_kafka_message_t **messages, long size);
 
 extern zend_class_entry * ce_kafka_message;

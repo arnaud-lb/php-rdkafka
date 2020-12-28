@@ -392,7 +392,7 @@ PHP_METHOD(RdKafka__KafkaConsumer, consume)
         rkmessage = &rkmessage_tmp;
     }
 
-    kafka_message_new(return_value, rkmessage);
+    kafka_message_new(return_value, rkmessage, NULL);
 
     if (rkmessage != &rkmessage_tmp) {
         rd_kafka_message_destroy(rkmessage);

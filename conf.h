@@ -64,6 +64,8 @@ void kafka_conf_minit(INIT_FUNC_ARGS);
 void kafka_conf_callbacks_dtor(kafka_conf_callbacks *cbs);
 void kafka_conf_callbacks_copy(kafka_conf_callbacks *to, kafka_conf_callbacks *from);
 
+void kafka_conf_dr_msg_cb(rd_kafka_t *rk, const rd_kafka_message_t *msg, void *opaque);
+
 extern zend_class_entry * ce_kafka_conf;
 extern zend_class_entry * ce_kafka_topic_conf;
 

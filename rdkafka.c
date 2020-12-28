@@ -78,19 +78,26 @@ static void kafka_free(zend_object *object) /* {{{ */
 {
     kafka_object *intern = php_kafka_from_obj(kafka_object, object);
 
+    kafka_conf_callbacks_dtor(&intern->cbs);
+
     if (intern->rk) {
         if (intern->type == RD_KAFKA_CONSUMER) {
             stop_consuming(intern);
             zend_hash_destroy(&intern->consuming);
             zend_hash_destroy(&intern->queues);
+        } else if (intern->type == RD_KAFKA_PRODUCER) {
+#ifdef HAS_RD_KAFKA_PURGE
+            // Force internal delivery callbacks for queued messages, as we rely
+            // on these to free msg_opaques
+            rd_kafka_purge(intern->rk, RD_KAFKA_PURGE_F_QUEUE | RD_KAFKA_PURGE_F_INFLIGHT);
+            rd_kafka_flush(intern->rk, 0);
+#endif
         }
         zend_hash_destroy(&intern->topics);
 
         rd_kafka_destroy(intern->rk);
         intern->rk = NULL;
     }
-
-    kafka_conf_callbacks_dtor(&intern->cbs);
 
     zend_object_std_dtor(&intern->std);
 }
@@ -130,10 +137,16 @@ static void kafka_init(zval *this_ptr, rd_kafka_type_t type, zval *zconf) /* {{{
         if (conf_intern) {
             conf = rd_kafka_conf_dup(conf_intern->u.conf);
             kafka_conf_callbacks_copy(&intern->cbs, &conf_intern->cbs);
-            intern->cbs.zrk = *this_ptr;
-            rd_kafka_conf_set_opaque(conf, &intern->cbs);
         }
     }
+
+    if (conf == NULL) {
+        conf = rd_kafka_conf_new();
+    }
+
+    intern->cbs.zrk = *this_ptr;
+    rd_kafka_conf_set_opaque(conf, &intern->cbs);
+    rd_kafka_conf_set_dr_msg_cb(conf, kafka_conf_dr_msg_cb);
 
     rk = rd_kafka_new(type, conf, errstr, sizeof(errstr));
 
