@@ -19,6 +19,26 @@
 #ifndef PHP_RDKAFKA_PRIV_H
 #define PHP_RDKAFKA_PRIV_H
 
+#ifndef Z_PARAM_STRING_OR_NULL
+#define Z_PARAM_STRING_OR_NULL(dest, dest_len) \
+    Z_PARAM_STRING_EX(dest, dest_len, 1, 0)
+#endif
+
+#ifndef Z_PARAM_STR_OR_NULL
+#define Z_PARAM_STR_OR_NULL(dest) \
+    Z_PARAM_STR_EX(dest, 1, 0)
+#endif
+
+#ifndef Z_PARAM_ARRAY_HT_OR_NULL
+#define Z_PARAM_ARRAY_HT_OR_NULL(dest) \
+    Z_PARAM_ARRAY_HT_EX(dest, 1, 0)
+#endif
+
+#ifndef Z_PARAM_LONG_OR_NULL
+#define Z_PARAM_LONG_OR_NULL(dest, is_null) \
+    Z_PARAM_LONG_EX(dest, is_null, 1, 0)
+#endif
+
 #if PHP_MAJOR_VERSION >= 8
 
 #define Z_RDKAFKA_OBJ zend_object

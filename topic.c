@@ -90,7 +90,7 @@ static void consume_callback(rd_kafka_message_t *msg, void *opaque)
 
     ZVAL_NULL(&args[0]);
 
-    kafka_message_new(&args[0], msg);
+    kafka_message_new(&args[0], msg, NULL);
 
     rdkafka_call_function(&cb->fci, &cb->fcc, NULL, 1, args);
 
@@ -362,7 +362,7 @@ PHP_METHOD(RdKafka__ConsumerTopic, consume)
         return;
     }
 
-    kafka_message_new(return_value, message);
+    kafka_message_new(return_value, message, NULL);
 
     rd_kafka_message_destroy(message);
 }
@@ -484,7 +484,7 @@ static const zend_function_entry kafka_kafka_consumer_topic_fe[] = {
     PHP_FE_END
 };
 
-/* {{{ proto void RdKafka\ProducerTopic::produce(int $partition, int $msgflags[, string $payload, string $key])
+/* {{{ proto void RdKafka\ProducerTopic::produce(int $partition, int $msgflags[, string $payload[, string $key[, string $msg_opaque]]])
    Produce and send a single message to broker. */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_produce, 0, 0, 2)
@@ -492,6 +492,9 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_produce, 0, 0, 2)
     ZEND_ARG_INFO(0, msgflags)
     ZEND_ARG_INFO(0, payload)
     ZEND_ARG_INFO(0, key)
+#ifdef HAS_RD_KAFKA_PURGE
+    ZEND_ARG_INFO(0, msg_opaque)
+#endif
 ZEND_END_ARG_INFO()
 
 PHP_METHOD(RdKafka__ProducerTopic, produce)
@@ -502,13 +505,25 @@ PHP_METHOD(RdKafka__ProducerTopic, produce)
     size_t payload_len = 0;
     char *key = NULL;
     size_t key_len = 0;
+    zend_string *opaque = NULL;
     int ret;
     rd_kafka_resp_err_t err;
     kafka_topic_object *intern;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS(), "ll|s!s!", &partition, &msgflags, &payload, &payload_len, &key, &key_len) == FAILURE) {
-        return;
-    }
+#ifdef HAS_RD_KAFKA_PURGE
+    ZEND_PARSE_PARAMETERS_START(2, 5)
+#else
+    ZEND_PARSE_PARAMETERS_START(2, 4)
+#endif
+        Z_PARAM_LONG(partition)
+        Z_PARAM_LONG(msgflags)
+        Z_PARAM_OPTIONAL
+        Z_PARAM_STRING_OR_NULL(payload, payload_len)
+        Z_PARAM_STRING_OR_NULL(key, key_len)
+#ifdef HAS_RD_KAFKA_PURGE
+        Z_PARAM_STR_OR_NULL(opaque)
+#endif
+    ZEND_PARSE_PARAMETERS_END();
 
     if (partition != RD_KAFKA_PARTITION_UA && (partition < 0 || partition > 0x7FFFFFFF)) {
         zend_throw_exception_ex(spl_ce_InvalidArgumentException, 0, "Out of range value '%ld' for $partition", partition);
@@ -522,9 +537,16 @@ PHP_METHOD(RdKafka__ProducerTopic, produce)
 
     intern = get_kafka_topic_object(getThis());
 
-    ret = rd_kafka_produce(intern->rkt, partition, msgflags | RD_KAFKA_MSG_F_COPY, payload, payload_len, key, key_len, NULL);
+    if (opaque != NULL) {
+        zend_string_addref(opaque);
+    }
+
+    ret = rd_kafka_produce(intern->rkt, partition, msgflags | RD_KAFKA_MSG_F_COPY, payload, payload_len, key, key_len, opaque);
 
     if (ret == -1) {
+        if (opaque != NULL) {
+            zend_string_release(opaque);
+        }
         err = rd_kafka_last_error();
         zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err);
         return;
@@ -533,7 +555,7 @@ PHP_METHOD(RdKafka__ProducerTopic, produce)
 /* }}} */
 
 #ifdef HAVE_RD_KAFKA_MESSAGE_HEADERS
-/* {{{ proto void RdKafka\ProducerTopic::producev(int $partition, int $msgflags[, string $payload, string $key, array $headers, int $timestamp_ms])
+/* {{{ proto void RdKafka\ProducerTopic::producev(int $partition, int $msgflags[, string $payload[, string $key[, array $headers[, int $timestamp_ms[, string msg_opaque]]]]])
    Produce and send a single message to broker (with headers possibility and timestamp). */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_producev, 0, 0, 2)
@@ -543,6 +565,7 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_producev, 0, 0, 2)
     ZEND_ARG_INFO(0, key)
     ZEND_ARG_INFO(0, headers)
     ZEND_ARG_INFO(0, timestamp_ms)
+    ZEND_ARG_INFO(0, msg_opaque)
 ZEND_END_ARG_INFO()
 
 PHP_METHOD(RdKafka__ProducerTopic, producev)
@@ -563,10 +586,24 @@ PHP_METHOD(RdKafka__ProducerTopic, producev)
     rd_kafka_headers_t *headers;
     zend_long timestamp_ms = 0;
     zend_bool timestamp_ms_is_null = 0;
+    zend_string *opaque = NULL;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS(), "ll|s!s!h!l!", &partition, &msgflags, &payload, &payload_len, &key, &key_len, &headersParam, &timestamp_ms, &timestamp_ms_is_null) == FAILURE) {
-        return;
-    }
+#ifdef HAS_RD_KAFKA_PURGE
+    ZEND_PARSE_PARAMETERS_START(2, 7)
+#else
+    ZEND_PARSE_PARAMETERS_START(2, 6)
+#endif
+        Z_PARAM_LONG(partition)
+        Z_PARAM_LONG(msgflags)
+        Z_PARAM_OPTIONAL
+        Z_PARAM_STRING_OR_NULL(payload, payload_len)
+        Z_PARAM_STRING_OR_NULL(key, key_len)
+        Z_PARAM_ARRAY_HT_OR_NULL(headersParam)
+        Z_PARAM_LONG_OR_NULL(timestamp_ms, timestamp_ms_is_null)
+#ifdef HAS_RD_KAFKA_PURGE
+        Z_PARAM_STR_OR_NULL(opaque)
+#endif
+    ZEND_PARSE_PARAMETERS_END();
 
     if (partition != RD_KAFKA_PARTITION_UA && (partition < 0 || partition > 0x7FFFFFFF)) {
         zend_throw_exception_ex(spl_ce_InvalidArgumentException, 0, "Out of range value '%ld' for $partition", partition);
@@ -583,6 +620,10 @@ PHP_METHOD(RdKafka__ProducerTopic, producev)
     }
 
     intern = get_kafka_topic_object(getThis());
+
+    if (opaque != NULL) {
+        zend_string_addref(opaque);
+    }
 
     if (headersParam != NULL && zend_hash_num_elements(headersParam) > 0) {
         headers = rd_kafka_headers_new(zend_hash_num_elements(headersParam));
@@ -617,11 +658,15 @@ PHP_METHOD(RdKafka__ProducerTopic, producev)
             RD_KAFKA_V_KEY(key, key_len),
             RD_KAFKA_V_TIMESTAMP(timestamp_ms),
             RD_KAFKA_V_HEADERS(headers),
+            RD_KAFKA_V_OPAQUE(opaque),
             RD_KAFKA_V_END
     );
 
     if (err != RD_KAFKA_RESP_ERR_NO_ERROR) {
         rd_kafka_headers_destroy(headers);
+        if (opaque != NULL) {
+            zend_string_release(opaque);
+        }
         zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err);
         return;
     }

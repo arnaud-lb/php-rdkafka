@@ -32,7 +32,7 @@
 
 zend_class_entry * ce_kafka_message;
 
-void kafka_message_new(zval *return_value, const rd_kafka_message_t *message)
+void kafka_message_new(zval *return_value, const rd_kafka_message_t *message, zend_string *msg_opaque)
 {
     object_init_ex(return_value, ce_kafka_message);
 
@@ -84,6 +84,10 @@ void kafka_message_new(zval *return_value, const rd_kafka_message_t *message)
         }
     }
 #endif
+
+    if (msg_opaque != NULL) {
+        zend_update_property_str(NULL, Z_RDKAFKA_PROP_OBJ(return_value), ZEND_STRL("opaque"), msg_opaque);
+    }
 }
 
 void kafka_message_list_to_array(zval *return_value, rd_kafka_message_t **messages, long size) /* {{{ */
@@ -97,7 +101,7 @@ void kafka_message_list_to_array(zval *return_value, rd_kafka_message_t **messag
     for (i = 0; i < size; i++) {
         msg = messages[i];
         ZVAL_NULL(&zmsg);
-        kafka_message_new(&zmsg, msg);
+        kafka_message_new(&zmsg, msg, NULL);
         add_next_index_zval(return_value, &zmsg);
     }
 } /* }}} */
@@ -161,4 +165,5 @@ void kafka_message_minit(INIT_FUNC_ARGS) { /* {{{ */
 #ifdef HAVE_RD_KAFKA_MESSAGE_HEADERS
     zend_declare_property_null(ce_kafka_message, ZEND_STRL("headers"), ZEND_ACC_PUBLIC);
 #endif
+    zend_declare_property_null(ce_kafka_message, ZEND_STRL("opaque"), ZEND_ACC_PUBLIC);
 } /* }}} */
