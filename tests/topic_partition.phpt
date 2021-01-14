@@ -26,13 +26,15 @@ $topar
 
 var_dump($topar);
 --EXPECT--
-object(RdKafka\TopicPartition)#1 (3) {
+object(RdKafka\TopicPartition)#1 (4) {
   ["topic"]=>
   string(4) "test"
   ["partition"]=>
   int(-1)
   ["offset"]=>
   int(42)
+  ["err"]=>
+  int(0)
 }
 array(3) {
   ["topic"]=>
@@ -42,11 +44,13 @@ array(3) {
   ["offset"]=>
   int(42)
 }
-object(RdKafka\TopicPartition)#1 (3) {
+object(RdKafka\TopicPartition)#1 (4) {
   ["topic"]=>
   string(3) "foo"
   ["partition"]=>
   int(123)
   ["offset"]=>
   int(43)
+  ["err"]=>
+  int(0)
 }

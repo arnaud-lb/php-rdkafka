@@ -733,6 +733,86 @@ PHP_METHOD(RdKafka__Kafka, setLogger)
 }
 /* }}} */
 
+/* {{{ proto RdKafka\TopicPartition[] RdKafka\Kafka::pausePatitions(RdKafka\TopicPartition[] $topicPartitions)
+   Pause producing or consumption for the provided list of partitions. */
+ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_kafka_pause_partitions, 0, 0, 1)
+    ZEND_ARG_INFO(0, topic_partitions)
+ZEND_END_ARG_INFO()
+
+PHP_METHOD(RdKafka__Kafka, pausePartitions)
+{
+    HashTable *htopars;
+    rd_kafka_topic_partition_list_t *topars;
+    rd_kafka_resp_err_t err;
+    kafka_object *intern;
+
+    if (zend_parse_parameters(ZEND_NUM_ARGS(), "h", &htopars) == FAILURE) {
+        return;
+    }
+
+    intern = get_kafka_object(getThis());
+    if (!intern) {
+        return;
+    }
+
+    topars = array_arg_to_kafka_topic_partition_list(1, htopars);
+    if (!topars) {
+        return;
+    }
+
+    err = rd_kafka_pause_partitions(intern->rk, topars);
+
+    if (err != RD_KAFKA_RESP_ERR_NO_ERROR) {
+        rd_kafka_topic_partition_list_destroy(topars);
+        zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err);
+        return;
+    }
+
+    kafka_topic_partition_list_to_array(return_value, topars);
+    rd_kafka_topic_partition_list_destroy(topars);
+}
+/* }}} */
+
+/* {{{ proto RdKafka\TopicPartition[] RdKafka\Kafka::resumePatitions(RdKafka\TopicPartition[] $topicPartitions)
+   Resume producing consumption for the provided list of partitions. */
+ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_kafka_resume_partitions, 0, 0, 1)
+    ZEND_ARG_INFO(0, topic_partitions)
+ZEND_END_ARG_INFO()
+
+PHP_METHOD(RdKafka__Kafka, resumePartitions)
+{
+    HashTable *htopars;
+    rd_kafka_topic_partition_list_t *topars;
+    rd_kafka_resp_err_t err;
+    kafka_object *intern;
+
+    if (zend_parse_parameters(ZEND_NUM_ARGS(), "h", &htopars) == FAILURE) {
+        return;
+    }
+
+    intern = get_kafka_object(getThis());
+    if (!intern) {
+        return;
+    }
+
+    topars = array_arg_to_kafka_topic_partition_list(1, htopars);
+    if (!topars) {
+        return;
+    }
+
+    err = rd_kafka_pause_partitions(intern->rk, topars);
+
+    if (err != RD_KAFKA_RESP_ERR_NO_ERROR) {
+        rd_kafka_topic_partition_list_destroy(topars);
+        zend_throw_exception(ce_kafka_exception, rd_kafka_err2str(err), err);
+        return;
+    }
+
+    kafka_topic_partition_list_to_array(return_value, topars);
+    rd_kafka_topic_partition_list_destroy(topars);
+}
+/* }}} */
+
 static const zend_function_entry kafka_fe[] = {
     PHP_ME(RdKafka__Kafka, addBrokers, arginfo_kafka_add_brokers, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__Kafka, getMetadata, arginfo_kafka_get_metadata, ZEND_ACC_PUBLIC)
@@ -749,6 +829,8 @@ static const zend_function_entry kafka_fe[] = {
     PHP_ME(RdKafka__Kafka, setLogger, arginfo_kafka_set_logger, ZEND_ACC_PUBLIC | ZEND_ACC_DEPRECATED)
     PHP_ME(RdKafka__Kafka, queryWatermarkOffsets, arginfo_kafka_query_watermark_offsets, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__Kafka, offsetsForTimes, arginfo_kafka_offsets_for_times, ZEND_ACC_PUBLIC)
+    PHP_ME(RdKafka__Kafka, pausePartitions, arginfo_kafka_kafka_pause_partitions, ZEND_ACC_PUBLIC)
+    PHP_ME(RdKafka__Kafka, resumePartitions, arginfo_kafka_kafka_resume_partitions, ZEND_ACC_PUBLIC)
     PHP_FE_END
 };
 

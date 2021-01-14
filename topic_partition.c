@@ -106,12 +106,13 @@ static HashTable *get_debug_info(Z_RDKAFKA_OBJ *object, int *is_temp) /* {{{ */
 
     add_assoc_long(&ary, "partition", intern->partition);
     add_assoc_long(&ary, "offset", intern->offset);
+    add_assoc_long(&ary, "err", (zend_long) intern->err);
 
     return Z_ARRVAL(ary);
 }
 /* }}} */
 
-void kafka_topic_partition_init(zval *zobj, char * topic, int32_t partition, int64_t offset) /* {{{ */
+void kafka_topic_partition_init(zval *zobj, char * topic, int32_t partition, int64_t offset, rd_kafka_resp_err_t err) /* {{{ */
 {
     object_intern *intern;
 
@@ -127,6 +128,7 @@ void kafka_topic_partition_init(zval *zobj, char * topic, int32_t partition, int
 
     intern->partition = partition;
     intern->offset = offset;
+    intern->err = err;
 } /* }}} */
 
 void kafka_topic_partition_list_to_array(zval *return_value, rd_kafka_topic_partition_list_t *list) /* {{{ */
@@ -141,7 +143,7 @@ void kafka_topic_partition_list_to_array(zval *return_value, rd_kafka_topic_part
         topar = &list->elems[i];
         ZVAL_NULL(&ztopar);
         object_init_ex(&ztopar, ce_kafka_topic_partition);
-        kafka_topic_partition_init(&ztopar, topar->topic, topar->partition, topar->offset);
+        kafka_topic_partition_init(&ztopar, topar->topic, topar->partition, topar->offset, topar->err);
         add_next_index_zval(return_value, &ztopar);
     }
 } /* }}} */
@@ -211,7 +213,7 @@ PHP_METHOD(RdKafka__TopicPartition, __construct)
         return;
     }
 
-    kafka_topic_partition_init(getThis(), topic, partition, offset);
+    kafka_topic_partition_init(getThis(), topic, partition, offset, RD_KAFKA_RESP_ERR_NO_ERROR);
 
     zend_restore_error_handling(&error_handling);
 }
@@ -376,6 +378,29 @@ PHP_METHOD(RdKafka__TopicPartition, setOffset)
 }
 /* }}} */
 
+/* {{{ proto int RdKafka\TopicPartition::getErr()
+   Returns err */
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_topic_partition_get_err, 0, 0, 0)
+ZEND_END_ARG_INFO()
+
+PHP_METHOD(RdKafka__TopicPartition, getErr)
+{
+    object_intern *intern;
+
+    if (zend_parse_parameters_none() == FAILURE) {
+        return;
+    }
+
+    intern = get_object(getThis());
+    if (!intern) {
+        return;
+    }
+
+    RETURN_LONG((zend_long) intern->err);
+}
+/* }}} */
+
 static const zend_function_entry fe[] = { /* {{{ */
     PHP_ME(RdKafka__TopicPartition, __construct, arginfo_kafka_topic_partition___construct, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__TopicPartition, getTopic, arginfo_kafka_topic_partition_get_topic, ZEND_ACC_PUBLIC)
@@ -384,6 +409,7 @@ static const zend_function_entry fe[] = { /* {{{ */
     PHP_ME(RdKafka__TopicPartition, setPartition, arginfo_kafka_topic_partition_set_partition, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__TopicPartition, getOffset, arginfo_kafka_topic_partition_get_offset, ZEND_ACC_PUBLIC)
     PHP_ME(RdKafka__TopicPartition, setOffset, arginfo_kafka_topic_partition_set_offset, ZEND_ACC_PUBLIC)
+    PHP_ME(RdKafka__TopicPartition, getErr, arginfo_kafka_topic_partition_get_err, ZEND_ACC_PUBLIC)
     PHP_FE_END
 }; /* }}} */
 
