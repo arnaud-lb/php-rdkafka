@@ -31,6 +31,10 @@
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_get_err_descs, 0, 0, 0)
 ZEND_END_ARG_INFO()
 
+ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_err2name, 0, 0, 1)
+    ZEND_ARG_INFO(0, err)
+ZEND_END_ARG_INFO()
+
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_err2str, 0, 0, 1)
     ZEND_ARG_INFO(0, err)
 ZEND_END_ARG_INFO()
@@ -97,6 +101,26 @@ PHP_FUNCTION(rd_kafka_get_err_descs)
 }
 /* }}} */
 
+/* {{{ proto string rd_kafka_err2name(int $err)
+ * Returns the name of an error code
+ */
+PHP_FUNCTION(rd_kafka_err2name)
+{
+    zend_long err;
+    const char *name;
+
+    if (zend_parse_parameters(ZEND_NUM_ARGS(), "l", &err) == FAILURE) {
+        return;
+    }
+
+    name = rd_kafka_err2name(err);
+
+    if (name) {
+        RETURN_STRING(name);
+    }
+}
+
+/* }}} */
 /* {{{ proto string rd_kafka_err2str(int $err)
  * Returns a human readable representation of a kafka error.
  */
@@ -175,6 +199,7 @@ PHP_FUNCTION(rd_kafka_offset_tail)
  */
 const zend_function_entry rdkafka_functions[] = {
     PHP_FE(rd_kafka_get_err_descs,  arginfo_kafka_get_err_descs)
+    PHP_FE(rd_kafka_err2name,       arginfo_kafka_err2name)
     PHP_FE(rd_kafka_err2str,        arginfo_kafka_err2str)
     PHP_DEP_FE(rd_kafka_errno2err,      arginfo_kafka_errno2err)
     PHP_DEP_FE(rd_kafka_errno,          arginfo_kafka_errno)
