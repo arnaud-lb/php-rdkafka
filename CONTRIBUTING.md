@@ -14,6 +14,7 @@ Pull requests should be made against the 5.x branch, which supports both PHP 7 a
 - Create relatively small PRs. This is easier to review, and will be merged faster. Do not send huge PRs with multiple unrelated changes.
 - Make sure that you followed the design/style (see bellow).
 - Make sure that your changes do not introduce new compiler warnings or errors.
+- Do not make changes that would break existing code.
 
 ## Testing
 
