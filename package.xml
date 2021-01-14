@@ -80,6 +80,7 @@
     <file role="test" name="conf_setDefaultTopicConf.phpt"/>
     <file role="test" name="constants.phpt"/>
     <file role="test" name="init_transaction_not_configured.phpt"/>
+    <file role="test" name="integration-tests-check.php"/>
     <file role="test" name="kafka_error_exception.phpt"/>
     <file role="test" name="message_headers.phpt"/>
     <file role="test" name="produce_consume.phpt"/>
