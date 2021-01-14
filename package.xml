@@ -84,6 +84,7 @@
     <file role="test" name="integration-tests-check.php"/>
     <file role="test" name="kafka_error_exception.phpt"/>
     <file role="test" name="message_headers.phpt"/>
+    <file role="test" name="pause_resume.phpt"/>
     <file role="test" name="produce_consume.phpt"/>
     <file role="test" name="produce_consume_queue.phpt"/>
     <file role="test" name="produce_consume_transactional.phpt"/>

@@ -20,13 +20,14 @@ typedef struct _kafka_topic_partition_intern {
     char        *topic;
     int32_t     partition;
     int64_t     offset;
+    rd_kafka_resp_err_t err;
     zend_object std;
 } kafka_topic_partition_intern;
 
 void kafka_metadata_topic_partition_minit(INIT_FUNC_ARGS);
 
 kafka_topic_partition_intern * get_topic_partition_object(zval *z);
-void kafka_topic_partition_init(zval *z, char *topic, int32_t partition, int64_t offset);
+void kafka_topic_partition_init(zval *z, char *topic, int32_t partition, int64_t offset, rd_kafka_resp_err_t err);
 
 void kafka_topic_partition_list_to_array(zval *return_value, rd_kafka_topic_partition_list_t *list);
 rd_kafka_topic_partition_list_t * array_arg_to_kafka_topic_partition_list(int argnum, HashTable *ary);
