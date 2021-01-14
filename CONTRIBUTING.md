@@ -8,6 +8,13 @@ Here are a few informations you need to know before starting:
 
 Pull requests should be made against the 5.x branch, which supports both PHP 7 and PHP 8.
 
+## How to make good contributions
+
+- Before starting to work, maybe open an issue before starting to find whether your change would be accepted.
+- Make sure to create relatively small PRs. This is easier to review, and will be merged faster. Do not send huge PRs with multiple unrelated changes.
+- Make sure that you followed the design/style (see bellow)
+- Make sure that your changes do not introduce new compiler warnings or errors
+
 ## Testing
 
 Tests are in phpt file format in the tests directory.
@@ -21,7 +28,7 @@ To run integration tests, make sure you have Kafka instance running.
 Then, rename `test_env.php.sample` to `test_env.php` and adjust it
 with values proper for your kafka instance.
 
-### Design / naming things
+## Design / naming things
 
 php-rdkafka's goal is to expose the librdkafka APIs to PHP scripts, without
 abstracting it. Rationale:
