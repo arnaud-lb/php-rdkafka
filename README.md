@@ -4,12 +4,15 @@
 
 [![Supported librdkafka versions: >= 0.11](https://img.shields.io/badge/librdkafka-%3E%3D%200.11-blue.svg)](https://github.com/edenhill/librdkafka/releases) [![Supported Kafka versions: >= 0.8](https://img.shields.io/badge/kafka-%3E%3D%200.8-blue.svg)](https://github.com/edenhill/librdkafka/blob/master/INTRODUCTION.md#broker-version-compatibility) ![Supported PHP versions: 7.x .. 8.x](https://img.shields.io/badge/php-7.x%20..%208.x-blue.svg)
 
-PHP-rdkafka is a thin [librdkafka](https://github.com/edenhill/librdkafka) binding providing a working PHP 7 / PHP 8 [Kafka](https://kafka.apache.org/) client.
+PHP-rdkafka is the most **stable**, **production-ready**, **long term support**, and **fast** Kafka client for PHP based on [librdkafka](https://github.com/edenhill/librdkafka).
 
-It supports the high level and low level *consumers*, *producer*, and *metadata* APIs.
+It supports PHP 7, PHP 8 (and even PHP 5 in older versions) as well as all librdkafka versions since 0.11, and all Kafka versions since 0.8.
 
-The API ressembles as much as possible to librdkafka's, and is fully documented [here](https://arnaud-lb.github.io/php-rdkafka/phpdoc/book.rdkafka.html).  
-The source of the documentation can be found [here](https://github.com/arnaud-lb/php-rdkafka-doc)
+The goal of the extension is to be a raw, un-opinionated, librdkafka binding focused on production and long term support.
+
+The high level and low level *consumers*, *producer*, and *metadata* APIs are supported.
+
+Documentation is available [here](https://arnaud-lb.github.io/php-rdkafka/phpdoc/book.rdkafka.html).
 
 ## Table of Contents
 
