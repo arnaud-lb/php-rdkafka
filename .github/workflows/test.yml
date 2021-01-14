@@ -39,6 +39,12 @@ jobs:
                 librdkafka: 'v0.11.6'
               - php: '7.3.0'
                 librdkafka: 'v0.11.6'
+              - php: '7.2.0'
+                librdkafka: 'v0.11.6'
+              - php: '7.1.0'
+                librdkafka: 'v0.11.6'
+              - php: '7.0.0'
+                librdkafka: 'v0.11.6'
               - php: '8.0.0'
                 librdkafka: 'master'
                 experimental: true
