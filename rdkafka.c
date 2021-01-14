@@ -146,7 +146,9 @@ static void kafka_init(zval *this_ptr, rd_kafka_type_t type, zval *zconf) /* {{{
 
     intern->cbs.zrk = *this_ptr;
     rd_kafka_conf_set_opaque(conf, &intern->cbs);
-    rd_kafka_conf_set_dr_msg_cb(conf, kafka_conf_dr_msg_cb);
+    if (type == RD_KAFKA_PRODUCER) {
+        rd_kafka_conf_set_dr_msg_cb(conf, kafka_conf_dr_msg_cb);
+    }
 
     rk = rd_kafka_new(type, conf, errstr, sizeof(errstr));
 
