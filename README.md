@@ -6,7 +6,7 @@
 
 PHP-rdkafka is the most **stable**, **production-ready**, **long term support**, and **fast** Kafka client for PHP based on [librdkafka](https://github.com/edenhill/librdkafka).
 
-It supports PHP 7, PHP 8 (and even PHP 5 in older versions) as well as all librdkafka versions since 0.11, and all Kafka versions since 0.8. This it easy to deploy the extension in production systems.
+It supports PHP 7, PHP 8 (and even PHP 5 in older versions) as well as all librdkafka versions since 0.11, and all Kafka versions since 0.8. This makes it **easy to deploy** the extension in production systems.
 
 The goal of the extension is to be a raw, un-opinionated, librdkafka binding focused on production and long term support.
 
