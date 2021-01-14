@@ -3,17 +3,17 @@
  <name>rdkafka</name>
  <channel>pecl.php.net</channel>
  <summary>Kafka client based on librdkafka</summary>
- <description>This extension is a librdkafka binding providing a working client for Kafka</description>
+ <description>PHP-rdkafka is a stable Kafka client for PHP based on librdkafka</description>
  <lead>
   <name>Arnaud Le Blanc</name>
   <user>lbarnaud</user>
   <email>arnaud.lb@gmail.com</email>
   <active>yes</active>
  </lead>
- <date>2020-12-06</date>
+ <date>2021-01-14</date>
  <time>12:00:00</time>
  <version>
-  <release>4.1.0</release>
+  <release>5.0.0</release>
   <api>4.0.0</api>
  </version>
  <stability>
@@ -22,16 +22,12 @@
  </stability>
  <license uri="http://opensource.org/licenses/mit-license.php">MIT License</license>
  <notes>
-  BREAKING CHANGE: Since version 4.0, the client no longer polls for network
-  events at shutdown (during object destructor). This behaviour didn't give
-  enough control to the user in case of server issue, and could cause the script
-  to hang while terminating.
+  ## Enhancements
+  - PHP 8 support (@nick-zh, @arnaud-lb)
+  - Suport passing an opaque value in produce(), producev() (@arnaud-lb)
 
-  Starting from 4.0, programs MUST call flush() before shutting down, otherwise
-  some messages and callbacks may be lost.
-
-  ## Features
-  - Add transactional producer support (#359, @nick-zh)
+  ## Breaking changes
+  - Dropped PHP 5 support
  </notes>
  <contents>
   <dir name="/">
@@ -80,15 +76,24 @@
     <file role="test" name="conf_callbacks_integration.phpt"/>
     <file role="test" name="conf_callbacks.phpt"/>
     <file role="test" name="conf.phpt"/>
+    <file role="test" name="conf_setDefaultTopicConf8.phpt"/>
     <file role="test" name="conf_setDefaultTopicConf.phpt"/>
     <file role="test" name="constants.phpt"/>
-    <file role="test" name="integration-tests-check.php"/>
+    <file role="test" name="init_transaction_not_configured.phpt"/>
+    <file role="test" name="kafka_error_exception.phpt"/>
     <file role="test" name="message_headers.phpt"/>
     <file role="test" name="produce_consume.phpt"/>
     <file role="test" name="produce_consume_queue.phpt"/>
+    <file role="test" name="produce_consume_transactional.phpt"/>
+    <file role="test" name="produce_opaque_noconf.phpt"/>
+    <file role="test" name="produce_opaque_noflush_dr_callback.phpt"/>
+    <file role="test" name="produce_opaque_noflush.phpt"/>
+    <file role="test" name="produce_opaque.phpt"/>
+    <file role="test" name="produce_opaque_purge_dr_callback.phpt"/>
+    <file role="test" name="produce_opaque_purge.phpt"/>
+    <file role="test" name="producev_opaque.phpt"/>
     <file role="test" name="rd_kafka_get_err_descs.phpt"/>
     <file role="test" name="test0.phpt"/>
-    <file role="test" name="test_env.php.sample"/>
     <file role="test" name="topic_conf.phpt"/>
     <file role="test" name="topic_partition.phpt"/>
    </dir>
@@ -97,8 +102,8 @@
  <dependencies>
   <required>
    <php>
-    <min>5.6.0</min>
-    <max>7.99.99</max>
+    <min>7.0.0</min>
+    <max>8.99.99</max>
    </php>
    <pearinstaller>
     <min>1.4.8</min>
@@ -108,6 +113,31 @@
  <providesextension>rdkafka</providesextension>
  <extsrcrelease/>
  <changelog>
+  <release>
+   <date>2020-12-06</date>
+   <time>12:00:00</time>
+   <version>
+    <release>4.1.0</release>
+    <api>4.0.0</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <license uri="http://opensource.org/licenses/mit-license.php">MIT License</license>
+   <notes>
+    BREAKING CHANGE: Since version 4.0, the client no longer polls for network
+    events at shutdown (during object destructor). This behaviour didn't give
+    enough control to the user in case of server issue, and could cause the script
+    to hang while terminating.
+
+    Starting from 4.0, programs MUST call flush() before shutting down, otherwise
+    some messages and callbacks may be lost.
+
+    ## Features
+    - Add transactional producer support (#359, @nick-zh)
+   </notes>
+  </release>
   <release>
    <version>
     <release>4.0.4</release>
