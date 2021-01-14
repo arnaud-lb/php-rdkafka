@@ -55,7 +55,19 @@
 
 #define rdkafka_get_debug_object(type, object) get_object(object)
 
+#if PHP_MINOR_VERSION < 3
+/* Allocates object type and zeros it, but not the properties.
+ * Properties MUST be initialized using object_properties_init(). */
+static zend_always_inline void *zend_object_alloc(size_t obj_size, zend_class_entry *ce) {
+    void *obj = emalloc(obj_size + zend_object_properties_size(ce));
+    /* Subtraction of sizeof(zval) is necessary, because zend_object_properties_size() may be
+     * -sizeof(zval), if the object has no properties. */
+    memset(obj, 0, obj_size - sizeof(zval));
+    return obj;
+}
 #endif
+
+#endif // PHP 7
 
 #define Z_RDKAFKA_P(php_kafka_type, zobject) php_kafka_from_obj(php_kafka_type, Z_OBJ_P(zobject))
 
