@@ -20,8 +20,8 @@
 #include "config.h"
 #endif
 
-#ifdef HAS_RD_KAFKA_TRANSACTIONS
 #include "php.h"
+#ifdef HAS_RD_KAFKA_TRANSACTIONS
 #include "php_rdkafka.h"
 #include "php_rdkafka_priv.h"
 #include "Zend/zend_interfaces.h"
