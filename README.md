@@ -115,7 +115,7 @@ servers) to it:
 
 ``` php
 <?php
-$conf = new Conf();
+$conf = new RdKafka\Conf();
 $conf->set('log_level', (string) LOG_DEBUG);
 $conf->set('debug', 'all');
 $rk = new RdKafka\Consumer($conf);
