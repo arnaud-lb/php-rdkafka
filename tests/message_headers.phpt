@@ -42,6 +42,8 @@ $headers = [
         'key1' => 'value1',
         'key2' => 'value2',
         'key3' => 'value3',
+        'int_key' => 123,
+        'null_key' => null,
     ],
     ['gzencoded' => gzencode('gzdata')],
     [],
@@ -80,7 +82,8 @@ while (true) {
         if ('gzencoded' === $key) {
             $value = gzdecode($value);
         }
-        $value = "{$key}: {$value}";
+        $type = gettype($value);
+        $value = "{$key}: {$value} ({$type})";
     });
     if (empty($headersString)) {
         $headersString = "none";
@@ -91,9 +94,9 @@ while (true) {
 }
 --EXPECT--
 6 messages delivered
-Got message: message 0 | Headers: key: value
-Got message: message 1 | Headers: key1: value1, key2: value2, key3: value3
-Got message: message 2 | Headers: gzencoded: gzdata
+Got message: message 0 | Headers: key: value (string)
+Got message: message 1 | Headers: key1: value1 (string), key2: value2 (string), key3: value3 (string), int_key: 123 (integer), null_key: (NULL)
+Got message: message 2 | Headers: gzencoded: gzdata (string)
 Got message: message 3 | Headers: none
 Got message: message 4 | Headers: none
 Got message: message 5 | Headers: none
