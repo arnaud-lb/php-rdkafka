@@ -275,7 +275,7 @@ void kafka_metadata_collection_minit(INIT_FUNC_ARGS)
     INIT_NS_CLASS_ENTRY(tmpce, "RdKafka\\Metadata", "Collection", fe);
     ce = zend_register_internal_class(&tmpce);
     ce->create_object = create_object;
-    zend_class_implements(ce, 2, spl_ce_Countable, spl_ce_Iterator);
+    zend_class_implements(ce, 2, zend_ce_countable, zend_ce_iterator);
 
     handlers = kafka_default_object_handlers;
     handlers.get_debug_info = get_debug_info;
