@@ -85,7 +85,7 @@ static object_intern * get_object(zval *zconsumer) /* {{{ */
     object_intern *oconsumer = Z_RDKAFKA_P(object_intern, zconsumer);
 
     if (!oconsumer->rk) {
-        zend_throw_exception_ex(NULL, 0, "RdKafka\\KafkaConsumer::__construct() has not been called");
+        zend_throw_exception_ex(NULL, 0, "RdKafka\\KafkaConsumer::__construct() has not been called, or RdKafka\\KafkaConsumer::close() was already called");
         return NULL;
     }
 
