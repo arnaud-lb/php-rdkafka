@@ -8,8 +8,12 @@ fi
 
 if ! [ -f ~/build-cache/php/usr/local/bin/php ]; then
     echo "PHP build is not cached"
-
-    wget https://secure.php.net/distributions/php-${PHP_VERSION}.tar.bz2
+    
+    case $PHP_VERSION in
+      "8.1"*) wget https://downloads.php.net/~ramsey/php-${PHP_VERSION}.tar.bz2 ;;
+      *)      wget https://secure.php.net/distributions/php-${PHP_VERSION}.tar.bz2 ;;
+    esac
+    
     tar xjf php-${PHP_VERSION}.tar.bz2
     cd php-${PHP_VERSION}
 
