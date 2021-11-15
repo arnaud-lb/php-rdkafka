@@ -113,7 +113,11 @@ static HashTable *get_debug_info(Z_RDKAFKA_OBJ *object, int *is_temp) /* {{{ */
 /* {{{ proto int RdKafka\Metadata\Collection::count()
    */
 
+#if PHP_VERSION_ID < 80100
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_metadata_count, 0, 0, 0)
+#else
+ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_kafka_metadata_count, 0, 0, IS_LONG, 0)
+#endif
 ZEND_END_ARG_INFO()
 
 PHP_METHOD(RdKafka__Metadata__Collection, count)
@@ -136,7 +140,11 @@ PHP_METHOD(RdKafka__Metadata__Collection, count)
 /* {{{ proto void RdKafka\Metadata\Collection::rewind()
    */
 
+#if PHP_VERSION_ID < 80100
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_metadata_rewind, 0, 0, 0)
+#else
+ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_kafka_metadata_rewind, 0, 0, IS_VOID, 0)
+#endif
 ZEND_END_ARG_INFO()
 
 PHP_METHOD(RdKafka__Metadata__Collection, rewind)
@@ -159,7 +167,11 @@ PHP_METHOD(RdKafka__Metadata__Collection, rewind)
 /* {{{ proto mixed RdKafka\Metadata\Collection::current()
    */
 
+#if PHP_VERSION_ID < 80100
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_metadata_current, 0, 0, 0)
+#else
+ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_kafka_metadata_current, 0, 0, IS_MIXED, 0)
+#endif
 ZEND_END_ARG_INFO()
 
 PHP_METHOD(RdKafka__Metadata__Collection, current)
@@ -187,7 +199,11 @@ PHP_METHOD(RdKafka__Metadata__Collection, current)
 /* {{{ proto mixed RdKafka\Metadata\Collection::key()
    */
 
+#if PHP_VERSION_ID < 80100
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_metadata_key, 0, 0, 0)
+#else
+ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_kafka_metadata_key, 0, 0, IS_MIXED, 0)
+#endif
 ZEND_END_ARG_INFO()
 
 PHP_METHOD(RdKafka__Metadata__Collection, key)
@@ -215,7 +231,11 @@ PHP_METHOD(RdKafka__Metadata__Collection, key)
 /* {{{ proto void RdKafka\Metadata\Collection::next()
    */
 
+#if PHP_VERSION_ID < 80100
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_metadata_next, 0, 0, 0)
+#else
+ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_kafka_metadata_next, 0, 0, IS_VOID, 0)
+#endif
 ZEND_END_ARG_INFO()
 
 PHP_METHOD(RdKafka__Metadata__Collection, next)
@@ -238,7 +258,11 @@ PHP_METHOD(RdKafka__Metadata__Collection, next)
 /* {{{ proto bool RdKafka\Metadata\Collection::valid()
    */
 
+#if PHP_VERSION_ID < 80100
 ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_metadata_valid, 0, 0, 0)
+#else
+ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_kafka_metadata_valid, 0, 0, _IS_BOOL, 0)
+#endif
 ZEND_END_ARG_INFO()
 
 PHP_METHOD(RdKafka__Metadata__Collection, valid)
