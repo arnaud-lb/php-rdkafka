@@ -29,6 +29,11 @@
 #include "metadata_broker.h"
 #include "metadata_partition.h"
 #include "Zend/zend_exceptions.h"
+#if PHP_VERSION_ID < 80000
+#include "metadata_legacy_arginfo.h"
+#else
+#include "metadata_arginfo.h"
+#endif
 
 typedef struct _object_intern {
     const rd_kafka_metadata_t *metadata;
@@ -123,11 +128,7 @@ static HashTable *get_debug_info(Z_RDKAFKA_OBJ *object, int *is_temp) /* {{{ */
 
 /* {{{ proto long RdKafka\Metadata::getOrigBrokerId()
    Broker originating this metadata */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_metadata_get_orig_broker_id, 0, 0, 0)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__Metadata, getOrigBrokerId)
+PHP_METHOD(RdKafka_Metadata, getOrigBrokerId)
 {
     object_intern *intern;
 
@@ -146,11 +147,7 @@ PHP_METHOD(RdKafka__Metadata, getOrigBrokerId)
 
 /* {{{ proto string RdKafka\Metadata::getOrigBrokerName()
    Name of originating broker */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_metadata_get_orig_broker_name, 0, 0, 0)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__Metadata, getOrigBrokerName)
+PHP_METHOD(RdKafka_Metadata, getOrigBrokerName)
 {
     object_intern *intern;
 
@@ -169,11 +166,7 @@ PHP_METHOD(RdKafka__Metadata, getOrigBrokerName)
 
 /* {{{ proto RdKafka\Metadata\Collection RdKafka\Metadata::getBrokers()
    Topics */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_metadata_get_brokers, 0, 0, 0)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__Metadata, getBrokers)
+PHP_METHOD(RdKafka_Metadata, getBrokers)
 {
     object_intern *intern;
 
@@ -192,11 +185,7 @@ PHP_METHOD(RdKafka__Metadata, getBrokers)
 
 /* {{{ proto RdKafka\Metadata\Collection RdKafka\Metadata::getTopics()
    Topics */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_metadata_get_topics, 0, 0, 0)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__Metadata, getTopics)
+PHP_METHOD(RdKafka_Metadata, getTopics)
 {
     object_intern *intern;
 
@@ -213,19 +202,11 @@ PHP_METHOD(RdKafka__Metadata, getTopics)
 }
 /* }}} */
 
-static const zend_function_entry kafka_metadata_fe[] = {
-    PHP_ME(RdKafka__Metadata, getOrigBrokerId, arginfo_kafka_metadata_get_orig_broker_id, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__Metadata, getOrigBrokerName, arginfo_kafka_metadata_get_orig_broker_name, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__Metadata, getBrokers, arginfo_kafka_metadata_get_brokers, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__Metadata, getTopics, arginfo_kafka_metadata_get_topics, ZEND_ACC_PUBLIC)
-    PHP_FE_END
-};
-
 void kafka_metadata_minit(INIT_FUNC_ARGS)
 {
     zend_class_entry tmpce;
 
-    INIT_NS_CLASS_ENTRY(tmpce, "RdKafka", "Metadata", kafka_metadata_fe);
+    INIT_NS_CLASS_ENTRY(tmpce, "RdKafka", "Metadata", class_RdKafka_Metadata_methods);
     ce = zend_register_internal_class(&tmpce);
     ce->create_object = kafka_metadata_new;
 
