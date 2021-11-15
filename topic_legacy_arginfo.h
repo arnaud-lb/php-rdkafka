@@ -1,5 +1,5 @@
 /* This is a generated file, edit the .stub.php file instead.
- * Stub hash: 4d94e1a5976cdda5c264d27a9ee201ddb789040f */
+ * Stub hash: dab4e0541c9554e894681ff6835e93761830d600 */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_class_RdKafka_Topic_getName, 0, 0, 0)
 ZEND_END_ARG_INFO()
@@ -54,6 +54,7 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_class_RdKafka_ProducerTopic_produce, 0, 0, 2)
 	ZEND_ARG_INFO(0, msg_opaque)
 ZEND_END_ARG_INFO()
 
+#if defined(HAVE_RD_KAFKA_MESSAGE_HEADERS)
 ZEND_BEGIN_ARG_INFO_EX(arginfo_class_RdKafka_ProducerTopic_producev, 0, 0, 2)
 	ZEND_ARG_INFO(0, partition)
 	ZEND_ARG_INFO(0, msgflags)
@@ -63,6 +64,7 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_class_RdKafka_ProducerTopic_producev, 0, 0, 2)
 	ZEND_ARG_INFO(0, timestamp_ms)
 	ZEND_ARG_INFO(0, msg_opaque)
 ZEND_END_ARG_INFO()
+#endif
 
 
 ZEND_METHOD(RdKafka_Topic, getName);
@@ -75,7 +77,9 @@ ZEND_METHOD(RdKafka_ConsumerTopic, consume);
 ZEND_METHOD(RdKafka_ConsumerTopic, consumeBatch);
 ZEND_METHOD(RdKafka_ConsumerTopic, offsetStore);
 ZEND_METHOD(RdKafka_ProducerTopic, produce);
+#if defined(HAVE_RD_KAFKA_MESSAGE_HEADERS)
 ZEND_METHOD(RdKafka_ProducerTopic, producev);
+#endif
 
 
 static const zend_function_entry class_RdKafka_Topic_methods[] = {
@@ -107,6 +111,8 @@ static const zend_function_entry class_RdKafka_KafkaConsumerTopic_methods[] = {
 static const zend_function_entry class_RdKafka_ProducerTopic_methods[] = {
 	ZEND_MALIAS(RdKafka, __construct, __construct, arginfo_class_RdKafka_ProducerTopic___construct, ZEND_ACC_PRIVATE)
 	ZEND_ME(RdKafka_ProducerTopic, produce, arginfo_class_RdKafka_ProducerTopic_produce, ZEND_ACC_PUBLIC)
+#if defined(HAVE_RD_KAFKA_MESSAGE_HEADERS)
 	ZEND_ME(RdKafka_ProducerTopic, producev, arginfo_class_RdKafka_ProducerTopic_producev, ZEND_ACC_PUBLIC)
+#endif
 	ZEND_FE_END
 };
