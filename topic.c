@@ -592,16 +592,6 @@ PHP_METHOD(RdKafka_ProducerTopic, producev)
 /* }}} */
 #endif
 
-
-static const zend_function_entry class_RdKafka_ProducerTopic_methods_ex[] = {
-    ZEND_MALIAS(RdKafka, __construct, __construct, arginfo_class_RdKafka_KafkaConsumerTopic___construct, ZEND_ACC_PRIVATE)
-    ZEND_ME(RdKafka_ProducerTopic, produce, arginfo_class_RdKafka_ProducerTopic_produce, ZEND_ACC_PUBLIC)
-#ifdef HAVE_RD_KAFKA_MESSAGE_HEADERS
-    ZEND_ME(RdKafka_ProducerTopic, producev, arginfo_class_RdKafka_ProducerTopic_producev, ZEND_ACC_PUBLIC)
-#endif
-    ZEND_FE_END
-};
-
 /* {{{ proto string RdKafka\Topic::getName() */
 PHP_METHOD(RdKafka_Topic, getName)
 {
@@ -640,6 +630,6 @@ void kafka_topic_minit(INIT_FUNC_ARGS) { /* {{{ */
     INIT_NS_CLASS_ENTRY(ce, "RdKafka", "KafkaConsumerTopic", class_RdKafka_KafkaConsumerTopic_methods);
     ce_kafka_kafka_consumer_topic = zend_register_internal_class_ex(&ce, ce_kafka_topic);
 
-    INIT_NS_CLASS_ENTRY(ce, "RdKafka", "ProducerTopic", class_RdKafka_ProducerTopic_methods_ex);
+    INIT_NS_CLASS_ENTRY(ce, "RdKafka", "ProducerTopic", class_RdKafka_ProducerTopic_methods);
     ce_kafka_producer_topic = zend_register_internal_class_ex(&ce, ce_kafka_topic);
 } /* }}} */
