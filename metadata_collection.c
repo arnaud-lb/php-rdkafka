@@ -28,6 +28,11 @@
 #include "Zend/zend_interfaces.h"
 #include "metadata_collection.h"
 #include "Zend/zend_exceptions.h"
+#if PHP_VERSION_ID < 80000
+#include "metadata_collection_legacy_arginfo.h"
+#else
+#include "metadata_collection_arginfo.h"
+#endif
 
 typedef struct _object_intern {
     zval                             zmetadata;
@@ -112,15 +117,7 @@ static HashTable *get_debug_info(Z_RDKAFKA_OBJ *object, int *is_temp) /* {{{ */
 
 /* {{{ proto int RdKafka\Metadata\Collection::count()
    */
-
-#if PHP_VERSION_ID < 80100
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_metadata_count, 0, 0, 0)
-#else
-ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_kafka_metadata_count, 0, 0, IS_LONG, 0)
-#endif
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__Metadata__Collection, count)
+PHP_METHOD(RdKafka_Metadata_Collection, count)
 {
     object_intern *intern;
 
@@ -139,15 +136,7 @@ PHP_METHOD(RdKafka__Metadata__Collection, count)
 
 /* {{{ proto void RdKafka\Metadata\Collection::rewind()
    */
-
-#if PHP_VERSION_ID < 80100
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_metadata_rewind, 0, 0, 0)
-#else
-ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_kafka_metadata_rewind, 0, 0, IS_VOID, 0)
-#endif
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__Metadata__Collection, rewind)
+PHP_METHOD(RdKafka_Metadata_Collection, rewind)
 {
     object_intern *intern;
 
@@ -166,15 +155,7 @@ PHP_METHOD(RdKafka__Metadata__Collection, rewind)
 
 /* {{{ proto mixed RdKafka\Metadata\Collection::current()
    */
-
-#if PHP_VERSION_ID < 80100
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_metadata_current, 0, 0, 0)
-#else
-ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_kafka_metadata_current, 0, 0, IS_MIXED, 0)
-#endif
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__Metadata__Collection, current)
+PHP_METHOD(RdKafka_Metadata_Collection, current)
 {
     object_intern *intern;
 
@@ -198,15 +179,7 @@ PHP_METHOD(RdKafka__Metadata__Collection, current)
 
 /* {{{ proto mixed RdKafka\Metadata\Collection::key()
    */
-
-#if PHP_VERSION_ID < 80100
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_metadata_key, 0, 0, 0)
-#else
-ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_kafka_metadata_key, 0, 0, IS_MIXED, 0)
-#endif
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__Metadata__Collection, key)
+PHP_METHOD(RdKafka_Metadata_Collection, key)
 {
     object_intern *intern;
 
@@ -230,15 +203,7 @@ PHP_METHOD(RdKafka__Metadata__Collection, key)
 
 /* {{{ proto void RdKafka\Metadata\Collection::next()
    */
-
-#if PHP_VERSION_ID < 80100
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_metadata_next, 0, 0, 0)
-#else
-ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_kafka_metadata_next, 0, 0, IS_VOID, 0)
-#endif
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__Metadata__Collection, next)
+PHP_METHOD(RdKafka_Metadata_Collection, next)
 {
     object_intern *intern;
 
@@ -257,15 +222,7 @@ PHP_METHOD(RdKafka__Metadata__Collection, next)
 
 /* {{{ proto bool RdKafka\Metadata\Collection::valid()
    */
-
-#if PHP_VERSION_ID < 80100
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_metadata_valid, 0, 0, 0)
-#else
-ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_kafka_metadata_valid, 0, 0, _IS_BOOL, 0)
-#endif
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__Metadata__Collection, valid)
+PHP_METHOD(RdKafka_Metadata_Collection, valid)
 {
     object_intern *intern;
 
@@ -282,21 +239,11 @@ PHP_METHOD(RdKafka__Metadata__Collection, valid)
 }
 /* }}} */
 
-static const zend_function_entry fe[] = {
-    PHP_ME(RdKafka__Metadata__Collection, count, arginfo_kafka_metadata_count, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__Metadata__Collection, current, arginfo_kafka_metadata_current, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__Metadata__Collection, key, arginfo_kafka_metadata_key, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__Metadata__Collection, next, arginfo_kafka_metadata_next, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__Metadata__Collection, rewind, arginfo_kafka_metadata_rewind, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__Metadata__Collection, valid, arginfo_kafka_metadata_valid, ZEND_ACC_PUBLIC)
-    PHP_FE_END
-};
-
 void kafka_metadata_collection_minit(INIT_FUNC_ARGS)
 {
     zend_class_entry tmpce;
 
-    INIT_NS_CLASS_ENTRY(tmpce, "RdKafka\\Metadata", "Collection", fe);
+    INIT_NS_CLASS_ENTRY(tmpce, "RdKafka\\Metadata", "Collection", class_RdKafka_Metadata_Collection_methods);
     ce = zend_register_internal_class(&tmpce);
     ce->create_object = create_object;
 #if PHP_VERSION_ID < 80100
