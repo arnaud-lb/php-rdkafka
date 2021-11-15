@@ -1,5 +1,5 @@
 /* This is a generated file, edit the .stub.php file instead.
- * Stub hash: 6cafc823ae2831bf70ce0a83666e498ddadaeb1a */
+ * Stub hash: b50dbdcaa49b47a89009cc7caf5cfa36612b4b4e */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_class_RdKafka___construct, 0, 0, 0)
 ZEND_END_ARG_INFO()
@@ -14,7 +14,8 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_class_RdKafka_getMetadata, 0, 0, 3)
 	ZEND_ARG_INFO(0, timeout_ms)
 ZEND_END_ARG_INFO()
 
-#define arginfo_class_RdKafka_getOutQLen arginfo_class_RdKafka___construct
+ZEND_BEGIN_ARG_INFO_EX(arginfo_class_RdKafka_getOutQLen, 0, 0, 0)
+ZEND_END_ARG_INFO()
 
 #define arginfo_class_RdKafka_metadata arginfo_class_RdKafka_getMetadata
 
@@ -27,7 +28,7 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_class_RdKafka_newTopic, 0, 0, 1)
 	ZEND_ARG_INFO(0, topic_conf)
 ZEND_END_ARG_INFO()
 
-#define arginfo_class_RdKafka_outqLen arginfo_class_RdKafka___construct
+#define arginfo_class_RdKafka_outqLen arginfo_class_RdKafka_getOutQLen
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_class_RdKafka_poll, 0, 0, 1)
 	ZEND_ARG_INFO(0, timeout_ms)
@@ -68,7 +69,7 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_class_RdKafka_Consumer___construct, 0, 0, 0)
 	ZEND_ARG_INFO(0, conf)
 ZEND_END_ARG_INFO()
 
-#define arginfo_class_RdKafka_Consumer_newQueue arginfo_class_RdKafka___construct
+#define arginfo_class_RdKafka_Consumer_newQueue arginfo_class_RdKafka_getOutQLen
 
 #define arginfo_class_RdKafka_Producer___construct arginfo_class_RdKafka_Consumer___construct
 

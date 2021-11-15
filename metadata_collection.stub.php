@@ -9,15 +9,21 @@ namespace RdKafka\Metadata;
 
 class Collection
 {
+    /** @tentative-return-type */
     public function count(): int {}
 
+    /** @tentative-return-type */
     public function current(): mixed {}
 
+    /** @tentative-return-type */
     public function key(): int {}
 
+    /** @tentative-return-type */
     public function next(): void {}
 
+    /** @tentative-return-type */
     public function rewind(): void {}
 
+    /** @tentative-return-type */
     public function valid(): bool {}
 }
