@@ -36,7 +36,7 @@ $topics = array_map(function ($topicName) use ($producer) {
     return $producer->newTopic($topicName);
 }, $topicNames);
 
-if (!$producer->getMetadata(false, reset($topics), 2*1000)) {
+if (!$producer->getMetadata(false, reset($topics), 10*1000)) {
     echo "Failed to get metadata, is broker down?\n";
 }
 
