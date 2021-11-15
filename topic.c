@@ -31,6 +31,11 @@
 #include "topic.h"
 #include "queue.h"
 #include "message.h"
+#if PHP_VERSION_ID < 80000
+#include "topic_legacy_arginfo.h"
+#else
+#include "topic_arginfo.h"
+#endif
 
 static zend_object_handlers object_handlers;
 zend_class_entry * ce_kafka_consumer_topic;
@@ -110,14 +115,7 @@ kafka_topic_object * get_kafka_topic_object(zval *zrkt)
 }
 
 /* {{{ proto RdKafka\ConsumerTopic::consumeCallback([int $partition, int timeout_ms, mixed $callback]) */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_consume_callback, 0, 0, 3)
-    ZEND_ARG_INFO(0, partition)
-    ZEND_ARG_INFO(0, timeout_ms)
-    ZEND_ARG_INFO(0, callback)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__ConsumerTopic, consumeCallback)
+PHP_METHOD(RdKafka_ConsumerTopic, consumeCallback)
 {
     php_callback cb;
     zend_long partition;
@@ -151,14 +149,7 @@ PHP_METHOD(RdKafka__ConsumerTopic, consumeCallback)
 
 /* {{{ proto void RdKafka\ConsumerTopic::consumeQueueStart(int $partition, int $offset, RdKafka\Queue $queue)
  * Same as consumeStart(), but re-routes incoming messages to the provided queue */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_consume_queue_start, 0, 0, 3)
-    ZEND_ARG_INFO(0, partition)
-    ZEND_ARG_INFO(0, offset)
-    ZEND_ARG_INFO(0, queue)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__ConsumerTopic, consumeQueueStart)
+PHP_METHOD(RdKafka_ConsumerTopic, consumeQueueStart)
 {
     zval *zrkqu;
     kafka_topic_object *intern;
@@ -218,13 +209,7 @@ PHP_METHOD(RdKafka__ConsumerTopic, consumeQueueStart)
 
 /* {{{ proto void RdKafka\ConsumerTopic::consumeStart(int partition, int offset)
    Start consuming messages */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_consume_start, 0, 0, 2)
-    ZEND_ARG_INFO(0, partition)
-    ZEND_ARG_INFO(0, offset)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__ConsumerTopic, consumeStart)
+PHP_METHOD(RdKafka_ConsumerTopic, consumeStart)
 {
     kafka_topic_object *intern;
     zend_long partition;
@@ -277,12 +262,7 @@ PHP_METHOD(RdKafka__ConsumerTopic, consumeStart)
 
 /* {{{ proto void RdKafka\ConsumerTopic::consumeStop(int partition)
    Stop consuming messages */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_consume_stop, 0, 0, 1)
-    ZEND_ARG_INFO(0, partition)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__ConsumerTopic, consumeStop)
+PHP_METHOD(RdKafka_ConsumerTopic, consumeStop)
 {
     kafka_topic_object *intern;
     zend_long partition;
@@ -323,13 +303,7 @@ PHP_METHOD(RdKafka__ConsumerTopic, consumeStop)
 
 /* {{{ proto RdKafka\Message RdKafka\ConsumerTopic::consume(int $partition, int timeout_ms)
    Consume a single message from partition */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_consume, 0, 0, 2)
-    ZEND_ARG_INFO(0, partition)
-    ZEND_ARG_INFO(0, timeout_ms)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__ConsumerTopic, consume)
+PHP_METHOD(RdKafka_ConsumerTopic, consume)
 {
     kafka_topic_object *intern;
     zend_long partition;
@@ -370,14 +344,7 @@ PHP_METHOD(RdKafka__ConsumerTopic, consume)
 
 /* {{{ proto RdKafka\Message RdKafka\ConsumerTopic::consumeBatch(int $partition, int $timeout_ms, int $batch_size)
    Consume a batch of messages from a partition */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_consume_batch, 0, 0, 3)
-    ZEND_ARG_INFO(0, partition)
-    ZEND_ARG_INFO(0, timeout_ms)
-    ZEND_ARG_INFO(0, batch_size)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__ConsumerTopic, consumeBatch)
+PHP_METHOD(RdKafka_ConsumerTopic, consumeBatch)
 {
     kafka_topic_object *intern;
     zend_long partition, timeout_ms, batch_size;
@@ -427,13 +394,7 @@ PHP_METHOD(RdKafka__ConsumerTopic, consumeBatch)
 /* }}} */
 
 /* {{{ proto void RdKafka\ConsumerTopic::offsetStore(int partition, int offset) */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_offset_store, 0, 0, 2)
-    ZEND_ARG_INFO(0, partition)
-    ZEND_ARG_INFO(0, offset)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__ConsumerTopic, offsetStore)
+PHP_METHOD(RdKafka_ConsumerTopic, offsetStore)
 {
     kafka_topic_object *intern;
     zend_long partition;
@@ -463,41 +424,9 @@ PHP_METHOD(RdKafka__ConsumerTopic, offsetStore)
 }
 /* }}} */
 
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka___private_construct, 0, 0, 0)
-ZEND_END_ARG_INFO()
-
-static const zend_function_entry kafka_consumer_topic_fe[] = {
-    PHP_ME(RdKafka, __construct, arginfo_kafka___private_construct, ZEND_ACC_PRIVATE)
-    PHP_ME(RdKafka__ConsumerTopic, consumeQueueStart, arginfo_kafka_consume_queue_start, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__ConsumerTopic, consumeCallback, arginfo_kafka_consume_callback, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__ConsumerTopic, consumeStart, arginfo_kafka_consume_start, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__ConsumerTopic, consumeStop, arginfo_kafka_consume_stop, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__ConsumerTopic, consume, arginfo_kafka_consume, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__ConsumerTopic, consumeBatch, arginfo_kafka_consume_batch, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__ConsumerTopic, offsetStore, arginfo_kafka_offset_store, ZEND_ACC_PUBLIC)
-    PHP_FE_END
-};
-
-static const zend_function_entry kafka_kafka_consumer_topic_fe[] = {
-    PHP_ME(RdKafka, __construct, arginfo_kafka___private_construct, ZEND_ACC_PRIVATE)
-    PHP_ME(RdKafka__ConsumerTopic, offsetStore, arginfo_kafka_offset_store, ZEND_ACC_PUBLIC)
-    PHP_FE_END
-};
-
 /* {{{ proto void RdKafka\ProducerTopic::produce(int $partition, int $msgflags[, string $payload[, string $key[, string $msg_opaque]]])
    Produce and send a single message to broker. */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_produce, 0, 0, 2)
-    ZEND_ARG_INFO(0, partition)
-    ZEND_ARG_INFO(0, msgflags)
-    ZEND_ARG_INFO(0, payload)
-    ZEND_ARG_INFO(0, key)
-#ifdef HAS_RD_KAFKA_PURGE
-    ZEND_ARG_INFO(0, msg_opaque)
-#endif
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__ProducerTopic, produce)
+PHP_METHOD(RdKafka_ProducerTopic, produce)
 {
     zend_long partition;
     zend_long msgflags;
@@ -557,18 +486,7 @@ PHP_METHOD(RdKafka__ProducerTopic, produce)
 #ifdef HAVE_RD_KAFKA_MESSAGE_HEADERS
 /* {{{ proto void RdKafka\ProducerTopic::producev(int $partition, int $msgflags[, string $payload[, string $key[, array $headers[, int $timestamp_ms[, string msg_opaque]]]]])
    Produce and send a single message to broker (with headers possibility and timestamp). */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_producev, 0, 0, 2)
-    ZEND_ARG_INFO(0, partition)
-    ZEND_ARG_INFO(0, msgflags)
-    ZEND_ARG_INFO(0, payload)
-    ZEND_ARG_INFO(0, key)
-    ZEND_ARG_INFO(0, headers)
-    ZEND_ARG_INFO(0, timestamp_ms)
-    ZEND_ARG_INFO(0, msg_opaque)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__ProducerTopic, producev)
+PHP_METHOD(RdKafka_ProducerTopic, producev)
 {
     zend_long partition;
     zend_long msgflags;
@@ -674,21 +592,18 @@ PHP_METHOD(RdKafka__ProducerTopic, producev)
 /* }}} */
 #endif
 
-static const zend_function_entry kafka_producer_topic_fe[] = {
-    PHP_ME(RdKafka, __construct, arginfo_kafka___private_construct, ZEND_ACC_PRIVATE)
-    PHP_ME(RdKafka__ProducerTopic, produce, arginfo_kafka_produce, ZEND_ACC_PUBLIC)
+
+static const zend_function_entry class_RdKafka_ProducerTopic_methods_ex[] = {
+    ZEND_MALIAS(RdKafka, __construct, __construct, arginfo_class_RdKafka_KafkaConsumerTopic___construct, ZEND_ACC_PRIVATE)
+    ZEND_ME(RdKafka_ProducerTopic, produce, arginfo_class_RdKafka_ProducerTopic_produce, ZEND_ACC_PUBLIC)
 #ifdef HAVE_RD_KAFKA_MESSAGE_HEADERS
-    PHP_ME(RdKafka__ProducerTopic, producev, arginfo_kafka_producev, ZEND_ACC_PUBLIC)
+    ZEND_ME(RdKafka_ProducerTopic, producev, arginfo_class_RdKafka_ProducerTopic_producev, ZEND_ACC_PUBLIC)
 #endif
-    PHP_FE_END
+    ZEND_FE_END
 };
 
 /* {{{ proto string RdKafka\Topic::getName() */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_topic_get_name, 0, 0, 0)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__Topic, getName)
+PHP_METHOD(RdKafka_Topic, getName)
 {
     kafka_topic_object *intern;
 
@@ -705,11 +620,6 @@ PHP_METHOD(RdKafka__Topic, getName)
 }
 /* }}} */
 
-static const zend_function_entry kafka_topic_fe[] = {
-    PHP_ME(RdKafka__Topic, getName, arginfo_kafka_topic_get_name, ZEND_ACC_PUBLIC)
-    PHP_FE_END
-};
-
 void kafka_topic_minit(INIT_FUNC_ARGS) { /* {{{ */
 
     zend_class_entry ce;
@@ -719,17 +629,17 @@ void kafka_topic_minit(INIT_FUNC_ARGS) { /* {{{ */
     object_handlers.free_obj = kafka_topic_free;
     object_handlers.offset = XtOffsetOf(kafka_topic_object, std);
 
-    INIT_NS_CLASS_ENTRY(ce, "RdKafka", "Topic", kafka_topic_fe);
+    INIT_NS_CLASS_ENTRY(ce, "RdKafka", "Topic", class_RdKafka_Topic_methods);
     ce_kafka_topic = zend_register_internal_class(&ce);
     ce_kafka_topic->ce_flags |= ZEND_ACC_EXPLICIT_ABSTRACT_CLASS;
     ce_kafka_topic->create_object = kafka_topic_new;
 
-    INIT_NS_CLASS_ENTRY(ce, "RdKafka", "ConsumerTopic", kafka_consumer_topic_fe);
+    INIT_NS_CLASS_ENTRY(ce, "RdKafka", "ConsumerTopic", class_RdKafka_ConsumerTopic_methods);
     ce_kafka_consumer_topic = zend_register_internal_class_ex(&ce, ce_kafka_topic);
 
-    INIT_NS_CLASS_ENTRY(ce, "RdKafka", "KafkaConsumerTopic", kafka_kafka_consumer_topic_fe);
+    INIT_NS_CLASS_ENTRY(ce, "RdKafka", "KafkaConsumerTopic", class_RdKafka_KafkaConsumerTopic_methods);
     ce_kafka_kafka_consumer_topic = zend_register_internal_class_ex(&ce, ce_kafka_topic);
 
-    INIT_NS_CLASS_ENTRY(ce, "RdKafka", "ProducerTopic", kafka_producer_topic_fe);
+    INIT_NS_CLASS_ENTRY(ce, "RdKafka", "ProducerTopic", class_RdKafka_ProducerTopic_methods_ex);
     ce_kafka_producer_topic = zend_register_internal_class_ex(&ce, ce_kafka_topic);
 } /* }}} */

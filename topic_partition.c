@@ -30,6 +30,12 @@
 #include "ext/spl/spl_exceptions.h"
 #include "topic_partition.h"
 
+#if PHP_VERSION_ID < 80000
+#include "topic_partition_legacy_arginfo.h"
+#else
+#include "topic_partition_arginfo.h"
+#endif
+
 typedef kafka_topic_partition_intern object_intern;
 
 static HashTable *get_debug_info(Z_RDKAFKA_OBJ *object, int *is_temp);
@@ -191,14 +197,7 @@ rd_kafka_topic_partition_list_t * array_arg_to_kafka_topic_partition_list(int ar
 
 /* {{{ proto void RdKafka\TopicPartition::__construct(string $topic, int $partition[, int $offset])
    Constructor */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_topic_partition___construct, 0, 0, 2)
-    ZEND_ARG_INFO(0, topic)
-    ZEND_ARG_INFO(0, partition)
-    ZEND_ARG_INFO(0, offset)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__TopicPartition, __construct)
+PHP_METHOD(RdKafka_TopicPartition, __construct)
 {
     char *topic;
     size_t topic_len;
@@ -208,7 +207,7 @@ PHP_METHOD(RdKafka__TopicPartition, __construct)
 
     zend_replace_error_handling(EH_THROW, spl_ce_InvalidArgumentException, &error_handling);
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS(), "sl|l", &topic, &topic_len, &partition, &offset) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS(), "sl|l!", &topic, &topic_len, &partition, &offset) == FAILURE) {
         zend_restore_error_handling(&error_handling);
         return;
     }
@@ -221,11 +220,7 @@ PHP_METHOD(RdKafka__TopicPartition, __construct)
 
 /* {{{ proto string RdKafka\TopicPartition::getTopic()
    Returns topic name */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_topic_partition_get_topic, 0, 0, 0)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__TopicPartition, getTopic)
+PHP_METHOD(RdKafka_TopicPartition, getTopic)
 {
     object_intern *intern;
 
@@ -248,12 +243,7 @@ PHP_METHOD(RdKafka__TopicPartition, getTopic)
 
 /* {{{ proto TopicPartition RdKafka\TopicPartition::setTopic($topicName)
    Sets topic name */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_topic_partition_set_topic, 0, 0, 1)
-    ZEND_ARG_INFO(0, topic_name)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__TopicPartition, setTopic)
+PHP_METHOD(RdKafka_TopicPartition, setTopic)
 {
     char * topic;
     size_t topic_len;
@@ -280,11 +270,7 @@ PHP_METHOD(RdKafka__TopicPartition, setTopic)
 
 /* {{{ proto int RdKafka\TopicPartition::getPartition()
    Returns partition */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_topic_partition_get_partition, 0, 0, 0)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__TopicPartition, getPartition)
+PHP_METHOD(RdKafka_TopicPartition, getPartition)
 {
     object_intern *intern;
 
@@ -303,12 +289,7 @@ PHP_METHOD(RdKafka__TopicPartition, getPartition)
 
 /* {{{ proto TopicPartition RdKafka\TopicPartition::setPartition($partition)
    Sets partition */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_topic_partition_set_partition, 0, 0, 1)
-    ZEND_ARG_INFO(0, partition)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__TopicPartition, setPartition)
+PHP_METHOD(RdKafka_TopicPartition, setPartition)
 {
     zend_long partition;
     object_intern *intern;
@@ -330,11 +311,7 @@ PHP_METHOD(RdKafka__TopicPartition, setPartition)
 
 /* {{{ proto int RdKafka\TopicPartition::getOffset()
    Returns offset */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_topic_partition_get_offset, 0, 0, 0)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__TopicPartition, getOffset)
+PHP_METHOD(RdKafka_TopicPartition, getOffset)
 {
     object_intern *intern;
 
@@ -353,12 +330,7 @@ PHP_METHOD(RdKafka__TopicPartition, getOffset)
 
 /* {{{ proto TopicPartition RdKafka\TopicPartition::setOffset($offset)
    Sets offset */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_topic_partition_set_offset, 0, 0, 1)
-    ZEND_ARG_INFO(0, offset)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__TopicPartition, setOffset)
+PHP_METHOD(RdKafka_TopicPartition, setOffset)
 {
     zend_long offset;
     object_intern *intern;
@@ -380,11 +352,7 @@ PHP_METHOD(RdKafka__TopicPartition, setOffset)
 
 /* {{{ proto int RdKafka\TopicPartition::getErr()
    Returns err */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_topic_partition_get_err, 0, 0, 0)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__TopicPartition, getErr)
+PHP_METHOD(RdKafka_TopicPartition, getErr)
 {
     object_intern *intern;
 
@@ -401,23 +369,11 @@ PHP_METHOD(RdKafka__TopicPartition, getErr)
 }
 /* }}} */
 
-static const zend_function_entry fe[] = { /* {{{ */
-    PHP_ME(RdKafka__TopicPartition, __construct, arginfo_kafka_topic_partition___construct, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__TopicPartition, getTopic, arginfo_kafka_topic_partition_get_topic, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__TopicPartition, setTopic, arginfo_kafka_topic_partition_set_topic, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__TopicPartition, getPartition, arginfo_kafka_topic_partition_get_partition, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__TopicPartition, setPartition, arginfo_kafka_topic_partition_set_partition, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__TopicPartition, getOffset, arginfo_kafka_topic_partition_get_offset, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__TopicPartition, setOffset, arginfo_kafka_topic_partition_set_offset, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__TopicPartition, getErr, arginfo_kafka_topic_partition_get_err, ZEND_ACC_PUBLIC)
-    PHP_FE_END
-}; /* }}} */
-
 void kafka_metadata_topic_partition_minit(INIT_FUNC_ARGS) /* {{{ */
 {
     zend_class_entry tmpce;
 
-    INIT_NS_CLASS_ENTRY(tmpce, "RdKafka", "TopicPartition", fe);
+    INIT_NS_CLASS_ENTRY(tmpce, "RdKafka", "TopicPartition", class_RdKafka_TopicPartition_methods);
     ce_kafka_topic_partition = zend_register_internal_class(&tmpce);
     ce_kafka_topic_partition->create_object = create_object;
 
