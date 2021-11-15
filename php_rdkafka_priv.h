@@ -43,6 +43,8 @@
 
 #define Z_RDKAFKA_OBJ zend_object
 
+#define Z_RDKAFKA_OBJ_COPY(z, o) ZVAL_OBJ_COPY(z, o)
+
 #define Z_RDKAFKA_PROP_OBJ(object) Z_OBJ_P(object)
 
 #define rdkafka_get_debug_object(type, object) php_kafka_from_obj(type, object)
@@ -50,6 +52,8 @@
 #else // PHP 7
 
 #define Z_RDKAFKA_OBJ zval
+
+#define Z_RDKAFKA_OBJ_COPY(z, o) ZVAL_ZVAL(z, o, 1, 0)
 
 #define Z_RDKAFKA_PROP_OBJ(object) object
 
