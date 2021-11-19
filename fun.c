@@ -27,33 +27,6 @@
 #include "Zend/zend_exceptions.h"
 #include "ext/spl/spl_exceptions.h"
 
-/* {{{ arginfo */
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_get_err_descs, 0, 0, 0)
-ZEND_END_ARG_INFO()
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_err2name, 0, 0, 1)
-    ZEND_ARG_INFO(0, err)
-ZEND_END_ARG_INFO()
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_err2str, 0, 0, 1)
-    ZEND_ARG_INFO(0, err)
-ZEND_END_ARG_INFO()
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_errno2err, 0, 0, 1)
-    ZEND_ARG_INFO(0, errnox)
-ZEND_END_ARG_INFO()
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_errno, 0, 0, 0)
-ZEND_END_ARG_INFO()
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_thread_cnt, 0, 0, 0)
-ZEND_END_ARG_INFO()
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_offset_tail, 0, 0, 1)
-    ZEND_ARG_INFO(0, cnt)
-ZEND_END_ARG_INFO()
-/* }}} */
-
 /* {{{ proto array rd_kafka_get_err_descs()
  * Returns the full list of error codes.
  */
@@ -194,18 +167,3 @@ PHP_FUNCTION(rd_kafka_offset_tail)
     RETURN_LONG(RD_KAFKA_OFFSET_TAIL(cnt));
 }
 /* }}} */
-
-/* {{{ rdkafka_functions[]
- */
-const zend_function_entry rdkafka_functions[] = {
-    PHP_FE(rd_kafka_get_err_descs,  arginfo_kafka_get_err_descs)
-    PHP_FE(rd_kafka_err2name,       arginfo_kafka_err2name)
-    PHP_FE(rd_kafka_err2str,        arginfo_kafka_err2str)
-    PHP_DEP_FE(rd_kafka_errno2err,      arginfo_kafka_errno2err)
-    PHP_DEP_FE(rd_kafka_errno,          arginfo_kafka_errno)
-    PHP_FE(rd_kafka_offset_tail,    arginfo_kafka_offset_tail)
-    PHP_FE(rd_kafka_thread_cnt,     arginfo_kafka_thread_cnt)
-    PHP_FE_END    /* Must be the last line in rdkafka_functions[] */
-};
-/* }}} */
-

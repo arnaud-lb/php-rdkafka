@@ -41,11 +41,12 @@
 #include "message.h"
 #include "kafka_consumer.h"
 #include "topic_partition.h"
-#include "fun.h"
 #if PHP_VERSION_ID < 80000
 #include "rdkafka_legacy_arginfo.h"
+#include "fun_legacy_arginfo.h"
 #else
 #include "rdkafka_arginfo.h"
+#include "fun_arginfo.h"
 #endif
 
 #if RD_KAFKA_VERSION < 0x000b0000
@@ -1007,7 +1008,7 @@ PHP_MINFO_FUNCTION(rdkafka)
 zend_module_entry rdkafka_module_entry = {
     STANDARD_MODULE_HEADER,
     "rdkafka",
-    rdkafka_functions,
+    ext_functions,
     PHP_MINIT(rdkafka),
     NULL,
     NULL,
