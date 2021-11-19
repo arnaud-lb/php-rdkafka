@@ -28,6 +28,11 @@
 #include "Zend/zend_interfaces.h"
 #include "Zend/zend_exceptions.h"
 #include "metadata_collection.h"
+#if PHP_VERSION_ID < 80000
+#include "metadata_partition_legacy_arginfo.h"
+#else
+#include "metadata_partition_arginfo.h"
+#endif
 
 typedef struct _object_intern {
     zval                            zmetadata;
@@ -106,11 +111,7 @@ static HashTable *get_debug_info(Z_RDKAFKA_OBJ *object, int *is_temp) /* {{{ */
 
 /* {{{ proto int RdKafka\Metadata\Partition::getId()
    Partition id */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_metadata_get_id, 0, 0, 0)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__Metadata__Partition, getId)
+PHP_METHOD(RdKafka_Metadata_Partition, getId)
 {
     object_intern *intern;
 
@@ -129,11 +130,7 @@ PHP_METHOD(RdKafka__Metadata__Partition, getId)
 
 /* {{{ proto int RdKafka\Metadata\Partition::getErr()
    Partition error reported by broker */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_metadata_get_err, 0, 0, 0)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__Metadata__Partition, getErr)
+PHP_METHOD(RdKafka_Metadata_Partition, getErr)
 {
     object_intern *intern;
 
@@ -152,11 +149,7 @@ PHP_METHOD(RdKafka__Metadata__Partition, getErr)
 
 /* {{{ proto int RdKafka\Metadata\Partition::getLeader()
    Leader broker */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_metadata_get_leader, 0, 0, 0)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__Metadata__Partition, getLeader)
+PHP_METHOD(RdKafka_Metadata_Partition, getLeader)
 {
     object_intern *intern;
 
@@ -179,11 +172,7 @@ void int32_ctor(zval *return_value, zval *zmetadata, const void *data) {
 
 /* {{{ proto array RdKafka\Metadata\Partition::getReplicas()
    Replica broker ids */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_metadata_get_replicas, 0, 0, 0)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__Metadata__Partition, getReplicas)
+PHP_METHOD(RdKafka_Metadata_Partition, getReplicas)
 {
     object_intern *intern;
 
@@ -202,11 +191,7 @@ PHP_METHOD(RdKafka__Metadata__Partition, getReplicas)
 
 /* {{{ proto array RdKafka\Metadata\Partition::getIsrs()
    In-Sync-Replica broker ids */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_metadata_get_isrs, 0, 0, 0)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__Metadata__Partition, getIsrs)
+PHP_METHOD(RdKafka_Metadata_Partition, getIsrs)
 {
     object_intern *intern;
 
@@ -223,20 +208,11 @@ PHP_METHOD(RdKafka__Metadata__Partition, getIsrs)
 }
 /* }}} */
 
-static const zend_function_entry fe[] = {
-    PHP_ME(RdKafka__Metadata__Partition, getId, arginfo_kafka_metadata_get_id, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__Metadata__Partition, getErr, arginfo_kafka_metadata_get_err, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__Metadata__Partition, getLeader, arginfo_kafka_metadata_get_leader, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__Metadata__Partition, getReplicas, arginfo_kafka_metadata_get_replicas, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__Metadata__Partition, getIsrs, arginfo_kafka_metadata_get_isrs, ZEND_ACC_PUBLIC)
-    PHP_FE_END
-};
-
 void kafka_metadata_partition_minit(INIT_FUNC_ARGS)
 {
     zend_class_entry tmpce;
 
-    INIT_NS_CLASS_ENTRY(tmpce, "RdKafka", "Metadata\\Partition", fe);
+    INIT_NS_CLASS_ENTRY(tmpce, "RdKafka", "Metadata\\Partition", class_RdKafka_Metadata_Partition_methods);
     ce = zend_register_internal_class(&tmpce);
     ce->create_object = create_object;
 

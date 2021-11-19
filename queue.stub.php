@@ -1,0 +1,17 @@
+<?php
+
+/**
+ * @generate-function-entries
+ * @generate-legacy-arginfo
+ */
+
+namespace RdKafka;
+
+class Queue
+{
+    /** @implementation-alias RdKafka::__construct */
+    private  function __construct() {}
+
+    /** @tentative-return-type */
+    public function consume(int $timeout_ms): ?Message {}
+}

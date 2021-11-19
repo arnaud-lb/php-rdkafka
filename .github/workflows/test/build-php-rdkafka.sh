@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -e
+
 echo "Building php-rdkafka with PHP version:"
 php --version
 
