@@ -1,13 +1,16 @@
 --TEST--
 RdKafka\Conf
+--SKIPIF--
+<?php
+version_compare(PHP_VERSION, "7.1") < 0 && die("skip PHP < 7.1");
 --FILE--
 <?php
 
 class TestBug extends RdKafka\Conf
 {
-    public function set($name, $value)
+    public function set($name, $value): void
     {
-        return parent::set($name, $value);
+        parent::set($name, $value);
     }
 }
 

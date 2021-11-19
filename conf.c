@@ -31,6 +31,11 @@
 #include "conf.h"
 #include "topic_partition.h"
 #include "message.h"
+#if PHP_VERSION_ID < 80000
+#include "conf_legacy_arginfo.h"
+#else
+#include "conf_arginfo.h"
+#endif
 
 zend_class_entry * ce_kafka_conf;
 zend_class_entry * ce_kafka_topic_conf;
@@ -333,11 +338,7 @@ static void kafka_conf_log_cb(const rd_kafka_t *rk, int level, const char *facil
 }
 
 /* {{{ proto RdKafka\Conf::__construct() */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_conf___construct, 0, 0, 0)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__Conf, __construct)
+PHP_METHOD(RdKafka_Conf, __construct)
 {
     kafka_conf_object *intern;
     zend_error_handling error_handling;
@@ -359,11 +360,7 @@ PHP_METHOD(RdKafka__Conf, __construct)
 
 /* {{{ proto array RfKafka\Conf::dump()
    Dump the configuration properties and values of `conf` to an array */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_conf_dump, 0, 0, 0)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__Conf, dump)
+PHP_METHOD(RdKafka_Conf, dump)
 {
     size_t cntp;
     const char **dump;
@@ -404,13 +401,7 @@ PHP_METHOD(RdKafka__Conf, dump)
 
 /* {{{ proto void RdKafka\Conf::set(string $name, string $value)
    Sets a configuration property. */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_conf_set, 0, 0, 2)
-    ZEND_ARG_INFO(0, name)
-    ZEND_ARG_INFO(0, value)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__Conf, set)
+PHP_METHOD(RdKafka_Conf, set)
 {
     char *name;
     size_t name_len;
@@ -454,12 +445,7 @@ PHP_METHOD(RdKafka__Conf, set)
 /* }}} */
 
 /* {{{ proto RdKafka\Conf::setDefaultTopicConf(RdKafka\TopicConf $topicConf) */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_conf_set_default_topic_conf, 0, 0, 1)
-    ZEND_ARG_INFO(0, topic_conf)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__Conf, setDefaultTopicConf)
+PHP_METHOD(RdKafka_Conf, setDefaultTopicConf)
 {
     zval *ztopic_conf;
     kafka_conf_object *intern;
@@ -488,12 +474,7 @@ PHP_METHOD(RdKafka__Conf, setDefaultTopicConf)
 
 /* {{{ proto void RdKafka\Conf::setErrorCb(callable $callback)
    Sets the error callback */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_conf_set_error_cb, 0, 0, 1)
-    ZEND_ARG_INFO(0, callback)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__Conf, setErrorCb)
+PHP_METHOD(RdKafka_Conf, setErrorCb)
 {
     zend_fcall_info fci;
     zend_fcall_info_cache fcc;
@@ -525,12 +506,7 @@ PHP_METHOD(RdKafka__Conf, setErrorCb)
 
 /* {{{ proto void RdKafka\Conf::setDrMsgCb(callable $callback)
    Sets the delivery report callback */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_conf_set_dr_msg_cb, 0, 0, 1)
-    ZEND_ARG_INFO(0, callback)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__Conf, setDrMsgCb)
+PHP_METHOD(RdKafka_Conf, setDrMsgCb)
 {
     zend_fcall_info fci;
     zend_fcall_info_cache fcc;
@@ -562,12 +538,7 @@ PHP_METHOD(RdKafka__Conf, setDrMsgCb)
 
 /* {{{ proto void RdKafka\Conf::setStatsCb(callable $callback)
    Sets the statistics report callback */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_conf_set_stats_cb, 0, 0, 1)
-    ZEND_ARG_INFO(0, callback)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__Conf, setStatsCb)
+PHP_METHOD(RdKafka_Conf, setStatsCb)
 {
     zend_fcall_info fci;
     zend_fcall_info_cache fcc;
@@ -599,12 +570,7 @@ PHP_METHOD(RdKafka__Conf, setStatsCb)
 
 /* {{{ proto void RdKafka\Conf::setRebalanceCb(mixed $callback)
    Set rebalance callback for use with coordinated consumer group balancing */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_conf_set_rebalance_cb, 0, 0, 1)
-    ZEND_ARG_INFO(0, callback)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__Conf, setRebalanceCb)
+PHP_METHOD(RdKafka_Conf, setRebalanceCb)
 {
     zend_fcall_info fci;
     zend_fcall_info_cache fcc;
@@ -636,12 +602,7 @@ PHP_METHOD(RdKafka__Conf, setRebalanceCb)
 
 /* {{{ proto void RdKafka\Conf::setConsumeCb(callable $callback)
    Set consume callback to use with poll */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_conf_set_consume_cb, 0, 0, 1)
-                ZEND_ARG_INFO(0, callback)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__Conf, setConsumeCb)
+PHP_METHOD(RdKafka_Conf, setConsumeCb)
 {
     zend_fcall_info fci;
     zend_fcall_info_cache fcc;
@@ -673,12 +634,7 @@ PHP_METHOD(RdKafka__Conf, setConsumeCb)
 
 /* {{{ proto void RdKafka\Conf::setOffsetCommitCb(mixed $callback)
    Set offset commit callback for use with consumer groups */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_conf_set_offset_commit_cb, 0, 0, 1)
-    ZEND_ARG_INFO(0, callback)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__Conf, setOffsetCommitCb)
+PHP_METHOD(RdKafka_Conf, setOffsetCommitCb)
 {
     zend_fcall_info fci;
     zend_fcall_info_cache fcc;
@@ -710,12 +666,7 @@ PHP_METHOD(RdKafka__Conf, setOffsetCommitCb)
 
 /* {{{ proto void RdKafka\Conf::setLogCb(mixed $callback)
    Set offset commit callback for use with consumer groups */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_conf_set_log_cb, 0, 0, 1)
-    ZEND_ARG_INFO(0, callback)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__Conf, setLogCb)
+PHP_METHOD(RdKafka_Conf, setLogCb)
 {
     zend_fcall_info fci;
     zend_fcall_info_cache fcc;
@@ -748,7 +699,7 @@ PHP_METHOD(RdKafka__Conf, setLogCb)
 /* }}} */
 
 /* {{{ proto RdKafka\TopicConf::__construct() */
-PHP_METHOD(RdKafka__TopicConf, __construct)
+PHP_METHOD(RdKafka_TopicConf, __construct)
 {
     kafka_conf_object *intern;
     zend_error_handling error_handling;
@@ -769,12 +720,7 @@ PHP_METHOD(RdKafka__TopicConf, __construct)
 /* }}} */
 
 /* {{{ proto RdKafka\TopicConf::setPartitioner(int $partitioner) */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_topic_conf_set_partitioner, 0, 0, 1)
-    ZEND_ARG_INFO(0, partitioner)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__TopicConf, setPartitioner)
+PHP_METHOD(RdKafka_TopicConf, setPartitioner)
 {
     kafka_conf_object *intern;
     zend_long id;
@@ -816,42 +762,15 @@ PHP_METHOD(RdKafka__TopicConf, setPartitioner)
 }
 /* }}} */
 
-static const zend_function_entry kafka_topic_conf_fe[] = {
-    PHP_ME(RdKafka__TopicConf, __construct, arginfo_kafka_conf___construct, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__Conf, dump, arginfo_kafka_conf_dump, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__Conf, set, arginfo_kafka_conf_set, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__TopicConf, setPartitioner, arginfo_kafka_topic_conf_set_partitioner, ZEND_ACC_PUBLIC)
-    PHP_FE_END
-};
-
-static const zend_function_entry kafka_conf_fe[] = {
-    PHP_ME(RdKafka__Conf, __construct, arginfo_kafka_conf___construct, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__Conf, dump, arginfo_kafka_conf_dump, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__Conf, set, arginfo_kafka_conf_set, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__Conf, setDefaultTopicConf, arginfo_kafka_conf_set_default_topic_conf, ZEND_ACC_PUBLIC | ZEND_ACC_DEPRECATED)
-    PHP_ME(RdKafka__Conf, setErrorCb, arginfo_kafka_conf_set_error_cb, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__Conf, setDrMsgCb, arginfo_kafka_conf_set_dr_msg_cb, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__Conf, setStatsCb, arginfo_kafka_conf_set_stats_cb, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__Conf, setRebalanceCb, arginfo_kafka_conf_set_rebalance_cb, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__Conf, setConsumeCb, arginfo_kafka_conf_set_consume_cb, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__Conf, setOffsetCommitCb, arginfo_kafka_conf_set_offset_commit_cb, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__Conf, setLogCb, arginfo_kafka_conf_set_log_cb, ZEND_ACC_PUBLIC)
-    PHP_FE_END
-};
-
 void kafka_conf_minit(INIT_FUNC_ARGS)
 {
-    zend_class_entry tmpce;
-
     handlers = kafka_default_object_handlers;
     handlers.free_obj = kafka_conf_free;
     handlers.offset = XtOffsetOf(kafka_conf_object, std);
 
-    INIT_NS_CLASS_ENTRY(tmpce, "RdKafka", "Conf", kafka_conf_fe);
-    ce_kafka_conf = zend_register_internal_class(&tmpce);
+    ce_kafka_conf = register_class_RdKafka_Conf();
     ce_kafka_conf->create_object = kafka_conf_new;
 
-    INIT_NS_CLASS_ENTRY(tmpce, "RdKafka", "TopicConf", kafka_topic_conf_fe);
-    ce_kafka_topic_conf = zend_register_internal_class(&tmpce);
+    ce_kafka_topic_conf = register_class_RdKafka_TopicConf();
     ce_kafka_topic_conf->create_object = kafka_conf_new;
 }
