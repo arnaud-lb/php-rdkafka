@@ -31,6 +31,11 @@
 #include "topic.h"
 #include "message.h"
 #include "metadata.h"
+#if PHP_VERSION_ID < 80000
+#include "kafka_consumer_legacy_arginfo.h"
+#else
+#include "kafka_consumer_arginfo.h"
+#endif
 
 typedef struct _object_intern {
     rd_kafka_t              *rk;
@@ -112,12 +117,7 @@ static int has_group_id(rd_kafka_conf_t *conf) { /* {{{ */
 } /* }}} */
 
 /* {{{ proto RdKafka\KafkaConsumer::__construct(RdKafka\Conf $conf) */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_kafka_consumer___construct, 0, 0, 1)
-    ZEND_ARG_INFO(0, conf)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__KafkaConsumer, __construct)
+PHP_METHOD(RdKafka_KafkaConsumer, __construct)
 {
     zval *zconf;
     zend_error_handling error_handling;
@@ -174,12 +174,7 @@ PHP_METHOD(RdKafka__KafkaConsumer, __construct)
 
 /* {{{ proto void RdKafka\KafkaConsumer::assign([array $topics])
     Atomic assignment of partitions to consume */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_kafka_consumer_assign, 0, 0, 0)
-    ZEND_ARG_INFO(0, topic_partitions)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__KafkaConsumer, assign)
+PHP_METHOD(RdKafka_KafkaConsumer, assign)
 {
     HashTable *htopars = NULL;
     rd_kafka_topic_partition_list_t *topics;
@@ -219,11 +214,7 @@ PHP_METHOD(RdKafka__KafkaConsumer, assign)
 
 /* {{{ proto array RdKafka\KafkaConsumer::getAssignment()
     Returns the current partition getAssignment */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_kafka_consumer_getAssignment, 0, 0, 0)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__KafkaConsumer, getAssignment)
+PHP_METHOD(RdKafka_KafkaConsumer, getAssignment)
 {
     rd_kafka_resp_err_t err;
     rd_kafka_topic_partition_list_t *topics;
@@ -252,12 +243,7 @@ PHP_METHOD(RdKafka__KafkaConsumer, getAssignment)
 
 /* {{{ proto void RdKafka\KafkaConsumer::subscribe(array $topics)
     Update the subscription set to $topics */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_kafka_consumer_subscribe, 0, 0, 1)
-    ZEND_ARG_INFO(0, topics)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__KafkaConsumer, subscribe)
+PHP_METHOD(RdKafka_KafkaConsumer, subscribe)
 {
     HashTable *htopics;
     HashPosition pos;
@@ -297,11 +283,7 @@ PHP_METHOD(RdKafka__KafkaConsumer, subscribe)
 
 /* {{{ proto array RdKafka\KafkaConsumer::getSubscription()
    Returns the current subscription as set by subscribe() */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_kafka_consumer_getSubscription, 0, 0, 0)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__KafkaConsumer, getSubscription)
+PHP_METHOD(RdKafka_KafkaConsumer, getSubscription)
 {
     rd_kafka_resp_err_t err;
     rd_kafka_topic_partition_list_t *topics;
@@ -336,11 +318,7 @@ PHP_METHOD(RdKafka__KafkaConsumer, getSubscription)
 
 /* {{{ proto void RdKafka\KafkaConsumer::unsubsribe()
     Unsubscribe from the current subscription set */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_kafka_consumer_unsubscribe, 0, 0, 0)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__KafkaConsumer, unsubscribe)
+PHP_METHOD(RdKafka_KafkaConsumer, unsubscribe)
 {
     object_intern *intern;
     rd_kafka_resp_err_t err;
@@ -365,12 +343,7 @@ PHP_METHOD(RdKafka__KafkaConsumer, unsubscribe)
 
 /* {{{ proto Message RdKafka\KafkaConsumer::consume()
    Consume message or get error event, triggers callbacks */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_kafka_consumer_consume, 0, 0, 1)
-    ZEND_ARG_INFO(0, timeout_ms)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__KafkaConsumer, consume)
+PHP_METHOD(RdKafka_KafkaConsumer, consume)
 {
     object_intern *intern;
     zend_long timeout_ms;
@@ -486,12 +459,7 @@ static void consumer_commit(int async, INTERNAL_FUNCTION_PARAMETERS) /* {{{ */
 
 /* {{{ proto void RdKafka\KafkaConsumer::commit([mixed $message_or_offsets])
    Commit offsets */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_kafka_consumer_commit, 0, 0, 0)
-    ZEND_ARG_INFO(0, message_or_offsets)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__KafkaConsumer, commit)
+PHP_METHOD(RdKafka_KafkaConsumer, commit)
 {
     consumer_commit(0, INTERNAL_FUNCTION_PARAM_PASSTHRU);
 }
@@ -499,12 +467,7 @@ PHP_METHOD(RdKafka__KafkaConsumer, commit)
 
 /* {{{ proto void RdKafka\KafkaConsumer::commitAsync([mixed $message_or_offsets])
    Commit offsets */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_kafka_consumer_commit_async, 0, 0, 0)
-    ZEND_ARG_INFO(0, message_or_offsets)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__KafkaConsumer, commitAsync)
+PHP_METHOD(RdKafka_KafkaConsumer, commitAsync)
 {
     consumer_commit(1, INTERNAL_FUNCTION_PARAM_PASSTHRU);
 }
@@ -512,11 +475,7 @@ PHP_METHOD(RdKafka__KafkaConsumer, commitAsync)
 
 /* {{{ proto void RdKafka\KafkaConsumer::close()
    Close connection */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_kafka_consumer_close, 0, 0, 0)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__KafkaConsumer, close)
+PHP_METHOD(RdKafka_KafkaConsumer, close)
 {
     object_intern *intern;
 
@@ -532,13 +491,7 @@ PHP_METHOD(RdKafka__KafkaConsumer, close)
 
 /* {{{ proto Metadata RdKafka\KafkaConsumer::getMetadata(bool all_topics, RdKafka\Topic only_topic, int timeout_ms)
    Request Metadata from broker */
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_kafka_consumer_getMetadata, 0, 0, 3)
-    ZEND_ARG_INFO(0, all_topics)
-    ZEND_ARG_INFO(0, only_topic)
-    ZEND_ARG_INFO(0, timeout_ms)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__KafkaConsumer, getMetadata)
+PHP_METHOD(RdKafka_KafkaConsumer, getMetadata)
 {
     zend_bool all_topics;
     zval *only_zrkt;
@@ -577,13 +530,7 @@ PHP_METHOD(RdKafka__KafkaConsumer, getMetadata)
 
 /* {{{ proto RdKafka\KafkaConsumerTopic RdKafka\KafkaConsumer::newTopic(string $topic)
    Returns a RdKafka\KafkaConsumerTopic object */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_kafka_consumer_new_topic, 0, 0, 1)
-    ZEND_ARG_INFO(0, topic_name)
-    ZEND_ARG_INFO(0, topic_conf)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__KafkaConsumer, newTopic)
+PHP_METHOD(RdKafka_KafkaConsumer, newTopic)
 {
     char *topic;
     size_t topic_len;
@@ -631,13 +578,7 @@ PHP_METHOD(RdKafka__KafkaConsumer, newTopic)
 
 /* {{{ proto array RdKafka\KafkaConsumer::getCommittedOffsets(array $topics, int timeout_ms)
    Retrieve committed offsets for topics+partitions */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_kafka_consumer_get_committed_offsets, 0, 0, 2)
-    ZEND_ARG_INFO(0, topic_partitions)
-    ZEND_ARG_INFO(0, timeout_ms)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__KafkaConsumer, getCommittedOffsets)
+PHP_METHOD(RdKafka_KafkaConsumer, getCommittedOffsets)
 {
     HashTable *htopars = NULL;
     zend_long timeout_ms;
@@ -675,12 +616,7 @@ PHP_METHOD(RdKafka__KafkaConsumer, getCommittedOffsets)
 
 /* {{{ proto array RdKafka\KafkaConsumer::getOffsetPositions(array $topics)
    Retrieve current offsets for topics+partitions */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_kafka_consumer_get_offset_positions, 0, 0, 1)
-    ZEND_ARG_INFO(0, topic_partitions)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__KafkaConsumer, getOffsetPositions)
+PHP_METHOD(RdKafka_KafkaConsumer, getOffsetPositions)
 {
     HashTable *htopars = NULL;
     object_intern *intern;
@@ -715,11 +651,7 @@ PHP_METHOD(RdKafka__KafkaConsumer, getOffsetPositions)
 
 /* {{{ proto void RdKafka\KafkaConsumer::offsetsForTimes(array $topicPartitions, int $timeout_ms)
    Look up the offsets for the given partitions by timestamp. */
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_kafka_consumer_offsets_for_times, 0, 0, 2)
-    ZEND_ARG_INFO(0, topic_partitions)
-    ZEND_ARG_INFO(0, timeout_ms)
-ZEND_END_ARG_INFO()
-PHP_METHOD(RdKafka__KafkaConsumer, offsetsForTimes)
+PHP_METHOD(RdKafka_KafkaConsumer, offsetsForTimes)
 {
     HashTable *htopars = NULL;
     object_intern *intern;
@@ -755,16 +687,7 @@ PHP_METHOD(RdKafka__KafkaConsumer, offsetsForTimes)
 
 /* {{{ proto void RdKafka\KafkaConsumer::queryWatermarkOffsets(string $topic, int $partition, int &$low, int &$high, int $timeout_ms)
    Query broker for low (oldest/beginning) or high (newest/end) offsets for partition */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_kafka_consumer_query_watermark_offsets, 0, 0, 1)
-    ZEND_ARG_INFO(0, topic)
-    ZEND_ARG_INFO(0, partition)
-    ZEND_ARG_INFO(1, low)
-    ZEND_ARG_INFO(1, high)
-    ZEND_ARG_INFO(0, timeout_ms)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__KafkaConsumer, queryWatermarkOffsets)
+PHP_METHOD(RdKafka_KafkaConsumer, queryWatermarkOffsets)
 {
     object_intern *intern;
     char *topic;
@@ -800,11 +723,7 @@ PHP_METHOD(RdKafka__KafkaConsumer, queryWatermarkOffsets)
 
 /* {{{ proto RdKafka\TopicPartition[] RdKafka\KafkaConsumer::pausePatitions(RdKafka\TopicPartition[] $topicPartitions)
    Pause consumption for the provided list of partitions. */
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_kafka_consumer_pause_partitions, 0, 0, 1)
-    ZEND_ARG_INFO(0, topic_partitions)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__KafkaConsumer, pausePartitions)
+PHP_METHOD(RdKafka_KafkaConsumer, pausePartitions)
 {
     HashTable *htopars;
     rd_kafka_topic_partition_list_t *topars;
@@ -840,11 +759,7 @@ PHP_METHOD(RdKafka__KafkaConsumer, pausePartitions)
 
 /* {{{ proto RdKafka\TopicPartition[] RdKafka\KafkaConsumer::resumePatitions(RdKafka\TopicPartition[] $topicPartitions)
    Resume consumption for the provided list of partitions. */
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_kafka_consumer_resume_partitions, 0, 0, 1)
-    ZEND_ARG_INFO(0, topic_partitions)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__KafkaConsumer, resumePartitions)
+PHP_METHOD(RdKafka_KafkaConsumer, resumePartitions)
 {
     HashTable *htopars;
     rd_kafka_topic_partition_list_t *topars;
@@ -878,41 +793,12 @@ PHP_METHOD(RdKafka__KafkaConsumer, resumePartitions)
 }
 /* }}} */
 
-static const zend_function_entry fe[] = { /* {{{ */
-    PHP_ME(RdKafka__KafkaConsumer, __construct, arginfo_kafka_kafka_consumer___construct, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__KafkaConsumer, assign, arginfo_kafka_kafka_consumer_assign, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__KafkaConsumer, getAssignment, arginfo_kafka_kafka_consumer_getAssignment, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__KafkaConsumer, commit, arginfo_kafka_kafka_consumer_commit, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__KafkaConsumer, close, arginfo_kafka_kafka_consumer_close, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__KafkaConsumer, commitAsync, arginfo_kafka_kafka_consumer_commit_async, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__KafkaConsumer, consume, arginfo_kafka_kafka_consumer_consume, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__KafkaConsumer, subscribe, arginfo_kafka_kafka_consumer_subscribe, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__KafkaConsumer, getSubscription, arginfo_kafka_kafka_consumer_getSubscription, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__KafkaConsumer, unsubscribe, arginfo_kafka_kafka_consumer_unsubscribe, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__KafkaConsumer, getMetadata, arginfo_kafka_kafka_consumer_getMetadata, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__KafkaConsumer, newTopic, arginfo_kafka_kafka_consumer_new_topic, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__KafkaConsumer, getCommittedOffsets, arginfo_kafka_kafka_consumer_get_committed_offsets, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__KafkaConsumer, getOffsetPositions, arginfo_kafka_kafka_consumer_get_offset_positions, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__KafkaConsumer, queryWatermarkOffsets, arginfo_kafka_kafka_consumer_query_watermark_offsets, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__KafkaConsumer, offsetsForTimes, arginfo_kafka_kafka_consumer_offsets_for_times, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__KafkaConsumer, pausePartitions, arginfo_kafka_kafka_consumer_pause_partitions, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__KafkaConsumer, resumePartitions, arginfo_kafka_kafka_consumer_resume_partitions, ZEND_ACC_PUBLIC)
-    PHP_FE_END
-}; /* }}} */
-
 void kafka_kafka_consumer_minit(INIT_FUNC_ARGS) /* {{{ */
 {
-    zend_class_entry tmpce;
-
-    INIT_NS_CLASS_ENTRY(tmpce, "RdKafka", "KafkaConsumer", fe);
-    ce = zend_register_internal_class(&tmpce);
+    ce = register_class_RdKafka_KafkaConsumer();
     ce->create_object = kafka_consumer_new;
 
     handlers = kafka_default_object_handlers;
     handlers.free_obj = kafka_consumer_free;
     handlers.offset = XtOffsetOf(object_intern, std);
-
-    zend_declare_property_null(ce, ZEND_STRL("error_cb"), ZEND_ACC_PRIVATE);
-    zend_declare_property_null(ce, ZEND_STRL("rebalance_cb"), ZEND_ACC_PRIVATE);
-    zend_declare_property_null(ce, ZEND_STRL("dr_msg_cb"), ZEND_ACC_PRIVATE);
 } /* }}} */
