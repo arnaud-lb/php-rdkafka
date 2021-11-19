@@ -612,24 +612,17 @@ PHP_METHOD(RdKafka_Topic, getName)
 
 void kafka_topic_minit(INIT_FUNC_ARGS) { /* {{{ */
 
-    zend_class_entry ce;
-
     memcpy(&object_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
     object_handlers.clone_obj = NULL;
     object_handlers.free_obj = kafka_topic_free;
     object_handlers.offset = XtOffsetOf(kafka_topic_object, std);
 
-    INIT_NS_CLASS_ENTRY(ce, "RdKafka", "Topic", class_RdKafka_Topic_methods);
-    ce_kafka_topic = zend_register_internal_class(&ce);
-    ce_kafka_topic->ce_flags |= ZEND_ACC_EXPLICIT_ABSTRACT_CLASS;
+    ce_kafka_topic = register_class_RdKafka_Topic();
     ce_kafka_topic->create_object = kafka_topic_new;
 
-    INIT_NS_CLASS_ENTRY(ce, "RdKafka", "ConsumerTopic", class_RdKafka_ConsumerTopic_methods);
-    ce_kafka_consumer_topic = zend_register_internal_class_ex(&ce, ce_kafka_topic);
+    ce_kafka_consumer_topic = register_class_RdKafka_ConsumerTopic(ce_kafka_topic);
 
-    INIT_NS_CLASS_ENTRY(ce, "RdKafka", "KafkaConsumerTopic", class_RdKafka_KafkaConsumerTopic_methods);
-    ce_kafka_kafka_consumer_topic = zend_register_internal_class_ex(&ce, ce_kafka_topic);
+    ce_kafka_kafka_consumer_topic = register_class_RdKafka_KafkaConsumerTopic(ce_kafka_topic);
 
-    INIT_NS_CLASS_ENTRY(ce, "RdKafka", "ProducerTopic", class_RdKafka_ProducerTopic_methods);
-    ce_kafka_producer_topic = zend_register_internal_class_ex(&ce, ce_kafka_topic);
+    ce_kafka_producer_topic = register_class_RdKafka_ProducerTopic(ce_kafka_topic);
 } /* }}} */

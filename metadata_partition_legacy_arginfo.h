@@ -1,5 +1,5 @@
 /* This is a generated file, edit the .stub.php file instead.
- * Stub hash: f037447a0343c97281f5f1d0578154ebaafcb647 */
+ * Stub hash: 4c02c5ac3a6240ab8cbc90451bdc54a3de2c2d2f */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_class_RdKafka_Metadata_Partition_getId, 0, 0, 0)
 ZEND_END_ARG_INFO()
@@ -28,3 +28,13 @@ static const zend_function_entry class_RdKafka_Metadata_Partition_methods[] = {
 	ZEND_ME(RdKafka_Metadata_Partition, getIsrs, arginfo_class_RdKafka_Metadata_Partition_getIsrs, ZEND_ACC_PUBLIC)
 	ZEND_FE_END
 };
+
+static zend_class_entry *register_class_RdKafka_Metadata_Partition(void)
+{
+	zend_class_entry ce, *class_entry;
+
+	INIT_NS_CLASS_ENTRY(ce, "RdKafka\\Metadata", "Partition", class_RdKafka_Metadata_Partition_methods);
+	class_entry = zend_register_internal_class_ex(&ce, NULL);
+
+	return class_entry;
+}

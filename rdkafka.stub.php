@@ -1,12 +1,17 @@
 <?php
 
 /**
+ * @generate-class-entries
  * @generate-function-entries
  * @generate-legacy-arginfo
  */
 
 namespace {
     abstract class RdKafka {
+        private ?callable $error_cb;
+
+        private ?callable $dr_cb;
+
         private function __construct() {}
 
         /** @tentative-return-type */
@@ -73,6 +78,9 @@ namespace {
 }
 
 namespace RdKafka {
+    class Exception extends \Exception {
+    }
+
     class Consumer extends \RdKafka {
         public function __construct(?Conf $conf = null) {}
 

@@ -1,5 +1,5 @@
 /* This is a generated file, edit the .stub.php file instead.
- * Stub hash: 4b608daf23da30432e8e6eac836d173d9a4911f2 */
+ * Stub hash: 6724660ef71fae9d99b824c1ef54ca61adb83897 */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_class_RdKafka_TopicPartition___construct, 0, 0, 2)
 	ZEND_ARG_INFO(0, topic)
@@ -50,3 +50,13 @@ static const zend_function_entry class_RdKafka_TopicPartition_methods[] = {
 	ZEND_ME(RdKafka_TopicPartition, getErr, arginfo_class_RdKafka_TopicPartition_getErr, ZEND_ACC_PUBLIC)
 	ZEND_FE_END
 };
+
+static zend_class_entry *register_class_RdKafka_TopicPartition(void)
+{
+	zend_class_entry ce, *class_entry;
+
+	INIT_NS_CLASS_ENTRY(ce, "RdKafka", "TopicPartition", class_RdKafka_TopicPartition_methods);
+	class_entry = zend_register_internal_class_ex(&ce, NULL);
+
+	return class_entry;
+}

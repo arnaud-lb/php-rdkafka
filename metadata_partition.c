@@ -210,10 +210,7 @@ PHP_METHOD(RdKafka_Metadata_Partition, getIsrs)
 
 void kafka_metadata_partition_minit(INIT_FUNC_ARGS)
 {
-    zend_class_entry tmpce;
-
-    INIT_NS_CLASS_ENTRY(tmpce, "RdKafka", "Metadata\\Partition", class_RdKafka_Metadata_Partition_methods);
-    ce = zend_register_internal_class(&tmpce);
+    ce = register_class_RdKafka_Metadata_Partition();
     ce->create_object = create_object;
 
     handlers = kafka_default_object_handlers;

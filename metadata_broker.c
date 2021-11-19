@@ -165,10 +165,7 @@ PHP_METHOD(RdKafka_Metadata_Broker, getPort)
 
 void kafka_metadata_broker_minit(INIT_FUNC_ARGS)
 {
-    zend_class_entry tmpce;
-
-    INIT_NS_CLASS_ENTRY(tmpce, "RdKafka", "Metadata\\Broker", class_RdKafka_Metadata_Broker_methods);
-    ce = zend_register_internal_class(&tmpce);
+    ce = register_class_RdKafka_Metadata_Broker();
     ce->create_object = create_object;
 
     handlers = kafka_default_object_handlers;

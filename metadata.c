@@ -204,10 +204,7 @@ PHP_METHOD(RdKafka_Metadata, getTopics)
 
 void kafka_metadata_minit(INIT_FUNC_ARGS)
 {
-    zend_class_entry tmpce;
-
-    INIT_NS_CLASS_ENTRY(tmpce, "RdKafka", "Metadata", class_RdKafka_Metadata_methods);
-    ce = zend_register_internal_class(&tmpce);
+    ce = register_class_RdKafka_Metadata();
     ce->create_object = kafka_metadata_new;
 
     handlers = kafka_default_object_handlers;

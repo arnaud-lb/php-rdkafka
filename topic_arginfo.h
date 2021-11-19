@@ -1,5 +1,5 @@
 /* This is a generated file, edit the .stub.php file instead.
- * Stub hash: 6bec2029a0d3061a998d73f77d502bfbdccd6346 */
+ * Stub hash: 7d23f208609b509bb75f8286fc5c93c127c406d6 */
 
 ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_class_RdKafka_Topic_getName, 0, 0, IS_STRING, 0)
 ZEND_END_ARG_INFO()
@@ -117,3 +117,44 @@ static const zend_function_entry class_RdKafka_ProducerTopic_methods[] = {
 #endif
 	ZEND_FE_END
 };
+
+static zend_class_entry *register_class_RdKafka_Topic(void)
+{
+	zend_class_entry ce, *class_entry;
+
+	INIT_NS_CLASS_ENTRY(ce, "RdKafka", "Topic", class_RdKafka_Topic_methods);
+	class_entry = zend_register_internal_class_ex(&ce, NULL);
+	class_entry->ce_flags |= ZEND_ACC_ABSTRACT;
+
+	return class_entry;
+}
+
+static zend_class_entry *register_class_RdKafka_ConsumerTopic(zend_class_entry *class_entry_RdKafka_Topic)
+{
+	zend_class_entry ce, *class_entry;
+
+	INIT_NS_CLASS_ENTRY(ce, "RdKafka", "ConsumerTopic", class_RdKafka_ConsumerTopic_methods);
+	class_entry = zend_register_internal_class_ex(&ce, class_entry_RdKafka_Topic);
+
+	return class_entry;
+}
+
+static zend_class_entry *register_class_RdKafka_KafkaConsumerTopic(zend_class_entry *class_entry_RdKafka_Topic)
+{
+	zend_class_entry ce, *class_entry;
+
+	INIT_NS_CLASS_ENTRY(ce, "RdKafka", "KafkaConsumerTopic", class_RdKafka_KafkaConsumerTopic_methods);
+	class_entry = zend_register_internal_class_ex(&ce, class_entry_RdKafka_Topic);
+
+	return class_entry;
+}
+
+static zend_class_entry *register_class_RdKafka_ProducerTopic(zend_class_entry *class_entry_RdKafka_Topic)
+{
+	zend_class_entry ce, *class_entry;
+
+	INIT_NS_CLASS_ENTRY(ce, "RdKafka", "ProducerTopic", class_RdKafka_ProducerTopic_methods);
+	class_entry = zend_register_internal_class_ex(&ce, class_entry_RdKafka_Topic);
+
+	return class_entry;
+}
