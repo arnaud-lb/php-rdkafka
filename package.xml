@@ -10,10 +10,10 @@
   <email>arnaud.lb@gmail.com</email>
   <active>yes</active>
  </lead>
- <date>2021-01-14</date>
- <time>12:00:00</time>
+ <date>2021-11-19</date>
+ <time>14:00:00</time>
  <version>
-  <release>5.0.0</release>
+  <release>5.0.1</release>
   <api>4.0.0</api>
  </version>
  <stability>
@@ -23,11 +23,12 @@
  <license uri="http://opensource.org/licenses/mit-license.php">MIT License</license>
  <notes>
   ## Enhancements
-  - PHP 8 support (@nick-zh, @arnaud-lb)
-  - Suport passing an opaque value in produce(), producev() (@arnaud-lb)
+  - Add pausePartitions(), resumePartitions() on RdKfaka, RdKafka\KafkaConsumer (#438, @arnaud-lb)
+  - Clarify error when KafkaConsumer is closed (@zoonru)
 
-  ## Breaking changes
-  - Dropped PHP 5 support
+  ## Bugfixes
+  - Fix windows build (#440, @nick-zh)
+  - Fix crash in RdKafka\Metadata\Topic::getTopic() (#465, @arnaud-lb)
  </notes>
  <contents>
   <dir name="/">
@@ -116,6 +117,27 @@
  <providesextension>rdkafka</providesextension>
  <extsrcrelease/>
  <changelog>
+  <release>
+   <date>2021-01-14</date>
+   <time>12:00:00</time>
+   <version>
+    <release>5.0.0</release>
+    <api>4.0.0</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <license uri="http://opensource.org/licenses/mit-license.php">MIT License</license>
+   <notes>
+    ## Enhancements
+    - PHP 8 support (@nick-zh, @arnaud-lb)
+    - Suport passing an opaque value in produce(), producev() (@arnaud-lb)
+
+    ## Breaking changes
+    - Dropped PHP 5 support
+   </notes>
+  </release>
   <release>
    <date>2020-12-06</date>
    <time>12:00:00</time>
