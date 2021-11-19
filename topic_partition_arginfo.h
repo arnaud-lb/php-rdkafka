@@ -1,5 +1,5 @@
 /* This is a generated file, edit the .stub.php file instead.
- * Stub hash: 5f1c642e1e35859ace5c1d4edb5a0554f5e2f0a0 */
+ * Stub hash: 4b608daf23da30432e8e6eac836d173d9a4911f2 */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_class_RdKafka_TopicPartition___construct, 0, 0, 2)
 	ZEND_ARG_TYPE_INFO(0, topic, IS_STRING, 0)
@@ -7,27 +7,27 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_class_RdKafka_TopicPartition___construct, 0, 0, 2
 	ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, offset, IS_LONG, 1, "0")
 ZEND_END_ARG_INFO()
 
-ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_RdKafka_TopicPartition_getTopic, 0, 0, IS_STRING, 1)
+ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_class_RdKafka_TopicPartition_getTopic, 0, 0, IS_STRING, 1)
 ZEND_END_ARG_INFO()
 
-ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(arginfo_class_RdKafka_TopicPartition_setTopic, 0, 1, RdKafka\\TopicPartition, 0)
+ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_OBJ_INFO_EX(arginfo_class_RdKafka_TopicPartition_setTopic, 0, 1, RdKafka\\TopicPartition, 0)
 	ZEND_ARG_TYPE_INFO(0, topic_name, IS_STRING, 0)
 ZEND_END_ARG_INFO()
 
-ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_RdKafka_TopicPartition_getPartition, 0, 0, IS_LONG, 0)
+ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_class_RdKafka_TopicPartition_getPartition, 0, 0, IS_LONG, 0)
 ZEND_END_ARG_INFO()
 
-ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(arginfo_class_RdKafka_TopicPartition_setPartition, 0, 1, RdKafka\\TopicPartition, 0)
+ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_OBJ_INFO_EX(arginfo_class_RdKafka_TopicPartition_setPartition, 0, 1, RdKafka\\TopicPartition, 0)
 	ZEND_ARG_TYPE_INFO(0, partition, IS_LONG, 0)
 ZEND_END_ARG_INFO()
 
 #define arginfo_class_RdKafka_TopicPartition_getOffset arginfo_class_RdKafka_TopicPartition_getPartition
 
-ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(arginfo_class_RdKafka_TopicPartition_setOffset, 0, 1, RdKafka\\TopicPartition, 0)
+ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_OBJ_INFO_EX(arginfo_class_RdKafka_TopicPartition_setOffset, 0, 1, RdKafka\\TopicPartition, 0)
 	ZEND_ARG_TYPE_INFO(0, offset, IS_LONG, 0)
 ZEND_END_ARG_INFO()
 
-ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_RdKafka_TopicPartition_getErr, 0, 0, IS_LONG, 1)
+ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_class_RdKafka_TopicPartition_getErr, 0, 0, IS_LONG, 1)
 ZEND_END_ARG_INFO()
 
 

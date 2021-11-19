@@ -1,39 +1,39 @@
 /* This is a generated file, edit the .stub.php file instead.
- * Stub hash: dab4e0541c9554e894681ff6835e93761830d600 */
+ * Stub hash: 6bec2029a0d3061a998d73f77d502bfbdccd6346 */
 
-ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_RdKafka_Topic_getName, 0, 0, IS_STRING, 0)
+ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_class_RdKafka_Topic_getName, 0, 0, IS_STRING, 0)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_class_RdKafka_ConsumerTopic___construct, 0, 0, 0)
 ZEND_END_ARG_INFO()
 
-ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_RdKafka_ConsumerTopic_consumeQueueStart, 0, 3, IS_VOID, 0)
+ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_class_RdKafka_ConsumerTopic_consumeQueueStart, 0, 3, IS_VOID, 0)
 	ZEND_ARG_TYPE_INFO(0, partition, IS_LONG, 0)
 	ZEND_ARG_TYPE_INFO(0, offset, IS_LONG, 0)
 	ZEND_ARG_OBJ_INFO(0, queue, RdKafka\\Queue, 0)
 ZEND_END_ARG_INFO()
 
-ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_RdKafka_ConsumerTopic_consumeCallback, 0, 3, IS_LONG, 0)
+ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_class_RdKafka_ConsumerTopic_consumeCallback, 0, 3, IS_LONG, 0)
 	ZEND_ARG_TYPE_INFO(0, partition, IS_LONG, 0)
 	ZEND_ARG_TYPE_INFO(0, timeout_ms, IS_LONG, 0)
 	ZEND_ARG_TYPE_INFO(0, callback, IS_CALLABLE, 0)
 ZEND_END_ARG_INFO()
 
-ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_RdKafka_ConsumerTopic_consumeStart, 0, 2, IS_VOID, 0)
+ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_class_RdKafka_ConsumerTopic_consumeStart, 0, 2, IS_VOID, 0)
 	ZEND_ARG_TYPE_INFO(0, partition, IS_LONG, 0)
 	ZEND_ARG_TYPE_INFO(0, offset, IS_LONG, 0)
 ZEND_END_ARG_INFO()
 
-ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_RdKafka_ConsumerTopic_consumeStop, 0, 1, IS_VOID, 0)
+ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_class_RdKafka_ConsumerTopic_consumeStop, 0, 1, IS_VOID, 0)
 	ZEND_ARG_TYPE_INFO(0, partition, IS_LONG, 0)
 ZEND_END_ARG_INFO()
 
-ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(arginfo_class_RdKafka_ConsumerTopic_consume, 0, 2, RdKafka\\Message, 1)
+ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_OBJ_INFO_EX(arginfo_class_RdKafka_ConsumerTopic_consume, 0, 2, RdKafka\\Message, 1)
 	ZEND_ARG_TYPE_INFO(0, partition, IS_LONG, 0)
 	ZEND_ARG_TYPE_INFO(0, timeout_ms, IS_LONG, 0)
 ZEND_END_ARG_INFO()
 
-ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_RdKafka_ConsumerTopic_consumeBatch, 0, 3, IS_ARRAY, 0)
+ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_class_RdKafka_ConsumerTopic_consumeBatch, 0, 3, IS_ARRAY, 0)
 	ZEND_ARG_TYPE_INFO(0, partition, IS_LONG, 0)
 	ZEND_ARG_TYPE_INFO(0, timeout_ms, IS_LONG, 0)
 	ZEND_ARG_TYPE_INFO(0, batch_size, IS_LONG, 0)
@@ -47,7 +47,7 @@ ZEND_END_ARG_INFO()
 
 #define arginfo_class_RdKafka_ProducerTopic___construct arginfo_class_RdKafka_ConsumerTopic___construct
 
-ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_RdKafka_ProducerTopic_produce, 0, 2, IS_VOID, 0)
+ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_class_RdKafka_ProducerTopic_produce, 0, 2, IS_VOID, 0)
 	ZEND_ARG_TYPE_INFO(0, partition, IS_LONG, 0)
 	ZEND_ARG_TYPE_INFO(0, msgflags, IS_LONG, 0)
 	ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, payload, IS_STRING, 1, "null")
@@ -56,7 +56,7 @@ ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_RdKafka_ProducerTopic_prod
 ZEND_END_ARG_INFO()
 
 #if defined(HAVE_RD_KAFKA_MESSAGE_HEADERS)
-ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_RdKafka_ProducerTopic_producev, 0, 2, IS_VOID, 0)
+ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_class_RdKafka_ProducerTopic_producev, 0, 2, IS_VOID, 0)
 	ZEND_ARG_TYPE_INFO(0, partition, IS_LONG, 0)
 	ZEND_ARG_TYPE_INFO(0, msgflags, IS_LONG, 0)
 	ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, payload, IS_STRING, 1, "null")

@@ -1,20 +1,20 @@
 /* This is a generated file, edit the .stub.php file instead.
- * Stub hash: e58865f3786e7e88b1e453e9e47639eb31180ae6 */
+ * Stub hash: 03254419e10af3447777114463b9a9e64413545c */
 
-ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_RdKafka_Metadata_Collection_count, 0, 0, IS_LONG, 0)
+ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_class_RdKafka_Metadata_Collection_count, 0, 0, IS_LONG, 0)
 ZEND_END_ARG_INFO()
 
-ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_RdKafka_Metadata_Collection_current, 0, 0, IS_MIXED, 0)
+ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_class_RdKafka_Metadata_Collection_current, 0, 0, IS_MIXED, 0)
 ZEND_END_ARG_INFO()
 
 #define arginfo_class_RdKafka_Metadata_Collection_key arginfo_class_RdKafka_Metadata_Collection_count
 
-ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_RdKafka_Metadata_Collection_next, 0, 0, IS_VOID, 0)
+ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_class_RdKafka_Metadata_Collection_next, 0, 0, IS_VOID, 0)
 ZEND_END_ARG_INFO()
 
 #define arginfo_class_RdKafka_Metadata_Collection_rewind arginfo_class_RdKafka_Metadata_Collection_next
 
-ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_RdKafka_Metadata_Collection_valid, 0, 0, _IS_BOOL, 0)
+ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_class_RdKafka_Metadata_Collection_valid, 0, 0, _IS_BOOL, 0)
 ZEND_END_ARG_INFO()
 
 

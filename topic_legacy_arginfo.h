@@ -1,10 +1,11 @@
 /* This is a generated file, edit the .stub.php file instead.
- * Stub hash: dab4e0541c9554e894681ff6835e93761830d600 */
+ * Stub hash: 6bec2029a0d3061a998d73f77d502bfbdccd6346 */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_class_RdKafka_Topic_getName, 0, 0, 0)
 ZEND_END_ARG_INFO()
 
-#define arginfo_class_RdKafka_ConsumerTopic___construct arginfo_class_RdKafka_Topic_getName
+ZEND_BEGIN_ARG_INFO_EX(arginfo_class_RdKafka_ConsumerTopic___construct, 0, 0, 0)
+ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_class_RdKafka_ConsumerTopic_consumeQueueStart, 0, 0, 3)
 	ZEND_ARG_INFO(0, partition)
@@ -40,11 +41,11 @@ ZEND_END_ARG_INFO()
 
 #define arginfo_class_RdKafka_ConsumerTopic_offsetStore arginfo_class_RdKafka_ConsumerTopic_consumeStart
 
-#define arginfo_class_RdKafka_KafkaConsumerTopic___construct arginfo_class_RdKafka_Topic_getName
+#define arginfo_class_RdKafka_KafkaConsumerTopic___construct arginfo_class_RdKafka_ConsumerTopic___construct
 
 #define arginfo_class_RdKafka_KafkaConsumerTopic_offsetStore arginfo_class_RdKafka_ConsumerTopic_consumeStart
 
-#define arginfo_class_RdKafka_ProducerTopic___construct arginfo_class_RdKafka_Topic_getName
+#define arginfo_class_RdKafka_ProducerTopic___construct arginfo_class_RdKafka_ConsumerTopic___construct
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_class_RdKafka_ProducerTopic_produce, 0, 0, 2)
 	ZEND_ARG_INFO(0, partition)

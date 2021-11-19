@@ -1,5 +1,5 @@
 /* This is a generated file, edit the .stub.php file instead.
- * Stub hash: 5a830b3b183615e52dcb936bd9ce41f2d4745054 */
+ * Stub hash: 218d2b82c291fccf0934e9488ee6aebae2c032b4 */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_class_RdKafka_Metadata_getOrigBrokerId, 0, 0, 0)
 ZEND_END_ARG_INFO()
