@@ -30,6 +30,11 @@
 #include "topic.h"
 #include "queue.h"
 #include "message.h"
+#if PHP_VERSION_ID < 80000
+#include "queue_legacy_arginfo.h"
+#else
+#include "queue_arginfo.h"
+#endif
 
 zend_class_entry * ce_kafka_queue;
 
@@ -80,12 +85,7 @@ kafka_queue_object * get_kafka_queue_object(zval *zrkqu)
 
 /* {{{ proto RdKafka\Message RdKafka\Queue::consume(int timeout_ms)
    Consume a single message */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_queue_consume, 0, 0, 1)
-    ZEND_ARG_INFO(0, timeout_ms)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__Queue, consume)
+PHP_METHOD(RdKafka_Queue, consume)
 {
     kafka_queue_object *intern;
     zend_long timeout_ms;
@@ -118,15 +118,6 @@ PHP_METHOD(RdKafka__Queue, consume)
 }
 /* }}} */
 
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka___private_construct, 0, 0, 0)
-ZEND_END_ARG_INFO()
-
-static const zend_function_entry kafka_queue_fe[] = {
-    PHP_ME(RdKafka, __construct, arginfo_kafka___private_construct, ZEND_ACC_PRIVATE)
-    PHP_ME(RdKafka__Queue, consume, arginfo_kafka_queue_consume, ZEND_ACC_PUBLIC)
-    PHP_FE_END
-};
-
 void kafka_queue_minit(INIT_FUNC_ARGS) { /* {{{ */
 
     zend_class_entry ce;
@@ -135,7 +126,7 @@ void kafka_queue_minit(INIT_FUNC_ARGS) { /* {{{ */
     handlers.free_obj = kafka_queue_free;
     handlers.offset = XtOffsetOf(kafka_queue_object, std);
 
-    INIT_NS_CLASS_ENTRY(ce, "RdKafka", "Queue", kafka_queue_fe);
+    INIT_NS_CLASS_ENTRY(ce, "RdKafka", "Queue", class_RdKafka_Queue_methods);
     ce_kafka_queue = zend_register_internal_class(&ce);
     ce_kafka_queue->create_object = kafka_queue_new;
 } /* }}} */

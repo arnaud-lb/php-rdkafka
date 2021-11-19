@@ -27,6 +27,11 @@
 #include "ext/spl/spl_iterators.h"
 #include "Zend/zend_interfaces.h"
 #include "Zend/zend_exceptions.h"
+#if PHP_VERSION_ID < 80000
+#include "metadata_broker_legacy_arginfo.h"
+#else
+#include "metadata_broker_arginfo.h"
+#endif
 
 typedef struct _object_intern {
     zval                            zmetadata;
@@ -103,11 +108,7 @@ static HashTable *get_debug_info(Z_RDKAFKA_OBJ *object, int *is_temp) /* {{{ */
 
 /* {{{ proto int RdKafka\Metadata\Broker::getId()
    Broker id */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_metadata_get_id, 0, 0, 0)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__Metadata__Broker, getId)
+PHP_METHOD(RdKafka_Metadata_Broker, getId)
 {
     object_intern *intern;
 
@@ -126,11 +127,7 @@ PHP_METHOD(RdKafka__Metadata__Broker, getId)
 
 /* {{{ proto string RdKafka\Metadata\Broker::getHost()
    Broker hostname */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_metadata_get_host, 0, 0, 0)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__Metadata__Broker, getHost)
+PHP_METHOD(RdKafka_Metadata_Broker, getHost)
 {
     object_intern *intern;
 
@@ -149,11 +146,7 @@ PHP_METHOD(RdKafka__Metadata__Broker, getHost)
 
 /* {{{ proto int RdKafka\Metadata\Broker::getPort()
    Broker port */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_metadata_get_port, 0, 0, 0)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__Metadata__Broker, getPort)
+PHP_METHOD(RdKafka_Metadata_Broker, getPort)
 {
     object_intern *intern;
 
@@ -170,18 +163,11 @@ PHP_METHOD(RdKafka__Metadata__Broker, getPort)
 }
 /* }}} */
 
-static const zend_function_entry fe[] = {
-    PHP_ME(RdKafka__Metadata__Broker, getId, arginfo_kafka_metadata_get_id, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__Metadata__Broker, getHost, arginfo_kafka_metadata_get_host, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__Metadata__Broker, getPort, arginfo_kafka_metadata_get_port, ZEND_ACC_PUBLIC)
-    PHP_FE_END
-};
-
 void kafka_metadata_broker_minit(INIT_FUNC_ARGS)
 {
     zend_class_entry tmpce;
 
-    INIT_NS_CLASS_ENTRY(tmpce, "RdKafka", "Metadata\\Broker", fe);
+    INIT_NS_CLASS_ENTRY(tmpce, "RdKafka", "Metadata\\Broker", class_RdKafka_Metadata_Broker_methods);
     ce = zend_register_internal_class(&tmpce);
     ce->create_object = create_object;
 

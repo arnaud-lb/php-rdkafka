@@ -29,6 +29,11 @@
 #include "metadata_partition.h"
 #include "metadata_collection.h"
 #include "Zend/zend_exceptions.h"
+#if PHP_VERSION_ID < 80000
+#include "metadata_topic_legacy_arginfo.h"
+#else
+#include "metadata_topic_arginfo.h"
+#endif
 
 typedef struct _object_intern {
     zval                            zmetadata;
@@ -115,11 +120,7 @@ static HashTable *get_debug_info(Z_RDKAFKA_OBJ *object, int *is_temp) /* {{{ */
 
 /* {{{ proto string RdKafka\MetadataTopic::getTopic()
    Topic name */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_metadata_get_topic, 0, 0, 0)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__Metadata__Topic, getTopic)
+PHP_METHOD(RdKafka_Metadata_Topic, getTopic)
 {
     object_intern *intern;
 
@@ -138,11 +139,7 @@ PHP_METHOD(RdKafka__Metadata__Topic, getTopic)
 
 /* {{{ proto int RdKafka\MetadataTopic::getErr()
    Error */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_metadata_get_err, 0, 0, 0)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__Metadata__Topic, getErr)
+PHP_METHOD(RdKafka_Metadata_Topic, getErr)
 {
     object_intern *intern;
 
@@ -162,11 +159,7 @@ PHP_METHOD(RdKafka__Metadata__Topic, getErr)
 
 /* {{{ proto RdKafka\Metadata\Collection RdKafka\Metadata\Topic::getPartitions()
    Partitions */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_metadata_get_partitions, 0, 0, 0)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__Metadata__Topic, getPartitions)
+PHP_METHOD(RdKafka_Metadata_Topic, getPartitions)
 {
     object_intern *intern;
 
@@ -183,18 +176,11 @@ PHP_METHOD(RdKafka__Metadata__Topic, getPartitions)
 }
 /* }}} */
 
-static const zend_function_entry fe[] = {
-    PHP_ME(RdKafka__Metadata__Topic, getTopic, arginfo_kafka_metadata_get_topic, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__Metadata__Topic, getPartitions, arginfo_kafka_metadata_get_partitions, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__Metadata__Topic, getErr, arginfo_kafka_metadata_get_err, ZEND_ACC_PUBLIC)
-    PHP_FE_END
-};
-
 void kafka_metadata_topic_minit(INIT_FUNC_ARGS)
 {
     zend_class_entry tmpce;
 
-    INIT_NS_CLASS_ENTRY(tmpce, "RdKafka\\Metadata", "Topic", fe);
+    INIT_NS_CLASS_ENTRY(tmpce, "RdKafka\\Metadata", "Topic", class_RdKafka_Metadata_Topic_methods);
     ce = zend_register_internal_class(&tmpce);
     ce->create_object = create_object;
 
