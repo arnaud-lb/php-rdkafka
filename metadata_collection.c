@@ -241,16 +241,12 @@ PHP_METHOD(RdKafka_Metadata_Collection, valid)
 
 void kafka_metadata_collection_minit(INIT_FUNC_ARGS)
 {
-    zend_class_entry tmpce;
-
-    INIT_NS_CLASS_ENTRY(tmpce, "RdKafka\\Metadata", "Collection", class_RdKafka_Metadata_Collection_methods);
-    ce = zend_register_internal_class(&tmpce);
-    ce->create_object = create_object;
 #if PHP_VERSION_ID < 80100
-    zend_class_implements(ce, 2, spl_ce_Countable, spl_ce_Iterator);
+    ce = register_class_RdKafka_Metadata_Collection(spl_ce_Countable, spl_ce_Iterator);
 #else
-    zend_class_implements(ce, 2, zend_ce_countable, zend_ce_iterator);
+    ce = register_class_RdKafka_Metadata_Collection(zend_ce_countable, zend_ce_iterator);
 #endif
+    ce->create_object = create_object;
 
     handlers = kafka_default_object_handlers;
     handlers.get_debug_info = get_debug_info;

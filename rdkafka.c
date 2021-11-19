@@ -930,7 +930,6 @@ PHP_MINIT_FUNCTION(rdkafka)
     REGISTER_LONG_CONSTANT("RD_KAFKA_LOG_PRINT", RD_KAFKA_LOG_PRINT, CONST_CS | CONST_PERSISTENT);
     REGISTER_LONG_CONSTANT("RD_KAFKA_LOG_SYSLOG", RD_KAFKA_LOG_SYSLOG, CONST_CS | CONST_PERSISTENT);
     REGISTER_LONG_CONSTANT("RD_KAFKA_LOG_SYSLOG_PRINT", RD_KAFKA_LOG_SYSLOG_PRINT, CONST_CS | CONST_PERSISTENT);
-    zend_class_entry ce;
 
     memcpy(&kafka_default_object_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
     kafka_default_object_handlers.clone_obj = NULL;
@@ -939,22 +938,14 @@ PHP_MINIT_FUNCTION(rdkafka)
     kafka_object_handlers.free_obj = kafka_free;
     kafka_object_handlers.offset = XtOffsetOf(kafka_object, std);
 
-    INIT_CLASS_ENTRY(ce, "RdKafka", class_RdKafka_methods);
-    ce_kafka = zend_register_internal_class(&ce);
-    ce_kafka->ce_flags |= ZEND_ACC_EXPLICIT_ABSTRACT_CLASS;
+    ce_kafka = register_class_RdKafka();
     ce_kafka->create_object = kafka_new;
 
-    zend_declare_property_null(ce_kafka, ZEND_STRL("error_cb"), ZEND_ACC_PRIVATE);
-    zend_declare_property_null(ce_kafka, ZEND_STRL("dr_cb"), ZEND_ACC_PRIVATE);
+    ce_kafka_consumer = register_class_RdKafka_Consumer(ce_kafka);
 
-    INIT_NS_CLASS_ENTRY(ce, "RdKafka", "Consumer", class_RdKafka_Consumer_methods);
-    ce_kafka_consumer = zend_register_internal_class_ex(&ce, ce_kafka);
+    ce_kafka_producer = register_class_RdKafka_Producer(ce_kafka);
 
-    INIT_NS_CLASS_ENTRY(ce, "RdKafka", "Producer", class_RdKafka_Producer_methods);
-    ce_kafka_producer = zend_register_internal_class_ex(&ce, ce_kafka);
-
-    INIT_NS_CLASS_ENTRY(ce, "RdKafka", "Exception", NULL);
-    ce_kafka_exception = zend_register_internal_class_ex(&ce, zend_ce_exception);
+    ce_kafka_exception = register_class_RdKafka_Exception(zend_ce_exception);
 
     kafka_conf_minit(INIT_FUNC_ARGS_PASSTHRU);
 #ifdef HAS_RD_KAFKA_TRANSACTIONS

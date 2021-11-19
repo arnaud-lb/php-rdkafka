@@ -371,10 +371,7 @@ PHP_METHOD(RdKafka_TopicPartition, getErr)
 
 void kafka_metadata_topic_partition_minit(INIT_FUNC_ARGS) /* {{{ */
 {
-    zend_class_entry tmpce;
-
-    INIT_NS_CLASS_ENTRY(tmpce, "RdKafka", "TopicPartition", class_RdKafka_TopicPartition_methods);
-    ce_kafka_topic_partition = zend_register_internal_class(&tmpce);
+    ce_kafka_topic_partition = register_class_RdKafka_TopicPartition();
     ce_kafka_topic_partition->create_object = create_object;
 
     handlers = kafka_default_object_handlers;

@@ -120,13 +120,10 @@ PHP_METHOD(RdKafka_Queue, consume)
 
 void kafka_queue_minit(INIT_FUNC_ARGS) { /* {{{ */
 
-    zend_class_entry ce;
-
     handlers = kafka_default_object_handlers;
     handlers.free_obj = kafka_queue_free;
     handlers.offset = XtOffsetOf(kafka_queue_object, std);
 
-    INIT_NS_CLASS_ENTRY(ce, "RdKafka", "Queue", class_RdKafka_Queue_methods);
-    ce_kafka_queue = zend_register_internal_class(&ce);
+    ce_kafka_queue = register_class_RdKafka_Queue();
     ce_kafka_queue->create_object = kafka_queue_new;
 } /* }}} */

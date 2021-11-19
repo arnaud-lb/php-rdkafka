@@ -1,5 +1,5 @@
 /* This is a generated file, edit the .stub.php file instead.
- * Stub hash: b50dbdcaa49b47a89009cc7caf5cfa36612b4b4e */
+ * Stub hash: 534b40ff0c32bc39196c1735bdd6d5676a073e6f */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_class_RdKafka___construct, 0, 0, 0)
 ZEND_END_ARG_INFO()
@@ -150,6 +150,11 @@ static const zend_function_entry class_RdKafka_methods[] = {
 };
 
 
+static const zend_function_entry class_RdKafka_Exception_methods[] = {
+	ZEND_FE_END
+};
+
+
 static const zend_function_entry class_RdKafka_Consumer_methods[] = {
 	ZEND_ME(RdKafka_Consumer, __construct, arginfo_class_RdKafka_Consumer___construct, ZEND_ACC_PUBLIC)
 	ZEND_ME(RdKafka_Consumer, newQueue, arginfo_class_RdKafka_Consumer_newQueue, ZEND_ACC_PUBLIC)
@@ -173,3 +178,56 @@ static const zend_function_entry class_RdKafka_Producer_methods[] = {
 #endif
 	ZEND_FE_END
 };
+
+static zend_class_entry *register_class_RdKafka(void)
+{
+	zend_class_entry ce, *class_entry;
+
+	INIT_CLASS_ENTRY(ce, "RdKafka", class_RdKafka_methods);
+	class_entry = zend_register_internal_class_ex(&ce, NULL);
+	class_entry->ce_flags |= ZEND_ACC_ABSTRACT;
+
+	zval property_error_cb_default_value;
+	ZVAL_UNDEF(&property_error_cb_default_value);
+	zend_string *property_error_cb_name = zend_string_init("error_cb", sizeof("error_cb") - 1, 1);
+	zend_declare_typed_property(class_entry, property_error_cb_name, &property_error_cb_default_value, ZEND_ACC_PRIVATE, NULL, (zend_type) ZEND_TYPE_INIT_MASK(MAY_BE_CALLABLE|MAY_BE_NULL));
+	zend_string_release(property_error_cb_name);
+
+	zval property_dr_cb_default_value;
+	ZVAL_UNDEF(&property_dr_cb_default_value);
+	zend_string *property_dr_cb_name = zend_string_init("dr_cb", sizeof("dr_cb") - 1, 1);
+	zend_declare_typed_property(class_entry, property_dr_cb_name, &property_dr_cb_default_value, ZEND_ACC_PRIVATE, NULL, (zend_type) ZEND_TYPE_INIT_MASK(MAY_BE_CALLABLE|MAY_BE_NULL));
+	zend_string_release(property_dr_cb_name);
+
+	return class_entry;
+}
+
+static zend_class_entry *register_class_RdKafka_Exception(zend_class_entry *class_entry_Exception)
+{
+	zend_class_entry ce, *class_entry;
+
+	INIT_NS_CLASS_ENTRY(ce, "RdKafka", "Exception", class_RdKafka_Exception_methods);
+	class_entry = zend_register_internal_class_ex(&ce, class_entry_Exception);
+
+	return class_entry;
+}
+
+static zend_class_entry *register_class_RdKafka_Consumer(zend_class_entry *class_entry_RdKafka)
+{
+	zend_class_entry ce, *class_entry;
+
+	INIT_NS_CLASS_ENTRY(ce, "RdKafka", "Consumer", class_RdKafka_Consumer_methods);
+	class_entry = zend_register_internal_class_ex(&ce, class_entry_RdKafka);
+
+	return class_entry;
+}
+
+static zend_class_entry *register_class_RdKafka_Producer(zend_class_entry *class_entry_RdKafka)
+{
+	zend_class_entry ce, *class_entry;
+
+	INIT_NS_CLASS_ENTRY(ce, "RdKafka", "Producer", class_RdKafka_Producer_methods);
+	class_entry = zend_register_internal_class_ex(&ce, class_entry_RdKafka);
+
+	return class_entry;
+}

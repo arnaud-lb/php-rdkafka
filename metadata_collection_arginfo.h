@@ -1,5 +1,5 @@
 /* This is a generated file, edit the .stub.php file instead.
- * Stub hash: 03254419e10af3447777114463b9a9e64413545c */
+ * Stub hash: a84f8bd542d46b72179ff6aa0d9d17bed530a2de */
 
 ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_class_RdKafka_Metadata_Collection_count, 0, 0, IS_LONG, 0)
 ZEND_END_ARG_INFO()
@@ -35,3 +35,14 @@ static const zend_function_entry class_RdKafka_Metadata_Collection_methods[] = {
 	ZEND_ME(RdKafka_Metadata_Collection, valid, arginfo_class_RdKafka_Metadata_Collection_valid, ZEND_ACC_PUBLIC)
 	ZEND_FE_END
 };
+
+static zend_class_entry *register_class_RdKafka_Metadata_Collection(zend_class_entry *class_entry_Countable, zend_class_entry *class_entry_Iterator)
+{
+	zend_class_entry ce, *class_entry;
+
+	INIT_NS_CLASS_ENTRY(ce, "RdKafka\\Metadata", "Collection", class_RdKafka_Metadata_Collection_methods);
+	class_entry = zend_register_internal_class_ex(&ce, NULL);
+	zend_class_implements(class_entry, 2, class_entry_Countable, class_entry_Iterator);
+
+	return class_entry;
+}

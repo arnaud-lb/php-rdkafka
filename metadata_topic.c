@@ -178,10 +178,7 @@ PHP_METHOD(RdKafka_Metadata_Topic, getPartitions)
 
 void kafka_metadata_topic_minit(INIT_FUNC_ARGS)
 {
-    zend_class_entry tmpce;
-
-    INIT_NS_CLASS_ENTRY(tmpce, "RdKafka\\Metadata", "Topic", class_RdKafka_Metadata_Topic_methods);
-    ce = zend_register_internal_class(&tmpce);
+    ce = register_class_RdKafka_Metadata_Topic();
     ce->create_object = create_object;
 
     handlers = kafka_default_object_handlers;

@@ -1,13 +1,14 @@
 <?php
 
 /**
+ * @generate-class-entries
  * @generate-function-entries
  * @generate-legacy-arginfo
  */
 
 namespace RdKafka\Metadata;
 
-class Collection
+class Collection implements \Countable, \Iterator
 {
     /** @tentative-return-type */
     public function count(): int {}
