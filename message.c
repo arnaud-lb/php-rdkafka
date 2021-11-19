@@ -29,6 +29,11 @@
 #include "Zend/zend_exceptions.h"
 #include "topic.h"
 #include "message.h"
+#if PHP_VERSION_ID < 80000
+#include "message_legacy_arginfo.h"
+#else
+#include "message_arginfo.h"
+#endif
 
 zend_class_entry * ce_kafka_message;
 
@@ -109,11 +114,7 @@ void kafka_message_list_to_array(zval *return_value, rd_kafka_message_t **messag
 /* {{{ proto string RdKafka\Message::errstr()
  *  Returns the error string for an errored KrKafka\Message or NULL if there was no error.
  */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_message_errstr, 0, 0, 0)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__Message, errstr)
+PHP_METHOD(RdKafka_Message, errstr)
 {
     zval *zerr;
     zval *zpayload;
@@ -143,27 +144,6 @@ PHP_METHOD(RdKafka__Message, errstr)
 }
 /* }}} */
 
-static const zend_function_entry kafka_message_fe[] = {
-    PHP_ME(RdKafka__Message, errstr, arginfo_kafka_message_errstr, ZEND_ACC_PUBLIC)
-    PHP_FE_END
-};
-
 void kafka_message_minit(INIT_FUNC_ARGS) { /* {{{ */
-    zend_class_entry ce;
-
-    INIT_NS_CLASS_ENTRY(ce, "RdKafka", "Message", kafka_message_fe);
-    ce_kafka_message = zend_register_internal_class(&ce);
-
-    zend_declare_property_null(ce_kafka_message, ZEND_STRL("err"), ZEND_ACC_PUBLIC);
-    zend_declare_property_null(ce_kafka_message, ZEND_STRL("topic_name"), ZEND_ACC_PUBLIC);
-    zend_declare_property_null(ce_kafka_message, ZEND_STRL("timestamp"), ZEND_ACC_PUBLIC);
-    zend_declare_property_null(ce_kafka_message, ZEND_STRL("partition"), ZEND_ACC_PUBLIC);
-    zend_declare_property_null(ce_kafka_message, ZEND_STRL("payload"), ZEND_ACC_PUBLIC);
-    zend_declare_property_null(ce_kafka_message, ZEND_STRL("len"), ZEND_ACC_PUBLIC);
-    zend_declare_property_null(ce_kafka_message, ZEND_STRL("key"), ZEND_ACC_PUBLIC);
-    zend_declare_property_null(ce_kafka_message, ZEND_STRL("offset"), ZEND_ACC_PUBLIC);
-#ifdef HAVE_RD_KAFKA_MESSAGE_HEADERS
-    zend_declare_property_null(ce_kafka_message, ZEND_STRL("headers"), ZEND_ACC_PUBLIC);
-#endif
-    zend_declare_property_null(ce_kafka_message, ZEND_STRL("opaque"), ZEND_ACC_PUBLIC);
+    ce_kafka_message = register_class_RdKafka_Message();
 } /* }}} */
