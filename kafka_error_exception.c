@@ -27,6 +27,11 @@
 #include "Zend/zend_interfaces.h"
 #include "Zend/zend_exceptions.h"
 #include "kafka_error_exception.h"
+#if PHP_VERSION_ID < 80000
+#include "kafka_error_exception_legacy_arginfo.h"
+#else
+#include "kafka_error_exception_arginfo.h"
+#endif
 
 zend_class_entry * ce_kafka_error;
 
@@ -46,16 +51,7 @@ void create_kafka_error(zval *return_value, const rd_kafka_error_t *error) /* {{
 /* }}} */
 
 /* {{{ proto RdKafka\KafkaErrorException::__construct(string $message, int $code[, string $error_string, bool $isFatal, bool $isRetriable, bool $transactionRequiresAbort]) */
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_error___construct, 0, 0, 6)
-    ZEND_ARG_INFO(0, message)
-    ZEND_ARG_INFO(0, code)
-    ZEND_ARG_INFO(0, error_string)
-    ZEND_ARG_INFO(0, isFatal)
-    ZEND_ARG_INFO(0, isRetriable)
-    ZEND_ARG_INFO(0, transactionRequiresAbort)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__KafkaErrorException, __construct)
+PHP_METHOD(RdKafka_KafkaErrorException, __construct)
 {
     char *message, *error_string = "";
     size_t message_length = 0, error_string_length = 0;
@@ -77,11 +73,7 @@ PHP_METHOD(RdKafka__KafkaErrorException, __construct)
 
 /* {{{ proto void RdKafka\KafkaErrorException::getErrorString()
     Get name of error */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_error_get_error_string, 0, 0, 0)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__KafkaErrorException, getErrorString)
+PHP_METHOD(RdKafka_KafkaErrorException, getErrorString)
 {
     zval *res;
 
@@ -103,11 +95,7 @@ PHP_METHOD(RdKafka__KafkaErrorException, getErrorString)
 
 /* {{{ proto void RdKafka\KafkaErrorException::isFatal()
     Return true if error is fatal */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_error_is_fatal, 0, 0, 0)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__KafkaErrorException, isFatal)
+PHP_METHOD(RdKafka_KafkaErrorException, isFatal)
 {
     zval *res;
 
@@ -128,11 +116,7 @@ PHP_METHOD(RdKafka__KafkaErrorException, isFatal)
 
 /* {{{ proto void RdKafka\KafkaErrorException::isRetriable()
     Return true if error is fatal */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_error_is_retriable, 0, 0, 0)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__KafkaErrorException, isRetriable)
+PHP_METHOD(RdKafka_KafkaErrorException, isRetriable)
 {
     zval *res;
 
@@ -153,11 +137,7 @@ PHP_METHOD(RdKafka__KafkaErrorException, isRetriable)
 
 /* {{{ proto void RdKafka\KafkaErrorException::transactionRequiresAbort()
     Return true if error is fatal */
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_error_transaction_requires_abort, 0, 0, 0)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(RdKafka__KafkaErrorException, transactionRequiresAbort)
+PHP_METHOD(RdKafka_KafkaErrorException, transactionRequiresAbort)
 {
     zval *res;
 
@@ -176,26 +156,9 @@ PHP_METHOD(RdKafka__KafkaErrorException, transactionRequiresAbort)
 }
 /* }}} */
 
-static const zend_function_entry kafka_error_fe[] = { /* {{{ */
-    PHP_ME(RdKafka__KafkaErrorException, __construct, arginfo_kafka_error___construct, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__KafkaErrorException, getErrorString, arginfo_kafka_error_get_error_string, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__KafkaErrorException, isFatal, arginfo_kafka_error_is_fatal, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__KafkaErrorException, isRetriable, arginfo_kafka_error_is_retriable, ZEND_ACC_PUBLIC)
-    PHP_ME(RdKafka__KafkaErrorException, transactionRequiresAbort, arginfo_kafka_error_transaction_requires_abort, ZEND_ACC_PUBLIC)
-    PHP_FE_END
-}; /* }}} */
-
 void kafka_error_minit() /* {{{ */
 {
-    zend_class_entry ce;
-
-    INIT_NS_CLASS_ENTRY(ce, "RdKafka", "KafkaErrorException", kafka_error_fe);
-    ce_kafka_error = zend_register_internal_class_ex(&ce, ce_kafka_exception);
-
-    zend_declare_property_null(ce_kafka_error, ZEND_STRL("error_string"), ZEND_ACC_PRIVATE);
-    zend_declare_property_bool(ce_kafka_error, ZEND_STRL("isFatal"), 0, ZEND_ACC_PRIVATE);
-    zend_declare_property_bool(ce_kafka_error, ZEND_STRL("isRetriable"), 0, ZEND_ACC_PRIVATE);
-    zend_declare_property_bool(ce_kafka_error, ZEND_STRL("transactionRequiresAbort"), 0, ZEND_ACC_PRIVATE);
+    ce_kafka_error = register_class_RdKafka_KafkaErrorException(ce_kafka_exception);
 } /* }}} */
 #endif
 
