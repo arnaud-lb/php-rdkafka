@@ -1,5 +1,5 @@
 /* This is a generated file, edit the .stub.php file instead.
- * Stub hash: 6724660ef71fae9d99b824c1ef54ca61adb83897 */
+ * Stub hash: 7c722b9eb9357157d89a14431ebcfd79cc6f1116 */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_class_RdKafka_TopicPartition___construct, 0, 0, 2)
 	ZEND_ARG_INFO(0, topic)

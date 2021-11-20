@@ -10,7 +10,7 @@ namespace RdKafka;
 
 class TopicPartition
 {
-    public function __construct(string $topic, int $partition, ?int $offset = 0) {}
+    public function __construct(string $topic, int $partition, int $offset = 0) {}
 
     /** @tentative-return-type */
     public function getTopic(): ?string {}

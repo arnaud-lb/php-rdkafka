@@ -207,7 +207,7 @@ PHP_METHOD(RdKafka_TopicPartition, __construct)
 
     zend_replace_error_handling(EH_THROW, spl_ce_InvalidArgumentException, &error_handling);
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS(), "sl|l!", &topic, &topic_len, &partition, &offset) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS(), "sl|l", &topic, &topic_len, &partition, &offset) == FAILURE) {
         zend_restore_error_handling(&error_handling);
         return;
     }
