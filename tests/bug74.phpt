@@ -16,6 +16,6 @@ $topic = $consumer->newTopic("batman", null);
 $producer = new RdKafka\Producer($conf);
 
 if (class_exists('RdKafka\TopicPartition')) {
-    $tp = new RdKafka\TopicPartition("batman", 0, null);
+    $tp = new RdKafka\TopicPartition("batman", 0);
 }
 --EXPECT--
