@@ -756,7 +756,7 @@ PHP_METHOD(RdKafka__KafkaConsumer, offsetsForTimes)
 /* {{{ proto void RdKafka\KafkaConsumer::queryWatermarkOffsets(string $topic, int $partition, int &$low, int &$high, int $timeout_ms)
    Query broker for low (oldest/beginning) or high (newest/end) offsets for partition */
 
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_kafka_consumer_query_watermark_offsets, 0, 0, 1)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_kafka_consumer_query_watermark_offsets, 0, 0, 5)
     ZEND_ARG_INFO(0, topic)
     ZEND_ARG_INFO(0, partition)
     ZEND_ARG_INFO(1, low)

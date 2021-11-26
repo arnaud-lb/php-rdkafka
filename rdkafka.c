@@ -366,7 +366,7 @@ PHP_METHOD(RdKafka__Kafka, addBrokers)
 
 /* {{{ proto RdKafka\Metadata::getMetadata(bool $all_topics, RdKafka\Topic $only_topic, int $timeout_ms)
    Request Metadata from broker */
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_get_metadata, 0, 0, 1)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_get_metadata, 0, 0, 3)
     ZEND_ARG_INFO(0, all_topics)
     ZEND_ARG_INFO(0, only_topic)
     ZEND_ARG_INFO(0, timeout_ms)
@@ -608,7 +608,7 @@ PHP_METHOD(RdKafka__Kafka, purge)
 /* {{{ proto void RdKafka\Kafka::queryWatermarkOffsets(string $topic, int $partition, int &$low, int &$high, int $timeout_ms)
    Query broker for low (oldest/beginning) or high (newest/end) offsets for partition */
 
-ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_query_watermark_offsets, 0, 0, 1)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_kafka_query_watermark_offsets, 0, 0, 5)
     ZEND_ARG_INFO(0, topic)
     ZEND_ARG_INFO(0, partition)
     ZEND_ARG_INFO(1, low)
