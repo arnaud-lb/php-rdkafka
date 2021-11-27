@@ -10,10 +10,10 @@
   <email>arnaud.lb@gmail.com</email>
   <active>yes</active>
  </lead>
- <date>2021-11-19</date>
+ <date>2021-11-27</date>
  <time>15:00:00</time>
  <version>
-  <release>6.0.0RC1</release>
+  <release>6.0.0RC2</release>
   <api>6.0.0</api>
  </version>
  <stability>
@@ -22,11 +22,8 @@
  </stability>
  <license uri="http://opensource.org/licenses/mit-license.php">MIT License</license>
  <notes>
-  ## Enhancements
-  - PHP 8.1 support (@ruudk, @remicollet, @nick-zh, @arnaud-lb)
-
-  ## Breaking changes
-  - Added tentative return types in PHP 8.1 builds
+  ## Bugfixes
+  -  Fix crash in RdKafka\TopicPartition::__construct() (#491, @remicollet)
  </notes>
  <contents>
   <dir name="/">
@@ -158,6 +155,26 @@
  <providesextension>rdkafka</providesextension>
  <extsrcrelease/>
  <changelog>
+  <release>
+   <date>2021-11-19</date>
+   <time>15:00:00</time>
+   <version>
+    <release>6.0.0RC1</release>
+    <api>6.0.0</api>
+   </version>
+   <stability>
+    <release>beta</release>
+    <api>beta</api>
+   </stability>
+   <license uri="http://opensource.org/licenses/mit-license.php">MIT License</license>
+   <notes>
+    ## Enhancements
+    - PHP 8.1 support (@ruudk, @remicollet, @nick-zh, @arnaud-lb)
+
+    ## Breaking changes
+    - Added tentative return types in PHP 8.1 builds
+   </notes>
+  </release>
   <release>
    <date>2021-11-19</date>
    <time>14:00:00</time>
