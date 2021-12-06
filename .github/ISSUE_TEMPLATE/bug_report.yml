@@ -24,16 +24,9 @@ body:
       required: true
   - type: input
     attributes:
-      label: PHP Version
-      description: "The used PHP version"
-      placeholder: "PHP 8.1.0"
-    validations:
-      required: true
-  - type: input
-    attributes:
-      label: Operating System
-      description: "The used operating system"
-      placeholder: "Ubuntu 20.04"
+      label: php-rdkafka Version
+      description: "The used php-rdkafka version (if installed from the repository, please specify the commit number)"
+      placeholder: "php-rdkafka 6.0.1 (or commit number)"
     validations:
       required: true
   - type: input
@@ -45,9 +38,16 @@ body:
       required: true
   - type: input
     attributes:
-      label: php-rdkafka Version
-      description: "The used php-rdkafka version (if installed from the repository, please specify the commit number)"
-      placeholder: "php-rdkafka 6.0.1"
+      label: PHP Version
+      description: "The used PHP version"
+      placeholder: "PHP 8.1.0"
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: Operating System
+      description: "The used operating system"
+      placeholder: "Ubuntu 20.04"
     validations:
       required: true
   - type: input
