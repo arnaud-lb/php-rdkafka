@@ -2,3 +2,4 @@ blank_issues_enabled: false
 contact_links:
   - name: Support / Question
     url: https://gitter.im/arnaud-lb/php-rdkafka
+    about: Please join gitter for support / questions.
