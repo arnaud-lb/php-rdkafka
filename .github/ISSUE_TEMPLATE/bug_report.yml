@@ -26,6 +26,7 @@ body:
     attributes:
       label: PHP Version
       description: "The used PHP version"
+      placeholder: "PHP 8.1.0"
     validations:
       required: true
   - type: input
@@ -39,12 +40,14 @@ body:
     attributes:
       label: librdkafka Version
       description: "The used librdkafka version"
+      placeholder: "librdkafka 1.7.0"
     validations:
       required: true
   - type: input
     attributes:
       label: php-rdkafka Version
-      description: "The used php-rdkafka version"
+      description: "The used php-rdkafka version (if installed from the repository, please specify the commit number)"
+      placeholder: "php-rdkafka 6.0.1"
     validations:
       required: true
   - type: input
