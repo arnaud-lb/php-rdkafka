@@ -25,32 +25,26 @@ body:
   - type: input
     attributes:
       label: php-rdkafka Version
-      description: "The used php-rdkafka version (if installed from the repository, please specify the commit number)"
+      description: "The used php-rdkafka version (if installed from the repository, please specify the commit number)."
       placeholder: "php-rdkafka 6.0.1 (or commit number)"
     validations:
       required: true
   - type: input
     attributes:
       label: librdkafka Version
-      description: "The used librdkafka version"
+      description: "The used librdkafka version, if relevant."
       placeholder: "librdkafka 1.7.0"
-    validations:
-      required: true
   - type: input
     attributes:
       label: PHP Version
-      description: "The used PHP version"
+      description: "The used PHP version, if relevant."
       placeholder: "PHP 8.1.0"
-    validations:
-      required: true
   - type: input
     attributes:
       label: Operating System
-      description: "The used operating system"
+      description: "The used operating system, if relevant."
       placeholder: "Ubuntu 20.04"
-    validations:
-      required: true
   - type: input
     attributes:
       label: Kafka Version
-      description: "The used Kafka Version"
+      description: "The used Kafka Version, if relevant."
