@@ -1,5 +1,5 @@
 /* This is a generated file, edit the .stub.php file instead.
- * Stub hash: 534b40ff0c32bc39196c1735bdd6d5676a073e6f */
+ * Stub hash: fbfdb28740208d5f909e9db261bea0aa26bfd471 */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_class_RdKafka___construct, 0, 0, 0)
 ZEND_END_ARG_INFO()
@@ -25,7 +25,7 @@ ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_OBJ_INFO_EX(arginfo_class_RdKafka_newTopic, 0, 1, RdKafka\\Topic, 0)
 	ZEND_ARG_TYPE_INFO(0, topic_name, IS_STRING, 0)
-	ZEND_ARG_OBJ_INFO_WITH_DEFAULT_VALUE(0, topic_conf, RdKafka\\Conf, 1, "null")
+	ZEND_ARG_OBJ_INFO_WITH_DEFAULT_VALUE(0, topic_conf, RdKafka\\TopicConf, 1, "null")
 ZEND_END_ARG_INFO()
 
 #define arginfo_class_RdKafka_outqLen arginfo_class_RdKafka_getOutQLen

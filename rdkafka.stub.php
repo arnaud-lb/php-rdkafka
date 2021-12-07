@@ -37,7 +37,7 @@ namespace {
         public function setLogLevel(int $level): void {}
 
         /** @tentative-return-type */
-        public function newTopic(string $topic_name, ?RdKafka\Conf $topic_conf = null): RdKafka\Topic {}
+        public function newTopic(string $topic_name, ?RdKafka\TopicConf $topic_conf = null): RdKafka\Topic {}
 
         /**
          * @alias RdKafka::getOutQLen
