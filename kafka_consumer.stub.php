@@ -49,7 +49,7 @@ class KafkaConsumer
     public function getMetadata(bool $all_topics, Topic $only_topic, int $timeout_ms): Metadata {}
 
     /** @tentative-return-type */
-    public function newTopic(string $topic_name, ?Conf $topic_conf = null): KafkaConsumerTopic {}
+    public function newTopic(string $topic_name, ?TopicConf $topic_conf = null): KafkaConsumerTopic {}
 
     /** @tentative-return-type */
     public function getCommittedOffsets(array $topic_partitions, int $timeout_ms): array {}
