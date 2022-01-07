@@ -10,20 +10,34 @@
   <email>arnaud.lb@gmail.com</email>
   <active>yes</active>
  </lead>
- <date>2021-11-27</date>
- <time>15:00:00</time>
+ <date>2022-01-07</date>
+ <time>12:00:00</time>
  <version>
-  <release>6.0.0RC2</release>
+  <release>6.0.0</release>
   <api>6.0.0</api>
  </version>
  <stability>
-  <release>beta</release>
-  <api>beta</api>
+  <release>stable</release>
+  <api>stable</api>
  </stability>
  <license uri="http://opensource.org/licenses/mit-license.php">MIT License</license>
  <notes>
+  # Changes since 5.x
+
+  ## Improvements
+  - PHP 8.1 support (@remicollet, @ruudk, @nick-zh)
+  - Added parameter types (when built with PHP>=8.0) (@arnaud-lb)
+  - Added tentative return types (when built with PHP>=8.1) (@arnaud-lb)
+
+  ## Deprecations
+  - PHP 8.1: Overloading php-rdkafka methods without specifying a return type
+    will trigger a deprecation message unless annotated with
+    #[\ReturnTypeWillChange]
+
+  # Changes since 6.0.0RC2
+
   ## Bugfixes
-  -  Fix crash in RdKafka\TopicPartition::__construct() (#491, @remicollet)
+  - Fix newTopic() arginfo (#502, @arnaud-lb)
  </notes>
  <contents>
   <dir name="/">
@@ -156,6 +170,23 @@
  <providesextension>rdkafka</providesextension>
  <extsrcrelease/>
  <changelog>
+  <release>
+   <date>2021-11-27</date>
+   <time>15:00:00</time>
+   <version>
+    <release>6.0.0RC2</release>
+    <api>6.0.0</api>
+   </version>
+   <stability>
+    <release>beta</release>
+    <api>beta</api>
+   </stability>
+   <license uri="http://opensource.org/licenses/mit-license.php">MIT License</license>
+   <notes>
+    ## Bugfixes
+    -  Fix crash in RdKafka\TopicPartition::__construct() (#491, @remicollet)
+   </notes>
+  </release>
   <release>
    <date>2021-11-19</date>
    <time>15:00:00</time>
