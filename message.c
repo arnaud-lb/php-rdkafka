@@ -41,13 +41,13 @@ void kafka_message_new(zval *return_value, const rd_kafka_message_t *message, ze
 
     timestamp = rd_kafka_message_timestamp(message, &tstype);
 
+    zval headers_array;
 #ifdef HAVE_RD_KAFKA_MESSAGE_HEADERS
     rd_kafka_headers_t *message_headers = NULL;
     rd_kafka_resp_err_t header_response;
     const char *header_name = NULL;
     const void *header_value = NULL;
     size_t header_size = 0;
-    zval headers_array;
     size_t i;
 #endif /* HAVE_RD_KAFKA_MESSAGE_HEADERS */
 
@@ -67,11 +67,11 @@ void kafka_message_new(zval *return_value, const rd_kafka_message_t *message, ze
     }
     zend_update_property_long(NULL, Z_RDKAFKA_PROP_OBJ(return_value), ZEND_STRL("offset"), message->offset);
 
+    array_init(&headers_array);
 #ifdef HAVE_RD_KAFKA_MESSAGE_HEADERS
     if (message->err == RD_KAFKA_RESP_ERR_NO_ERROR) {
         rd_kafka_message_headers(message, &message_headers);
         if (message_headers != NULL) {
-            array_init(&headers_array);
             for (i = 0; i < rd_kafka_header_cnt(message_headers); i++) {
                 header_response = rd_kafka_header_get_all(message_headers, i, &header_name, &header_value, &header_size);
                 if (header_response != RD_KAFKA_RESP_ERR_NO_ERROR) {
@@ -79,11 +79,11 @@ void kafka_message_new(zval *return_value, const rd_kafka_message_t *message, ze
                 }
                 add_assoc_stringl(&headers_array, header_name, (const char*)header_value, header_size);
             }
-            zend_update_property(NULL, Z_RDKAFKA_PROP_OBJ(return_value), ZEND_STRL("headers"), &headers_array);
-            zval_ptr_dtor(&headers_array);
         }
     }
 #endif
+    zend_update_property(NULL, Z_RDKAFKA_PROP_OBJ(return_value), ZEND_STRL("headers"), &headers_array);
+    zval_ptr_dtor(&headers_array);
 
     if (msg_opaque != NULL) {
         zend_update_property_str(NULL, Z_RDKAFKA_PROP_OBJ(return_value), ZEND_STRL("opaque"), msg_opaque);
