@@ -32,7 +32,7 @@ Documentation is available [here](https://arnaud-lb.github.io/php-rdkafka/phpdoc
     <li>Built-in REST API designed for serverless and edge functions</li>
   </ul>
 
-[Start for free in 30 seconds!](https://upstash.com/?utm_source=YOUR_PROJECT)
+[Start for free in 30 seconds!](https://upstash.com/?utm_source=php-rdkafka)
 </td>
 </tr>
 </table>
