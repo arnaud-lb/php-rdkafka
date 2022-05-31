@@ -85,7 +85,9 @@ $rk->addBrokers("10.0.0.1:9092,10.0.0.2:9092");
 ```
 
 #### Producing messages
-:warning: Make sure that your producer follows proper shutdown (see below) to not lose messages.  
+
+> **Warning** Make sure that your producer follows proper shutdown (see below) to not lose messages.  
+
 Next, we create a topic instance from the producer:
 ``` php
 <?php
@@ -111,7 +113,8 @@ The message payload can be anything.
 This should be done prior to destroying a producer instance  
 to make sure all queued and in-flight produce requests are completed  
 before terminating. Use a reasonable value for `$timeout_ms`.  
-:warning: Not calling flush can lead to message loss!
+
+> **Warning** Not calling flush can lead to message loss!
 
 ```php
 $rk->flush($timeout_ms);
@@ -133,7 +136,7 @@ The RdKafka\KafkaConsumer class supports automatic partition assignment/revocati
 
 ### Low-level consuming (legacy)
 
-> :information_source: The low-level consumer is a legacy API, please prefer using the high-level consumer
+> **Note** The low-level consumer is a legacy API, please prefer using the high-level consumer
 
 We first need to create a low level consumer, and to add brokers (Kafka
 servers) to it:
@@ -184,7 +187,7 @@ while (true) {
 
 ### Low-level consuming from multiple topics / partitions (legacy)
 
-> :information_source: The low-level consumer is a legacy API, please prefer using the high-level consumer
+> **Note** The low-level consumer is a legacy API, please prefer using the high-level consumer
 
 Consuming from multiple topics and/or partitions can be done by telling
 librdkafka to forward all messages from these topics/partitions to an internal
