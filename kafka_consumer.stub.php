@@ -46,7 +46,7 @@ class KafkaConsumer
     public function unsubscribe(): void {}
 
     /** @tentative-return-type */
-    public function getMetadata(bool $all_topics, Topic $only_topic, int $timeout_ms): Metadata {}
+    public function getMetadata(bool $all_topics, ?Topic $only_topic, int $timeout_ms): Metadata {}
 
     /** @tentative-return-type */
     public function newTopic(string $topic_name, ?TopicConf $topic_conf = null): KafkaConsumerTopic {}
