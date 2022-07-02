@@ -23,7 +23,7 @@
  <license uri="http://opensource.org/licenses/mit-license.php">MIT License</license>
  <notes>
   ## Improvements
-  - Ability to provide custom `librdkafka` path during install (#526, @Wirone)
+  - Ability to provide custom `librdkafka` path during pecl install (#526, @Wirone)
  </notes>
  <contents>
   <dir name="/">
