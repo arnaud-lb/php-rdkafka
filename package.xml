@@ -156,7 +156,9 @@
   </required>
  </dependencies>
  <providesextension>rdkafka</providesextension>
- <extsrcrelease/>
+ <extsrcrelease>
+   <configureoption name="with-rdkafka" default="autodetect" prompt="librdkafka installation path?"/>
+ </extsrcrelease>
  <changelog>
   <release>
    <date>2022-02-15</date>
