@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<package version="2.1" xmlns="http://pear.php.net/dtd/package-2.1" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0     http://pear.php.net/dtd/tasks-1.0.xsd     http://pear.php.net/dtd/package-2.1     http://pear.php.net/dtd/package-2.1.xsd">
+<package xmlns="http://pear.php.net/dtd/package-2.1" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.1" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0     http://pear.php.net/dtd/tasks-1.0.xsd     http://pear.php.net/dtd/package-2.1     http://pear.php.net/dtd/package-2.1.xsd">
  <name>rdkafka</name>
  <channel>pecl.php.net</channel>
  <summary>Kafka client based on librdkafka</summary>
@@ -10,10 +10,10 @@
   <email>arnaud.lb@gmail.com</email>
   <active>yes</active>
  </lead>
- <date>2022-06-12</date>
- <time>12:00:00</time>
+ <date>2022-07-02</date>
+ <time>12:26:56</time>
  <version>
-  <release>6.0.2</release>
+  <release>6.0.3</release>
   <api>6.0.0</api>
  </version>
  <stability>
@@ -22,8 +22,8 @@
  </stability>
  <license uri="http://opensource.org/licenses/mit-license.php">MIT License</license>
  <notes>
-  ## Bugfixes
-  - Fixed signature of RdKafka\KafkaConsumer::getMetadata() (#521, @arnaud-lb)
+  ## Improvements
+  - Ability to provide custom `librdkafka` path during install (#526, @Wirone)
  </notes>
  <contents>
   <dir name="/">
@@ -161,6 +161,23 @@
  </extsrcrelease>
  <changelog>
   <release>
+   <date>2022-06-12</date>
+   <time>12:00:00</time>
+   <version>
+    <release>6.0.2</release>
+    <api>6.0.0</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <license uri="http://opensource.org/licenses/mit-license.php">MIT License</license>
+   <notes>
+    ## Bugfixes
+    - Fixed signature of RdKafka\KafkaConsumer::getMetadata() (#521, @arnaud-lb)
+   </notes>
+  </release>
+  <release>
    <date>2022-02-15</date>
    <time>12:00:00</time>
    <version>
@@ -194,8 +211,8 @@
 
     ## Improvements
     - PHP 8.1 support (@remicollet, @ruudk, @nick-zh)
-    - Added parameter types (when built with PHP>=8.0) (@arnaud-lb)
-    - Added tentative return types (when built with PHP>=8.1) (@arnaud-lb)
+    - Added parameter types (when built with PHP&gt;=8.0) (@arnaud-lb)
+    - Added tentative return types (when built with PHP&gt;=8.1) (@arnaud-lb)
 
     ## Deprecations
     - PHP 8.1: Overloading php-rdkafka methods without specifying a return type
