@@ -1,5 +1,8 @@
 /* This is a generated file, edit the .stub.php file instead.
- * Stub hash: 53fa93c8908858d59ab75b39a77efdea9e843675 */
+ * Stub hash: 74c6ee55c31bb86f5bcf71a46607f31688ce71dd */
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_class_RdKafka_Metadata_Broker___construct, 0, 0, 0)
+ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_class_RdKafka_Metadata_Broker_getId, 0, 0, IS_LONG, 0)
 ZEND_END_ARG_INFO()
@@ -10,12 +13,14 @@ ZEND_END_ARG_INFO()
 #define arginfo_class_RdKafka_Metadata_Broker_getPort arginfo_class_RdKafka_Metadata_Broker_getId
 
 
+ZEND_METHOD(RdKafka, __construct);
 ZEND_METHOD(RdKafka_Metadata_Broker, getId);
 ZEND_METHOD(RdKafka_Metadata_Broker, getHost);
 ZEND_METHOD(RdKafka_Metadata_Broker, getPort);
 
 
 static const zend_function_entry class_RdKafka_Metadata_Broker_methods[] = {
+	ZEND_MALIAS(RdKafka, __construct, __construct, arginfo_class_RdKafka_Metadata_Broker___construct, ZEND_ACC_PRIVATE)
 	ZEND_ME(RdKafka_Metadata_Broker, getId, arginfo_class_RdKafka_Metadata_Broker_getId, ZEND_ACC_PUBLIC)
 	ZEND_ME(RdKafka_Metadata_Broker, getHost, arginfo_class_RdKafka_Metadata_Broker_getHost, ZEND_ACC_PUBLIC)
 	ZEND_ME(RdKafka_Metadata_Broker, getPort, arginfo_class_RdKafka_Metadata_Broker_getPort, ZEND_ACC_PUBLIC)

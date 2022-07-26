@@ -1,5 +1,8 @@
 /* This is a generated file, edit the .stub.php file instead.
- * Stub hash: a84f8bd542d46b72179ff6aa0d9d17bed530a2de */
+ * Stub hash: 43c071a00a4c0beb6b5c1f8f685e29b746c2d3fb */
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_class_RdKafka_Metadata_Collection___construct, 0, 0, 0)
+ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_class_RdKafka_Metadata_Collection_count, 0, 0, IS_LONG, 0)
 ZEND_END_ARG_INFO()
@@ -18,6 +21,7 @@ ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_class_RdKafka_Metadata
 ZEND_END_ARG_INFO()
 
 
+ZEND_METHOD(RdKafka, __construct);
 ZEND_METHOD(RdKafka_Metadata_Collection, count);
 ZEND_METHOD(RdKafka_Metadata_Collection, current);
 ZEND_METHOD(RdKafka_Metadata_Collection, key);
@@ -27,6 +31,7 @@ ZEND_METHOD(RdKafka_Metadata_Collection, valid);
 
 
 static const zend_function_entry class_RdKafka_Metadata_Collection_methods[] = {
+	ZEND_MALIAS(RdKafka, __construct, __construct, arginfo_class_RdKafka_Metadata_Collection___construct, ZEND_ACC_PRIVATE)
 	ZEND_ME(RdKafka_Metadata_Collection, count, arginfo_class_RdKafka_Metadata_Collection_count, ZEND_ACC_PUBLIC)
 	ZEND_ME(RdKafka_Metadata_Collection, current, arginfo_class_RdKafka_Metadata_Collection_current, ZEND_ACC_PUBLIC)
 	ZEND_ME(RdKafka_Metadata_Collection, key, arginfo_class_RdKafka_Metadata_Collection_key, ZEND_ACC_PUBLIC)

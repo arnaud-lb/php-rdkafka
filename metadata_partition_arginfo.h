@@ -1,5 +1,8 @@
 /* This is a generated file, edit the .stub.php file instead.
- * Stub hash: 4c02c5ac3a6240ab8cbc90451bdc54a3de2c2d2f */
+ * Stub hash: ce824cf273ec8fec1fe3b6eaac015a51f3e9dc6b */
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_class_RdKafka_Metadata_Partition___construct, 0, 0, 0)
+ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_class_RdKafka_Metadata_Partition_getId, 0, 0, IS_LONG, 0)
 ZEND_END_ARG_INFO()
@@ -14,6 +17,7 @@ ZEND_END_ARG_INFO()
 #define arginfo_class_RdKafka_Metadata_Partition_getIsrs arginfo_class_RdKafka_Metadata_Partition_getReplicas
 
 
+ZEND_METHOD(RdKafka, __construct);
 ZEND_METHOD(RdKafka_Metadata_Partition, getId);
 ZEND_METHOD(RdKafka_Metadata_Partition, getErr);
 ZEND_METHOD(RdKafka_Metadata_Partition, getLeader);
@@ -22,6 +26,7 @@ ZEND_METHOD(RdKafka_Metadata_Partition, getIsrs);
 
 
 static const zend_function_entry class_RdKafka_Metadata_Partition_methods[] = {
+	ZEND_MALIAS(RdKafka, __construct, __construct, arginfo_class_RdKafka_Metadata_Partition___construct, ZEND_ACC_PRIVATE)
 	ZEND_ME(RdKafka_Metadata_Partition, getId, arginfo_class_RdKafka_Metadata_Partition_getId, ZEND_ACC_PUBLIC)
 	ZEND_ME(RdKafka_Metadata_Partition, getErr, arginfo_class_RdKafka_Metadata_Partition_getErr, ZEND_ACC_PUBLIC)
 	ZEND_ME(RdKafka_Metadata_Partition, getLeader, arginfo_class_RdKafka_Metadata_Partition_getLeader, ZEND_ACC_PUBLIC)
