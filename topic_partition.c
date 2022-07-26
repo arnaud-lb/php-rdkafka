@@ -100,7 +100,7 @@ static HashTable *get_debug_info(Z_RDKAFKA_OBJ *object, int *is_temp) /* {{{ */
 
     intern = rdkafka_get_debug_object(object_intern, object);
 
-    if (!intern) {
+    if (!intern || !intern->topic) {
         return Z_ARRVAL(ary);
     }
 

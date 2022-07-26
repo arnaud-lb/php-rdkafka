@@ -67,7 +67,7 @@
 
 #define Z_RDKAFKA_PROP_OBJ(object) object
 
-#define rdkafka_get_debug_object(type, object) get_object(object)
+#define rdkafka_get_debug_object(type, object) php_kafka_from_obj(type, Z_OBJ_P(object))
 
 #if PHP_MINOR_VERSION < 3
 /* Allocates object type and zeros it, but not the properties.

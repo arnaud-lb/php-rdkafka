@@ -31,25 +31,9 @@ try {
 ?>
 ==DONE==
 --EXPECTF--
-object(M)#%d (4) {
-  ["topic"]=>
-  NULL
-  ["partition"]=>
-  int(0)
-  ["offset"]=>
-  int(0)
-  ["err"]=>
-  int(0)
+object(M)#%d (0) {
 }
-object(RdKafka\TopicPartition)#%d (4) {
-  ["topic"]=>
-  NULL
-  ["partition"]=>
-  int(0)
-  ["offset"]=>
-  int(0)
-  ["err"]=>
-  int(0)
+object(RdKafka\TopicPartition)#%d (0) {
 }
 RdKafka\TopicPartition::__construct() has not been called
 ==DONE==

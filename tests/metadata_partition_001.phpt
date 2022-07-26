@@ -32,7 +32,7 @@ try {
 ?>
 ==DONE==
 --EXPECTF--
-Call to private RdKafka\Metadata\Partition::__construct() from global scope
+Call to private RdKafka\Metadata\Partition::__construct() from %rglobal scope|invalid context%r
 object(M)#%d (0) {
 }
 object(RdKafka\Metadata\Partition)#%d (0) {
