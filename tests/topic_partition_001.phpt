@@ -1,5 +1,5 @@
 --TEST--
-RdKafka\TopicPartition
+RdKafka\TopicPartition 001
 --SKIPIF--
 <?php
 if (!class_exists('RdKafka\TopicPartition')) {

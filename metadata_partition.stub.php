@@ -10,6 +10,9 @@ namespace RdKafka\Metadata;
 
 class Partition
 {
+    /** @implementation-alias RdKafka::__construct */
+    private function __construct() {}
+
     /** @tentative-return-type */
     public function getId(): int {}
 

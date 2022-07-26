@@ -124,6 +124,11 @@
     <file role="test" name="integration-tests-check.php"/>
     <file role="test" name="kafka_error_exception.phpt"/>
     <file role="test" name="message_headers.phpt"/>
+    <file role="test" name="metadata_001.phpt"/>
+    <file role="test" name="metadata_broker_001.phpt"/>
+    <file role="test" name="metadata_collection_001.phpt"/>
+    <file role="test" name="metadata_partition_001.phpt"/>
+    <file role="test" name="metadata_topic_001.phpt"/>
     <file role="test" name="new_topic_with_conf.phpt"/>
     <file role="test" name="pause_resume.phpt"/>
     <file role="test" name="produce_consume.phpt"/>
@@ -140,7 +145,8 @@
     <file role="test" name="test0.phpt"/>
     <file role="test" name="test_env.php.sample"/>
     <file role="test" name="topic_conf.phpt"/>
-    <file role="test" name="topic_partition.phpt"/>
+    <file role="test" name="topic_partition_001.phpt"/>
+    <file role="test" name="topic_partition_002.phpt"/>
    </dir>
   </dir>
  </contents>

@@ -10,6 +10,9 @@ namespace RdKafka\Metadata;
 
 class Collection implements \Countable, \Iterator
 {
+    /** @implementation-alias RdKafka::__construct */
+    private function __construct() {}
+
     /** @tentative-return-type */
     public function count(): int {}
 

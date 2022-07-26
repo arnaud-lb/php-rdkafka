@@ -10,6 +10,9 @@ namespace RdKafka;
 
 class Metadata
 {
+    /** @implementation-alias RdKafka::__construct */
+    private function __construct() {}
+
     /** @tentative-return-type */
     public function getOrigBrokerId(): int {}
 
