@@ -484,8 +484,11 @@ PHP_METHOD(RdKafka_KafkaConsumer, close)
         return;
     }
 
-    rd_kafka_consumer_close(intern->rk);
-    intern->rk = NULL;
+    rd_kafka_resp_err_t err = rd_kafka_consumer_close(intern->rk);
+    if (err)
+    {
+        php_error(E_WARNING, "rd_kafka_consumer_close failed: %s", rd_kafka_err2str(err));
+    }
 }
 /* }}} */
 
