@@ -1,130 +1,96 @@
 name: 'Tests'
 
 on:
-    push:
-        branches:
-            - '6.x'
-    pull_request:
-    schedule:
-        - cron: '30 8 * * 1'
+  push:
+    branches:
+      - '6.x'
+  pull_request:
+  schedule:
+    - cron: '30 8 * * 1'
 
 jobs:
-    tests:
-        name: 'Tests'
-        strategy:
-          matrix:
-            include:
-              - php: '8.1.0'
-                librdkafka: 'v1.7.0'
-                memcheck: '1'
-              - php: '8.0.0'
-                librdkafka: 'v1.7.0'
-                memcheck: '1'
-              - php: '7.4.0'
-                librdkafka: 'v1.7.0'
-                memcheck: '1'
-              - php: '8.1.0'
-                librdkafka: 'v1.7.0'
-              - php: '8.0.0'
-                librdkafka: 'v1.7.0'
-              - php: '7.4.0'
-                librdkafka: 'v1.7.0'
-              - php: '7.3.0'
-                librdkafka: 'v1.7.0'
-              - php: '8.1.0'
-                librdkafka: 'v1.6.1'
-              - php: '8.0.0'
-                librdkafka: 'v1.6.1'
-              - php: '7.4.0'
-                librdkafka: 'v1.6.1'
-              - php: '7.3.0'
-                librdkafka: 'v1.6.1'
-              - php: '8.1.0'
-                librdkafka: 'v1.5.3'
-              - php: '8.0.0'
-                librdkafka: 'v1.5.3'
-              - php: '7.4.0'
-                librdkafka: 'v1.5.3'
-              - php: '7.3.0'
-                librdkafka: 'v1.5.3'
-              - php: '8.1.0'
-                librdkafka: 'v1.4.4'
-              - php: '8.0.0'
-                librdkafka: 'v1.4.4'
-              - php: '7.4.0'
-                librdkafka: 'v1.4.4'
-              - php: '7.3.0'
-                librdkafka: 'v1.4.4'
-              - php: '8.1.0'
-                librdkafka: 'v1.0.1'
-              - php: '8.0.0'
-                librdkafka: 'v1.0.1'
-              - php: '7.4.0'
-                librdkafka: 'v1.0.1'
-              - php: '7.3.0'
-                librdkafka: 'v1.0.1'
-              - php: '8.1.0'
-                librdkafka: 'v0.11.6'
-              - php: '8.0.0'
-                librdkafka: 'v0.11.6'
-              - php: '7.4.0'
-                librdkafka: 'v0.11.6'
-              - php: '7.3.0'
-                librdkafka: 'v0.11.6'
-              - php: '7.2.0'
-                librdkafka: 'v0.11.6'
-              - php: '7.1.0'
-                librdkafka: 'v0.11.6'
-              - php: '7.0.0'
-                librdkafka: 'v0.11.6'
-              - php: '8.1.0'
-                librdkafka: 'master'
-                experimental: true
-              - php: '8.0.0'
-                librdkafka: 'master'
-                experimental: true
-              - php: '7.4.0'
-                librdkafka: 'master'
-                experimental: true
-              - php: '7.3.0'
-                librdkafka: 'master'
-                experimental: true
+  tests:
+    name: 'Tests'
+    strategy:
+      matrix:
+        php:
+          - 8.2.0
+          - 8.1.0
+          - 8.0.0
+          - 7.4.0
+          - 7.3.0
+        librdkafka:
+          - master
+          - v2.1.1
+          - v2.0.2
+          - v1.9.2
+          - v1.8.2
+          - v1.7.0
+          - v1.6.2
+          - v1.5.3
+          - v1.4.4
+          - v1.3.0
+          - v1.2.2
+          - v1.1.0
+          - v1.0.1
+          - v0.11.6
+        memcheck:
+          - ''
+        include:
+          - php: 7.2.0
+            librdkafka: v0.11.6
+          - php: 7.1.0
+            librdkafka: v0.11.6
+          - php: 7.0.0
+            librdkafka: v0.11.6
+          - php: 8.2.0
+            librdkafka: v2.0.2
+            memcheck: '1'
+          - php: 8.1.0
+            librdkafka: v2.0.2
+            memcheck: '1'
+          - php: 8.0.0
+            librdkafka: v2.0.2
+            memcheck: '1'
+          - php: 7.4.0
+            librdkafka: v2.0.2
+            memcheck: '1'
 
-        runs-on: 'ubuntu-20.04'
-        continue-on-error: ${{ !!matrix.experimental }}
-        env:
-            PHP_VERSION: ${{ matrix.php }}
-            LIBRDKAFKA_VERSION: ${{ matrix.librdkafka }}
-            MEMORY_CHECK: ${{ matrix.memcheck }}
-            TEST_KAFKA_BROKERS: kafka:9092
-            TEST_KAFKA_BROKER_VERSION: 2.6
-        steps:
-            - name: 'Check out repository'
-              uses: 'actions/checkout@v2'
-              with:
-                  path: 'php-rdkafka'
+    runs-on: 'ubuntu-20.04'
+    continue-on-error: ${{ matrix.librdkafka == 'master' || matrix.librdkafka == 'v2.1.1' }}
+    env:
+      PHP_VERSION: ${{ matrix.php }}
+      LIBRDKAFKA_VERSION: ${{ matrix.librdkafka }}
+      MEMORY_CHECK: ${{ matrix.memcheck }}
+      TEST_KAFKA_BROKERS: kafka:9092
+      TEST_KAFKA_BROKER_VERSION: 2.6
+    steps:
+      - name: 'Check out repository'
+        uses: 'actions/checkout@v2'
+        with:
+          path: 'php-rdkafka'
 
-            - uses: actions/cache@v2
-              with:
-                  path: ~/build-cache/php
-                  key: ${{ runner.os }}-${{ matrix.php }}-${{ matrix.memcheck }}
+      - uses: actions/cache@v2
+        with:
+          path: ~/build-cache/php
+          key: ${{ runner.os }}-${{ matrix.php }}-${{ matrix.memcheck }}
 
-            - uses: actions/cache@v2
-              with:
-                  path: ~/build-cache/librdkafka
-                  key: ${{ runner.os }}-${{ matrix.librdkafka }}
+      - uses: actions/cache@v2
+        with:
+          path: ~/build-cache/librdkafka
+          key: ${{ runner.os }}-${{ matrix.librdkafka }}
 
-            - name: 'Build librdkafka'
-              run: './php-rdkafka/.github/workflows/test/build-librdkafka.sh'
+      - name: 'Build librdkafka'
+        run: './php-rdkafka/.github/workflows/test/build-librdkafka.sh'
 
-            - name: 'Build PHP'
-              run: './php-rdkafka/.github/workflows/test/build-php.sh'
+      - name: 'Build PHP'
+        run: './php-rdkafka/.github/workflows/test/build-php.sh'
 
-            - name: 'Build php-rdkafka'
-              run: './php-rdkafka/.github/workflows/test/build-php-rdkafka.sh'
+      - name: 'Build php-rdkafka'
+        run: './php-rdkafka/.github/workflows/test/build-php-rdkafka.sh'
 
-            - name: 'Start Kafka'
-              run: './php-rdkafka/.github/workflows/test/start-kafka.sh'
+      - name: 'Start Kafka'
+        run: './php-rdkafka/.github/workflows/test/start-kafka.sh'
 
-            - name: 'Run tests'
-              run: './php-rdkafka/.github/workflows/test/tests.sh'
+      - name: 'Run tests'
+        run: './php-rdkafka/.github/workflows/test/tests.sh'
