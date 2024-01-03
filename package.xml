@@ -114,6 +114,7 @@
     <file role="test" name="bug88.phpt"/>
     <file role="test" name="bugConfSetArgument.phpt"/>
     <file role="test" name="conf_callbacks_integration.phpt"/>
+    <file role="test" name="conf_callbacks_rdkafka11.phpt"/>
     <file role="test" name="conf_callbacks.phpt"/>
     <file role="test" name="conf.phpt"/>
     <file role="test" name="conf_setDefaultTopicConf8.phpt"/>

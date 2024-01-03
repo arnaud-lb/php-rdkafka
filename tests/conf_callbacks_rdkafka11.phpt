@@ -2,7 +2,7 @@
 RdKafka\Conf
 --SKIPIF--
 <?php
-(RD_KAFKA_VERSION >= 0x090000 && RD_KAFKA_VERSION < 0x010100ff) || die("skip librdkafka too old");
+RD_KAFKA_VERSION >= 0x010100ff || die("skip librdkafka too old");
 --FILE--
 <?php
 
@@ -24,11 +24,9 @@ $dump = $conf->dump();
 var_dump(isset($dump["rebalance_cb"]));
 
 echo "Setting oauth token bearer callback\n";
-try {
-    $conf->setOauthbearerTokenRefreshCb(function () {});
-} catch (\Exception $e) {
-    echo $e->getMessage()."\n";
-}
+$conf->setOauthbearerTokenRefreshCb(function () {});
+$dump = $conf->dump();
+var_dump(isset($dump["oauthbearer_token_refresh_cb"]));
 
 --EXPECT--
 Setting consume callback
@@ -38,4 +36,4 @@ bool(true)
 Setting rebalance callback
 bool(true)
 Setting oauth token bearer callback
-This version of rdkafka does not support the OAUTHBEARER sasl mechanism
+bool(true)

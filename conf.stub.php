@@ -44,6 +44,9 @@ class Conf
 
     /** @tentative-return-type */
     public function setLogCb(callable $callback): void {}
+
+    /** @tentative-return-type */
+    public function setOauthbearerTokenRefreshCb(callable $callback): void {}
 }
 
 class TopicConf

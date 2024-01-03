@@ -32,6 +32,8 @@ ZEND_END_ARG_INFO()
 
 #define arginfo_class_RdKafka_Conf_setLogCb arginfo_class_RdKafka_Conf_setErrorCb
 
+#define arginfo_class_RdKafka_Conf_setOauthbearerTokenRefreshCb arginfo_class_RdKafka_Conf_setErrorCb
+
 #define arginfo_class_RdKafka_TopicConf___construct arginfo_class_RdKafka_Conf___construct
 
 #define arginfo_class_RdKafka_TopicConf_dump arginfo_class_RdKafka_Conf_dump
@@ -54,6 +56,7 @@ ZEND_METHOD(RdKafka_Conf, setRebalanceCb);
 ZEND_METHOD(RdKafka_Conf, setConsumeCb);
 ZEND_METHOD(RdKafka_Conf, setOffsetCommitCb);
 ZEND_METHOD(RdKafka_Conf, setLogCb);
+ZEND_METHOD(RdKafka_Conf, setOauthbearerTokenRefreshCb);
 ZEND_METHOD(RdKafka_TopicConf, __construct);
 ZEND_METHOD(RdKafka_TopicConf, setPartitioner);
 
@@ -70,6 +73,7 @@ static const zend_function_entry class_RdKafka_Conf_methods[] = {
 	ZEND_ME(RdKafka_Conf, setConsumeCb, arginfo_class_RdKafka_Conf_setConsumeCb, ZEND_ACC_PUBLIC)
 	ZEND_ME(RdKafka_Conf, setOffsetCommitCb, arginfo_class_RdKafka_Conf_setOffsetCommitCb, ZEND_ACC_PUBLIC)
 	ZEND_ME(RdKafka_Conf, setLogCb, arginfo_class_RdKafka_Conf_setLogCb, ZEND_ACC_PUBLIC)
+	ZEND_ME(RdKafka_Conf, setOauthbearerTokenRefreshCb, arginfo_class_RdKafka_Conf_setOauthbearerTokenRefreshCb, ZEND_ACC_PUBLIC)
 	ZEND_FE_END
 };
 
