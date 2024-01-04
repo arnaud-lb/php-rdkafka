@@ -754,7 +754,7 @@ PHP_METHOD(RdKafka_Conf, setOauthbearerTokenRefreshCb)
 
     Z_ADDREF_P(&fci.function_name);
 
-    if (conf->cbs.log) {
+    if (conf->cbs.oauthbearer_token_refresh) {
         zval_ptr_dtor(&conf->cbs.oauthbearer_token_refresh->fci.function_name);
     } else {
         conf->cbs.oauthbearer_token_refresh = ecalloc(1, sizeof(*conf->cbs.oauthbearer_token_refresh));
