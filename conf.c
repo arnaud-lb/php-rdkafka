@@ -734,15 +734,11 @@ PHP_METHOD(RdKafka_Conf, setLogCb)
 }
 /* }}} */
 
+#ifdef HAS_RD_KAFKA_OAUTHBEARER_TOKEN_REFRESH_CB
 /* {{{ proto void RdKafka\Conf::setOauthbearerTokenRefreshCb(mixed $callback)
    Set token refresh callback for OAUTHBEARER sasl */
 PHP_METHOD(RdKafka_Conf, setOauthbearerTokenRefreshCb)
 {
-#ifndef HAS_RD_KAFKA_OAUTHBEARER_TOKEN_REFRESH_CB
-    zend_throw_exception_ex(NULL, 0, "This version of rdkafka does not support the OAUTHBEARER sasl mechanism");
-    return;
-#endif
-
     zend_fcall_info fci;
     zend_fcall_info_cache fcc;
     kafka_conf_object *conf;
@@ -770,6 +766,7 @@ PHP_METHOD(RdKafka_Conf, setOauthbearerTokenRefreshCb)
     rd_kafka_conf_set_oauthbearer_token_refresh_cb(conf->u.conf, kafka_conf_set_oauthbearer_token_refresh_cb);
 }
 /* }}} */
+#endif
 
 /* {{{ proto RdKafka\TopicConf::__construct() */
 PHP_METHOD(RdKafka_TopicConf, __construct)

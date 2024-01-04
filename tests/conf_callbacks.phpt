@@ -23,12 +23,8 @@ $conf->setRebalanceCb(function () { });
 $dump = $conf->dump();
 var_dump(isset($dump["rebalance_cb"]));
 
-echo "Setting oauth token bearer callback\n";
-try {
-    $conf->setOauthbearerTokenRefreshCb(function () {});
-} catch (\Exception $e) {
-    echo $e->getMessage()."\n";
-}
+echo "Checking if oauthbearer cb exists\n";
+var_dump(method_exists($conf, 'setOauthbearerTokenRefreshCb'));
 
 --EXPECT--
 Setting consume callback
@@ -37,5 +33,5 @@ Setting offset_commit callback
 bool(true)
 Setting rebalance callback
 bool(true)
-Setting oauth token bearer callback
-This version of rdkafka does not support the OAUTHBEARER sasl mechanism
+Checking if oauthbearer cb exists
+bool(false)
