@@ -2,7 +2,7 @@
 RdKafka\Conf
 --SKIPIF--
 <?php
-(RD_KAFKA_VERSION >= 0x090000 && RD_KAFKA_VERSION < 0x010100ff) || die("skip librdkafka too old");
+RD_KAFKA_VERSION >= 0x010100ff || die("skip librdkafka too old");
 --FILE--
 <?php
 
@@ -23,8 +23,10 @@ $conf->setRebalanceCb(function () { });
 $dump = $conf->dump();
 var_dump(isset($dump["rebalance_cb"]));
 
-echo "Checking if oauthbearer cb exists\n";
-var_dump(method_exists($conf, 'setOauthbearerTokenRefreshCb'));
+echo "Setting oauth token bearer callback\n";
+$conf->setOauthbearerTokenRefreshCb(function () {});
+$dump = $conf->dump();
+var_dump(isset($dump["oauthbearer_token_refresh_cb"]));
 
 --EXPECT--
 Setting consume callback
@@ -33,5 +35,5 @@ Setting offset_commit callback
 bool(true)
 Setting rebalance callback
 bool(true)
-Checking if oauthbearer cb exists
-bool(false)
+Setting oauth token bearer callback
+bool(true)

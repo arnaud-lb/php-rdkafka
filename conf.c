@@ -66,6 +66,8 @@ void kafka_conf_callbacks_dtor(kafka_conf_callbacks *cbs) /* {{{ */
     cbs->offset_commit = NULL;
     kafka_conf_callback_dtor(cbs->log);
     cbs->log = NULL;
+    kafka_conf_callback_dtor(cbs->oauthbearer_token_refresh);
+    cbs->oauthbearer_token_refresh = NULL;
 } /* }}} */
 
 static void kafka_conf_callback_copy(kafka_conf_callback **to, kafka_conf_callback *from) /* {{{ */
@@ -336,6 +338,40 @@ static void kafka_conf_log_cb(const rd_kafka_t *rk, int level, const char *facil
     zval_ptr_dtor(&args[2]);
     zval_ptr_dtor(&args[3]);
 }
+
+/* 
+void rd_kafka_conf_set_oauthbearer_token_refresh_cb(
+    rd_kafka_conf_t *conf,
+    void (*oauthbearer_token_refresh_cb)(rd_kafka_t *rk,
+                                         const char *oauthbearer_config,
+                                         void *opaque)) {
+}*/
+static void kafka_conf_set_oauthbearer_token_refresh_cb(rd_kafka_t *rk, const char *oauthbearer_config, void *opaque)
+{
+    kafka_conf_callbacks *cbs = (kafka_conf_callbacks*) opaque;
+    zval args[2];
+
+    if (!opaque) {
+        return;
+    }
+
+    if (!cbs->oauthbearer_token_refresh) {
+        return;
+    }
+
+    ZVAL_NULL(&args[0]);
+    ZVAL_NULL(&args[1]);
+
+    ZVAL_ZVAL(&args[0], &cbs->zrk, 1, 0);
+    ZVAL_STRING(&args[1], oauthbearer_config);
+
+    rdkafka_call_function(&cbs->oauthbearer_token_refresh->fci, &cbs->oauthbearer_token_refresh->fcc, NULL, 2, args);
+
+    zval_ptr_dtor(&args[0]);
+    zval_ptr_dtor(&args[1]);
+}
+
+
 
 /* {{{ proto RdKafka\Conf::__construct() */
 PHP_METHOD(RdKafka_Conf, __construct)
@@ -697,6 +733,40 @@ PHP_METHOD(RdKafka_Conf, setLogCb)
     rd_kafka_conf_set(conf->u.conf, "log.queue", "true", errstr, sizeof(errstr));
 }
 /* }}} */
+
+#ifdef HAS_RD_KAFKA_OAUTHBEARER_TOKEN_REFRESH_CB
+/* {{{ proto void RdKafka\Conf::setOauthbearerTokenRefreshCb(mixed $callback)
+   Set token refresh callback for OAUTHBEARER sasl */
+PHP_METHOD(RdKafka_Conf, setOauthbearerTokenRefreshCb)
+{
+    zend_fcall_info fci;
+    zend_fcall_info_cache fcc;
+    kafka_conf_object *conf;
+
+    if (zend_parse_parameters(ZEND_NUM_ARGS(), "f", &fci, &fcc) == FAILURE) {
+        return;
+    }
+
+    conf = get_kafka_conf_object(getThis());
+    if (!conf) {
+        return;
+    }
+
+    Z_ADDREF_P(&fci.function_name);
+
+    if (conf->cbs.oauthbearer_token_refresh) {
+        zval_ptr_dtor(&conf->cbs.oauthbearer_token_refresh->fci.function_name);
+    } else {
+        conf->cbs.oauthbearer_token_refresh = ecalloc(1, sizeof(*conf->cbs.oauthbearer_token_refresh));
+    }
+
+    conf->cbs.oauthbearer_token_refresh->fci = fci;
+    conf->cbs.oauthbearer_token_refresh->fcc = fcc;
+
+    rd_kafka_conf_set_oauthbearer_token_refresh_cb(conf->u.conf, kafka_conf_set_oauthbearer_token_refresh_cb);
+}
+/* }}} */
+#endif
 
 /* {{{ proto RdKafka\TopicConf::__construct() */
 PHP_METHOD(RdKafka_TopicConf, __construct)
