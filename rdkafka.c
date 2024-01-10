@@ -447,7 +447,7 @@ PHP_METHOD(RdKafka, oauthbearerSetToken)
     errstr[0] = '\0';
     
     int extension_size;
-    char **extensions = NULL;
+    const char **extensions = NULL;
 
     if (extensions_arg != NULL) {
         extension_size = zend_hash_num_elements(Z_ARRVAL_P(extensions_arg)) * 2;
@@ -458,6 +458,11 @@ PHP_METHOD(RdKafka, oauthbearerSetToken)
         zend_string *extension_key_str;
         zval *extension_zval;
         ZEND_HASH_FOREACH_KEY_VAL(Z_ARRVAL_P(extensions_arg), num_key, extension_key_str, extension_zval) {
+            if (!extension_key_str) {
+                extension_key_str = zend_long_to_str(num_key);
+                zend_string_delref(extension_key_str);
+            }
+
             zend_string *tmp_extension_val_str;
             zend_string *extension_val_str = zval_get_tmp_string(extension_zval, &tmp_extension_val_str);
 
@@ -502,6 +507,8 @@ PHP_METHOD(RdKafka, oauthbearerSetToken)
             return;
         case RD_KAFKA_RESP_ERR_NO_ERROR:
             break;
+        default:
+            return;
     }
 }
 /* }}} */
@@ -536,6 +543,8 @@ PHP_METHOD(RdKafka, oauthbearerSetTokenFailure)
             return;
         case RD_KAFKA_RESP_ERR_NO_ERROR:
             break;
+        default:
+            return;
     }
 }
 /* }}} */
