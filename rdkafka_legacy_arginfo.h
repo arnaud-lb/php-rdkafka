@@ -1,5 +1,5 @@
 /* This is a generated file, edit the .stub.php file instead.
- * Stub hash: fbfdb28740208d5f909e9db261bea0aa26bfd471 */
+ * Stub hash: e469d659a320102b1d64c048e9457bb9b64d8e5d */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_class_RdKafka___construct, 0, 0, 0)
 ZEND_END_ARG_INFO()
@@ -65,6 +65,21 @@ ZEND_END_ARG_INFO()
 
 #define arginfo_class_RdKafka_resumePartitions arginfo_class_RdKafka_pausePartitions
 
+#if defined(HAS_RD_KAFKA_OAUTHBEARER)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_class_RdKafka_oauthbearerSetToken, 0, 0, 3)
+	ZEND_ARG_INFO(0, token_value)
+	ZEND_ARG_INFO(0, lifetime_ms)
+	ZEND_ARG_INFO(0, principal_name)
+	ZEND_ARG_INFO(0, extensions)
+ZEND_END_ARG_INFO()
+#endif
+
+#if defined(HAS_RD_KAFKA_OAUTHBEARER)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_class_RdKafka_oauthbearerSetTokenFailure, 0, 0, 1)
+	ZEND_ARG_INFO(0, error)
+ZEND_END_ARG_INFO()
+#endif
+
 ZEND_BEGIN_ARG_INFO_EX(arginfo_class_RdKafka_Consumer___construct, 0, 0, 0)
 	ZEND_ARG_INFO(0, conf)
 ZEND_END_ARG_INFO()
@@ -109,6 +124,12 @@ ZEND_METHOD(RdKafka, queryWatermarkOffsets);
 ZEND_METHOD(RdKafka, offsetsForTimes);
 ZEND_METHOD(RdKafka, pausePartitions);
 ZEND_METHOD(RdKafka, resumePartitions);
+#if defined(HAS_RD_KAFKA_OAUTHBEARER)
+ZEND_METHOD(RdKafka, oauthbearerSetToken);
+#endif
+#if defined(HAS_RD_KAFKA_OAUTHBEARER)
+ZEND_METHOD(RdKafka, oauthbearerSetTokenFailure);
+#endif
 ZEND_METHOD(RdKafka_Consumer, __construct);
 ZEND_METHOD(RdKafka_Consumer, newQueue);
 ZEND_METHOD(RdKafka_Producer, __construct);
@@ -145,6 +166,12 @@ static const zend_function_entry class_RdKafka_methods[] = {
 	ZEND_ME(RdKafka, offsetsForTimes, arginfo_class_RdKafka_offsetsForTimes, ZEND_ACC_PUBLIC)
 	ZEND_ME(RdKafka, pausePartitions, arginfo_class_RdKafka_pausePartitions, ZEND_ACC_PUBLIC)
 	ZEND_ME(RdKafka, resumePartitions, arginfo_class_RdKafka_resumePartitions, ZEND_ACC_PUBLIC)
+#if defined(HAS_RD_KAFKA_OAUTHBEARER)
+	ZEND_ME(RdKafka, oauthbearerSetToken, arginfo_class_RdKafka_oauthbearerSetToken, ZEND_ACC_PUBLIC)
+#endif
+#if defined(HAS_RD_KAFKA_OAUTHBEARER)
+	ZEND_ME(RdKafka, oauthbearerSetTokenFailure, arginfo_class_RdKafka_oauthbearerSetTokenFailure, ZEND_ACC_PUBLIC)
+#endif
 	ZEND_FE_END
 };
 
@@ -189,13 +216,13 @@ static zend_class_entry *register_class_RdKafka(void)
 	zval property_error_cb_default_value;
 	ZVAL_NULL(&property_error_cb_default_value);
 	zend_string *property_error_cb_name = zend_string_init("error_cb", sizeof("error_cb") - 1, 1);
-	zend_declare_property_ex(class_entry, property_error_cb_name, &property_error_cb_default_value, ZEND_ACC_PRIVATE, NULL);
+	zend_declare_typed_property(class_entry, property_error_cb_name, &property_error_cb_default_value, ZEND_ACC_PRIVATE, NULL, (zend_type) ZEND_TYPE_INIT_NONE(0));
 	zend_string_release(property_error_cb_name);
 
 	zval property_dr_cb_default_value;
 	ZVAL_NULL(&property_dr_cb_default_value);
 	zend_string *property_dr_cb_name = zend_string_init("dr_cb", sizeof("dr_cb") - 1, 1);
-	zend_declare_property_ex(class_entry, property_dr_cb_name, &property_dr_cb_default_value, ZEND_ACC_PRIVATE, NULL);
+	zend_declare_typed_property(class_entry, property_dr_cb_name, &property_dr_cb_default_value, ZEND_ACC_PRIVATE, NULL, (zend_type) ZEND_TYPE_INIT_NONE(0));
 	zend_string_release(property_dr_cb_name);
 
 	return class_entry;

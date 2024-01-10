@@ -45,7 +45,7 @@ class Conf
     /** @tentative-return-type */
     public function setLogCb(callable $callback): void {}
 
-    #ifdef HAS_RD_KAFKA_OAUTHBEARER_TOKEN_REFRESH_CB
+    #ifdef HAS_RD_KAFKA_OAUTHBEARER
     /** @tentative-return-type */
     public function setOauthbearerTokenRefreshCb(callable $callback): void {}
     #endif
