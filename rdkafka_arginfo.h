@@ -42,19 +42,11 @@ ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_class_RdKafka_purge, 0
 ZEND_END_ARG_INFO()
 #endif
 
-#if (PHP_VERSION_ID >= 80100)
 ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_class_RdKafka_setLogger, 0, 1, IS_VOID, 0)
-#else
-ZEND_BEGIN_ARG_INFO_EX(arginfo_class_RdKafka_setLogger, 0, 0, 1)
-#endif
 	ZEND_ARG_TYPE_INFO(0, logger, IS_LONG, 0)
 ZEND_END_ARG_INFO()
 
-#if (PHP_VERSION_ID >= 80100)
 ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_class_RdKafka_queryWatermarkOffsets, 0, 5, IS_VOID, 0)
-#else
-ZEND_BEGIN_ARG_INFO_EX(arginfo_class_RdKafka_queryWatermarkOffsets, 0, 0, 5)
-#endif
 	ZEND_ARG_TYPE_INFO(0, topic, IS_STRING, 0)
 	ZEND_ARG_TYPE_INFO(0, partition, IS_LONG, 0)
 	ZEND_ARG_TYPE_INFO(1, low, IS_LONG, 0)
@@ -225,13 +217,13 @@ static zend_class_entry *register_class_RdKafka(void)
 	zval property_error_cb_default_value;
 	ZVAL_UNDEF(&property_error_cb_default_value);
 	zend_string *property_error_cb_name = zend_string_init("error_cb", sizeof("error_cb") - 1, 1);
-	zend_declare_property_ex(class_entry, property_error_cb_name, &property_error_cb_default_value, ZEND_ACC_PRIVATE, NULL);
+	zend_declare_typed_property(class_entry, property_error_cb_name, &property_error_cb_default_value, ZEND_ACC_PRIVATE, NULL, (zend_type) ZEND_TYPE_INIT_MASK(MAY_BE_CALLABLE|MAY_BE_NULL));
 	zend_string_release(property_error_cb_name);
 
 	zval property_dr_cb_default_value;
 	ZVAL_UNDEF(&property_dr_cb_default_value);
 	zend_string *property_dr_cb_name = zend_string_init("dr_cb", sizeof("dr_cb") - 1, 1);
-	zend_declare_property_ex(class_entry, property_dr_cb_name, &property_dr_cb_default_value, ZEND_ACC_PRIVATE, NULL);
+	zend_declare_typed_property(class_entry, property_dr_cb_name, &property_dr_cb_default_value, ZEND_ACC_PRIVATE, NULL, (zend_type) ZEND_TYPE_INIT_MASK(MAY_BE_CALLABLE|MAY_BE_NULL));
 	zend_string_release(property_dr_cb_name);
 
 	return class_entry;
