@@ -216,13 +216,13 @@ static zend_class_entry *register_class_RdKafka(void)
 	zval property_error_cb_default_value;
 	ZVAL_NULL(&property_error_cb_default_value);
 	zend_string *property_error_cb_name = zend_string_init("error_cb", sizeof("error_cb") - 1, 1);
-	zend_declare_typed_property(class_entry, property_error_cb_name, &property_error_cb_default_value, ZEND_ACC_PRIVATE, NULL, (zend_type) ZEND_TYPE_INIT_NONE(0));
+	zend_declare_property_ex(class_entry, property_error_cb_name, &property_error_cb_default_value, ZEND_ACC_PRIVATE, NULL);
 	zend_string_release(property_error_cb_name);
 
 	zval property_dr_cb_default_value;
 	ZVAL_NULL(&property_dr_cb_default_value);
 	zend_string *property_dr_cb_name = zend_string_init("dr_cb", sizeof("dr_cb") - 1, 1);
-	zend_declare_typed_property(class_entry, property_dr_cb_name, &property_dr_cb_default_value, ZEND_ACC_PRIVATE, NULL, (zend_type) ZEND_TYPE_INIT_NONE(0));
+	zend_declare_property_ex(class_entry, property_dr_cb_name, &property_dr_cb_default_value, ZEND_ACC_PRIVATE, NULL);
 	zend_string_release(property_dr_cb_name);
 
 	return class_entry;
