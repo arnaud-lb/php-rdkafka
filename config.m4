@@ -19,7 +19,7 @@ if test "$PHP_RDKAFKA" != "no"; then
       fi
     done
   fi
-  
+
   if test -z "$RDKAFKA_DIR"; then
     AC_MSG_RESULT([not found])
     AC_MSG_ERROR([Please reinstall the rdkafka distribution])
@@ -88,6 +88,12 @@ if test "$PHP_RDKAFKA" != "no"; then
     AC_DEFINE(HAS_RD_KAFKA_OAUTHBEARER_TOKEN_REFRESH_CB,1,[ ])
   ],[
     AC_MSG_WARN([oauthbearer token refresh cb is not available])
+  ])
+
+  AC_CHECK_LIB($LIBNAME,[rd_kafka_incremental_assign, rd_kafka_incremental_unassign],[
+    AC_DEFINE(HAS_RD_KAFKA_INCREMENTAL_ASSIGN,1,[ ])
+  ],[
+    AC_MSG_WARN([no rd_kafka_incremental_(un)assign, incremental rebalance support will not be available])
   ])
 
   LDFLAGS="$ORIG_LDFLAGS"
