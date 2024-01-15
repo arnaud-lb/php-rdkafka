@@ -473,14 +473,6 @@ PHP_METHOD(RdKafka, oauthbearerSetToken)
         } ZEND_HASH_FOREACH_END();
     }    
 
-    /* rd_kafka_oauthbearer_set_token(rd_kafka_t *rk,
-                               const char *token_value,
-                               int64_t md_lifetime_ms,
-                               const char *md_principal_name,
-                               const char **extensions,
-                               size_t extension_size,
-                               char *errstr,
-                               size_t errstr_size */
     ret = rd_kafka_oauthbearer_set_token(
         intern->rk,
         token_value,
