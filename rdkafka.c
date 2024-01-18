@@ -527,8 +527,9 @@ PHP_METHOD(RdKafka, oauthbearerSetTokenFailure)
 {
     kafka_object *intern;
     const char *errstr;
+    size_t errstr_len;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS(), "s", &errstr) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS(), "s", &errstr, &errstr_len) == FAILURE) {
         return;
     }
 
