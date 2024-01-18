@@ -734,7 +734,7 @@ PHP_METHOD(RdKafka_Conf, setLogCb)
 }
 /* }}} */
 
-#ifdef HAS_RD_KAFKA_OAUTHBEARER_TOKEN_REFRESH_CB
+#ifdef HAS_RD_KAFKA_OAUTHBEARER
 /* {{{ proto void RdKafka\Conf::setOauthbearerTokenRefreshCb(mixed $callback)
    Set token refresh callback for OAUTHBEARER sasl */
 PHP_METHOD(RdKafka_Conf, setOauthbearerTokenRefreshCb)

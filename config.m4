@@ -84,10 +84,10 @@ if test "$PHP_RDKAFKA" != "no"; then
     AC_MSG_WARN([murmur2 partitioner is not available])
   ])
 
-  AC_CHECK_LIB($LIBNAME,[rd_kafka_conf_set_oauthbearer_token_refresh_cb],[
-    AC_DEFINE(HAS_RD_KAFKA_OAUTHBEARER_TOKEN_REFRESH_CB,1,[ ])
+  AC_CHECK_LIB($LIBNAME,[rd_kafka_oauthbearer_set_token],[
+    AC_DEFINE(HAS_RD_KAFKA_OAUTHBEARER,1,[ ])
   ],[
-    AC_MSG_WARN([oauthbearer token refresh cb is not available])
+    AC_MSG_WARN([oauthbearer support is not available])
   ])
 
   LDFLAGS="$ORIG_LDFLAGS"

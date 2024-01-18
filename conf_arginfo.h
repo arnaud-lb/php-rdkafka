@@ -32,7 +32,7 @@ ZEND_END_ARG_INFO()
 
 #define arginfo_class_RdKafka_Conf_setLogCb arginfo_class_RdKafka_Conf_setErrorCb
 
-#ifdef HAS_RD_KAFKA_OAUTHBEARER_TOKEN_REFRESH_CB
+#ifdef HAS_RD_KAFKA_OAUTHBEARER
 #define arginfo_class_RdKafka_Conf_setOauthbearerTokenRefreshCb arginfo_class_RdKafka_Conf_setErrorCb
 #endif
 
@@ -59,7 +59,7 @@ ZEND_METHOD(RdKafka_Conf, setConsumeCb);
 ZEND_METHOD(RdKafka_Conf, setOffsetCommitCb);
 ZEND_METHOD(RdKafka_Conf, setLogCb);
 
-#ifdef HAS_RD_KAFKA_OAUTHBEARER_TOKEN_REFRESH_CB
+#ifdef HAS_RD_KAFKA_OAUTHBEARER
 ZEND_METHOD(RdKafka_Conf, setOauthbearerTokenRefreshCb);
 #endif
 
@@ -79,7 +79,7 @@ static const zend_function_entry class_RdKafka_Conf_methods[] = {
 	ZEND_ME(RdKafka_Conf, setConsumeCb, arginfo_class_RdKafka_Conf_setConsumeCb, ZEND_ACC_PUBLIC)
 	ZEND_ME(RdKafka_Conf, setOffsetCommitCb, arginfo_class_RdKafka_Conf_setOffsetCommitCb, ZEND_ACC_PUBLIC)
 	ZEND_ME(RdKafka_Conf, setLogCb, arginfo_class_RdKafka_Conf_setLogCb, ZEND_ACC_PUBLIC)
-	#ifdef HAS_RD_KAFKA_OAUTHBEARER_TOKEN_REFRESH_CB
+	#ifdef HAS_RD_KAFKA_OAUTHBEARER
 	ZEND_ME(RdKafka_Conf, setOauthbearerTokenRefreshCb, arginfo_class_RdKafka_Conf_setOauthbearerTokenRefreshCb, ZEND_ACC_PUBLIC)
 	#endif
 	ZEND_FE_END
