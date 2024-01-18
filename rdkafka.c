@@ -430,12 +430,12 @@ PHP_METHOD(RdKafka, oauthbearerSetToken)
     zend_long lifetime_ms;
     char *principal_name;
     size_t principal_len;
-    zval *extensions_arg = NULL;
+    HashTable *extensions_hash = NULL;
     
     char errstr[512];
     rd_kafka_resp_err_t ret = 0;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS(), "sls|a", &token_value, &token_value_len, &lifetime_ms, &principal_name, &principal_len, &extensions_arg) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS(), "sls|h", &token_value, &token_value_len, &lifetime_ms, &principal_name, &principal_len, &extensions_hash) == FAILURE) {
         return;
     }
 
@@ -446,18 +446,18 @@ PHP_METHOD(RdKafka, oauthbearerSetToken)
 
     errstr[0] = '\0';
     
-    int extension_size;
+    int extensions_size;
     const char **extensions = NULL;
 
-    if (extensions_arg != NULL) {
-        extension_size = zend_hash_num_elements(Z_ARRVAL_P(extensions_arg)) * 2;
-        extensions = safe_emalloc((extension_size * 2), sizeof(char *), 0);
+    if (extensions_hash != NULL) {
+        extensions_size = zend_hash_num_elements(extensions_hash) * 2;
+        extensions = safe_emalloc((extensions_size * 2), sizeof(char *), 0);
 
         int pos = 0;
         zend_ulong num_key;
         zend_string *extension_key_str;
         zval *extension_zval;
-        ZEND_HASH_FOREACH_KEY_VAL(Z_ARRVAL_P(extensions_arg), num_key, extension_key_str, extension_zval) {
+        ZEND_HASH_FOREACH_KEY_VAL(extensions_hash, num_key, extension_key_str, extension_zval) {
             if (!extension_key_str) {
                 extension_key_str = zend_long_to_str(num_key);
                 extensions[pos++] = estrdup(ZSTR_VAL(extension_key_str));
@@ -481,12 +481,12 @@ PHP_METHOD(RdKafka, oauthbearerSetToken)
         lifetime_ms,
         principal_name,
         extensions,
-        extension_size,
+        extensions_size,
         errstr,
         sizeof(errstr));
 
     if (extensions != NULL) {
-        for (int i = 0; i < extension_size; i++) {
+        for (int i = 0; i < extensions_size; i++) {
             efree(extensions[i]);
         }
         efree(extensions);
