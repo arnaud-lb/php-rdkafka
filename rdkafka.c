@@ -447,7 +447,7 @@ PHP_METHOD(RdKafka, oauthbearerSetToken)
     errstr[0] = '\0';
     
     int extensions_size;
-    const char **extensions = NULL;
+    char **extensions = NULL;
 
     if (extensions_hash != NULL) {
         extensions_size = zend_hash_num_elements(extensions_hash) * 2;
@@ -480,7 +480,7 @@ PHP_METHOD(RdKafka, oauthbearerSetToken)
         token_value,
         lifetime_ms,
         principal_name,
-        extensions,
+        (const char **)extensions,
         extensions_size,
         errstr,
         sizeof(errstr));
