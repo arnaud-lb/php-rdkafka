@@ -542,7 +542,7 @@ PHP_METHOD(RdKafka_KafkaConsumer, close)
 }
 /* }}} */
 
-/* {{{ proto Metadata RdKafka\KafkaConsumer::getMetadata(bool all_topics, RdKafka\Topic only_topic, int timeout_ms)
+/* {{{ proto RdKafka\Metadata RdKafka\KafkaConsumer::getMetadata(bool $all_topics, RdKafka\Topic $only_topic, int $timeout_ms)
    Request Metadata from broker */
 PHP_METHOD(RdKafka_KafkaConsumer, getMetadata)
 {
@@ -580,6 +580,28 @@ PHP_METHOD(RdKafka_KafkaConsumer, getMetadata)
     kafka_metadata_init(return_value, metadata);
 }
 /* }}} */
+
+#ifdef HAS_RD_KAFKA_CONTROLLERID
+/* {{{ proto int RdKafka\KafkaConsumer::getControllerId(int $timeout_ms)
+   Returns the current ControllerId (controller broker id) as reported in broker metadata */
+PHP_METHOD(RdKafka_KafkaConsumer, getControllerId)
+{
+    kafka_object *intern;
+    zend_long timeout;
+
+    if (zend_parse_parameters(ZEND_NUM_ARGS(), "l", &timeout) == FAILURE) {
+        return;
+    }
+
+    intern = get_object(getThis());
+    if (!intern) {
+        return;
+    }
+
+    RETURN_LONG(rd_kafka_controllerid(intern->rk, timeout));
+}
+/* }}} */
+#endif
 
 /* {{{ proto RdKafka\KafkaConsumerTopic RdKafka\KafkaConsumer::newTopic(string $topic)
    Returns a RdKafka\KafkaConsumerTopic object */

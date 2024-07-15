@@ -56,6 +56,11 @@ class KafkaConsumer
     /** @tentative-return-type */
     public function getMetadata(bool $all_topics, ?Topic $only_topic, int $timeout_ms): Metadata {}
 
+#ifdef HAS_RD_KAFKA_CONTROLLERID
+    /** @tentative-return-type */
+    public function getControllerId(int $timeout_ms): int {}
+#endif
+
     /** @tentative-return-type */
     public function newTopic(string $topic_name, ?TopicConf $topic_conf = null): KafkaConsumerTopic {}
 

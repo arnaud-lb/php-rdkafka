@@ -350,7 +350,7 @@ PHP_METHOD(RdKafka, addBrokers)
 }
 /* }}} */
 
-/* {{{ proto RdKafka\Metadata::getMetadata(bool $all_topics, RdKafka\Topic $only_topic, int $timeout_ms)
+/* {{{ proto RdKafka\Metadata RdKafka::getMetadata(bool $all_topics, RdKafka\Topic $only_topic, int $timeout_ms)
    Request Metadata from broker */
 PHP_METHOD(RdKafka, getMetadata)
 {
@@ -388,7 +388,29 @@ PHP_METHOD(RdKafka, getMetadata)
     kafka_metadata_init(return_value, metadata);
 }
 /* }}} */
- 
+
+#ifdef HAS_RD_KAFKA_CONTROLLERID
+/* {{{ proto int RdKafka::getControllerId(int $timeout_ms)
+   Returns the current ControllerId (controller broker id) as reported in broker metadata */
+PHP_METHOD(RdKafka, getControllerId)
+{
+    kafka_object *intern;
+    zend_long timeout;
+
+    if (zend_parse_parameters(ZEND_NUM_ARGS(), "l", &timeout) == FAILURE) {
+        return;
+    }
+
+    intern = get_kafka_object(getThis());
+    if (!intern) {
+        return;
+    }
+
+    RETURN_LONG(rd_kafka_controllerid(intern->rk, timeout));
+}
+/* }}} */
+#endif
+
 /* {{{ proto void RdKafka::setLogLevel(int $level)
    Specifies the maximum logging level produced by internal kafka logging and debugging */
 PHP_METHOD(RdKafka, setLogLevel)
