@@ -586,7 +586,7 @@ PHP_METHOD(RdKafka_KafkaConsumer, getMetadata)
    Returns the current ControllerId (controller broker id) as reported in broker metadata */
 PHP_METHOD(RdKafka_KafkaConsumer, getControllerId)
 {
-    kafka_object *intern;
+    object_intern *intern;
     zend_long timeout;
 
     if (zend_parse_parameters(ZEND_NUM_ARGS(), "l", &timeout) == FAILURE) {
