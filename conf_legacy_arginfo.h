@@ -1,5 +1,5 @@
 /* This is a generated file, edit the .stub.php file instead.
- * Stub hash: 86e8e9fcd235f3affc4ef30ca0d96395abcad13f */
+ * Stub hash: 86934f54199c0af37cadfcedafeaffb569e33beb */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_class_RdKafka_Conf___construct, 0, 0, 0)
 ZEND_END_ARG_INFO()
@@ -32,8 +32,10 @@ ZEND_END_ARG_INFO()
 
 #define arginfo_class_RdKafka_Conf_setLogCb arginfo_class_RdKafka_Conf_setErrorCb
 
-#ifdef HAS_RD_KAFKA_OAUTHBEARER_TOKEN_REFRESH_CB
-#define arginfo_class_RdKafka_Conf_setOauthbearerTokenRefreshCb arginfo_class_RdKafka_Conf_setErrorCb
+#if defined(HAS_RD_KAFKA_OAUTHBEARER_TOKEN_REFRESH_CB)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_class_RdKafka_Conf_setOauthbearerTokenRefreshCb, 0, 0, 1)
+	ZEND_ARG_INFO(0, callback)
+ZEND_END_ARG_INFO()
 #endif
 
 #define arginfo_class_RdKafka_TopicConf___construct arginfo_class_RdKafka_Conf___construct
@@ -46,7 +48,6 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_class_RdKafka_TopicConf_setPartitioner, 0, 0, 1)
 	ZEND_ARG_INFO(0, partitioner)
 ZEND_END_ARG_INFO()
 
-
 ZEND_METHOD(RdKafka_Conf, __construct);
 ZEND_METHOD(RdKafka_Conf, dump);
 ZEND_METHOD(RdKafka_Conf, set);
@@ -58,12 +59,11 @@ ZEND_METHOD(RdKafka_Conf, setRebalanceCb);
 ZEND_METHOD(RdKafka_Conf, setConsumeCb);
 ZEND_METHOD(RdKafka_Conf, setOffsetCommitCb);
 ZEND_METHOD(RdKafka_Conf, setLogCb);
-#ifdef HAS_RD_KAFKA_OAUTHBEARER_TOKEN_REFRESH_CB
+#if defined(HAS_RD_KAFKA_OAUTHBEARER_TOKEN_REFRESH_CB)
 ZEND_METHOD(RdKafka_Conf, setOauthbearerTokenRefreshCb);
 #endif
 ZEND_METHOD(RdKafka_TopicConf, __construct);
 ZEND_METHOD(RdKafka_TopicConf, setPartitioner);
-
 
 static const zend_function_entry class_RdKafka_Conf_methods[] = {
 	ZEND_ME(RdKafka_Conf, __construct, arginfo_class_RdKafka_Conf___construct, ZEND_ACC_PUBLIC)
@@ -77,17 +77,24 @@ static const zend_function_entry class_RdKafka_Conf_methods[] = {
 	ZEND_ME(RdKafka_Conf, setConsumeCb, arginfo_class_RdKafka_Conf_setConsumeCb, ZEND_ACC_PUBLIC)
 	ZEND_ME(RdKafka_Conf, setOffsetCommitCb, arginfo_class_RdKafka_Conf_setOffsetCommitCb, ZEND_ACC_PUBLIC)
 	ZEND_ME(RdKafka_Conf, setLogCb, arginfo_class_RdKafka_Conf_setLogCb, ZEND_ACC_PUBLIC)
-	#ifdef HAS_RD_KAFKA_OAUTHBEARER_TOKEN_REFRESH_CB
+#if defined(HAS_RD_KAFKA_OAUTHBEARER_TOKEN_REFRESH_CB)
 	ZEND_ME(RdKafka_Conf, setOauthbearerTokenRefreshCb, arginfo_class_RdKafka_Conf_setOauthbearerTokenRefreshCb, ZEND_ACC_PUBLIC)
-	#endif
+#endif
 	ZEND_FE_END
 };
 
-
 static const zend_function_entry class_RdKafka_TopicConf_methods[] = {
 	ZEND_ME(RdKafka_TopicConf, __construct, arginfo_class_RdKafka_TopicConf___construct, ZEND_ACC_PUBLIC)
-	ZEND_MALIAS(RdKafka_Conf, dump, dump, arginfo_class_RdKafka_TopicConf_dump, ZEND_ACC_PUBLIC)
-	ZEND_MALIAS(RdKafka_Conf, set, set, arginfo_class_RdKafka_TopicConf_set, ZEND_ACC_PUBLIC)
+#if (PHP_VERSION_ID >= 80400)
+	ZEND_RAW_FENTRY("dump", zim_RdKafka_Conf_dump, arginfo_class_RdKafka_TopicConf_dump, ZEND_ACC_PUBLIC, NULL, NULL)
+#else
+	ZEND_RAW_FENTRY("dump", zim_RdKafka_Conf_dump, arginfo_class_RdKafka_TopicConf_dump, ZEND_ACC_PUBLIC)
+#endif
+#if (PHP_VERSION_ID >= 80400)
+	ZEND_RAW_FENTRY("set", zim_RdKafka_Conf_set, arginfo_class_RdKafka_TopicConf_set, ZEND_ACC_PUBLIC, NULL, NULL)
+#else
+	ZEND_RAW_FENTRY("set", zim_RdKafka_Conf_set, arginfo_class_RdKafka_TopicConf_set, ZEND_ACC_PUBLIC)
+#endif
 	ZEND_ME(RdKafka_TopicConf, setPartitioner, arginfo_class_RdKafka_TopicConf_setPartitioner, ZEND_ACC_PUBLIC)
 	ZEND_FE_END
 };

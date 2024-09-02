@@ -120,6 +120,7 @@
     <file role="test" name="conf_setDefaultTopicConf8.phpt"/>
     <file role="test" name="conf_setDefaultTopicConf.phpt"/>
     <file role="test" name="constants.phpt"/>
+    <file role="test" name="controller_id.phpt"/>
     <file role="test" name="err2name.phpt"/>
     <file role="test" name="init_transaction_not_configured.phpt"/>
     <file role="test" name="integration-tests-check.php"/>

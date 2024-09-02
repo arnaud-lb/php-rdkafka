@@ -1,52 +1,98 @@
 /* This is a generated file, edit the .stub.php file instead.
- * Stub hash: fbfdb28740208d5f909e9db261bea0aa26bfd471 */
+ * Stub hash: 2d70b7756ae39db557148a4c65fc6bc5c164b102 */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_class_RdKafka___construct, 0, 0, 0)
 ZEND_END_ARG_INFO()
 
+#if (PHP_VERSION_ID >= 80100)
 ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_class_RdKafka_addBrokers, 0, 1, IS_LONG, 0)
+#else
+ZEND_BEGIN_ARG_INFO_EX(arginfo_class_RdKafka_addBrokers, 0, 0, 1)
+#endif
 	ZEND_ARG_TYPE_INFO(0, broker_list, IS_STRING, 0)
 ZEND_END_ARG_INFO()
 
+#if (PHP_VERSION_ID >= 80100)
 ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_OBJ_INFO_EX(arginfo_class_RdKafka_getMetadata, 0, 3, RdKafka\\Metadata, 0)
+#else
+ZEND_BEGIN_ARG_INFO_EX(arginfo_class_RdKafka_getMetadata, 0, 0, 3)
+#endif
 	ZEND_ARG_TYPE_INFO(0, all_topics, _IS_BOOL, 0)
 	ZEND_ARG_OBJ_INFO(0, only_topic, RdKafka\\Topic, 1)
 	ZEND_ARG_TYPE_INFO(0, timeout_ms, IS_LONG, 0)
 ZEND_END_ARG_INFO()
 
+#if defined(HAS_RD_KAFKA_CONTROLLERID)
+#if (PHP_VERSION_ID >= 80100)
+ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_class_RdKafka_getControllerId, 0, 1, IS_LONG, 0)
+#else
+ZEND_BEGIN_ARG_INFO_EX(arginfo_class_RdKafka_getControllerId, 0, 0, 1)
+#endif
+	ZEND_ARG_TYPE_INFO(0, timeout_ms, IS_LONG, 0)
+ZEND_END_ARG_INFO()
+#endif
+
+#if (PHP_VERSION_ID >= 80100)
 ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_class_RdKafka_getOutQLen, 0, 0, IS_LONG, 0)
+#else
+ZEND_BEGIN_ARG_INFO_EX(arginfo_class_RdKafka_getOutQLen, 0, 0, 0)
+#endif
 ZEND_END_ARG_INFO()
 
 #define arginfo_class_RdKafka_metadata arginfo_class_RdKafka_getMetadata
 
+#if (PHP_VERSION_ID >= 80100)
 ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_class_RdKafka_setLogLevel, 0, 1, IS_VOID, 0)
+#else
+ZEND_BEGIN_ARG_INFO_EX(arginfo_class_RdKafka_setLogLevel, 0, 0, 1)
+#endif
 	ZEND_ARG_TYPE_INFO(0, level, IS_LONG, 0)
 ZEND_END_ARG_INFO()
 
+#if (PHP_VERSION_ID >= 80100)
 ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_OBJ_INFO_EX(arginfo_class_RdKafka_newTopic, 0, 1, RdKafka\\Topic, 0)
+#else
+ZEND_BEGIN_ARG_INFO_EX(arginfo_class_RdKafka_newTopic, 0, 0, 1)
+#endif
 	ZEND_ARG_TYPE_INFO(0, topic_name, IS_STRING, 0)
 	ZEND_ARG_OBJ_INFO_WITH_DEFAULT_VALUE(0, topic_conf, RdKafka\\TopicConf, 1, "null")
 ZEND_END_ARG_INFO()
 
 #define arginfo_class_RdKafka_outqLen arginfo_class_RdKafka_getOutQLen
 
+#if (PHP_VERSION_ID >= 80100)
 ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_class_RdKafka_poll, 0, 1, IS_LONG, 0)
+#else
+ZEND_BEGIN_ARG_INFO_EX(arginfo_class_RdKafka_poll, 0, 0, 1)
+#endif
 	ZEND_ARG_TYPE_INFO(0, timeout_ms, IS_LONG, 0)
 ZEND_END_ARG_INFO()
 
 #define arginfo_class_RdKafka_flush arginfo_class_RdKafka_poll
 
 #if defined(HAS_RD_KAFKA_PURGE)
+#if (PHP_VERSION_ID >= 80100)
 ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_class_RdKafka_purge, 0, 1, IS_LONG, 0)
+#else
+ZEND_BEGIN_ARG_INFO_EX(arginfo_class_RdKafka_purge, 0, 0, 1)
+#endif
 	ZEND_ARG_TYPE_INFO(0, purge_flags, IS_LONG, 0)
 ZEND_END_ARG_INFO()
 #endif
 
+#if (PHP_VERSION_ID >= 80100)
 ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_class_RdKafka_setLogger, 0, 1, IS_VOID, 0)
+#else
+ZEND_BEGIN_ARG_INFO_EX(arginfo_class_RdKafka_setLogger, 0, 0, 1)
+#endif
 	ZEND_ARG_TYPE_INFO(0, logger, IS_LONG, 0)
 ZEND_END_ARG_INFO()
 
+#if (PHP_VERSION_ID >= 80100)
 ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_class_RdKafka_queryWatermarkOffsets, 0, 5, IS_VOID, 0)
+#else
+ZEND_BEGIN_ARG_INFO_EX(arginfo_class_RdKafka_queryWatermarkOffsets, 0, 0, 5)
+#endif
 	ZEND_ARG_TYPE_INFO(0, topic, IS_STRING, 0)
 	ZEND_ARG_TYPE_INFO(0, partition, IS_LONG, 0)
 	ZEND_ARG_TYPE_INFO(1, low, IS_LONG, 0)
@@ -54,12 +100,20 @@ ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_class_RdKafka_queryWat
 	ZEND_ARG_TYPE_INFO(0, timeout_ms, IS_LONG, 0)
 ZEND_END_ARG_INFO()
 
+#if (PHP_VERSION_ID >= 80100)
 ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_class_RdKafka_offsetsForTimes, 0, 2, IS_ARRAY, 0)
+#else
+ZEND_BEGIN_ARG_INFO_EX(arginfo_class_RdKafka_offsetsForTimes, 0, 0, 2)
+#endif
 	ZEND_ARG_TYPE_INFO(0, topic_partitions, IS_ARRAY, 0)
 	ZEND_ARG_TYPE_INFO(0, timeout_ms, IS_LONG, 0)
 ZEND_END_ARG_INFO()
 
+#if (PHP_VERSION_ID >= 80100)
 ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_class_RdKafka_pausePartitions, 0, 1, IS_ARRAY, 0)
+#else
+ZEND_BEGIN_ARG_INFO_EX(arginfo_class_RdKafka_pausePartitions, 0, 0, 1)
+#endif
 	ZEND_ARG_TYPE_INFO(0, topic_partitions, IS_ARRAY, 0)
 ZEND_END_ARG_INFO()
 
@@ -69,19 +123,31 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_class_RdKafka_Consumer___construct, 0, 0, 0)
 	ZEND_ARG_OBJ_INFO_WITH_DEFAULT_VALUE(0, conf, RdKafka\\Conf, 1, "null")
 ZEND_END_ARG_INFO()
 
+#if (PHP_VERSION_ID >= 80100)
 ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_OBJ_INFO_EX(arginfo_class_RdKafka_Consumer_newQueue, 0, 0, RdKafka\\Queue, 0)
+#else
+ZEND_BEGIN_ARG_INFO_EX(arginfo_class_RdKafka_Consumer_newQueue, 0, 0, 0)
+#endif
 ZEND_END_ARG_INFO()
 
 #define arginfo_class_RdKafka_Producer___construct arginfo_class_RdKafka_Consumer___construct
 
 #if defined(HAS_RD_KAFKA_TRANSACTIONS)
+#if (PHP_VERSION_ID >= 80100)
 ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_class_RdKafka_Producer_initTransactions, 0, 1, IS_VOID, 0)
+#else
+ZEND_BEGIN_ARG_INFO_EX(arginfo_class_RdKafka_Producer_initTransactions, 0, 0, 1)
+#endif
 	ZEND_ARG_TYPE_INFO(0, timeout_ms, IS_LONG, 0)
 ZEND_END_ARG_INFO()
 #endif
 
 #if defined(HAS_RD_KAFKA_TRANSACTIONS)
+#if (PHP_VERSION_ID >= 80100)
 ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_class_RdKafka_Producer_beginTransaction, 0, 0, IS_VOID, 0)
+#else
+ZEND_BEGIN_ARG_INFO_EX(arginfo_class_RdKafka_Producer_beginTransaction, 0, 0, 0)
+#endif
 ZEND_END_ARG_INFO()
 #endif
 
@@ -93,10 +159,12 @@ ZEND_END_ARG_INFO()
 #define arginfo_class_RdKafka_Producer_abortTransaction arginfo_class_RdKafka_Producer_initTransactions
 #endif
 
-
 ZEND_METHOD(RdKafka, __construct);
 ZEND_METHOD(RdKafka, addBrokers);
 ZEND_METHOD(RdKafka, getMetadata);
+#if defined(HAS_RD_KAFKA_CONTROLLERID)
+ZEND_METHOD(RdKafka, getControllerId);
+#endif
 ZEND_METHOD(RdKafka, getOutQLen);
 ZEND_METHOD(RdKafka, setLogLevel);
 ZEND_METHOD(RdKafka, newTopic);
@@ -126,16 +194,26 @@ ZEND_METHOD(RdKafka_Producer, commitTransaction);
 ZEND_METHOD(RdKafka_Producer, abortTransaction);
 #endif
 
-
 static const zend_function_entry class_RdKafka_methods[] = {
 	ZEND_ME(RdKafka, __construct, arginfo_class_RdKafka___construct, ZEND_ACC_PRIVATE)
 	ZEND_ME(RdKafka, addBrokers, arginfo_class_RdKafka_addBrokers, ZEND_ACC_PUBLIC)
 	ZEND_ME(RdKafka, getMetadata, arginfo_class_RdKafka_getMetadata, ZEND_ACC_PUBLIC)
+#if defined(HAS_RD_KAFKA_CONTROLLERID)
+	ZEND_ME(RdKafka, getControllerId, arginfo_class_RdKafka_getControllerId, ZEND_ACC_PUBLIC)
+#endif
 	ZEND_ME(RdKafka, getOutQLen, arginfo_class_RdKafka_getOutQLen, ZEND_ACC_PUBLIC)
-	ZEND_MALIAS(RdKafka, metadata, getMetadata, arginfo_class_RdKafka_metadata, ZEND_ACC_PUBLIC|ZEND_ACC_DEPRECATED)
+#if (PHP_VERSION_ID >= 80400)
+	ZEND_RAW_FENTRY("metadata", zim_RdKafka_getMetadata, arginfo_class_RdKafka_metadata, ZEND_ACC_PUBLIC|ZEND_ACC_DEPRECATED, NULL, NULL)
+#else
+	ZEND_RAW_FENTRY("metadata", zim_RdKafka_getMetadata, arginfo_class_RdKafka_metadata, ZEND_ACC_PUBLIC|ZEND_ACC_DEPRECATED)
+#endif
 	ZEND_ME(RdKafka, setLogLevel, arginfo_class_RdKafka_setLogLevel, ZEND_ACC_PUBLIC|ZEND_ACC_DEPRECATED)
 	ZEND_ME(RdKafka, newTopic, arginfo_class_RdKafka_newTopic, ZEND_ACC_PUBLIC)
-	ZEND_MALIAS(RdKafka, outqLen, getOutQLen, arginfo_class_RdKafka_outqLen, ZEND_ACC_PUBLIC|ZEND_ACC_DEPRECATED)
+#if (PHP_VERSION_ID >= 80400)
+	ZEND_RAW_FENTRY("outqLen", zim_RdKafka_getOutQLen, arginfo_class_RdKafka_outqLen, ZEND_ACC_PUBLIC|ZEND_ACC_DEPRECATED, NULL, NULL)
+#else
+	ZEND_RAW_FENTRY("outqLen", zim_RdKafka_getOutQLen, arginfo_class_RdKafka_outqLen, ZEND_ACC_PUBLIC|ZEND_ACC_DEPRECATED)
+#endif
 	ZEND_ME(RdKafka, poll, arginfo_class_RdKafka_poll, ZEND_ACC_PUBLIC)
 	ZEND_ME(RdKafka, flush, arginfo_class_RdKafka_flush, ZEND_ACC_PUBLIC)
 #if defined(HAS_RD_KAFKA_PURGE)
@@ -149,18 +227,15 @@ static const zend_function_entry class_RdKafka_methods[] = {
 	ZEND_FE_END
 };
 
-
 static const zend_function_entry class_RdKafka_Exception_methods[] = {
 	ZEND_FE_END
 };
-
 
 static const zend_function_entry class_RdKafka_Consumer_methods[] = {
 	ZEND_ME(RdKafka_Consumer, __construct, arginfo_class_RdKafka_Consumer___construct, ZEND_ACC_PUBLIC)
 	ZEND_ME(RdKafka_Consumer, newQueue, arginfo_class_RdKafka_Consumer_newQueue, ZEND_ACC_PUBLIC)
 	ZEND_FE_END
 };
-
 
 static const zend_function_entry class_RdKafka_Producer_methods[] = {
 	ZEND_ME(RdKafka_Producer, __construct, arginfo_class_RdKafka_Producer___construct, ZEND_ACC_PUBLIC)
