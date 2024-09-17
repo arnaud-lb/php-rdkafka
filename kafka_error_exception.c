@@ -39,7 +39,10 @@ void create_kafka_error(zval *return_value, const rd_kafka_error_t *error) /* {{
 {
     object_init_ex(return_value, ce_kafka_error);
 
-    zend_update_property_string(ce_kafka_error, Z_RDKAFKA_PROP_OBJ(return_value), ZEND_STRL("message"), rd_kafka_error_name(error));
+    zend_string *message = zend_strpprintf(0, "%s (RD_KAFKA_RESP_ERR_%s)", rd_kafka_error_string(error), rd_kafka_error_name(error));
+    zend_update_property_str(ce_kafka_error, Z_RDKAFKA_PROP_OBJ(return_value), ZEND_STRL("message"), message);
+    zend_string_release(message);
+
     zend_update_property_long(ce_kafka_error, Z_RDKAFKA_PROP_OBJ(return_value), ZEND_STRL("code"), rd_kafka_error_code(error));
     zend_update_property_string(ce_kafka_error, Z_RDKAFKA_PROP_OBJ(return_value), ZEND_STRL("error_string"), rd_kafka_error_string(error));
     zend_update_property_bool(ce_kafka_error, Z_RDKAFKA_PROP_OBJ(return_value), ZEND_STRL("isFatal"), rd_kafka_error_is_fatal(error));
