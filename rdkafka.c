@@ -445,8 +445,8 @@ PHP_METHOD(RdKafka, oauthbearerSetToken)
     }    
 
     errstr[0] = '\0';
-    
-    int extensions_size;
+
+    int extensions_size = 0;
     char **extensions = NULL;
 
     if (extensions_hash != NULL) {

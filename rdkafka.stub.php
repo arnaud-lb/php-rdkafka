@@ -77,10 +77,10 @@ namespace {
         
         #ifdef HAS_RD_KAFKA_OAUTHBEARER
         /** @tentative-return-type */
-        public function oauthbearerSetToken(string $token_value, int $lifetime_ms, string $principal_name, array $extensions = []): void;
+        public function oauthbearerSetToken(string $token_value, int $lifetime_ms, string $principal_name, array $extensions = []): void {}
         
         /** @tentative-return-type */
-        public function oauthbearerSetTokenFailure(string $error): void;
+        public function oauthbearerSetTokenFailure(string $error): void {}
         #endif
     }
 }

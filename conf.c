@@ -81,6 +81,7 @@ static void kafka_conf_callback_copy(kafka_conf_callback **to, kafka_conf_callba
 
 void kafka_conf_callbacks_copy(kafka_conf_callbacks *to, kafka_conf_callbacks *from) /* {{{ */
 {
+    kafka_conf_callback_copy(&to->oauthbearer_token_refresh, from->oauthbearer_token_refresh);
     kafka_conf_callback_copy(&to->error, from->error);
     kafka_conf_callback_copy(&to->rebalance, from->rebalance);
     kafka_conf_callback_copy(&to->dr_msg, from->dr_msg);
