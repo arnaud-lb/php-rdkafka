@@ -33,7 +33,7 @@ printf "\n127.0.0.1  kafka\n127.0.0.1  kafka_oauth2\n"|sudo tee /etc/hosts >/dev
 
 echo "Waiting for Kafka services to be ready"
 
-kakfa_ready=0
+kafka_ready=0
 kafka_oauth2_ready=0
 
 for i in $(seq 1 20); do
