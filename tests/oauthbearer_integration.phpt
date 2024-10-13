@@ -8,7 +8,7 @@ RD_KAFKA_VERSION >= 0x010100 || die("skip librdkafka too old does not support oa
 <?php
 require __DIR__ . '/integration-tests-check.php';
 
-function generateJws(string $scope = 'required-scope', int $expiresInSeconds = 60): array
+function generateJws($scope = 'required-scope', $expiresInSeconds = 60)
 {
     $nowSeconds = floor(microtime(true));
     $expirySeconds = ($nowSeconds + $expiresInSeconds);
@@ -104,7 +104,7 @@ $conf->setOauthbearerTokenRefreshCb(function ($producer) {
     echo "Refreshing token\n";
 });
 $producer = new \RdKafka\Producer($conf);
-$token = generateJws(expiresInSeconds: 5);
+$token = generateJws('required-scope', 5);
 $producer->oauthbearerSetToken($token['value'], $token['expiryMs'], $token['principal']);
 $producer->poll(0);
 echo "Polled with refresh\n";
