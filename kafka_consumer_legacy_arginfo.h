@@ -1,5 +1,5 @@
 /* This is a generated file, edit the .stub.php file instead.
- * Stub hash: 47e9238c79f5508833423d31a2e09041754dbffb */
+ * Stub hash: 19d0e5f9de1e91016dd8e8c87e88c3d17e0c094f */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_class_RdKafka_KafkaConsumer___construct, 0, 0, 1)
 	ZEND_ARG_INFO(0, conf)
@@ -8,6 +8,16 @@ ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_class_RdKafka_KafkaConsumer_assign, 0, 0, 0)
 	ZEND_ARG_INFO(0, topic_partitions)
 ZEND_END_ARG_INFO()
+
+#if defined(HAS_RD_KAFKA_INCREMENTAL_ASSIGN)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_class_RdKafka_KafkaConsumer_incrementalAssign, 0, 0, 1)
+	ZEND_ARG_INFO(0, topic_partitions)
+ZEND_END_ARG_INFO()
+#endif
+
+#if defined(HAS_RD_KAFKA_INCREMENTAL_ASSIGN)
+#define arginfo_class_RdKafka_KafkaConsumer_incrementalUnassign arginfo_class_RdKafka_KafkaConsumer_incrementalAssign
+#endif
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_class_RdKafka_KafkaConsumer_getAssignment, 0, 0, 0)
 ZEND_END_ARG_INFO()
@@ -38,6 +48,12 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_class_RdKafka_KafkaConsumer_getMetadata, 0, 0, 3)
 	ZEND_ARG_INFO(0, timeout_ms)
 ZEND_END_ARG_INFO()
 
+#if defined(HAS_RD_KAFKA_CONTROLLERID)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_class_RdKafka_KafkaConsumer_getControllerId, 0, 0, 1)
+	ZEND_ARG_INFO(0, timeout_ms)
+ZEND_END_ARG_INFO()
+#endif
+
 ZEND_BEGIN_ARG_INFO_EX(arginfo_class_RdKafka_KafkaConsumer_newTopic, 0, 0, 1)
 	ZEND_ARG_INFO(0, topic_name)
 	ZEND_ARG_INFO(0, topic_conf)
@@ -66,9 +82,14 @@ ZEND_END_ARG_INFO()
 
 #define arginfo_class_RdKafka_KafkaConsumer_resumePartitions arginfo_class_RdKafka_KafkaConsumer_getOffsetPositions
 
-
 ZEND_METHOD(RdKafka_KafkaConsumer, __construct);
 ZEND_METHOD(RdKafka_KafkaConsumer, assign);
+#if defined(HAS_RD_KAFKA_INCREMENTAL_ASSIGN)
+ZEND_METHOD(RdKafka_KafkaConsumer, incrementalAssign);
+#endif
+#if defined(HAS_RD_KAFKA_INCREMENTAL_ASSIGN)
+ZEND_METHOD(RdKafka_KafkaConsumer, incrementalUnassign);
+#endif
 ZEND_METHOD(RdKafka_KafkaConsumer, getAssignment);
 ZEND_METHOD(RdKafka_KafkaConsumer, commit);
 ZEND_METHOD(RdKafka_KafkaConsumer, close);
@@ -78,6 +99,9 @@ ZEND_METHOD(RdKafka_KafkaConsumer, subscribe);
 ZEND_METHOD(RdKafka_KafkaConsumer, getSubscription);
 ZEND_METHOD(RdKafka_KafkaConsumer, unsubscribe);
 ZEND_METHOD(RdKafka_KafkaConsumer, getMetadata);
+#if defined(HAS_RD_KAFKA_CONTROLLERID)
+ZEND_METHOD(RdKafka_KafkaConsumer, getControllerId);
+#endif
 ZEND_METHOD(RdKafka_KafkaConsumer, newTopic);
 ZEND_METHOD(RdKafka_KafkaConsumer, getCommittedOffsets);
 ZEND_METHOD(RdKafka_KafkaConsumer, getOffsetPositions);
@@ -86,10 +110,15 @@ ZEND_METHOD(RdKafka_KafkaConsumer, offsetsForTimes);
 ZEND_METHOD(RdKafka_KafkaConsumer, pausePartitions);
 ZEND_METHOD(RdKafka_KafkaConsumer, resumePartitions);
 
-
 static const zend_function_entry class_RdKafka_KafkaConsumer_methods[] = {
 	ZEND_ME(RdKafka_KafkaConsumer, __construct, arginfo_class_RdKafka_KafkaConsumer___construct, ZEND_ACC_PUBLIC)
 	ZEND_ME(RdKafka_KafkaConsumer, assign, arginfo_class_RdKafka_KafkaConsumer_assign, ZEND_ACC_PUBLIC)
+#if defined(HAS_RD_KAFKA_INCREMENTAL_ASSIGN)
+	ZEND_ME(RdKafka_KafkaConsumer, incrementalAssign, arginfo_class_RdKafka_KafkaConsumer_incrementalAssign, ZEND_ACC_PUBLIC)
+#endif
+#if defined(HAS_RD_KAFKA_INCREMENTAL_ASSIGN)
+	ZEND_ME(RdKafka_KafkaConsumer, incrementalUnassign, arginfo_class_RdKafka_KafkaConsumer_incrementalUnassign, ZEND_ACC_PUBLIC)
+#endif
 	ZEND_ME(RdKafka_KafkaConsumer, getAssignment, arginfo_class_RdKafka_KafkaConsumer_getAssignment, ZEND_ACC_PUBLIC)
 	ZEND_ME(RdKafka_KafkaConsumer, commit, arginfo_class_RdKafka_KafkaConsumer_commit, ZEND_ACC_PUBLIC)
 	ZEND_ME(RdKafka_KafkaConsumer, close, arginfo_class_RdKafka_KafkaConsumer_close, ZEND_ACC_PUBLIC)
@@ -99,6 +128,9 @@ static const zend_function_entry class_RdKafka_KafkaConsumer_methods[] = {
 	ZEND_ME(RdKafka_KafkaConsumer, getSubscription, arginfo_class_RdKafka_KafkaConsumer_getSubscription, ZEND_ACC_PUBLIC)
 	ZEND_ME(RdKafka_KafkaConsumer, unsubscribe, arginfo_class_RdKafka_KafkaConsumer_unsubscribe, ZEND_ACC_PUBLIC)
 	ZEND_ME(RdKafka_KafkaConsumer, getMetadata, arginfo_class_RdKafka_KafkaConsumer_getMetadata, ZEND_ACC_PUBLIC)
+#if defined(HAS_RD_KAFKA_CONTROLLERID)
+	ZEND_ME(RdKafka_KafkaConsumer, getControllerId, arginfo_class_RdKafka_KafkaConsumer_getControllerId, ZEND_ACC_PUBLIC)
+#endif
 	ZEND_ME(RdKafka_KafkaConsumer, newTopic, arginfo_class_RdKafka_KafkaConsumer_newTopic, ZEND_ACC_PUBLIC)
 	ZEND_ME(RdKafka_KafkaConsumer, getCommittedOffsets, arginfo_class_RdKafka_KafkaConsumer_getCommittedOffsets, ZEND_ACC_PUBLIC)
 	ZEND_ME(RdKafka_KafkaConsumer, getOffsetPositions, arginfo_class_RdKafka_KafkaConsumer_getOffsetPositions, ZEND_ACC_PUBLIC)
@@ -114,7 +146,11 @@ static zend_class_entry *register_class_RdKafka_KafkaConsumer(void)
 	zend_class_entry ce, *class_entry;
 
 	INIT_NS_CLASS_ENTRY(ce, "RdKafka", "KafkaConsumer", class_RdKafka_KafkaConsumer_methods);
+#if (PHP_VERSION_ID >= 80400)
+	class_entry = zend_register_internal_class_with_flags(&ce, NULL, 0);
+#else
 	class_entry = zend_register_internal_class_ex(&ce, NULL);
+#endif
 
 	zval property_error_cb_default_value;
 	ZVAL_NULL(&property_error_cb_default_value);

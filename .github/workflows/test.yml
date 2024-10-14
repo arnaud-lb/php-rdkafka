@@ -12,6 +12,7 @@ jobs:
     tests:
         name: 'Tests'
         strategy:
+          fail-fast: false
           matrix:
             include:
               # Latest librdkafka 2.x with memcheck
