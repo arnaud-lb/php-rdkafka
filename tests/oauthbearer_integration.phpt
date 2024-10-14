@@ -15,15 +15,15 @@ function generateJws($scope = 'required-scope', $expiresInSeconds = 60)
     $expiryMs = $expirySeconds * 1000;
 
     $principal = 'admin';
-    $claims = [
-        'sub' => $principal,
-        'exp' => $expirySeconds,
-        'iat' => $nowSeconds - 10,
-        'scope' => $scope,
-    ];
-
+    $claimsJson = sprintf(
+        '{"sub": "%s", "exp": %d, "iat": %d, "scope": "%s"}',
+        $principal,
+        $expirySeconds,
+        $nowSeconds - 10,
+        $scope,
+    );
     $headerJwsSegment = 'eyJhbGciOiJub25lIn0';
-    $claimsJwsSegment = base64_encode(json_encode($claims));
+    $claimsJwsSegment = base64_encode($claimsJson);
     $claimsJwsSegment = rtrim(strtr($claimsJwsSegment, '+/', '-_'), '=');
 
     $jws = sprintf('%s.%s.', $headerJwsSegment, $claimsJwsSegment);
