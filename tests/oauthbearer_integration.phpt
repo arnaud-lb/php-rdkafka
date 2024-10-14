@@ -1,5 +1,5 @@
 --TEST--
-oauthbearer, metadata
+Oauthbearer
 --SKIPIF--
 <?php
 require __DIR__ . '/integration-tests-check.php';
