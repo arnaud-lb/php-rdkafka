@@ -3,7 +3,7 @@ Produce, consume, oauth
 --SKIPIF--
 <?php
 require __DIR__ . '/integration-tests-check.php';
-RD_KAFKA_VERSION >= 0x010100 || die("skip librdkafka too old does not support oauthbearer");
+RD_KAFKA_VERSION >= 0x01010000 || die("skip librdkafka too old does not support oauthbearer");
 --FILE--
 <?php
 require __DIR__ . '/integration-tests-check.php';
