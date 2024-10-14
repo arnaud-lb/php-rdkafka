@@ -1,5 +1,5 @@
 --TEST--
-Produce, consume, oauth
+oauthbearer, metadata
 --SKIPIF--
 <?php
 require __DIR__ . '/integration-tests-check.php';
