@@ -20,6 +20,6 @@ $conf->set('group.id', 'test');
 
 echo (new RdKafka\KafkaConsumer($conf))->getControllerId(10*1000) . \PHP_EOL;
 --EXPECT--
-1001
-1001
-1001
+1
+1
+1
