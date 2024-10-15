@@ -20,6 +20,11 @@ namespace {
         /** @tentative-return-type */
         public function getMetadata(bool $all_topics, ?RdKafka\Topic $only_topic, int $timeout_ms): RdKafka\Metadata {}
 
+#ifdef HAS_RD_KAFKA_CONTROLLERID
+        /** @tentative-return-type */
+        public function getControllerId(int $timeout_ms): int {}
+#endif
+
         /** @tentative-return-type */
         public function getOutQLen(): int {}
 
@@ -77,10 +82,10 @@ namespace {
         
         #ifdef HAS_RD_KAFKA_OAUTHBEARER
         /** @tentative-return-type */
-        public function oauthbearerSetToken(string $token_value, int $lifetime_ms, string $principal_name, array $extensions = []): void;
+        public function oauthbearerSetToken(string $token_value, int $lifetime_ms, string $principal_name, array $extensions = []): void {}
         
         /** @tentative-return-type */
-        public function oauthbearerSetTokenFailure(string $error): void;
+        public function oauthbearerSetTokenFailure(string $error): void {}
         #endif
     }
 }
