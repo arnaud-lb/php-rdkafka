@@ -350,7 +350,7 @@ PHP_METHOD(RdKafka, addBrokers)
 }
 /* }}} */
 
-/* {{{ proto RdKafka\Metadata::getMetadata(bool $all_topics, RdKafka\Topic $only_topic, int $timeout_ms)
+/* {{{ proto RdKafka\Metadata RdKafka::getMetadata(bool $all_topics, RdKafka\Topic $only_topic, int $timeout_ms)
    Request Metadata from broker */
 PHP_METHOD(RdKafka, getMetadata)
 {
@@ -388,7 +388,29 @@ PHP_METHOD(RdKafka, getMetadata)
     kafka_metadata_init(return_value, metadata);
 }
 /* }}} */
- 
+
+#ifdef HAS_RD_KAFKA_CONTROLLERID
+/* {{{ proto int RdKafka::getControllerId(int $timeout_ms)
+   Returns the current ControllerId (controller broker id) as reported in broker metadata */
+PHP_METHOD(RdKafka, getControllerId)
+{
+    kafka_object *intern;
+    zend_long timeout;
+
+    if (zend_parse_parameters(ZEND_NUM_ARGS(), "l", &timeout) == FAILURE) {
+        return;
+    }
+
+    intern = get_kafka_object(getThis());
+    if (!intern) {
+        return;
+    }
+
+    RETURN_LONG(rd_kafka_controllerid(intern->rk, timeout));
+}
+/* }}} */
+#endif
+
 /* {{{ proto void RdKafka::setLogLevel(int $level)
    Specifies the maximum logging level produced by internal kafka logging and debugging */
 PHP_METHOD(RdKafka, setLogLevel)
@@ -430,12 +452,12 @@ PHP_METHOD(RdKafka, oauthbearerSetToken)
     zend_long lifetime_ms;
     char *principal_name;
     size_t principal_len;
-    zval *extensions_arg = NULL;
+    HashTable *extensions_hash = NULL;
     
     char errstr[512];
     rd_kafka_resp_err_t ret = 0;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS(), "sls|a", &token_value, &token_value_len, &lifetime_ms, &principal_name, &principal_len, &extensions_arg) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS(), "sls|h", &token_value, &token_value_len, &lifetime_ms, &principal_name, &principal_len, &extensions_hash) == FAILURE) {
         return;
     }
 
@@ -445,31 +467,33 @@ PHP_METHOD(RdKafka, oauthbearerSetToken)
     }    
 
     errstr[0] = '\0';
-    
-    int extension_size;
-    const char **extensions = NULL;
 
-    if (extensions_arg != NULL) {
-        extension_size = zend_hash_num_elements(Z_ARRVAL_P(extensions_arg)) * 2;
-        extensions = safe_emalloc((extension_size * 2), sizeof(char *), 0);
+    int extensions_size = 0;
+    char **extensions = NULL;
+
+    if (extensions_hash != NULL) {
+        extensions_size = zend_hash_num_elements(extensions_hash) * 2;
+        extensions = safe_emalloc((extensions_size * 2), sizeof(char *), 0);
 
         int pos = 0;
         zend_ulong num_key;
         zend_string *extension_key_str;
         zval *extension_zval;
-        ZEND_HASH_FOREACH_KEY_VAL(Z_ARRVAL_P(extensions_arg), num_key, extension_key_str, extension_zval) {
+        ZEND_HASH_FOREACH_KEY_VAL(extensions_hash, num_key, extension_key_str, extension_zval) {
             if (!extension_key_str) {
                 extension_key_str = zend_long_to_str(num_key);
-                zend_string_delref(extension_key_str);
+                extensions[pos++] = estrdup(ZSTR_VAL(extension_key_str));
+                zend_string_release(extension_key_str);
+            } else {
+                extensions[pos++] = estrdup(ZSTR_VAL(extension_key_str));
             }
 
             zend_string *tmp_extension_val_str;
             zend_string *extension_val_str = zval_get_tmp_string(extension_zval, &tmp_extension_val_str);
-
-            extensions[pos++] = estrdup(ZSTR_VAL(extension_key_str));
             extensions[pos++] = estrdup(ZSTR_VAL(extension_val_str));
-
-            zend_tmp_string_release(tmp_extension_val_str);
+            if (tmp_extension_val_str) {
+                zend_string_release(tmp_extension_val_str);
+            }
         } ZEND_HASH_FOREACH_END();
     }    
 
@@ -478,12 +502,15 @@ PHP_METHOD(RdKafka, oauthbearerSetToken)
         token_value,
         lifetime_ms,
         principal_name,
-        extensions,
-        extension_size,
+        (const char **)extensions,
+        extensions_size,
         errstr,
         sizeof(errstr));
 
     if (extensions != NULL) {
+        for (int i = 0; i < extensions_size; i++) {
+            efree(extensions[i]);
+        }
         efree(extensions);
     }
     
@@ -514,8 +541,9 @@ PHP_METHOD(RdKafka, oauthbearerSetTokenFailure)
 {
     kafka_object *intern;
     const char *errstr;
+    size_t errstr_len;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS(), "s", &errstr) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS(), "s", &errstr, &errstr_len) == FAILURE) {
         return;
     }
 

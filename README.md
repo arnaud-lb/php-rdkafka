@@ -14,31 +14,6 @@ The high level and low level *consumers*, *producer*, and *metadata* APIs are su
 
 Documentation is available [here](https://arnaud-lb.github.io/php-rdkafka/phpdoc/book.rdkafka.html).
 
-## Sponsors
-
-<table width="100%">
-<tr>
-<td>
-  <img width="1000" height="0">
-  <a href="https://upstash.com/?utm_source=php-rdkafka" >
-  <img src="https://raw.githubusercontent.com/upstash/sponsorship/master/kafka.png" alt="Upstash" width="260" align="right">
-  </a>
-
-<h3>Upstash: Serverless Kafka</h3>
-
-  <ul>
-    <li>True Serverless Kafka with per-request-pricing</li>
-    <li>Managed Apache Kafka, works with all Kafka clients</li>
-    <li>Built-in REST API designed for serverless and edge functions</li>
-  </ul>
-
-[Start for free in 30 seconds!](https://upstash.com/?utm_source=php-rdkafka)
-</td>
-</tr>
-</table>
-
-php-rdkafka supports Ukraine. Proceeds from our generous sponsors are currently donated to the [Support Ukraine collective](https://opencollective.com/support-ukraine).
-
 ## Table of Contents
 
 1. [Installation](#installation)

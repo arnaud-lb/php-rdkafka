@@ -212,6 +212,59 @@ PHP_METHOD(RdKafka_KafkaConsumer, assign)
 }
 /* }}} */
 
+#ifdef HAS_RD_KAFKA_INCREMENTAL_ASSIGN
+static void consumer_incremental_op(int assign, INTERNAL_FUNCTION_PARAMETERS) /* {{{ */
+{
+    HashTable *htopars = NULL;
+
+    if (zend_parse_parameters(ZEND_NUM_ARGS(), "h", &htopars) == FAILURE || !htopars) {
+        return;
+    }
+
+    object_intern *intern = get_object(getThis());
+    if (!intern) {
+        return;
+    }
+
+    rd_kafka_topic_partition_list_t *topics = array_arg_to_kafka_topic_partition_list(1, htopars);
+    if (!topics) {
+        return;
+    }
+
+    rd_kafka_error_t *err;
+
+    if (assign) {
+        err = rd_kafka_incremental_assign(intern->rk, topics);
+    } else {
+        err = rd_kafka_incremental_unassign(intern->rk, topics);
+    }
+
+    rd_kafka_topic_partition_list_destroy(topics);
+
+    if (err) {
+        zend_throw_exception(ce_kafka_exception, rd_kafka_error_string(err), 0);
+        rd_kafka_error_destroy(err);
+    }
+}
+/* }}} */
+
+/* {{{ proto void RdKafka\KafkaConsumer::incrementalAssign(array $topics)
+    Incremental assignment of partitions to consume */
+PHP_METHOD(RdKafka_KafkaConsumer, incrementalAssign)
+{
+    consumer_incremental_op(1, INTERNAL_FUNCTION_PARAM_PASSTHRU);
+}
+/* }}} */
+
+/* {{{ proto void RdKafka\KafkaConsumer::incrementalUnassign(array $topics)
+    Incremental unassign of partitions to consume */
+PHP_METHOD(RdKafka_KafkaConsumer, incrementalUnassign)
+{
+    consumer_incremental_op(0, INTERNAL_FUNCTION_PARAM_PASSTHRU);
+}
+/* }}} */
+#endif // !HAS_RD_KAFKA_INCREMENTAL_ASSIGN
+
 /* {{{ proto array RdKafka\KafkaConsumer::getAssignment()
     Returns the current partition getAssignment */
 PHP_METHOD(RdKafka_KafkaConsumer, getAssignment)
@@ -489,7 +542,7 @@ PHP_METHOD(RdKafka_KafkaConsumer, close)
 }
 /* }}} */
 
-/* {{{ proto Metadata RdKafka\KafkaConsumer::getMetadata(bool all_topics, RdKafka\Topic only_topic, int timeout_ms)
+/* {{{ proto RdKafka\Metadata RdKafka\KafkaConsumer::getMetadata(bool $all_topics, RdKafka\Topic $only_topic, int $timeout_ms)
    Request Metadata from broker */
 PHP_METHOD(RdKafka_KafkaConsumer, getMetadata)
 {
@@ -527,6 +580,28 @@ PHP_METHOD(RdKafka_KafkaConsumer, getMetadata)
     kafka_metadata_init(return_value, metadata);
 }
 /* }}} */
+
+#ifdef HAS_RD_KAFKA_CONTROLLERID
+/* {{{ proto int RdKafka\KafkaConsumer::getControllerId(int $timeout_ms)
+   Returns the current ControllerId (controller broker id) as reported in broker metadata */
+PHP_METHOD(RdKafka_KafkaConsumer, getControllerId)
+{
+    object_intern *intern;
+    zend_long timeout;
+
+    if (zend_parse_parameters(ZEND_NUM_ARGS(), "l", &timeout) == FAILURE) {
+        return;
+    }
+
+    intern = get_object(getThis());
+    if (!intern) {
+        return;
+    }
+
+    RETURN_LONG(rd_kafka_controllerid(intern->rk, timeout));
+}
+/* }}} */
+#endif
 
 /* {{{ proto RdKafka\KafkaConsumerTopic RdKafka\KafkaConsumer::newTopic(string $topic)
    Returns a RdKafka\KafkaConsumerTopic object */

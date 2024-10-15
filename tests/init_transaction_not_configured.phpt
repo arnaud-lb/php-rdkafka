@@ -29,7 +29,7 @@ try {
 }
 
 --EXPECTF--
-_NOT_CONFIGURED
+The Transactional API requires transactional.id to be configured (RD_KAFKA_RESP_ERR__NOT_CONFIGURED)
 -145
 %s/tests/init_transaction_not_configured.php
 14
