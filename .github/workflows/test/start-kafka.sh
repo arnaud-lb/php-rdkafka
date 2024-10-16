@@ -40,7 +40,7 @@ kafka_oauth2_ready=0
 
 for i in $(seq 1 20); do
     if [ $kafka_ready -eq 0 ]; then
-        if kafkacat -b 127.0.0.1 -L; then
+        if kafkacat -b kafka:9092 -L -m 10; then
             kafka_ready=1
             echo "Kafka is ready"
         fi
