@@ -31,11 +31,7 @@
 #include "conf.h"
 #include "topic_partition.h"
 #include "message.h"
-#if PHP_VERSION_ID < 80000
-#include "conf_legacy_arginfo.h"
-#else
 #include "conf_arginfo.h"
-#endif
 
 zend_class_entry * ce_kafka_conf;
 zend_class_entry * ce_kafka_topic_conf;
@@ -735,7 +731,6 @@ PHP_METHOD(RdKafka_Conf, setLogCb)
 }
 /* }}} */
 
-#ifdef HAS_RD_KAFKA_OAUTHBEARER
 /* {{{ proto void RdKafka\Conf::setOauthbearerTokenRefreshCb(mixed $callback)
    Set token refresh callback for OAUTHBEARER sasl */
 PHP_METHOD(RdKafka_Conf, setOauthbearerTokenRefreshCb)
@@ -767,7 +762,6 @@ PHP_METHOD(RdKafka_Conf, setOauthbearerTokenRefreshCb)
     rd_kafka_conf_set_oauthbearer_token_refresh_cb(conf->u.conf, kafka_conf_set_oauthbearer_token_refresh_cb);
 }
 /* }}} */
-#endif
 
 /* {{{ proto RdKafka\TopicConf::__construct() */
 PHP_METHOD(RdKafka_TopicConf, __construct)
@@ -816,14 +810,12 @@ PHP_METHOD(RdKafka_TopicConf, setPartitioner)
         case MSG_PARTITIONER_CONSISTENT_RANDOM:
             partitioner = rd_kafka_msg_partitioner_consistent_random;
             break;
-#ifdef HAS_RD_KAFKA_PARTITIONER_MURMUR2
         case MSG_PARTITIONER_MURMUR2:
             partitioner = rd_kafka_msg_partitioner_murmur2;
             break;
         case MSG_PARTITIONER_MURMUR2_RANDOM:
             partitioner = rd_kafka_msg_partitioner_murmur2_random;
             break;
-#endif
         default:
             zend_throw_exception_ex(spl_ce_InvalidArgumentException, 0, "Invalid partitioner given");
             return;

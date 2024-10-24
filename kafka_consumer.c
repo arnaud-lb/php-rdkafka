@@ -31,11 +31,7 @@
 #include "topic.h"
 #include "message.h"
 #include "metadata.h"
-#if PHP_VERSION_ID < 80000
-#include "kafka_consumer_legacy_arginfo.h"
-#else
 #include "kafka_consumer_arginfo.h"
-#endif
 
 typedef struct _object_intern {
     rd_kafka_t              *rk;
@@ -581,7 +577,6 @@ PHP_METHOD(RdKafka_KafkaConsumer, getMetadata)
 }
 /* }}} */
 
-#ifdef HAS_RD_KAFKA_CONTROLLERID
 /* {{{ proto int RdKafka\KafkaConsumer::getControllerId(int $timeout_ms)
    Returns the current ControllerId (controller broker id) as reported in broker metadata */
 PHP_METHOD(RdKafka_KafkaConsumer, getControllerId)
@@ -601,7 +596,6 @@ PHP_METHOD(RdKafka_KafkaConsumer, getControllerId)
     RETURN_LONG(rd_kafka_controllerid(intern->rk, timeout));
 }
 /* }}} */
-#endif
 
 /* {{{ proto RdKafka\KafkaConsumerTopic RdKafka\KafkaConsumer::newTopic(string $topic)
    Returns a RdKafka\KafkaConsumerTopic object */

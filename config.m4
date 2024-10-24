@@ -27,7 +27,7 @@ if test "$PHP_RDKAFKA" != "no"; then
 
   PHP_ADD_INCLUDE($RDKAFKA_DIR/include)
 
-  SOURCES="rdkafka.c metadata.c metadata_broker.c metadata_topic.c metadata_partition.c metadata_collection.c conf.c topic.c queue.c message.c fun.c kafka_consumer.c topic_partition.c"
+  SOURCES="rdkafka.c metadata.c metadata_broker.c metadata_topic.c metadata_partition.c metadata_collection.c conf.c topic.c queue.c message.c fun.c kafka_consumer.c topic_partition.c kafka_error_exception.c"
 
   LIBNAME=rdkafka
   LIBSYMBOL=rd_kafka_new
@@ -50,54 +50,13 @@ if test "$PHP_RDKAFKA" != "no"; then
   AC_MSG_CHECKING([for librdkafka version])
   AC_EGREP_CPP(yes,[
 #include <librdkafka/rdkafka.h>
-#if RD_KAFKA_VERSION >= 0x000b0000
+#if RD_KAFKA_VERSION >= 0x010503ff
   yes
 #endif
   ],[
-    AC_MSG_RESULT([>= 0.11.0])
+    AC_MSG_RESULT([>= 1.5.3])
   ],[
-    AC_MSG_ERROR([librdkafka version 0.11.0 or greater required.])
-  ])
-
-  AC_CHECK_LIB($LIBNAME,[rd_kafka_message_headers],[
-    AC_DEFINE(HAVE_RD_KAFKA_MESSAGE_HEADERS,1,[ ])
-  ],[
-    AC_MSG_WARN([no rd_kafka_message_headers, headers support will not be available])
-  ])
-
-  AC_CHECK_LIB($LIBNAME,[rd_kafka_purge],[
-    AC_DEFINE(HAS_RD_KAFKA_PURGE,1,[ ])
-  ],[
-    AC_MSG_WARN([purge is not available])
-  ])
-
-  AC_CHECK_LIB($LIBNAME,[rd_kafka_controllerid],[
-#if RD_KAFKA_VERSION >= 0x010000ff
-    AC_DEFINE(HAS_RD_KAFKA_CONTROLLERID,1,[ ])
-#else
-    AC_MSG_WARN([controllerid is broken on 0.11.x])
-#endif
-  ],[
-    AC_MSG_WARN([controllerid is not available])
-  ])
-
-  AC_CHECK_LIB($LIBNAME,[rd_kafka_init_transactions],[
-    AC_DEFINE(HAS_RD_KAFKA_TRANSACTIONS,1,[ ])
-    SOURCES="$SOURCES kafka_error_exception.c"
-  ],[
-    AC_MSG_WARN([transactions are not available])
-  ])
-
-  AC_CHECK_LIB($LIBNAME,[rd_kafka_msg_partitioner_murmur2],[
-    AC_DEFINE(HAS_RD_KAFKA_PARTITIONER_MURMUR2,1,[ ])
-  ],[
-    AC_MSG_WARN([murmur2 partitioner is not available])
-  ])
-
-  AC_CHECK_LIB($LIBNAME,[rd_kafka_oauthbearer_set_token],[
-    AC_DEFINE(HAS_RD_KAFKA_OAUTHBEARER,1,[ ])
-  ],[
-    AC_MSG_WARN([oauthbearer support is not available])
+    AC_MSG_ERROR([librdkafka version 1.5.3 or greater required.])
   ])
 
   AC_CHECK_LIB($LIBNAME,[rd_kafka_incremental_assign, rd_kafka_incremental_unassign],[

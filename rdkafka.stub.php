@@ -20,10 +20,8 @@ namespace {
         /** @tentative-return-type */
         public function getMetadata(bool $all_topics, ?RdKafka\Topic $only_topic, int $timeout_ms): RdKafka\Metadata {}
 
-#ifdef HAS_RD_KAFKA_CONTROLLERID
         /** @tentative-return-type */
         public function getControllerId(int $timeout_ms): int {}
-#endif
 
         /** @tentative-return-type */
         public function getOutQLen(): int {}
@@ -57,10 +55,8 @@ namespace {
         /** @tentative-return-type */
         public function flush(int $timeout_ms): int {}
 
-#ifdef HAS_RD_KAFKA_PURGE
         /** @tentative-return-type */
         public function purge(int $purge_flags): int {}
-#endif
 
         /**
          * @deprecated
@@ -80,13 +76,11 @@ namespace {
         /** @tentative-return-type */
         public function resumePartitions(array $topic_partitions): array {}
         
-        #ifdef HAS_RD_KAFKA_OAUTHBEARER
         /** @tentative-return-type */
         public function oauthbearerSetToken(string $token_value, int $lifetime_ms, string $principal_name, array $extensions = []): void {}
         
         /** @tentative-return-type */
         public function oauthbearerSetTokenFailure(string $error): void {}
-        #endif
     }
 }
 
@@ -104,7 +98,6 @@ namespace RdKafka {
     class Producer extends \RdKafka {
         public function __construct(?Conf $conf = null) {}
 
-#ifdef HAS_RD_KAFKA_TRANSACTIONS
         /** @tentative-return-type */
         public function initTransactions(int $timeout_ms): void {}
 
@@ -116,6 +109,5 @@ namespace RdKafka {
 
         /** @tentative-return-type */
         public function abortTransaction(int $timeout_ms): void {}
-#endif
     }
 }

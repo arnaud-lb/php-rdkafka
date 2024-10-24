@@ -28,11 +28,7 @@
 #include "Zend/zend_interfaces.h"
 #include "metadata_collection.h"
 #include "Zend/zend_exceptions.h"
-#if PHP_VERSION_ID < 80000
-#include "metadata_collection_legacy_arginfo.h"
-#else
 #include "metadata_collection_arginfo.h"
-#endif
 
 typedef struct _object_intern {
     zval                             zmetadata;
@@ -241,11 +237,7 @@ PHP_METHOD(RdKafka_Metadata_Collection, valid)
 
 void kafka_metadata_collection_minit(INIT_FUNC_ARGS)
 {
-#if PHP_VERSION_ID < 80100
-    ce = register_class_RdKafka_Metadata_Collection(spl_ce_Countable, spl_ce_Iterator);
-#else
     ce = register_class_RdKafka_Metadata_Collection(zend_ce_countable, zend_ce_iterator);
-#endif
     ce->create_object = create_object;
 
     handlers = kafka_default_object_handlers;

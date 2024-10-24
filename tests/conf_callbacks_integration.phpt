@@ -2,7 +2,6 @@
 RdKafka\Conf
 --SKIPIF--
 <?php
-RD_KAFKA_VERSION >= 0x090000 || die("skip librdkafka too old");
 (!isset($_ENV['TESTS_DONT_SKIP_RISKY']) || $_ENV['TESTS_DONT_SKIP_RISKY']) && die("skip Risky/broken test");
 require __DIR__ . '/integration-tests-check.php';
 --FILE--

@@ -27,11 +27,7 @@
 #include "ext/spl/spl_iterators.h"
 #include "Zend/zend_interfaces.h"
 #include "Zend/zend_exceptions.h"
-#if PHP_VERSION_ID < 80000
-#include "metadata_broker_legacy_arginfo.h"
-#else
 #include "metadata_broker_arginfo.h"
-#endif
 
 typedef struct _object_intern {
     zval                            zmetadata;

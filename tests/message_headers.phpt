@@ -2,8 +2,8 @@
 Message headers
 --SKIPIF--
 <?php
-RD_KAFKA_VERSION >= 0x000b04ff || die("skip librdkafka too old");
 require __DIR__ . '/integration-tests-check.php';
+?>
 --FILE--
 <?php
 require __DIR__ . '/integration-tests-check.php';

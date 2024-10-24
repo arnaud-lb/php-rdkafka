@@ -29,11 +29,7 @@
 #include "metadata_broker.h"
 #include "metadata_partition.h"
 #include "Zend/zend_exceptions.h"
-#if PHP_VERSION_ID < 80000
-#include "metadata_legacy_arginfo.h"
-#else
 #include "metadata_arginfo.h"
-#endif
 
 typedef struct _object_intern {
     const rd_kafka_metadata_t *metadata;

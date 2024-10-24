@@ -3,7 +3,7 @@ Oauthbearer
 --SKIPIF--
 <?php
 require __DIR__ . '/integration-tests-check.php';
-RD_KAFKA_VERSION >= 0x01010000 || die("skip librdkafka too old does not support oauthbearer");
+?>
 --FILE--
 <?php
 require __DIR__ . '/integration-tests-check.php';
@@ -37,7 +37,7 @@ function generateJws($scope = 'required-scope', $expiresInSeconds = 60)
 
 // Set up tests
 $conf = new RdKafka\Conf();
-if (RD_KAFKA_VERSION >= 0x090000 && false !== getenv('TEST_KAFKA_BROKER_VERSION')) {
+if (false !== getenv('TEST_KAFKA_BROKER_VERSION')) {
     $conf->set('broker.version.fallback', getenv('TEST_KAFKA_BROKER_VERSION'));
 }
 $conf->set('metadata.broker.list', getenv('TEST_KAFKA_OAUTH_BROKERS'));

@@ -1,8 +1,5 @@
 --TEST--
 RdKafka\Conf
---SKIPIF--
-<?php
-(RD_KAFKA_VERSION >= 0x090000 && RD_KAFKA_VERSION < 0x010100ff) || die("skip librdkafka too old");
 --FILE--
 <?php
 
@@ -34,4 +31,4 @@ bool(true)
 Setting rebalance callback
 bool(true)
 Checking if oauthbearer cb exists
-bool(false)
+bool(true)

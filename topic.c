@@ -31,11 +31,7 @@
 #include "topic.h"
 #include "queue.h"
 #include "message.h"
-#if PHP_VERSION_ID < 80000
-#include "topic_legacy_arginfo.h"
-#else
 #include "topic_arginfo.h"
-#endif
 
 static zend_object_handlers object_handlers;
 zend_class_entry * ce_kafka_consumer_topic;
@@ -439,19 +435,13 @@ PHP_METHOD(RdKafka_ProducerTopic, produce)
     rd_kafka_resp_err_t err;
     kafka_topic_object *intern;
 
-#ifdef HAS_RD_KAFKA_PURGE
     ZEND_PARSE_PARAMETERS_START(2, 5)
-#else
-    ZEND_PARSE_PARAMETERS_START(2, 4)
-#endif
         Z_PARAM_LONG(partition)
         Z_PARAM_LONG(msgflags)
         Z_PARAM_OPTIONAL
         Z_PARAM_STRING_OR_NULL(payload, payload_len)
         Z_PARAM_STRING_OR_NULL(key, key_len)
-#ifdef HAS_RD_KAFKA_PURGE
         Z_PARAM_STR_OR_NULL(opaque)
-#endif
     ZEND_PARSE_PARAMETERS_END();
 
     if (partition != RD_KAFKA_PARTITION_UA && (partition < 0 || partition > 0x7FFFFFFF)) {
@@ -483,7 +473,6 @@ PHP_METHOD(RdKafka_ProducerTopic, produce)
 }
 /* }}} */
 
-#ifdef HAVE_RD_KAFKA_MESSAGE_HEADERS
 /* {{{ proto void RdKafka\ProducerTopic::producev(int $partition, int $msgflags[, string $payload[, string $key[, array $headers[, int $timestamp_ms[, string msg_opaque]]]]])
    Produce and send a single message to broker (with headers possibility and timestamp). */
 PHP_METHOD(RdKafka_ProducerTopic, producev)
@@ -506,11 +495,7 @@ PHP_METHOD(RdKafka_ProducerTopic, producev)
     zend_bool timestamp_ms_is_null = 0;
     zend_string *opaque = NULL;
 
-#ifdef HAS_RD_KAFKA_PURGE
     ZEND_PARSE_PARAMETERS_START(2, 7)
-#else
-    ZEND_PARSE_PARAMETERS_START(2, 6)
-#endif
         Z_PARAM_LONG(partition)
         Z_PARAM_LONG(msgflags)
         Z_PARAM_OPTIONAL
@@ -518,9 +503,7 @@ PHP_METHOD(RdKafka_ProducerTopic, producev)
         Z_PARAM_STRING_OR_NULL(key, key_len)
         Z_PARAM_ARRAY_HT_OR_NULL(headersParam)
         Z_PARAM_LONG_OR_NULL(timestamp_ms, timestamp_ms_is_null)
-#ifdef HAS_RD_KAFKA_PURGE
         Z_PARAM_STR_OR_NULL(opaque)
-#endif
     ZEND_PARSE_PARAMETERS_END();
 
     if (partition != RD_KAFKA_PARTITION_UA && (partition < 0 || partition > 0x7FFFFFFF)) {
@@ -590,7 +573,6 @@ PHP_METHOD(RdKafka_ProducerTopic, producev)
     }
 }
 /* }}} */
-#endif
 
 /* {{{ proto string RdKafka\Topic::getName() */
 PHP_METHOD(RdKafka_Topic, getName)

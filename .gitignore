@@ -2,6 +2,7 @@
 *.la
 *.lo
 *.swp
+*_legacy_arginfo.h
 .deps
 .libs
 Makefile

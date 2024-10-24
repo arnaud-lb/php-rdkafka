@@ -61,8 +61,6 @@ class ProducerTopic extends Topic
     /** @tentative-return-type */
     public function produce(int $partition, int $msgflags, ?string $payload = null, ?string $key = null, ?string $msg_opaque = null): void {}
 
-#ifdef HAVE_RD_KAFKA_MESSAGE_HEADERS
     /** @tentative-return-type */
     public function producev(int $partition, int $msgflags, ?string $payload = null, ?string $key = null, ?array $headers = null, ?int $timestamp_ms = null, ?string $msg_opaque = null): void {}
-#endif
 }

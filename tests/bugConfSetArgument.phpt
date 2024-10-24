@@ -1,8 +1,5 @@
 --TEST--
 RdKafka\Conf
---SKIPIF--
-<?php
-version_compare(PHP_VERSION, "7.1") < 0 && die("skip PHP < 7.1");
 --FILE--
 <?php
 

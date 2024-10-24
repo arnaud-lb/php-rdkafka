@@ -22,10 +22,6 @@
 #include "config.h"
 #endif
 
-#ifdef HAS_RD_KAFKA_TRANSACTIONS
-#include "kafka_error_exception.h"
-#endif
-
 #include "php.h"
 #include "php_ini.h"
 #include "ext/standard/info.h"
@@ -41,16 +37,16 @@
 #include "message.h"
 #include "kafka_consumer.h"
 #include "topic_partition.h"
-#if PHP_VERSION_ID < 80000
-#include "rdkafka_legacy_arginfo.h"
-#include "fun_legacy_arginfo.h"
-#else
 #include "rdkafka_arginfo.h"
 #include "fun_arginfo.h"
+#include "kafka_error_exception.h"
+
+#if PHP_VERSION_ID < 80100
+#   error "PHP version 8.1.0 or greater required"
 #endif
 
-#if RD_KAFKA_VERSION < 0x000b0000
-#	error librdkafka version 0.11.0 or greater required
+#if RD_KAFKA_VERSION < 0x010503ff
+#	error librdkafka version 1.5.3 or greater required
 #endif
 
 enum {
@@ -92,12 +88,10 @@ static void kafka_free(zend_object *object) /* {{{ */
             zend_hash_destroy(&intern->consuming);
             zend_hash_destroy(&intern->queues);
         } else if (intern->type == RD_KAFKA_PRODUCER) {
-#ifdef HAS_RD_KAFKA_PURGE
             // Force internal delivery callbacks for queued messages, as we rely
             // on these to free msg_opaques
             rd_kafka_purge(intern->rk, RD_KAFKA_PURGE_F_QUEUE | RD_KAFKA_PURGE_F_INFLIGHT);
             rd_kafka_flush(intern->rk, 0);
-#endif
         }
         zend_hash_destroy(&intern->topics);
 
@@ -389,7 +383,6 @@ PHP_METHOD(RdKafka, getMetadata)
 }
 /* }}} */
 
-#ifdef HAS_RD_KAFKA_CONTROLLERID
 /* {{{ proto int RdKafka::getControllerId(int $timeout_ms)
    Returns the current ControllerId (controller broker id) as reported in broker metadata */
 PHP_METHOD(RdKafka, getControllerId)
@@ -409,7 +402,6 @@ PHP_METHOD(RdKafka, getControllerId)
     RETURN_LONG(rd_kafka_controllerid(intern->rk, timeout));
 }
 /* }}} */
-#endif
 
 /* {{{ proto void RdKafka::setLogLevel(int $level)
    Specifies the maximum logging level produced by internal kafka logging and debugging */
@@ -431,7 +423,6 @@ PHP_METHOD(RdKafka, setLogLevel)
 }
 /* }}} */
 
-#ifdef HAS_RD_KAFKA_OAUTHBEARER
 /* {{{ proto void RdKafka::oauthbearerSetToken(string $token_value, int $lifetime_ms, string $principal_name, array $extensions = [])
  * Set SASL/OAUTHBEARER token and metadata
  *
@@ -568,7 +559,6 @@ PHP_METHOD(RdKafka, oauthbearerSetTokenFailure)
     }
 }
 /* }}} */
-#endif
 
 /* {{{ proto RdKafka\Topic RdKafka::newTopic(string $topic)
    Returns an RdKafka\Topic object */
@@ -694,7 +684,6 @@ PHP_METHOD(RdKafka, flush)
 }
 /* }}} */
 
-#ifdef HAS_RD_KAFKA_PURGE
 /* {{{ proto int RdKafka::purge(int $purge_flags)
    Purge messages that are in queue or in flight */
 PHP_METHOD(RdKafka, purge)
@@ -714,7 +703,6 @@ PHP_METHOD(RdKafka, purge)
     RETURN_LONG(rd_kafka_purge(intern->rk, purge_flags));
 }
 /* }}} */
-#endif
 
 /* {{{ proto void RdKafka::queryWatermarkOffsets(string $topic, int $partition, int &$low, int &$high, int $timeout_ms)
    Query broker for low (oldest/beginning) or high (newest/end) offsets for partition */
@@ -917,7 +905,6 @@ PHP_METHOD(RdKafka_Producer, __construct)
 }
 /* }}} */
 
-#ifdef HAS_RD_KAFKA_TRANSACTIONS
 /* {{{ proto int RdKafka\Producer::initTransactions(int timeout_ms)
    Initializes transactions, needs to be done before producing and starting a transaction */
 PHP_METHOD(RdKafka_Producer, initTransactions)
@@ -1024,7 +1011,6 @@ PHP_METHOD(RdKafka_Producer, abortTransaction)
     zend_throw_exception_object(return_value);
 }
 /* }}} */
-#endif
 
 #define COPY_CONSTANT(name) \
     REGISTER_LONG_CONSTANT(#name, name, CONST_CS | CONST_PERSISTENT)
@@ -1066,11 +1052,9 @@ PHP_MINIT_FUNCTION(rdkafka)
     COPY_CONSTANT(RD_KAFKA_PARTITION_UA);
     COPY_CONSTANT(RD_KAFKA_PRODUCER);
     COPY_CONSTANT(RD_KAFKA_MSG_F_BLOCK);
-#ifdef HAS_RD_KAFKA_PURGE
     COPY_CONSTANT(RD_KAFKA_PURGE_F_QUEUE);
     COPY_CONSTANT(RD_KAFKA_PURGE_F_INFLIGHT);
     COPY_CONSTANT(RD_KAFKA_PURGE_F_NON_BLOCKING);
-#endif
     REGISTER_LONG_CONSTANT("RD_KAFKA_VERSION", rd_kafka_version(), CONST_CS | CONST_PERSISTENT);
     REGISTER_LONG_CONSTANT("RD_KAFKA_BUILD_VERSION", RD_KAFKA_VERSION, CONST_CS | CONST_PERSISTENT);
 
@@ -1083,10 +1067,8 @@ PHP_MINIT_FUNCTION(rdkafka)
     REGISTER_LONG_CONSTANT("RD_KAFKA_MSG_PARTITIONER_RANDOM", MSG_PARTITIONER_RANDOM, CONST_CS | CONST_PERSISTENT);
     REGISTER_LONG_CONSTANT("RD_KAFKA_MSG_PARTITIONER_CONSISTENT", MSG_PARTITIONER_CONSISTENT, CONST_CS | CONST_PERSISTENT);
     REGISTER_LONG_CONSTANT("RD_KAFKA_MSG_PARTITIONER_CONSISTENT_RANDOM", MSG_PARTITIONER_CONSISTENT_RANDOM, CONST_CS | CONST_PERSISTENT);
-#ifdef HAS_RD_KAFKA_PARTITIONER_MURMUR2
     REGISTER_LONG_CONSTANT("RD_KAFKA_MSG_PARTITIONER_MURMUR2", MSG_PARTITIONER_MURMUR2, CONST_CS | CONST_PERSISTENT);
     REGISTER_LONG_CONSTANT("RD_KAFKA_MSG_PARTITIONER_MURMUR2_RANDOM", MSG_PARTITIONER_MURMUR2_RANDOM, CONST_CS | CONST_PERSISTENT);
-#endif
 
     REGISTER_LONG_CONSTANT("RD_KAFKA_LOG_PRINT", RD_KAFKA_LOG_PRINT, CONST_CS | CONST_PERSISTENT);
     REGISTER_LONG_CONSTANT("RD_KAFKA_LOG_SYSLOG", RD_KAFKA_LOG_SYSLOG, CONST_CS | CONST_PERSISTENT);
@@ -1109,9 +1091,7 @@ PHP_MINIT_FUNCTION(rdkafka)
     ce_kafka_exception = register_class_RdKafka_Exception(zend_ce_exception);
 
     kafka_conf_minit(INIT_FUNC_ARGS_PASSTHRU);
-#ifdef HAS_RD_KAFKA_TRANSACTIONS
     kafka_error_minit();
-#endif
     kafka_kafka_consumer_minit(INIT_FUNC_ARGS_PASSTHRU);
     kafka_message_minit(INIT_FUNC_ARGS_PASSTHRU);
     kafka_metadata_minit(INIT_FUNC_ARGS_PASSTHRU);
