@@ -6,7 +6,7 @@ on:
 jobs:
     package:
         name: 'Package'
-        runs-on: 'ubuntu-20.04'
+        runs-on: 'ubuntu-24.04'
         steps:
             - name: 'Check out repository'
               uses: 'actions/checkout@v2'
@@ -14,7 +14,7 @@ jobs:
                   path: 'php-rdkafka'
 
             - name: 'Install dependencies'
-              run: 'sudo apt-get -y install php7.4-dev librdkafka-dev'
+              run: 'sudo apt-get -y install php-dev librdkafka-dev'
 
             - name: 'Package and verify package'
               run: './php-rdkafka/.github/workflows/package/package.sh'
