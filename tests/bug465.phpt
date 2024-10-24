@@ -18,7 +18,7 @@ var_dump($n > 0);
 
 function getTopics() {
     $conf = new RdKafka\Conf();
-    if (RD_KAFKA_VERSION >= 0x090000 && false !== getenv('TEST_KAFKA_BROKER_VERSION')) {
+    if (false !== getenv('TEST_KAFKA_BROKER_VERSION')) {
         $conf->set('broker.version.fallback', getenv('TEST_KAFKA_BROKER_VERSION'));
     }
     $conf->set('metadata.broker.list', getenv('TEST_KAFKA_BROKERS'));

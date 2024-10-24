@@ -3,7 +3,7 @@ Display controller id
 --SKIPIF--
 <?php
 require __DIR__ . '/integration-tests-check.php';
-RD_KAFKA_BUILD_VERSION < 0x010000ff && die("skip librdkafka < 1.0.0");
+?>
 --FILE--
 <?php
 require __DIR__ . '/integration-tests-check.php';

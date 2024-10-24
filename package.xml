@@ -145,7 +145,6 @@
     <file role="test" name="produce_consume.phpt"/>
     <file role="test" name="produce_consume_queue.phpt"/>
     <file role="test" name="produce_consume_transactional.phpt"/>
-    <file role="test" name="produce_opaque_noconf.phpt"/>
     <file role="test" name="produce_opaque_noflush_dr_callback.phpt"/>
     <file role="test" name="produce_opaque_noflush.phpt"/>
     <file role="test" name="produce_opaque.phpt"/>

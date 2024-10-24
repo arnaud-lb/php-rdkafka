@@ -1,8 +1,5 @@
 --TEST--
 RdKafka\Conf
---SKIPIF--
-<?php
-RD_KAFKA_VERSION >= 0x010100ff || die("skip librdkafka too old");
 --FILE--
 <?php
 
