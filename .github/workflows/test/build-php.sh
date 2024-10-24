@@ -19,14 +19,7 @@ if ! [ -f ~/build-cache/php/usr/local/bin/php ]; then
     if [ $MEMORY_CHECK -eq 1 ]; then
         PHP_BUILD_FLAGS="$PHP_BUILD_FLAGS --enable-debug --with-valgrind"
     else
-        case $PHP_VERSION in
-            8.*)
-                PHP_BUILD_FLAGS="$PHP_BUILD_FLAGS --enable-zts"
-                ;;
-            7.*)
-                PHP_BUILD_FLAGS="$PHP_BUILD_FLAGS --enable-maintainer-zts"
-                ;;
-        esac
+        PHP_BUILD_FLAGS="$PHP_BUILD_FLAGS --enable-zts"
     fi
 
     ./configure $PHP_BUILD_FLAGS $PHP_BUILD_EXTRA_FLAGS

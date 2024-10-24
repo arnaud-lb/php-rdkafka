@@ -30,11 +30,7 @@
 #include "topic.h"
 #include "queue.h"
 #include "message.h"
-#if PHP_VERSION_ID < 80000
-#include "queue_legacy_arginfo.h"
-#else
 #include "queue_arginfo.h"
-#endif
 
 zend_class_entry * ce_kafka_queue;
 

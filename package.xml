@@ -164,7 +164,7 @@
  <dependencies>
   <required>
    <php>
-    <min>7.0.0</min>
+    <min>8.1.0</min>
     <max>8.99.99</max>
    </php>
    <pearinstaller>

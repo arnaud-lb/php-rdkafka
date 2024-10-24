@@ -29,12 +29,7 @@
 #include "Zend/zend_exceptions.h"
 #include "ext/spl/spl_exceptions.h"
 #include "topic_partition.h"
-
-#if PHP_VERSION_ID < 80000
-#include "topic_partition_legacy_arginfo.h"
-#else
 #include "topic_partition_arginfo.h"
-#endif
 
 typedef kafka_topic_partition_intern object_intern;
 

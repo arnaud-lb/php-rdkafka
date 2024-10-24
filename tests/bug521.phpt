@@ -1,7 +1,5 @@
 --TEST--
 Bug #521
---SKIPIF--
-<?php version_compare(PHP_VERSION, "8.1") < 0 && die("skip PHP < 8.1"); ?>
 --FILE--
 <?php
 

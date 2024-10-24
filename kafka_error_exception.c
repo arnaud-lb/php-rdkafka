@@ -21,17 +21,12 @@
 #endif
 
 #include "php.h"
-#ifdef HAS_RD_KAFKA_TRANSACTIONS
 #include "php_rdkafka.h"
 #include "php_rdkafka_priv.h"
 #include "Zend/zend_interfaces.h"
 #include "Zend/zend_exceptions.h"
 #include "kafka_error_exception.h"
-#if PHP_VERSION_ID < 80000
-#include "kafka_error_exception_legacy_arginfo.h"
-#else
 #include "kafka_error_exception_arginfo.h"
-#endif
 
 zend_class_entry * ce_kafka_error;
 
@@ -163,5 +158,3 @@ void kafka_error_minit() /* {{{ */
 {
     ce_kafka_error = register_class_RdKafka_KafkaErrorException(ce_kafka_exception);
 } /* }}} */
-#endif
-

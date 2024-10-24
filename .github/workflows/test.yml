@@ -17,13 +17,13 @@ jobs:
             include:
               # Latest librdkafka 2.x with memcheck
               - php: '8.3.0'
-                librdkafka: 'v1.9.2'
+                librdkafka: 'v2.6.0'
                 memcheck: '1'
               - php: '8.2.0'
-                librdkafka: 'v1.9.2'
+                librdkafka: 'v2.6.0'
                 memcheck: '1'
               - php: '8.1.0'
-                librdkafka: 'v1.9.2'
+                librdkafka: 'v2.6.0'
                 memcheck: '1'
 
               # Latest librdkafka 1.x with memcheck
@@ -36,17 +36,14 @@ jobs:
               - php: '8.1.0'
                 librdkafka: 'v1.9.2'
                 memcheck: '1'
-              - php: '8.0.0'
-                librdkafka: 'v1.9.2'
-                memcheck: '1'
 
               # Latest librdkafka 2.x
               - php: '8.3.0'
-                librdkafka: 'v2.3.0'
+                librdkafka: 'v2.6.0'
               - php: '8.2.0'
-                librdkafka: 'v2.3.0'
+                librdkafka: 'v2.6.0'
               - php: '8.1.0'
-                librdkafka: 'v2.3.0'
+                librdkafka: 'v2.6.0'
 
               # Latest librdkafka 1.x
               - php: '8.3.0'
@@ -54,12 +51,6 @@ jobs:
               - php: '8.2.0'
                 librdkafka: 'v1.9.2'
               - php: '8.1.0'
-                librdkafka: 'v1.9.2'
-              - php: '8.0.0'
-                librdkafka: 'v1.9.2'
-              - php: '7.4.0'
-                librdkafka: 'v1.9.2'
-              - php: '7.3.0'
                 librdkafka: 'v1.9.2'
 
               # librdkafka 1.7.0
@@ -69,79 +60,10 @@ jobs:
                 librdkafka: 'v1.7.0'
               - php: '8.1.0'
                 librdkafka: 'v1.7.0'
-              - php: '8.0.0'
-                librdkafka: 'v1.7.0'
-              - php: '7.4.0'
-                librdkafka: 'v1.7.0'
-              - php: '7.3.0'
-                librdkafka: 'v1.7.0'
 
               # librdkafka 1.6.1
               - php: '8.1.0'
                 librdkafka: 'v1.6.1'
-              - php: '8.0.0'
-                librdkafka: 'v1.6.1'
-              - php: '7.4.0'
-                librdkafka: 'v1.6.1'
-              - php: '7.3.0'
-                librdkafka: 'v1.6.1'
-
-              # librdkafka 1.5.3
-              - php: '8.1.0'
-                librdkafka: 'v1.5.3'
-              - php: '8.0.0'
-                librdkafka: 'v1.5.3'
-              - php: '7.4.0'
-                librdkafka: 'v1.5.3'
-              - php: '7.3.0'
-                librdkafka: 'v1.5.3'
-
-              # librdkafka 1.4.4
-              - php: '8.1.0'
-                librdkafka: 'v1.4.4'
-              - php: '8.0.0'
-                librdkafka: 'v1.4.4'
-              - php: '7.4.0'
-                librdkafka: 'v1.4.4'
-              - php: '7.3.0'
-                librdkafka: 'v1.4.4'
-
-              # librdkafka 1.0.1
-              - php: '8.1.0'
-                librdkafka: 'v1.0.1'
-                skipoauth: '1'
-              - php: '8.0.0'
-                librdkafka: 'v1.0.1'
-                skipoauth: '1'
-              - php: '7.4.0'
-                librdkafka: 'v1.0.1'
-                skipoauth: '1'
-              - php: '7.3.0'
-                librdkafka: 'v1.0.1'
-                skipoauth: '1'
-
-              # librdkafka 0.11.6
-              - php: '8.1.0'
-                librdkafka: 'v0.11.6'
-                skipoauth: '1'
-              - php: '8.0.0'
-                librdkafka: 'v0.11.6'
-                skipoauth: '1'
-              - php: '7.4.0'
-                librdkafka: 'v0.11.6'
-                skipoauth: '1'
-              - php: '7.3.0'
-                librdkafka: 'v0.11.6'
-                skipoauth: '1'
-              - php: '7.2.0'
-                librdkafka: 'v0.11.6'
-                skipoauth: '1'
-              - php: '7.1.0'
-                librdkafka: 'v0.11.6'
-                skipoauth: '1'
-              - php: '7.0.0'
-                librdkafka: 'v0.11.6'
-                skipoauth: '1'
 
               # librdkafka master (experimental, does not block PRs)
               - php: '8.3.0'
@@ -151,15 +73,6 @@ jobs:
                 librdkafka: 'master'
                 experimental: true
               - php: '8.1.0'
-                librdkafka: 'master'
-                experimental: true
-              - php: '8.0.0'
-                librdkafka: 'master'
-                experimental: true
-              - php: '7.4.0'
-                librdkafka: 'master'
-                experimental: true
-              - php: '7.3.0'
                 librdkafka: 'master'
                 experimental: true
 

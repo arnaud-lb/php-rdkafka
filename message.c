@@ -29,11 +29,7 @@
 #include "Zend/zend_exceptions.h"
 #include "topic.h"
 #include "message.h"
-#if PHP_VERSION_ID < 80000
-#include "message_legacy_arginfo.h"
-#else
 #include "message_arginfo.h"
-#endif
 
 zend_class_entry * ce_kafka_message;
 
@@ -47,14 +43,12 @@ void kafka_message_new(zval *return_value, const rd_kafka_message_t *message, ze
     timestamp = rd_kafka_message_timestamp(message, &tstype);
 
     zval headers_array;
-#ifdef HAVE_RD_KAFKA_MESSAGE_HEADERS
     rd_kafka_headers_t *message_headers = NULL;
     rd_kafka_resp_err_t header_response;
     const char *header_name = NULL;
     const void *header_value = NULL;
     size_t header_size = 0;
     size_t i;
-#endif /* HAVE_RD_KAFKA_MESSAGE_HEADERS */
 
     zend_update_property_long(NULL, Z_RDKAFKA_PROP_OBJ(return_value), ZEND_STRL("err"), message->err);
 
@@ -73,7 +67,6 @@ void kafka_message_new(zval *return_value, const rd_kafka_message_t *message, ze
     zend_update_property_long(NULL, Z_RDKAFKA_PROP_OBJ(return_value), ZEND_STRL("offset"), message->offset);
 
     array_init(&headers_array);
-#ifdef HAVE_RD_KAFKA_MESSAGE_HEADERS
     if (message->err == RD_KAFKA_RESP_ERR_NO_ERROR) {
         rd_kafka_message_headers(message, &message_headers);
         if (message_headers != NULL) {
@@ -86,7 +79,6 @@ void kafka_message_new(zval *return_value, const rd_kafka_message_t *message, ze
             }
         }
     }
-#endif
     zend_update_property(NULL, Z_RDKAFKA_PROP_OBJ(return_value), ZEND_STRL("headers"), &headers_array);
     zval_ptr_dtor(&headers_array);
 

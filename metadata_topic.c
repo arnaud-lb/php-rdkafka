@@ -29,11 +29,7 @@
 #include "metadata_partition.h"
 #include "metadata_collection.h"
 #include "Zend/zend_exceptions.h"
-#if PHP_VERSION_ID < 80000
-#include "metadata_topic_legacy_arginfo.h"
-#else
 #include "metadata_topic_arginfo.h"
-#endif
 
 typedef struct _object_intern {
     zval                            zmetadata;
