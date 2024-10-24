@@ -132,6 +132,7 @@
     <file role="test" name="metadata_partition_001.phpt"/>
     <file role="test" name="metadata_topic_001.phpt"/>
     <file role="test" name="new_topic_with_conf.phpt"/>
+    <file role="test" name="oauthbearer_integration.phpt"/>
     <file role="test" name="pause_resume.phpt"/>
     <file role="test" name="produce_consume.phpt"/>
     <file role="test" name="produce_consume_queue.phpt"/>

@@ -1,5 +1,5 @@
 /* This is a generated file, edit the .stub.php file instead.
- * Stub hash: 86934f54199c0af37cadfcedafeaffb569e33beb */
+ * Stub hash: a72d2e1796ed7f89185f543973c659a6a704f347 */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_class_RdKafka_Conf___construct, 0, 0, 0)
 ZEND_END_ARG_INFO()
@@ -32,7 +32,7 @@ ZEND_END_ARG_INFO()
 
 #define arginfo_class_RdKafka_Conf_setLogCb arginfo_class_RdKafka_Conf_setErrorCb
 
-#if defined(HAS_RD_KAFKA_OAUTHBEARER_TOKEN_REFRESH_CB)
+#if defined(HAS_RD_KAFKA_OAUTHBEARER)
 ZEND_BEGIN_ARG_INFO_EX(arginfo_class_RdKafka_Conf_setOauthbearerTokenRefreshCb, 0, 0, 1)
 	ZEND_ARG_INFO(0, callback)
 ZEND_END_ARG_INFO()
@@ -59,7 +59,7 @@ ZEND_METHOD(RdKafka_Conf, setRebalanceCb);
 ZEND_METHOD(RdKafka_Conf, setConsumeCb);
 ZEND_METHOD(RdKafka_Conf, setOffsetCommitCb);
 ZEND_METHOD(RdKafka_Conf, setLogCb);
-#if defined(HAS_RD_KAFKA_OAUTHBEARER_TOKEN_REFRESH_CB)
+#if defined(HAS_RD_KAFKA_OAUTHBEARER)
 ZEND_METHOD(RdKafka_Conf, setOauthbearerTokenRefreshCb);
 #endif
 ZEND_METHOD(RdKafka_TopicConf, __construct);
@@ -77,7 +77,7 @@ static const zend_function_entry class_RdKafka_Conf_methods[] = {
 	ZEND_ME(RdKafka_Conf, setConsumeCb, arginfo_class_RdKafka_Conf_setConsumeCb, ZEND_ACC_PUBLIC)
 	ZEND_ME(RdKafka_Conf, setOffsetCommitCb, arginfo_class_RdKafka_Conf_setOffsetCommitCb, ZEND_ACC_PUBLIC)
 	ZEND_ME(RdKafka_Conf, setLogCb, arginfo_class_RdKafka_Conf_setLogCb, ZEND_ACC_PUBLIC)
-#if defined(HAS_RD_KAFKA_OAUTHBEARER_TOKEN_REFRESH_CB)
+#if defined(HAS_RD_KAFKA_OAUTHBEARER)
 	ZEND_ME(RdKafka_Conf, setOauthbearerTokenRefreshCb, arginfo_class_RdKafka_Conf_setOauthbearerTokenRefreshCb, ZEND_ACC_PUBLIC)
 #endif
 	ZEND_FE_END
@@ -104,7 +104,11 @@ static zend_class_entry *register_class_RdKafka_Conf(void)
 	zend_class_entry ce, *class_entry;
 
 	INIT_NS_CLASS_ENTRY(ce, "RdKafka", "Conf", class_RdKafka_Conf_methods);
+#if (PHP_VERSION_ID >= 80400)
+	class_entry = zend_register_internal_class_with_flags(&ce, NULL, 0);
+#else
 	class_entry = zend_register_internal_class_ex(&ce, NULL);
+#endif
 
 	return class_entry;
 }
@@ -114,7 +118,11 @@ static zend_class_entry *register_class_RdKafka_TopicConf(void)
 	zend_class_entry ce, *class_entry;
 
 	INIT_NS_CLASS_ENTRY(ce, "RdKafka", "TopicConf", class_RdKafka_TopicConf_methods);
+#if (PHP_VERSION_ID >= 80400)
+	class_entry = zend_register_internal_class_with_flags(&ce, NULL, 0);
+#else
 	class_entry = zend_register_internal_class_ex(&ce, NULL);
+#endif
 
 	return class_entry;
 }
