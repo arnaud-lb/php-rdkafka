@@ -31,4 +31,4 @@ bool(true)
 Setting rebalance callback
 bool(true)
 Checking if oauthbearer cb exists
-bool(false)
+bool(true)
